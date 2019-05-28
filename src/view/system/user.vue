@@ -4,11 +4,11 @@
       <Col span="12">
         <div class="searchInput">
           <div class="search">
-            <Input search @on-search="handleSearch" placeholder="请输入用户姓名关键字" type="text" enter-button="搜索">
+            <Input search @on-search="onSearch" placeholder="请输入用户姓名关键字" type="text" enter-button="搜索">
             <span slot="prepend">姓名:</span>
             </Input>
           </div>
-          <Button class="search-btn" type="primary" @click="open('筛选')"><Icon type="search"/>筛选</Button>
+          <Button class="search-btn" type="primary" @click="openFilter"><Icon type="search"/>筛选</Button>
         </div>
       </Col>
       <Col span="12">
@@ -27,10 +27,36 @@
         </div>
       </Col>
     </Row>
-    <div slot="filterPanel" class="filterPanel" v-if="panel===true">
+    <div slot="filterPanel" class="filterPanel" v-if="filterPanel===true">
       <Card :bordered="false">
         <Row>
-          <Col span="12">
+          <Col span="12" style="margin-bottom: 16px">
+            <Row>
+              <Col span="5">
+                <span class="label">归属单位:</span>
+              </Col>
+              <Col span="19">
+                <Select v-model="unit">
+                  <Option value="沈阳稻田">沈阳稻田</Option>
+                  <Option value="稻田">稻田</Option>
+                </Select>
+              </Col>
+            </Row>
+          </Col>
+          <Col span="12" style="margin-bottom: 16px">
+            <Row>
+              <Col span="5">
+                <span class="label">角色:</span>
+              </Col>
+              <Col span="19">
+                <Select v-model="role">
+                  <Option value="经理">经理</Option>
+                  <Option value="员工">员工</Option>
+                </Select>
+              </Col>
+            </Row>
+          </Col>
+          <Col span="12" style="margin-bottom: 16px">
             <Row>
               <Col span="5">
                 <span class="label">所属地:</span>
@@ -42,28 +68,29 @@
               </Col>
             </Row>
           </Col>
-          <Col span="12">
+          <Col span="12" style="margin-bottom: 16px">
             <Row>
               <Col span="5">
-                <span class="label">单位类型:</span>
+                <span class="label">APP登录:</span>
               </Col>
               <Col span="19">
-                <Select v-model="unitType">
-                  <Option v-for="item in typeData" :value="item.value" :key="item.id">{{ item.value }}</Option>
+                <Select v-model="isApp">
+                  <Option value="1">是</Option>
+                  <Option value="0">否</Option>
                 </Select>
               </Col>
             </Row>
           </Col>
           <Col span="24">
             <div class="btns">
-              <Button type="primary" @click="filter">确定</Button>
-              <Button @click="reset">重置</Button>
+              <Button type="primary" @click="filterSubmit">确定</Button>
+              <Button @click="filterReset">重置</Button>
             </div>
           </Col>
         </Row>
       </Card>
     </div>
-    <tables ref="tables" search-place="top" v-model="tableData" :columns="columns" @on-edit="onEdit" @on-select="onSelect" @on-selection-change="onSelectionChange"></tables>
+    <tables ref="tables" search-place="top" v-model="tableData" :columns="columns" @on-select="onSelect" @on-selection-change="onSelectionChange"></tables>
     <Modal
       v-model="deletePanel"
       width="300"
@@ -77,38 +104,12 @@
         <Button type="primary" size="large">确定</Button>
       </div>
     </Modal>
-    <Modal
-      v-model="newUnitPanel"
-      @on-cancel="close('单位编辑')"
-      :title="modalType === 0 ? '新增单位' : '编辑单位'">
-      <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="120">
-        <FormItem label="单位名称" prop="name">
-          <Input v-model="formValidate.name" placeholder="请输入单位名称"></Input>
-        </FormItem>
-        <FormItem label="所属地" prop="region">
-          <Select v-model="formValidate.region" placeholder="请选择">
-            <Option value="北京">北京</Option>
-            <Option value="沈阳">沈阳</Option>
-          </Select>
-        </FormItem>
-        <FormItem label="是否设为甲方单位" prop="partyA">
-          <RadioGroup v-model="formValidate.partyA">
-            <Radio label="1">是</Radio>
-            <Radio label="0">否</Radio>
-          </RadioGroup>
-        </FormItem>
-      </Form>
-      <div slot="footer">
-        <Button type="text" size="large" @click="close('单位编辑')">取消</Button>
-        <Button type="primary" size="large" @click="handleSubmit">确定</Button>
-      </div>
-    </Modal>
   </div>
 </template>
 
 <script>
 import Tables from '_c/tables'
-import { getUnitTableData, getUnitRegion, getUnitType } from '@/api/data'
+import { getUserList, getRegion, getUnit } from '@/api/data'
 export default{
   name: 'unit_table_page',
   components: { Tables },
@@ -130,11 +131,11 @@ export default{
           { required: true, message: '请选择是否设为甲方单位', trigger: 'change' }
         ]
       },
-      panel: false,
+      filterPanel: false,
       region: '',
-      unitType: '',
-      newUnitPanel: false,
-      modalType: 0,
+      isApp: '',
+      role: '',
+      unit: '',
       rowId: [],
       deletePanel: false,
       columns: [
@@ -162,6 +163,7 @@ export default{
     }
   },
   methods: {
+    // 批量删除
     dropdownClick (name) {
       if (name === '批量删除') {
         if (this.rowId.length > 0) {
@@ -175,43 +177,17 @@ export default{
         }
       }
     },
+    // 新增用户
     addUser () {
       this.$router.push({
         name: 'addUser'
       })
     },
-    open (a) {
-      switch (a) {
-        case '新增单位' :
-          this.modalType = 0
-          this.newUnitPanel = true
-          break
-        case '筛选' :
-          this.panel = !this.panel
-          break
-        default:
-          return false
-      }
+    // 打开筛选
+    openFilter () {
+      this.filterPanel = !this.filterPanel
     },
-    close (a) {
-      switch (a) {
-        case '单位编辑' :
-          this.newUnitPanel = false
-          this.$refs['formValidate'].resetFields()
-          break
-        default:
-          return false
-      }
-    },
-    onEdit () {
-      this.modalType = 1
-      this.formValidate = {
-        name: arguments[0].row.unit,
-        region: arguments[0].row.region,
-        partyA: arguments[0].row.partyA
-      }
-      this.newUnitPanel = true
-    },
+    // 单选
     onSelect (row) {
       this.rowId = []
       row.forEach((item) => {
@@ -219,6 +195,7 @@ export default{
       })
       console.log(this.rowId)
     },
+    // 全选
     onSelectionChange (row) {
       this.rowId = []
       row.forEach((item) => {
@@ -226,38 +203,34 @@ export default{
       })
       console.log(this.rowId)
     },
-    handleSubmit () {
-      this.$refs['formValidate'].validate((valid) => {
-        if (valid) {
-          this.$Message.success('操作成功!')
-          this.newUnitPanel = false
-          this.$refs['formValidate'].resetFields()
-        } else {
-          this.newUnitPanel = true
-        }
-      })
-    },
-    handleSearch (val) {
+    // 搜索
+    onSearch (val) {
       console.log(val)
     },
-    filter () {
+    // 筛选提交
+    filterSubmit () {
       console.log(this.region ? this.region : '')
-      console.log(this.unitType ? this.unitType : '')
+      console.log(this.isApp ? this.isApp : '')
+      console.log(this.role ? this.role : '')
+      console.log(this.unit ? this.unit : '')
     },
-    reset () {
+    // 筛选重置
+    filterReset () {
       this.region = ''
-      this.unitType = ''
+      this.isApp = ''
+      this.role = ''
+      this.unit = ''
     }
   },
   mounted () {
-    getUnitTableData().then(res => {
+    getUserList().then(res => {
       console.log(res)
       this.tableData = res.data
     })
-    getUnitRegion().then(res => {
+    getRegion().then(res => {
       this.regionData = res.data
     })
-    getUnitType().then(res => {
+    getUnit().then(res => {
       this.typeData = res.data
     })
   }
@@ -301,7 +274,6 @@ export default{
       line-height: 32px;
     }
     .btns{
-      margin-top: 16px;
       text-align: center;
       .ivu-btn-primary{
         margin-right: 10px;

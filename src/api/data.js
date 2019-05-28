@@ -50,21 +50,21 @@ export const getTreeSelectData = () => {
   })
 }
 
-export const getUnitTableData = () => {
+export const getUserList = () => {
   return axios.request({
-    url: 'get_unit_table_data',
+    url: 'get_user_list',
     method: 'get'
   })
 }
-export const getUnitRegion = () => {
+export const getRegion = () => {
   return axios.request({
-    url: 'get_unit_region',
+    url: 'get_region',
     method: 'get'
   })
 }
-export const getUnitType = () => {
+export const getUnit = () => {
   return axios.request({
-    url: 'get_unit_type',
+    url: 'get_unit',
     method: 'get'
   })
 }

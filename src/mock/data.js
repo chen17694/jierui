@@ -101,7 +101,7 @@ export const getRegionTableData = req => {
   })
   return data
 }
-export const getUnitTableData = req => {
+export const getUserList = req => {
   let data = []
   doCustomTimes(20, () => {
     data.push(Mock.mock({
@@ -120,18 +120,18 @@ export const getUnitTableData = req => {
   return data
 }
 
-export const getUnitRegion = req => {
+export const getRegion = req => {
   let data = []
   doCustomTimes(5, () => {
     data.push(Mock.mock({
-      value: Random.cname(),
+      value: '@city(false)',
       id: Random.zip()
     }))
   })
   return data
 }
 
-export const getUnitType = req => {
+export const getUnit = req => {
   let data = []
   doCustomTimes(5, () => {
     data.push(Mock.mock({

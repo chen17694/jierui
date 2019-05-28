@@ -1,5 +1,5 @@
 import Main from '@/components/main'
-
+import parentView from '@/components/parent-view'
 /**
  * iview-admin中meta除了原生参数外可配置的参数:
  * meta: {
@@ -387,7 +387,30 @@ export default [
           icon: 'md-funnel',
           title: '用户管理'
         },
-        component: () => import('@/view/system/user.vue')
+        component: parentView,
+        children: [
+          {
+            path: 'userList',
+            name: 'userList',
+            meta: {
+              icon: 'md-funnel',
+              title: '用户管理',
+              hideInBread: true
+            },
+            component: () => import('@/view/system/user.vue')
+          },
+          {
+            path: 'addUser',
+            name: 'addUser',
+            meta: {
+              icon: 'md-funnel',
+              title: '新增用户',
+              hideInMenu: true,
+              needInBread: true
+            },
+            component: () => import('@/view/system/addUser.vue')
+          }
+        ]
       },
       {
         path: 'level_2_2',
