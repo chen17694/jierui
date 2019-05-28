@@ -38,3 +38,106 @@ export const getOrgData = req => {
 export const getTreeSelectData = req => {
   return treeData
 }
+export const getRegionTableData = req => {
+  let data = []
+  doCustomTimes(1, () => {
+    data.push(Mock.mock({
+      region: '中国',
+      type: '国家',
+      children: [
+        {
+          region: '辽宁',
+          type: '省份',
+          parent: '中国',
+          children: [
+            {
+              region: '沈阳',
+              type: '市',
+              parent: '辽宁',
+              children: [
+                {
+                  region: '皇姑区',
+                  type: '区',
+                  parent: '沈阳'
+                },
+                {
+                  region: '沈河区',
+                  type: '区',
+                  parent: '沈阳'
+                }
+              ]
+            },
+            {
+              region: '大连',
+              type: '市',
+              parent: '辽宁'
+            }
+          ]
+        },
+        {
+          region: '吉林',
+          type: '省份',
+          parent: '中国',
+          children: [
+            {
+              region: '长春',
+              type: '市',
+              parent: '吉林'
+            },
+            {
+              region: '吉林',
+              type: '市',
+              parent: '吉林'
+            }
+          ]
+        },
+        {
+          region: '黑龙江',
+          type: '省份',
+          parent: '中国'
+        }
+      ]
+    }))
+  })
+  return data
+}
+export const getUnitTableData = req => {
+  let data = []
+  doCustomTimes(20, () => {
+    data.push(Mock.mock({
+      nickName: Random.first(),
+      name: Random.cname(),
+      email: '@email',
+      phoneNumber: /^1[385][1-9]\d{8}/,
+      unit: '沈阳稻田',
+      role: '员工',
+      region: '沈阳',
+      id: String(Random.integer(0, 10000)),
+      app: Random.boolean(),
+      partyA: String(Random.integer(0, 1))
+    }))
+  })
+  return data
+}
+
+export const getUnitRegion = req => {
+  let data = []
+  doCustomTimes(5, () => {
+    data.push(Mock.mock({
+      value: Random.cname(),
+      id: Random.zip()
+    }))
+  })
+  return data
+}
+
+export const getUnitType = req => {
+  let data = []
+  doCustomTimes(5, () => {
+    data.push(Mock.mock({
+      value: Random.cname(),
+      id: Random.zip()
+    }))
+  })
+  return data
+}

@@ -49,3 +49,28 @@ export const getTreeSelectData = () => {
     method: 'get'
   })
 }
+
+export const getUnitTableData = () => {
+  return axios.request({
+    url: 'get_unit_table_data',
+    method: 'get'
+  })
+}
+export const getUnitRegion = () => {
+  return axios.request({
+    url: 'get_unit_region',
+    method: 'get'
+  })
+}
+export const getUnitType = () => {
+  return axios.request({
+    url: 'get_unit_type',
+    method: 'get'
+  })
+}
+export const getRegionTableData = () => {
+  return axios.request({
+    url: 'get_region_table_data',
+    method: 'get'
+  })
+}

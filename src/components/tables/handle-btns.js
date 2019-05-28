@@ -7,22 +7,36 @@ const btns = {
       },
       on: {
         'on-ok': () => {
+          console.log(params)
           vm.$emit('on-delete', params)
           vm.$emit('input', params.tableData.filter((item, index) => index !== params.row.initRowIndex))
         }
       }
     }, [
-      h('Button', {
-        props: {
-          type: 'text',
-          ghost: true
-        }
-      }, [
+      h('Button', [
         h('Icon', {
           props: {
             type: 'md-trash',
-            size: 18,
+            size: 14,
             color: '#000000'
+          }
+        })
+      ])
+    ])
+  },
+  edit: (h, params, vm) => {
+    return h('div', [
+      h('Button', [
+        h('Icon', {
+          props: {
+            type: 'md-settings',
+            size: 14,
+            color: '#000000'
+          },
+          on: {
+            click: () => {
+              vm.$emit('on-edit', params)
+            }
           }
         })
       ])

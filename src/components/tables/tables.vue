@@ -1,11 +1,9 @@
 <template>
   <div>
     <div v-if="searchable && searchPlace === 'top'" class="search-con search-con-top">
-      <Select v-model="searchKey" class="search-col">
-        <Option v-for="item in columns" v-if="item.key !== 'handle'" :value="item.key" :key="`search-col-${item.key}`">{{ item.title }}</Option>
-      </Select>
-      <Input @on-change="handleClear" clearable placeholder="输入关键字搜索" class="search-input" v-model="searchValue"/>
-      <Button @click="handleSearch" class="search-btn" type="primary"><Icon type="search"/>&nbsp;&nbsp;搜索</Button>
+      <!--<Select v-model="searchKey" class="search-col">-->
+        <!--<Option v-for="item in columns" v-if="item.key !== 'handle'" :value="item.key" :key="`search-col-${item.key}`">{{ item.title }}</Option>-->
+      <!--</Select>-->
     </div>
     <Table
       ref="tablesMain"
@@ -38,14 +36,11 @@
       <slot name="footer" slot="footer"></slot>
       <slot name="loading" slot="loading"></slot>
     </Table>
-    <div v-if="searchable && searchPlace === 'bottom'" class="search-con search-con-top">
-      <Select v-model="searchKey" class="search-col">
-        <Option v-for="item in columns" v-if="item.key !== 'handle'" :value="item.key" :key="`search-col-${item.key}`">{{ item.title }}</Option>
-      </Select>
-      <Input placeholder="输入关键字搜索" class="search-input" v-model="searchValue"/>
-      <Button class="search-btn" type="primary"><Icon type="search"/>&nbsp;&nbsp;搜索</Button>
+    <div style="margin: 10px;overflow: hidden">
+      <div style="float: right;">
+        <Page :total="100" :current="1" @on-change="onChange" @on-page-size-change="onPageSizeChange" show-sizer show-elevator></Page>
+      </div>
     </div>
-    <a id="hrefToExportTable" style="display: none;width: 0px;height: 0px;"></a>
   </div>
 </template>
 
@@ -147,11 +142,19 @@ export default {
       insideTableData: [],
       edittingCellId: '',
       edittingText: '',
-      searchValue: '',
       searchKey: ''
     }
   },
   methods: {
+    chen () {
+      console.log(23424)
+    },
+    onChange (page) {
+      console.log(page)
+    },
+    onPageSizeChange (size) {
+      console.log(size)
+    },
     suportEdit (item, index) {
       item.render = (h, params) => {
         return h(TablesEdit, {
@@ -195,11 +198,14 @@ export default {
         params.tableData = this.value
         return h('div', btns.map(item => item(h, params, this)))
       }
+      console.log(item)
       return item
     },
-    handleColumns (columns) {
+    handleColumns (columns
+    ) {
       this.insideColumns = columns.map((item, index) => {
         let res = item
+        console.log(res)
         if (res.editable) res = this.suportEdit(res, index)
         if (res.key === 'handle') res = this.surportHandle(res)
         return res
@@ -210,9 +216,6 @@ export default {
     },
     handleClear (e) {
       if (e.target.value === '') this.insideTableData = this.value
-    },
-    handleSearch () {
-      this.insideTableData = this.value.filter(item => item[this.searchKey].indexOf(this.searchValue) > -1)
     },
     handleTableData () {
       this.insideTableData = this.value.map((item, index) => {
@@ -265,7 +268,6 @@ export default {
     },
     value (val) {
       this.handleTableData()
-      if (this.searchable) this.handleSearch()
     }
   },
   mounted () {
