@@ -90,7 +90,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tables" search-place="top" v-model="tableData" :columns="columns" @on-select="onSelect" @on-selection-change="onSelectionChange"></tables>
+    <tables ref="tables" search-place="top" v-model="tableData" :columns="columns" @on-edit="onEdit" @on-select="onSelect" @on-selection-change="onSelectionChange"></tables>
     <Modal
       v-model="deletePanel"
       width="300"
@@ -109,7 +109,7 @@
 
 <script>
 import Tables from '_c/tables'
-import { getUserList, getRegion, getUnit } from '@/api/data'
+import { getUserList, getRegion } from '@/api/data'
 export default{
   name: 'unit_table_page',
   components: { Tables },
@@ -145,14 +145,14 @@ export default{
           align: 'center'
         },
         { title: 'ID', key: 'id' },
-        { title: '用户名', key: 'nickName' },
+        { title: '用户名', key: 'userName' },
         { title: '姓名', key: 'name' },
         { title: '邮箱', key: 'email' },
-        { title: '手机号码', key: 'phoneNumber' },
+        { title: '手机号码', key: 'phone' },
         { title: '归属单位', key: 'unit' },
         { title: '角色', key: 'role' },
         { title: '所属地', key: 'region' },
-        { title: 'APP登录', key: 'app' },
+        { title: 'APP登录', key: 'isApp' },
         {
           title: '操作',
           key: 'handle',
@@ -181,6 +181,15 @@ export default{
     addUser () {
       this.$router.push({
         name: 'addUser'
+      })
+    },
+    onEdit () {
+      console.log(arguments[0].row)
+      this.$router.push({
+        name: 'editUser',
+        params: {
+          row: arguments[0].row
+        }
       })
     },
     // 打开筛选
@@ -229,9 +238,6 @@ export default{
     })
     getRegion().then(res => {
       this.regionData = res.data
-    })
-    getUnit().then(res => {
-      this.typeData = res.data
     })
   }
 }

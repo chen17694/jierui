@@ -18,7 +18,7 @@
     </Row>
     <tree-table ref="child1" expand-key="region" searchable :expand-type="false" :selectable="true" :columns="columns" :data="tableData" @checkbox-click="onSelect">
       <template slot="likes" slot-scope="scope">
-        <Button style="margin-right: 10px"  @click="open('新增行政区划')">
+        <Button style="margin-right: 10px"  @click="onAdd">
           <Icon type="md-add"  size="14"/>
         </Button>
         <Button @click="onEdit(scope)">
@@ -28,7 +28,7 @@
     </tree-table>
     <Modal
       v-model="newRegionPanel"
-      @on-cancel="close('区划编辑')"
+      @on-cancel="closeEdit"
       :title="modalType === 0 ? '新增行政区划' : '编辑行政区划'">
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="120">
         <FormItem label="上级行政区划" prop="parentRegion">
@@ -53,7 +53,7 @@
         </FormItem>
       </Form>
       <div slot="footer">
-        <Button type="text" size="large" @click="close('区划编辑')">取消</Button>
+        <Button type="text" size="large" @click="closeEdit">取消</Button>
         <Button type="primary" size="large">确定</Button>
       </div>
     </Modal>
@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { getRegionTableData } from '@/api/data'
+import { getRegionList } from '@/api/data'
 export default {
   name: 'unit_table_page',
   data () {
@@ -102,9 +102,19 @@ export default {
     }
   },
   methods: {
+    // 单选
     onSelect (row) {
       this.rowId = this.$refs.child1.getCheckedProp('region')
     },
+    // 全选
+    onSelectionChange (row) {
+      this.rowId = []
+      row.forEach((item) => {
+        this.rowId.push(item.id)
+      })
+      console.log(this.rowId)
+    },
+    // 批量删除
     dropdownClick (name) {
       if (name === '批量删除') {
         if (this.rowId.length > 0) {
@@ -118,19 +128,13 @@ export default {
         }
       }
     },
-    open (a) {
-      console.log(a)
-      switch (a) {
-        case '新增行政区划' :
-          this.modalType = 0
-          this.newRegionPanel = true
-          break
-        default:
-          return false
-      }
+    // 新增
+    onAdd () {
+      this.modalType = 0
+      this.newRegionPanel = true
     },
+    // 编辑
     onEdit () {
-      console.log(arguments)
       this.modalType = 1
       this.formValidate = {
         regionType: arguments[0].row.type,
@@ -139,19 +143,15 @@ export default {
       }
       this.newRegionPanel = true
     },
-    close (a) {
-      switch (a) {
-        case '区划编辑' :
-          this.newRegionPanel = false
-          this.$refs['formValidate'].resetFields()
-          break
-        default:
-          return false
-      }
+    // 关闭编辑
+    closeEdit () {
+      this.newRegionPanel = false
+      this.$refs['formValidate'].resetFields()
     }
   },
   mounted () {
-    getRegionTableData().then(res => {
+    getRegionList().then(res => {
+      console.log(res)
       this.tableData = res.data
     })
   }

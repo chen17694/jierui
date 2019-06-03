@@ -8,7 +8,7 @@
             <span slot="prepend">单位名称:</span>
             </Input>
           </div>
-          <Button class="search-btn" type="primary" @click="open('筛选')"><Icon type="search"/>筛选</Button>
+          <Button class="search-btn" type="primary" @click="openFilter"><Icon type="search"/>筛选</Button>
         </div>
       </Col>
       <Col span="12">
@@ -23,7 +23,7 @@
               <DropdownItem name="取消">取消</DropdownItem>
             </DropdownMenu>
           </Dropdown>
-          <Button type="success" @click="open('新增单位')">新增单位</Button>
+          <Button type="success" @click="onAdd">新增单位</Button>
         </div>
       </Col>
     </Row>
@@ -49,15 +49,15 @@
               </Col>
               <Col span="19">
                 <Select v-model="unitType">
-                  <Option v-for="item in typeData" :value="item.value" :key="item.id">{{ item.value }}</Option>
+                  <Option value="下属单位">下属单位</Option>
                 </Select>
               </Col>
             </Row>
           </Col>
           <Col span="24">
             <div class="btns">
-              <Button type="primary" @click="filter">确定</Button>
-              <Button @click="reset">重置</Button>
+              <Button type="primary" @click="filterSubmit ">确定</Button>
+              <Button @click="filterReset">重置</Button>
             </div>
           </Col>
         </Row>
@@ -79,7 +79,7 @@
     </Modal>
     <Modal
       v-model="newUnitPanel"
-      @on-cancel="close('单位编辑')"
+      @on-cancel="closeEdit"
       :title="modalType === 0 ? '新增单位' : '编辑单位'">
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="120">
         <FormItem label="单位名称" prop="name">
@@ -99,7 +99,7 @@
         </FormItem>
       </Form>
       <div slot="footer">
-        <Button type="text" size="large" @click="close('单位编辑')">取消</Button>
+        <Button type="text" size="large" @click="closeEdit">取消</Button>
         <Button type="primary" size="large" @click="handleSubmit">确定</Button>
       </div>
     </Modal>
@@ -108,7 +108,7 @@
 
 <script>
 import Tables from '_c/tables'
-import { getUnitTableData, getUnitRegion, getUnitType } from '@/api/data'
+import { getUnitList, getRegion } from '@/api/data'
 export default{
   name: 'unit_table_page',
   components: { Tables },
@@ -143,14 +143,11 @@ export default{
           width: 60,
           align: 'center'
         },
-        { title: '用户名', key: 'userId' },
-        { title: '姓名', key: 'name' },
-        { title: '邮箱', key: 'email' },
-        { title: '手机号码', key: 'phoneNumber' },
-        { title: '归属单位', key: 'unit' },
-        { title: '角色', key: 'role' },
+        { title: 'ID', key: 'id' },
+        { title: '单位名称', key: 'unit' },
         { title: '所属地', key: 'region' },
-        { title: 'APP登录', key: 'app' },
+        { title: '单位人数', key: 'number' },
+        { title: '单位类型', key: 'type' },
         {
           title: '操作',
           key: 'handle',
@@ -161,6 +158,7 @@ export default{
     }
   },
   methods: {
+    // 批量删除
     dropdownClick (name) {
       if (name === '批量删除') {
         if (this.rowId.length > 0) {
@@ -174,29 +172,20 @@ export default{
         }
       }
     },
-    open (a) {
-      switch (a) {
-        case '新增单位' :
-          this.modalType = 0
-          this.newUnitPanel = true
-          break
-        case '筛选' :
-          this.panel = !this.panel
-          break
-        default:
-          return false
-      }
+    // 打开筛选
+    openFilter () {
+      this.panel = !this.panel
     },
-    close (a) {
-      switch (a) {
-        case '单位编辑' :
-          this.newUnitPanel = false
-          this.$refs['formValidate'].resetFields()
-          break
-        default:
-          return false
-      }
+    onAdd () {
+      this.modalType = 0
+      this.newUnitPanel = true
     },
+    // 关闭编辑面板
+    closeEdit () {
+      this.newUnitPanel = false
+      this.$refs['formValidate'].resetFields()
+    },
+    // 编辑
     onEdit () {
       this.modalType = 1
       this.formValidate = {
@@ -206,6 +195,7 @@ export default{
       }
       this.newUnitPanel = true
     },
+    // 单选
     onSelect (row) {
       this.rowId = []
       row.forEach((item) => {
@@ -213,6 +203,7 @@ export default{
       })
       console.log(this.rowId)
     },
+    // 全选
     onSelectionChange (row) {
       this.rowId = []
       row.forEach((item) => {
@@ -220,6 +211,7 @@ export default{
       })
       console.log(this.rowId)
     },
+    // 新建&编辑提交
     handleSubmit () {
       this.$refs['formValidate'].validate((valid) => {
         if (valid) {
@@ -231,28 +223,28 @@ export default{
         }
       })
     },
+    // 搜索
     handleSearch (val) {
       console.log(val)
     },
-    filter () {
+    // 筛选提交
+    filterSubmit () {
       console.log(this.region ? this.region : '')
       console.log(this.unitType ? this.unitType : '')
     },
-    reset () {
+    // 筛选重置
+    filterReset () {
       this.region = ''
       this.unitType = ''
     }
   },
   mounted () {
-    getUnitTableData().then(res => {
+    getUnitList().then(res => {
       console.log(res)
       this.tableData = res.data
     })
-    getUnitRegion().then(res => {
+    getRegion().then(res => {
       this.regionData = res.data
-    })
-    getUnitType().then(res => {
-      this.typeData = res.data
     })
   }
 }

@@ -409,6 +409,17 @@ export default [
               needInBread: true
             },
             component: () => import('@/view/system/addUser.vue')
+          },
+          {
+            path: 'editUser',
+            name: 'editUser',
+            meta: {
+              icon: 'md-funnel',
+              title: '编辑用户',
+              hideInMenu: true,
+              needInBread: true
+            },
+            component: () => import('@/view/system/editUser.vue')
           }
         ]
       },

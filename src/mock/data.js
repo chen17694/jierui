@@ -38,7 +38,7 @@ export const getOrgData = req => {
 export const getTreeSelectData = req => {
   return treeData
 }
-export const getRegionTableData = req => {
+export const getRegionList = req => {
   let data = []
   doCustomTimes(1, () => {
     data.push(Mock.mock({
@@ -99,22 +99,37 @@ export const getRegionTableData = req => {
       ]
     }))
   })
+  console.log(data)
   return data
 }
 export const getUserList = req => {
   let data = []
   doCustomTimes(20, () => {
     data.push(Mock.mock({
-      nickName: Random.first(),
+      userName: Random.first(),
       name: Random.cname(),
       email: '@email',
-      phoneNumber: /^1[385][1-9]\d{8}/,
+      phone: /^1[385][1-9]\d{8}/,
       unit: '沈阳稻田',
       role: '员工',
       region: '沈阳',
+      sex: '0',
       id: String(Random.integer(0, 10000)),
-      app: Random.boolean(),
+      isApp: '0',
       partyA: String(Random.integer(0, 1))
+    }))
+  })
+  return data
+}
+export const getUnitList = req => {
+  let data = []
+  doCustomTimes(20, () => {
+    data.push(Mock.mock({
+      unit: '沈阳稻田',
+      region: '沈阳',
+      id: String(Random.integer(0, 10000)),
+      number: 1000,
+      type: '下属单位'
     }))
   })
   return data
@@ -128,6 +143,7 @@ export const getRegion = req => {
       id: Random.zip()
     }))
   })
+  console.log(data)
   return data
 }
 

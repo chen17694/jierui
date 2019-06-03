@@ -56,21 +56,21 @@ export const getUserList = () => {
     method: 'get'
   })
 }
+export const getUnitList = () => {
+  return axios.request({
+    url: 'get_unit_list',
+    method: 'get'
+  })
+}
 export const getRegion = () => {
   return axios.request({
     url: 'get_region',
     method: 'get'
   })
 }
-export const getUnit = () => {
+export const getRegionList = () => {
   return axios.request({
-    url: 'get_unit',
-    method: 'get'
-  })
-}
-export const getRegionTableData = () => {
-  return axios.request({
-    url: 'get_region_table_data',
+    url: 'get_region_list',
     method: 'get'
   })
 }
