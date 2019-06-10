@@ -228,7 +228,8 @@ export default {
 
 <style scoped>
   .pageHead{
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
+    margin-bottom: 20px;
   }
 </style>

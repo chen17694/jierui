@@ -16,9 +16,12 @@
         </div>
       </Col>
     </Row>
-    <tree-table ref="child1" expand-key="region" searchable :expand-type="false" :selectable="true" :columns="columns" :data="tableData" @checkbox-click="onSelect">
+    <tree-table ref="child1" expand-key="name" searchable :expand-type="false" children-prop="child" :selectable="true" :columns="columns" :data="tableData" @checkbox-click="onSelect">
+      <template slot="type" slot-scope="scope">
+        <div>{{renderType(scope)}}</div>
+      </template>
       <template slot="likes" slot-scope="scope">
-        <Button style="margin-right: 10px"  @click="onAdd">
+        <Button style="margin-right: 10px"  @click="onAdd(scope)">
           <Icon type="md-add"  size="14"/>
         </Button>
         <Button @click="onEdit(scope)">
@@ -31,46 +34,46 @@
       @on-cancel="closeEdit"
       :title="modalType === 0 ? '新增行政区划' : '编辑行政区划'">
       <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="120">
-        <FormItem label="上级行政区划" prop="parentRegion">
-          <Select v-model="formValidate.parentRegion" placeholder="请选择上级行政区划">
-            <Option value="中国">中国</Option>
-            <Option value="辽宁">辽宁</Option>
-            <Option value="沈阳">沈阳</Option>
-            <Option value="吉林">吉林</Option>
-            <Option value="黑龙江">黑龙江</Option>
-          </Select>
+        <FormItem label="上级行政区划">
+          {{this.parentName}}
         </FormItem>
-        <FormItem label="行政区划名称" prop="region">
-          <Input v-model="formValidate.region" placeholder="请输入行政区划名称"></Input>
+        <FormItem label="行政区划名称" prop="name">
+          <Input v-model="formValidate.name" placeholder="请输入行政区划名称"></Input>
         </FormItem>
-        <FormItem label="行政区划类型" prop="regionType">
-          <Select v-model="formValidate.regionType" placeholder="请选择行政区划类型">
-            <Option value="国家">国家</Option>
-            <Option value="省份">省份</Option>
-            <Option value="市">市</Option>
-            <Option value="区">区</Option>
+        <FormItem label="行政区划类型" prop="type">
+          <Select v-model="formValidate.type" placeholder="请选择行政区划类型">
+            <Option value="0">根节点</Option>
+            <Option value="1">国家</Option>
+            <Option value="2">省</Option>
+            <Option value="3">市</Option>
+            <Option value="4">区</Option>
           </Select>
         </FormItem>
       </Form>
       <div slot="footer">
         <Button type="text" size="large" @click="closeEdit">取消</Button>
-        <Button type="primary" size="large">确定</Button>
+        <Button type="primary" size="large" @click="addArea">确定</Button>
       </div>
     </Modal>
   </div>
 </template>
 
 <script>
-import { getRegionList } from '@/api/data'
+import { getRegionList, insertOrUpdateOffice, deleteArea } from '@/api/data'
 export default {
   name: 'unit_table_page',
   data () {
     return {
       columns: [
         { title: '行政区划',
-          key: 'region'
+          key: 'name'
         },
-        { title: '区划类型', key: 'type', width: '200px' },
+        { title: '区划类型',
+          key: 'type',
+          width: '200px',
+          type: 'template',
+          template: 'type'
+        },
         {
           title: '操作',
           key: 'likes',
@@ -83,28 +86,43 @@ export default {
       rowId: [],
       modalType: 0,
       newRegionPanel: false,
+      parentName: '',
       formValidate: {
-        region: '',
-        parentRegion: '',
-        regionType: ''
+        name: '',
+        parentId: '',
+        type: '',
+        id: ''
       },
       ruleValidate: {
-        region: [
+        name: [
           { required: true, message: '请输入行政区划名称', trigger: 'blur' }
         ],
-        parentRegion: [
-          { required: true, message: '请选择上级行政区划', trigger: 'change' }
-        ],
-        regionType: [
+        type: [
           { required: true, message: '请选择行政区划类型', trigger: 'change' }
         ]
+      }
+    }
+  },
+  computed: {
+    renderType () {
+      return function () {
+        if (arguments[0].row.type === '1') {
+          return '国家'
+        } else if (arguments[0].row.type === '2') {
+          return '省'
+        } else if (arguments[0].row.type === '3') {
+          return '市'
+        } else {
+          return '区'
+        }
       }
     }
   },
   methods: {
     // 单选
     onSelect (row) {
-      this.rowId = this.$refs.child1.getCheckedProp('region')
+      this.rowId = this.$refs.child1.getCheckedProp('id')
+      console.log(this.rowId)
     },
     // 全选
     onSelectionChange (row) {
@@ -116,13 +134,28 @@ export default {
     },
     // 批量删除
     dropdownClick (name) {
+      this.rowId = this.rowId.map((item) => {
+        return String(item)
+      })
+      console.log(this.rowId)
       if (name === '批量删除') {
+        let params = {
+          'ids': this.rowId,
+          'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+        }
         if (this.rowId.length > 0) {
           this.$Modal.confirm({
             title: '是否执行删除操作',
             content: '<p>删除后不能找回，还要继续吗</p>',
             onOk: () => {
-              this.$Message.info('删除成功！')
+              deleteArea(params).then((res) => {
+                if (res.data.status === '200') {
+                  this.$Message.info('删除成功！')
+                  this.getData()
+                } else {
+                  this.$Message.info('操作失败，请重试！')
+                }
+              })
             }
           })
         }
@@ -131,29 +164,71 @@ export default {
     // 新增
     onAdd () {
       this.modalType = 0
+      this.formValidate.parentId = arguments[0].row.id
+      this.parentName = arguments[0].row.name
       this.newRegionPanel = true
     },
     // 编辑
     onEdit () {
+      console.log(arguments)
       this.modalType = 1
-      this.formValidate = {
-        regionType: arguments[0].row.type,
-        region: arguments[0].row.region,
-        parentRegion: arguments[0].row.parent
-      }
+      this.formValidate.parentId = arguments[0].row.parentId
+      this.formValidate.id = arguments[0].row.id
+      this.formValidate.name = arguments[0].row.name
+      this.formValidate.type = arguments[0].row.type
+      this.parentName = arguments[0].row.name
       this.newRegionPanel = true
+    },
+    addArea () {
+      let params = {}
+      if (this.modalType === 1) {
+        params = {
+          'id': this.formValidate.id,
+          'name': this.formValidate.name,
+          'parentId': this.formValidate.parentId,
+          'type': this.formValidate.type,
+          'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+        }
+      } else {
+        params = {
+          'name': this.formValidate.name,
+          'parentId': this.formValidate.parentId,
+          'type': this.formValidate.type,
+          'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+        }
+      }
+      this.$refs['formValidate'].validate((valid) => {
+        if (valid) {
+          insertOrUpdateOffice(params).then(res => {
+            if (res.data.status === '200') {
+              this.$Message.info('操作成功！')
+              this.getData()
+            } else {
+              this.$Message.info('操作失败，请重试！')
+            }
+            this.newRegionPanel = false
+            this.$refs['formValidate'].resetFields()
+          })
+        }
+      })
     },
     // 关闭编辑
     closeEdit () {
       this.newRegionPanel = false
       this.$refs['formValidate'].resetFields()
+    },
+    getData () {
+      getRegionList().then(res => {
+        if (res.data.status === '200') {
+          this.tableData = res.data.data
+        } else {
+          this.$Message.info('操作失败，请重试！')
+        }
+      })
     }
   },
   mounted () {
-    getRegionList().then(res => {
-      console.log(res)
-      this.tableData = res.data
-    })
+    this.getData()
   }
 }
 </script>

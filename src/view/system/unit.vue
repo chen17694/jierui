@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Row slot="unitHandle" type="flex" justify="space-between" style="padding: 10px 0">
+    <Row type="flex" justify="space-between" style="padding: 10px 0">
       <Col span="12">
         <div class="searchInput">
           <div class="search">
@@ -36,8 +36,8 @@
                 <span class="label">所属地:</span>
               </Col>
               <Col span="19">
-                <Select v-model="region">
-                  <Option v-for="item in regionData" :value="item.value" :key="item.id">{{ item.value }}</Option>
+                <Select v-model="areaId">
+                  <Option v-for="item in regionData" :value="item.areaId" :key="item.areaId">{{ item.value }}</Option>
                 </Select>
               </Col>
             </Row>
@@ -48,8 +48,10 @@
                 <span class="label">单位类型:</span>
               </Col>
               <Col span="19">
-                <Select v-model="unitType">
-                  <Option value="下属单位">下属单位</Option>
+                <Select v-model="type">
+                  <Option value="1">主营单位</Option>
+                  <Option value="2">下属单位</Option>
+                  <Option value="3">甲方单位</Option>
                 </Select>
               </Col>
             </Row>
@@ -63,7 +65,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tables" search-place="top" v-model="tableData" :columns="columns" @on-edit="onEdit" @on-select="onSelect" @on-selection-change="onSelectionChange"></tables>
+    <tables ref="tables" :total="this.total" :on-change="this.pageChange" :on-page-size-change="this.PageSizeChange" v-model="tableData" :columns="columns" @on-edit="onEdit" @on-selection-change="onSelectionChange"></tables>
     <Modal
       v-model="deletePanel"
       width="300"
@@ -85,14 +87,14 @@
         <FormItem label="单位名称" prop="name">
           <Input v-model="formValidate.name" placeholder="请输入单位名称"></Input>
         </FormItem>
-        <FormItem label="所属地" prop="region">
-          <Select v-model="formValidate.region" placeholder="请选择">
+        <FormItem label="所属地" prop="areaId ">
+          <Select v-model="formValidate.areaId " placeholder="请选择">
             <Option value="北京">北京</Option>
             <Option value="沈阳">沈阳</Option>
           </Select>
         </FormItem>
-        <FormItem label="是否设为甲方单位" prop="partyA">
-          <RadioGroup v-model="formValidate.partyA">
+        <FormItem label="是否设为甲方单位" prop="isFirstParty">
+          <RadioGroup v-model="formValidate.isFirstParty">
             <Radio label="1">是</Radio>
             <Radio label="0">否</Radio>
           </RadioGroup>
@@ -108,46 +110,69 @@
 
 <script>
 import Tables from '_c/tables'
-import { getUnitList, getRegion } from '@/api/data'
+import { getUnitList, getRegion, addOffice, delOffice } from '@/api/data'
 export default{
   name: 'unit_table_page',
   components: { Tables },
   data () {
     return {
+      params: {
+        'pageSize': 10,
+        'page': 1,
+        'name': '',
+        'areaId': '',
+        'type': '',
+        'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+      },
       formValidate: {
         name: '',
-        region: '',
-        partyA: ''
+        areaId: '',
+        isFirstParty: ''
       },
       ruleValidate: {
         name: [
           { required: true, message: '请输入单位名称', trigger: 'blur' }
         ],
-        region: [
+        areaId: [
           { required: true, message: '请选择所属地', trigger: 'change' }
         ],
-        partyA: [
+        isFirstParty: [
           { required: true, message: '请选择是否设为甲方单位', trigger: 'change' }
         ]
       },
       panel: false,
       region: '',
-      unitType: '',
+      type: '',
+      areaId: '',
       newUnitPanel: false,
       modalType: 0,
       rowId: [],
       deletePanel: false,
+      total: 0,
       columns: [
         {
           type: 'selection',
           width: 60,
           align: 'center'
         },
-        { title: 'ID', key: 'id' },
-        { title: '单位名称', key: 'unit' },
-        { title: '所属地', key: 'region' },
-        { title: '单位人数', key: 'number' },
-        { title: '单位类型', key: 'type' },
+        { title: '单位名称', key: 'name' },
+        { title: '所属地', key: 'area' },
+        { title: '单位人数', key: 'num' },
+        { title: '单位类型',
+          key: 'type',
+          render: (h, params) => {
+            console.log(params)
+            let text = ''
+            if (params.row.type === '1') {
+              text = '主管单位'
+            } else if (params.row.type === '2') {
+              text = '下属单位'
+            } else {
+              text = '甲方单位'
+            }
+            return h('div', { props: {} }, text)
+          }
+        },
         {
           title: '操作',
           key: 'handle',
@@ -160,13 +185,27 @@ export default{
   methods: {
     // 批量删除
     dropdownClick (name) {
+      this.rowId = this.rowId.map((item) => {
+        return String(item)
+      })
       if (name === '批量删除') {
         if (this.rowId.length > 0) {
           this.$Modal.confirm({
             title: '是否执行删除操作',
             content: '<p>删除后不能找回，还要继续吗</p>',
             onOk: () => {
-              this.$Message.info('删除成功！')
+              let params = {
+                'ids': this.rowId,
+                'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+              }
+              delOffice(params).then((res) => {
+                if (res.data.status === '200') {
+                  this.$Message.info('删除成功！')
+                  this.getData()
+                } else {
+                  this.$Message.info('操作失败，请重试！')
+                }
+              })
             }
           })
         }
@@ -189,61 +228,95 @@ export default{
     onEdit () {
       this.modalType = 1
       this.formValidate = {
-        name: arguments[0].row.unit,
-        region: arguments[0].row.region,
-        partyA: arguments[0].row.partyA
+        id: arguments[0].row.id,
+        name: arguments[0].row.name,
+        area: arguments[0].row.area,
+        isFirstParty: arguments[0].row.type === '3' ? '1' : '0'
       }
       this.newUnitPanel = true
     },
-    // 单选
-    onSelect (row) {
-      this.rowId = []
-      row.forEach((item) => {
-        this.rowId.push(item.id)
-      })
-      console.log(this.rowId)
-    },
-    // 全选
+    // 选择
     onSelectionChange (row) {
       this.rowId = []
       row.forEach((item) => {
         this.rowId.push(item.id)
       })
-      console.log(this.rowId)
     },
     // 新建&编辑提交
     handleSubmit () {
       this.$refs['formValidate'].validate((valid) => {
         if (valid) {
-          this.$Message.success('操作成功!')
-          this.newUnitPanel = false
-          this.$refs['formValidate'].resetFields()
+          let params = {}
+          if (this.modalType === 1) {
+            params = {
+              'id': this.formValidate.id,
+              'name': this.formValidate.name,
+              'areaId': this.formValidate.areaId,
+              'isFirstParty': this.formValidate.isFirstParty,
+              'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+            }
+          } else {
+            params = {
+              'name': this.formValidate.name,
+              'areaId': this.formValidate.areaId,
+              'isFirstParty': this.formValidate.isFirstParty,
+              'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+            }
+          }
+          addOffice(params).then(res => {
+            if (res.data.status === '200') {
+              this.$Message.success('操作成功!')
+              this.newUnitPanel = false
+              this.$refs['formValidate'].resetFields()
+              this.getData()
+            } else {
+              this.$Message.info('操作失败，请重试！')
+            }
+          })
         } else {
           this.newUnitPanel = true
         }
       })
     },
+    pageChange (page) {
+      this.params.page = page
+      this.getData()
+    },
+    PageSizeChange (size) {
+      this.params.pageSize = size
+      this.getData()
+    },
+    getData () {
+      getUnitList(this.params).then(res => {
+        if (res.data.status === '200') {
+          this.tableData = res.data.data.list
+          this.total = res.data.data.total
+        } else {
+          this.$Message.info('操作失败，请重试！')
+        }
+      })
+    },
     // 搜索
     handleSearch (val) {
-      console.log(val)
+      this.params.name = val
+      this.getData()
     },
     // 筛选提交
     filterSubmit () {
-      console.log(this.region ? this.region : '')
-      console.log(this.unitType ? this.unitType : '')
+      this.params.areaId = this.areaId
+      this.params.type = this.type
+      this.getData()
     },
     // 筛选重置
     filterReset () {
       this.region = ''
-      this.unitType = ''
+      this.type = ''
     }
   },
   mounted () {
-    getUnitList().then(res => {
-      console.log(res)
-      this.tableData = res.data
-    })
+    this.getData()
     getRegion().then(res => {
+      console.log(res)
       this.regionData = res.data
     })
   }

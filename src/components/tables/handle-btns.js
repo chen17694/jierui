@@ -25,7 +25,7 @@ const btns = {
     ])
   },
   edit: (h, params, vm) => {
-    return h('div', [
+    return h('span', [
       h('Button', [
         h('Icon', {
           props: {
@@ -36,6 +36,24 @@ const btns = {
           on: {
             click: () => {
               vm.$emit('on-edit', params)
+            }
+          }
+        })
+      ])
+    ])
+  },
+  roles: (h, params, vm) => {
+    return h('span', { 'style': { marginLeft: '10px' } }, [
+      h('Button', [
+        h('Icon', {
+          props: {
+            type: 'md-list',
+            size: 14,
+            color: '#000000'
+          },
+          on: {
+            click: () => {
+              vm.$emit('on-roles', params)
             }
           }
         })

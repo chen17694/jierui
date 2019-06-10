@@ -38,7 +38,7 @@
     </Table>
     <div style="margin: 10px;overflow: hidden">
       <div style="float: right;">
-        <Page :total="100" :current="1" @on-change="onChange" @on-page-size-change="onPageSizeChange" show-sizer show-elevator></Page>
+        <Page :total="this.total" :current="1" @on-change="onChange" @on-page-size-change="onPageSizeChange" show-sizer show-elevator></Page>
       </div>
     </div>
   </div>
@@ -51,6 +51,24 @@ import './index.less'
 export default {
   name: 'Tables',
   props: {
+    onChange: {
+      type: Function,
+      default () {
+        return null
+      }
+    },
+    onPageSizeChange: {
+      type: Function,
+      default () {
+        return null
+      }
+    },
+    total: {
+      type: Number,
+      default () {
+        return 0
+      }
+    },
     value: {
       type: Array,
       default () {
@@ -146,15 +164,6 @@ export default {
     }
   },
   methods: {
-    chen () {
-      console.log(23424)
-    },
-    onChange (page) {
-      console.log(page)
-    },
-    onPageSizeChange (size) {
-      console.log(size)
-    },
     suportEdit (item, index) {
       item.render = (h, params) => {
         return h(TablesEdit, {

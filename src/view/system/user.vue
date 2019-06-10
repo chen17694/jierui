@@ -115,6 +115,15 @@ export default{
   components: { Tables },
   data () {
     return {
+      params: {
+        'pageSize': 10,
+        'page': 1,
+        'name': '',
+        'office': '',
+        'role': '',
+        'isLoginApp': ''
+      },
+      total: 0,
       formValidate: {
         name: '',
         region: '',
@@ -145,14 +154,14 @@ export default{
           align: 'center'
         },
         { title: 'ID', key: 'id' },
-        { title: '用户名', key: 'userName' },
+        { title: '用户名', key: 'loginName' },
         { title: '姓名', key: 'name' },
         { title: '邮箱', key: 'email' },
         { title: '手机号码', key: 'phone' },
-        { title: '归属单位', key: 'unit' },
+        { title: '归属单位', key: 'office' },
         { title: '角色', key: 'role' },
-        { title: '所属地', key: 'region' },
-        { title: 'APP登录', key: 'isApp' },
+        { title: '所属地', key: 'area' },
+        { title: 'APP登录', key: 'isLoginApp' },
         {
           title: '操作',
           key: 'handle',
@@ -229,13 +238,20 @@ export default{
       this.isApp = ''
       this.role = ''
       this.unit = ''
+    },
+    getData () {
+      getUserList(this.params).then(res => {
+        if (res.data.status === '200') {
+          this.tableData = res.data.data.list
+          this.total = res.data.data.total
+        } else {
+          this.$Message.info('操作失败，请重试！')
+        }
+      })
     }
   },
   mounted () {
-    getUserList().then(res => {
-      console.log(res)
-      this.tableData = res.data
-    })
+    this.getData()
     getRegion().then(res => {
       this.regionData = res.data
     })

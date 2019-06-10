@@ -424,13 +424,58 @@ export default [
         ]
       },
       {
-        path: 'level_2_2',
-        name: 'level_2_2',
+        path: 'role',
+        name: 'role',
         meta: {
           icon: 'md-funnel',
           title: '角色管理'
         },
-        component: () => import('@/view/system/role.vue')
+        component: parentView,
+        children: [
+          {
+            path: 'roleList',
+            name: 'roleList',
+            meta: {
+              icon: 'md-funnel',
+              title: '角色管理',
+              hideInBread: true
+            },
+            component: () => import('@/view/system/role.vue')
+          },
+          {
+            path: 'addRole',
+            name: 'addRole',
+            meta: {
+              icon: 'md-funnel',
+              title: '新增系统角色',
+              hideInMenu: true,
+              needInBread: true
+            },
+            component: () => import('@/view/system/addRole.vue')
+          },
+          {
+            path: 'editRole',
+            name: 'editRole',
+            meta: {
+              icon: 'md-funnel',
+              title: '编辑系统角色',
+              hideInMenu: true,
+              needInBread: true
+            },
+            component: () => import('@/view/system/editRole.vue')
+          },
+          {
+            path: 'roleUserList',
+            name: 'roleUserList',
+            meta: {
+              icon: 'md-funnel',
+              title: '编辑用户',
+              hideInMenu: true,
+              needInBread: true
+            },
+            component: () => import('@/view/system/roleUserList.vue')
+          }
+        ]
       },
       {
         path: 'region',

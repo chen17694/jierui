@@ -140,7 +140,7 @@ export const getRegion = req => {
   doCustomTimes(5, () => {
     data.push(Mock.mock({
       value: '@city(false)',
-      id: Random.zip()
+      areaId: Random.zip()
     }))
   })
   console.log(data)

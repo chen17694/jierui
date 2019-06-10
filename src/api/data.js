@@ -52,14 +52,33 @@ export const getTreeSelectData = () => {
 
 export const getUserList = () => {
   return axios.request({
-    url: 'get_user_list',
-    method: 'get'
+    url: '/user/listUser',
+    method: 'post'
   })
 }
-export const getUnitList = () => {
+
+// 单位列表
+export const getUnitList = (params) => {
   return axios.request({
-    url: 'get_unit_list',
-    method: 'get'
+    url: '/office/listOffice',
+    data: params,
+    method: 'post'
+  })
+}
+// 新增+修改单位
+export const addOffice = (params) => {
+  return axios.request({
+    url: '/office/insertOrUpdateOffice',
+    data: params,
+    method: 'post'
+  })
+}
+// 删除单位
+export const delOffice = (params) => {
+  return axios.request({
+    url: '/office/deleteOffice',
+    data: params,
+    method: 'post'
   })
 }
 export const getRegion = () => {
@@ -68,9 +87,58 @@ export const getRegion = () => {
     method: 'get'
   })
 }
+// 行政区域列表
 export const getRegionList = () => {
   return axios.request({
-    url: 'get_region_list',
-    method: 'get'
+    url: '/area/listArea',
+    method: 'post'
+  })
+}
+// 新增+修改行政区域
+export const insertOrUpdateOffice = (params) => {
+  return axios.request({
+    url: '/area/insertOrUpdateOffice',
+    data: params,
+    method: 'post'
+  })
+}
+// 删除行政区域
+export const deleteArea = (params) => {
+  return axios.request({
+    url: '/area/deleteArea',
+    data: params,
+    method: 'post'
+  })
+}
+// 角色列表
+export const listRole = (params) => {
+  return axios.request({
+    url: '/role/listRole',
+    data: params,
+    method: 'post'
+  })
+}
+// 角色权限
+export const ListAllMenu = (params) => {
+  return axios.request({
+    url: '/role/listAllMenu',
+    data: params,
+    method: 'post'
+  })
+}
+// 保存角色权限
+export const insertOrUpdateRole = (params) => {
+  return axios.request({
+    url: '/role/insertOrUpdateRole',
+    data: params,
+    method: 'post'
+  })
+}
+// 角色用户列表
+export const listUserRole = (params) => {
+  return axios.request({
+    url: '/role/listUserRole',
+    data: params,
+    method: 'post'
   })
 }
