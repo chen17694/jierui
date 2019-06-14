@@ -5,6 +5,7 @@ import App from './App'
 import router from './router'
 import store from './store'
 import iView from 'iview'
+// import VueAMap from 'vue-amap'
 import i18n from '@/locale'
 import config from '@/config'
 import importDirective from '@/directive'
@@ -24,6 +25,10 @@ Vue.use(iView, {
 })
 Vue.use(TreeTable)
 Vue.use(VOrgTree)
+// Vue.use(VueAMap);
+// VueAMap.initAMapApiLoader({
+//   key: '4a39b6a30a22fedf2647a6d0f759b010'
+// });
 /**
  * @description 注册admin内置插件
  */

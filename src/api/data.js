@@ -50,9 +50,17 @@ export const getTreeSelectData = () => {
   })
 }
 
-export const getUserList = () => {
+export const getUserList = (params) => {
   return axios.request({
     url: '/user/listUser',
+    data: params,
+    method: 'post'
+  })
+}
+export const insertOrUpdateUser = (params) => {
+  return axios.request({
+    url: '/user/insertOrUpdateUser',
+    data: params,
     method: 'post'
   })
 }
@@ -79,12 +87,6 @@ export const delOffice = (params) => {
     url: '/office/deleteOffice',
     data: params,
     method: 'post'
-  })
-}
-export const getRegion = () => {
-  return axios.request({
-    url: 'get_region',
-    method: 'get'
   })
 }
 // 行政区域列表
@@ -138,6 +140,44 @@ export const insertOrUpdateRole = (params) => {
 export const listUserRole = (params) => {
   return axios.request({
     url: '/role/listUserRole',
+    data: params,
+    method: 'post'
+  })
+}
+// 删除角色
+export const deleteRole = (params) => {
+  return axios.request({
+    url: '/role/deleteRole',
+    data: params,
+    method: 'post'
+  })
+}
+// 所属地
+export const listAreaByType = (params) => {
+  return axios.request({
+    url: '/area/listAreaByType',
+    data: params,
+    method: 'post'
+  })
+}
+
+export const listUserRoleDistribution = (params) => {
+  return axios.request({
+    url: '/role/listUserRoleDistribution',
+    data: params,
+    method: 'post'
+  })
+}
+export const insertUserRole = (params) => {
+  return axios.request({
+    url: '/role/insertUserRole',
+    data: params,
+    method: 'post'
+  })
+}
+export const deleteUserRole = (params) => {
+  return axios.request({
+    url: '/role/deleteUserRole',
     data: params,
     method: 'post'
   })

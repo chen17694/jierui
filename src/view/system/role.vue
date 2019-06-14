@@ -1,11 +1,13 @@
 <template>
-  <Tabs value="system" :animated="false">
+  <Tabs v-model="tab" :animated="false">
     <TabPane label="系统角色" name="system">
-      <tables ref="tables" :total="this.total" v-model="tableData" :columns="columns" @on-edit="editRole" @on-roles="toRoleUserList"></tables>
+      <tables :total="this.total" :on-change="this.pageChange" :on-page-size-change="this.PageSizeChange" v-model="tableData" :columns="columns1" @on-edit="editRole" @on-roles="toRoleUserList"  @on-selection-change="onSelectionChange"></tables>
     </TabPane>
-    <TabPane label="项目角色" name="project">项目角色</TabPane>
-    <div class="handle" slot="extra">
-      <Dropdown style="margin-right: 10px">
+    <TabPane label="项目角色" name="project">
+      <tables :total="this.total" :on-change="this.pageChange" :on-page-size-change="this.PageSizeChange" v-model="tableData" :columns="columns2"></tables>
+    </TabPane>
+    <div class="handle" slot="extra" v-show="tab==='system'">
+      <Dropdown @on-click="dropdownClick" style="margin-right: 10px">
         <Button type="primary" ghost>
           选择操作
           <Icon type="ios-arrow-down"></Icon>
@@ -22,20 +24,20 @@
 
 <script>
 import Tables from '_c/tables'
-import { listRole } from '@/api/data'
+import { listRole, deleteRole } from '@/api/data'
 export default{
   name: 'role',
   components: { Tables },
   data () {
     return {
+      tab: 'system',
       params: {
         'pageSize': 10,
-        'page': 1,
-        'type': '1'
+        'page': 1
       },
       total: 0,
       type: '1',
-      columns: [
+      columns1: [
         {
           type: 'selection',
           width: 60,
@@ -49,10 +51,63 @@ export default{
           options: ['edit', 'roles']
         }
       ],
-      tableData: []
+      columns2: [
+        { title: '角色', key: 'name' }
+      ],
+      tableData: [],
+      rowId: []
+    }
+  },
+  watch: {
+    tab: function () {
+      this.params.pageSize = 10
+      this.params.page = 1
+      this.getData()
     }
   },
   methods: {
+    pageChange (page) {
+      this.params.page = page
+      this.getData()
+    },
+    PageSizeChange (size) {
+      this.params.pageSize = size
+      this.getData()
+    },
+    // 选择
+    onSelectionChange (row) {
+      this.rowId = []
+      row.forEach((item) => {
+        this.rowId.push(item.id)
+      })
+    },
+    dropdownClick (name) {
+      this.rowId = this.rowId.map((item) => {
+        return String(item)
+      })
+      if (name === '批量删除') {
+        if (this.rowId.length > 0) {
+          this.$Modal.confirm({
+            title: '是否执行删除操作',
+            content: '<p>删除后不能找回，还要继续吗</p>',
+            onOk: () => {
+              let params = {
+                'ids': this.rowId,
+                'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+              }
+              deleteRole(params).then((res) => {
+                if (res.data.status === '200') {
+                  this.$Message.info('删除成功！')
+                  this.getData()
+                } else {
+                  this.$Message.info('操作失败，请重试！')
+                }
+              })
+            }
+          })
+        }
+      }
+    },
     addRole () {
       this.$router.push({
         name: 'addRole'
@@ -78,9 +133,11 @@ export default{
       })
     },
     getData () {
+      this.params.type = this.tab === 'system' ? '1' : '2'
       listRole(this.params).then(res => {
         if (res.data.status === '200') {
-          this.tableData = res.data.data
+          console.log(res)
+          this.tableData = res.data.data.list
           this.total = res.data.data.total
         } else {
           this.$Message.info('操作失败，请重试！')

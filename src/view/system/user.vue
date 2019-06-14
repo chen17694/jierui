@@ -109,7 +109,7 @@
 
 <script>
 import Tables from '_c/tables'
-import { getUserList, getRegion } from '@/api/data'
+import { getUserList } from '@/api/data'
 export default{
   name: 'unit_table_page',
   components: { Tables },
@@ -252,9 +252,9 @@ export default{
   },
   mounted () {
     this.getData()
-    getRegion().then(res => {
-      this.regionData = res.data
-    })
+    // getRegion().then(res => {
+    //   this.regionData = res.data
+    // })
   }
 }
 </script>

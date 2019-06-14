@@ -447,7 +447,7 @@ export default [
             name: 'addRole',
             meta: {
               icon: 'md-funnel',
-              title: '新增系统角色',
+              title: '新增角色',
               hideInMenu: true,
               needInBread: true
             },
@@ -458,7 +458,7 @@ export default [
             name: 'editRole',
             meta: {
               icon: 'md-funnel',
-              title: '编辑系统角色',
+              title: '编辑角色',
               hideInMenu: true,
               needInBread: true
             },

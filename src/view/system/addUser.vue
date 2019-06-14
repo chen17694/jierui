@@ -66,13 +66,11 @@
             <Radio label="0">女</Radio>
           </RadioGroup>
         </FormItem>
-        <FormItem label="归属单位" prop="unit">
+        <FormItem label="归属单位" prop="officeId">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.unit">
-                <Option value="beijing">New York</Option>
-                <Option value="shanghai">London</Option>
-                <Option value="shenzhen">Sydney</Option>
+              <Select v-model="formItem.officeId">
+                <Option v-for="item in unitList" :value="item.id" :key="item.id">{{item.name}}</Option>
               </Select>
             </Col>
             <Col span="11" style="padding-left: 10px">
@@ -116,11 +114,16 @@
           </RadioGroup>
         </FormItem>
       </Form>
+      <div class="btns">
+        <Button type="primary" @click="this.save">保存</Button>
+        <Button>返回</Button>
+      </div>
     </Card>
   </div>
 </template>
 
 <script>
+import { insertOrUpdateUser, getUnitList } from '@/api/data'
 export default {
   data () {
     const validatePass = (rule, value, callback) => {
@@ -190,7 +193,7 @@ export default {
         password: '',
         confirm: '',
         sex: '',
-        unit: '',
+        officeId: '',
         role: '',
         isApp: ''
       },
@@ -213,22 +216,63 @@ export default {
         confirm: [
           { required: true, validator: validatePassCheck, trigger: 'blur' }
         ],
-        unit: [
+        officeId: [
           { required: true, message: '请选择用户归属单位', trigger: 'change' }
         ],
         role: [
           { required: true, message: '请选择用户角色', trigger: 'change' }
         ]
-      }
+      },
+      unitList: []
     }
+  },
+  methods: {
+    save () {
+      insertOrUpdateUser({
+        'loginName': this.formItem.userName,
+        'phone': this.formItem.phone,
+        'photo': '',
+        'email': this.formItem.email,
+        'name': this.formItem.name,
+        'password': this.formItem.password,
+        'sex': this.formItem.sex,
+        'isLoginApp': this.formItem.isApp,
+        'officeId': this.formItem.officeId,
+        'roleId': this.formItem.roleId,
+        'userId': this.formItem.userId
+      }).then()
+    }
+  },
+  mounted () {
+    getUnitList({
+      'pageSize': 100,
+      'page': 1,
+      'name': '',
+      'areaId': '',
+      'type': '',
+      'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+    }).then(res => {
+      if (res.data.status === '200') {
+        this.unitList = res.data.data.list
+      } else {
+        this.$Message.info('操作失败，请重试！')
+      }
+    })
   }
 }
 </script>
 
-<style scoped>
+<style scoped  lang="less">
 .pageHead{
   font-size: 14px;
   font-weight: bold;
   margin-bottom: 20px;
+}
+.btns{
+  text-align: center;
+  margin-top: 50px;
+  .ivu-btn{
+    margin: 0 10px;
+  }
 }
 </style>

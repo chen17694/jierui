@@ -7,23 +7,29 @@
       <Col span="12" style="text-align: right;">
         <div class="handle">
           <Button type="success" @click="allocate" style="margin-right: 10px">分配用户</Button>
-          <Button>返回</Button>
+          <Button @click="backPage">返回</Button>
         </div>
       </Col>
     </Row>
-    <tables ref="tables" :total="this.total" v-model="tableData" :columns="columns"></tables>
+    <tables ref="tables" :total="this.total" v-model="tableData" :columns="columns" @on-delete="onDelete"></tables>
     <Modal
       v-model="allocatePanel"
       width="600"
       title="分配用户"
+      @on-ok="save"
     >
+      <Select v-model="unit" style="width:200px; margin-bottom: 15px" @on-change="selectUnit">
+        <Option v-for="item in unitList" :value="item.id" :key="item.id">{{ item.name }}</Option>
+      </Select>
       <Transfer
         :data="allocateData"
-        :target-keys="targetKeys1"
+        :target-keys="targetKeys"
         :render-format="allocateRender"
         :list-style="listStyle"
-        @on-change="handleChange1"
+        @on-change="handleChange"
         :filterable="true"
+        :filter-method="filterMethod"
+        :titles="transferTitles"
         not-found-text=""></Transfer>
     </Modal>
   </div>
@@ -31,20 +37,22 @@
 
 <script>
 import Tables from '_c/tables'
-import { listUserRole } from '@/api/data'
+import { listUserRole, getUnitList, listUserRoleDistribution, insertUserRole, deleteUserRole } from '@/api/data'
 export default{
   name: 'role',
   components: { Tables },
   data () {
     return {
+      transferTitles: ['其他角色人员', '已分配'],
       params: {
         'pageSize': 10,
         'page': 1,
         'id': this.$route.params.id
       },
+      unit: '',
       allocatePanel: false,
-      allocateData: this.getMockData(),
-      targetKeys1: this.getTargetKeys(),
+      allocateData: [],
+      targetKeys: [],
       listStyle: {
         width: '254px',
         height: '300px'
@@ -56,47 +64,87 @@ export default{
           width: 60,
           align: 'center'
         },
-        { title: '角色', key: 'name' },
+        { title: '姓名', key: 'name', width: '100' },
+        { title: '归属单位', key: 'office' },
         {
           title: '操作',
           key: 'handle',
           width: 150,
-          options: ['edit', 'roles']
+          options: ['delete']
         }
       ],
-      tableData: []
+      tableData: [],
+      unitList: [],
+      officeId: ''
     }
   },
   methods: {
-    getMockData () {
-      let mockData = []
-      for (let i = 1; i <= 20; i++) {
-        mockData.push({
-          key: i.toString(),
-          label: 'Content ' + i,
-          description: 'The desc of content  ' + i,
-          disabled: Math.random() * 3 < 1
-        })
-      }
-      return mockData
-    },
-    getTargetKeys () {
-      return this.getMockData()
-        .filter(() => Math.random() * 2 > 1).map(item => item.key)
-    },
-    handleChange1 (newTargetKeys, direction, moveKeys) {
-      console.log(newTargetKeys)
-      console.log(direction)
-      console.log(moveKeys)
-      this.targetKeys1 = newTargetKeys
-    },
-    allocateRender (item) {
-      return item.label
-    },
-    back () {
+    backPage () {
       this.$router.push({
         name: 'roleList'
       })
+    },
+    onDelete () {
+      this.$Modal.confirm({
+        title: '是否执行删除操作',
+        onOk: () => {
+          deleteUserRole({
+            id: arguments[0].row.id
+          }).then((res) => {
+            if (res.data.status === '200') {
+              this.$Message.info('删除成功！')
+              this.getData()
+            } else {
+              this.$Message.info('操作失败，请重试！')
+            }
+          })
+        }
+      })
+    },
+    save () {
+      insertUserRole({
+        'ids': this.targetKeys,
+        'officeId': this.officeId,
+        'roleId': this.$route.params.id
+      }).then((res) => {
+        if (res.data.status === '200') {
+          this.$Message.info('操作成功！')
+          this.getData()
+        } else {
+          this.$Message.info('操作失败，请重试！')
+        }
+      })
+    },
+    selectUnit () {
+      this.officeId = arguments[0]
+      listUserRoleDistribution({
+        'officeId': this.officeId,
+        'roleId': this.$route.params.id
+      }).then((res) => {
+        if (res.data.status === '200') {
+          res.data.data.wait.forEach((item, index) => {
+            item.key = item.id
+          })
+          res.data.data.already.forEach((item, index) => {
+            item.key = item.id
+          })
+          this.allocateData = res.data.data.wait.concat(res.data.data.already)
+          this.targetKeys = this.getTargetKeys(res.data.data.already)
+        }
+      })
+    },
+    getTargetKeys (data) {
+      return data.map(item => item.key)
+    },
+    filterMethod (data, query) {
+      return data.text.indexOf(query) > -1
+    },
+    handleChange (newTargetKeys) {
+      this.targetKeys = newTargetKeys
+      console.log(this.targetKeys)
+    },
+    allocateRender (item) {
+      return item.text
     },
     allocate () {
       this.allocatePanel = !this.allocatePanel
@@ -105,7 +153,7 @@ export default{
       listUserRole(this.params).then(res => {
         if (res.data.status === '200') {
           this.tableData = res.data.data
-          this.total = res.data.data.total
+          // this.total = res.data.data.total
         } else {
           this.$Message.info('操作失败，请重试！')
         }
@@ -115,8 +163,22 @@ export default{
   mounted () {
     if (this.$route.params.id) {
       this.getData()
+      getUnitList({
+        'pageSize': 100,
+        'page': 1,
+        'name': '',
+        'areaId': '',
+        'type': '',
+        'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+      }).then(res => {
+        if (res.data.status === '200') {
+          this.unitList = res.data.data.list
+        } else {
+          this.$Message.info('操作失败，请重试！')
+        }
+      })
     } else {
-      this.back()
+      this.backPage()
     }
   }
 }
