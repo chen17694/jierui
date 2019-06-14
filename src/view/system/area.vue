@@ -1,12 +1,12 @@
 <template>
     <div>
-      <Select v-model="pId" placeholder="请选择省份">
+      <Select v-model="pId" placeholder="请选择省份" style="margin-bottom: 10px">
         <Option v-for="item in provinceData" :value="item.id" :key="item.id">{{ item.name }}</Option>
       </Select>
-      <Select v-model="cId" placeholder="请选择城市">
+      <Select v-model="cId" placeholder="请选择城市" style="margin-bottom: 10px">
         <Option v-for="item in cityData" :value="item.id" :key="item.id">{{ item.name }}</Option>
       </Select>
-      <Select v-model="dId" placeholder="请选择区县">
+      <Select v-model="dId" placeholder="请选择区县" style="margin-bottom: 10px">
         <Option v-for="item in districtData" :value="item.id" :key="item.id">{{ item.name }}</Option>
       </Select>
     </div>

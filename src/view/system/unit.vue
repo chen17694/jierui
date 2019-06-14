@@ -96,9 +96,9 @@
       :title="editType === 0 ? '新增单位' : '编辑单位'">
       <Form ref="editParams" :model="editParams" :rules="ruleValidate" :label-width="120">
         <FormItem label="单位名称" prop="name">
-          <Input v-model="editParams.name" placeholder="请输入单位名称"></Input>
+          <Input v-model="editParams.name" placeholder="请输入单位名称"/>
         </FormItem>
-        <FormItem label="所属地">
+        <FormItem label="所属地" prop="provinceId">
           <AreaSelect
             name="area2"
             :province="areaParams2.province"
@@ -113,6 +113,7 @@
             :districtId="editParams.districtId"
             @getId="getId"
           />
+          <Input v-model="editParams.provinceId" v-show="1===2"/>
         </FormItem>
         <FormItem label="是否设为甲方单位" prop="isFirstParty" v-if="this.editType===0">
           <RadioGroup v-model="editParams.isFirstParty">
@@ -174,6 +175,9 @@ export default{
       ruleValidate: {
         name: [
           { required: true, message: '请输入单位名称', trigger: 'blur' }
+        ],
+        provinceId: [
+          { required: true, message: '请选择所属地' }
         ],
         isFirstParty: [
           { required: true, message: '请选择是否设为甲方单位', trigger: 'change' }
