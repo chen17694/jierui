@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="pageHeader">
-      <Button type="primary">筛选</Button>
+      <Button type="primary" @click="openFilter">筛选</Button>
       <div class="switchMonth">
         <img src="../../assets/images/leftBtn.png" @click="prevMonth">
         <div>{{title}}</div>
@@ -9,6 +9,28 @@
       </div>
       <Button @click="addInit">新增日报</Button>
     </div>
+    <Card v-show="filter === true" style="margin-bottom: 10px">
+      <div class="filter" style="display: flex; justify-content: space-between;">
+        <div>
+          <span style="margin-right: 60px">
+            项目：
+            <Select v-model="projectId" style="width:200px" @on-change="changeProject">
+              <Option v-for="(item, index) in projectList" :value="item.id" :key="index">{{ item.name }}</Option>
+            </Select>
+          </span>
+          <span>
+            任务：
+            <Select v-model="taskId" style="width:200px">
+              <Option v-for="item in taskList" :value="item.id" :key="item.id">{{ item.name }}</Option>
+            </Select>
+          </span>
+        </div>
+        <div>
+          <Button type="primary" @click="filterSave" style="margin-right: 10px">确定</Button>
+          <Button @click="clearFilter">重置</Button>
+        </div>
+      </div>
+    </Card>
     <Card>
       <div class="calendar">
         <div class="e-calendar-week">
@@ -59,14 +81,15 @@
     </Modal>
     <Modal
       v-model="edit"
+      @on-ok="saveEdit"
       title="编辑日报">
       <Form ref="formValidate" :model="detailData" :rules="ruleValidate" :label-width="80">
         <FormItem prop="userName" label="登记人">
           {{detailData.userName}}
         </FormItem>
         <FormItem prop="projectName" label="选择项目">
-          <Select v-model="detailData.projectId" @on-change="getTask">
-            <Option v-for="item in projectList" :value="item.id" :labek="item.name" :key="item.id">{{ item.name }}</Option>
+          <Select v-model="detailData.projectId" @on-change="getListTask(2, detailData.projectId)">
+            <Option v-for="(item, index) in projectList" :value="item.id" :labek="item.name" :key="index">{{ item.name }}</Option>
           </Select>
         </FormItem>
         <FormItem prop="taskName" label="选择任务">
@@ -75,7 +98,7 @@
           </Select>
         </FormItem>
         <FormItem prop="reportDate" label="日报日期">
-          <DatePicker type="date" v-model="detailData.reportDate"></DatePicker>
+          <DatePicker type="date" @on-change="changetDate" :value="detailData.reportDate"></DatePicker>
         </FormItem>
         <FormItem prop="workingHours" label="工作用时">
           <Input v-model="detailData.workingHours" />
@@ -127,7 +150,7 @@
 
 <script>
 import Tables from '_c/tables'
-import { listProject, listTask, createDaily, dailyList, deleteDaily } from '@/api/data'
+import { listProject, listTask, createDaily, dailyList, deleteDaily, updateDaily } from '@/api/data'
 const monthJson = {
   1: '一月',
   2: '二月',
@@ -147,6 +170,7 @@ export default {
   components: { Tables },
   data () {
     return {
+      filter: false,
       edit: false,
       moreList: false,
       detail: false,
@@ -169,10 +193,10 @@ export default {
           { required: true, message: '请选择行政区划类型', trigger: 'change' }
         ],
         workingHours: [
-          { required: true, message: '请选择行政区划类型', trigger: 'change' }
+          { required: true, message: '请选择行政区划类型', trigger: 'blur' }
         ],
         workingContent: [
-          { required: true, message: '请选择行政区划类型', trigger: 'change' }
+          { required: true, message: '请选择行政区划类型', trigger: 'blur' }
         ]
       },
       myName: 'chen',
@@ -212,7 +236,7 @@ export default {
                   this.addRows[params.index].projectId = id
                   this.addRows[params.index].taskList = []
                   this.addRows[params.index].taskId = ''
-                  this.getListTask(params.index, id)
+                  this.getListTask(1, id, params.index)
                 }
               }
             }, params.row.pname.map((item) => {
@@ -369,12 +393,55 @@ export default {
         this.getDailyList(val.year, val.month)
       },
       deep: true
+    },
+    detailData: {
+      handler (val) {
+        console.log(val)
+      },
+      deep: true
     }
   },
   methods: {
+    clearFilter () {
+      this.projectId = ''
+      this.taskList = []
+      this.taskId = ''
+    },
+    filterSave () {
+      this.getDailyList(this.showDate.year, this.showDate.month)
+    },
+    changeProject () {
+      this.taskId = ''
+      this.getListTask(2, arguments[0])
+    },
+    openFilter () {
+      this.filter = !this.filter
+    },
+    changetDate () {
+      this.detailData.reportDate = arguments[0]
+    },
+    saveEdit () {
+      updateDaily({
+        id: this.detailData.id,
+        projectId: this.detailData.projectId,
+        taskId: this.detailData.taskId,
+        workingHours: this.detailData.workingHours,
+        reportDate: this.detailData.reportDate,
+        workingContent: this.detailData.workingContent,
+        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b'
+      }).then((res) => {
+        console.log(res)
+        if (res.data.status === '200') {
+          this.$Message.info('操作成功！')
+          this.getDailyList(this.showDate.year, this.showDate.month)
+          this.edit = false
+        } else {
+          this.$Message.info('操作失败，请重试！')
+        }
+      })
+    },
     editDaily () {
-      this.getProject()
-      this.getTask()
+      this.getListTask(2, this.detailData.projectId)
       this.edit = true
     },
     delDaily () {
@@ -398,6 +465,7 @@ export default {
     },
     openDetail (d) {
       console.log(d)
+      console.log(typeof d.reportDate)
       this.detailData = {
         id: d.id,
         projectName: d.projectName,
@@ -462,8 +530,8 @@ export default {
       }]
       this.add = true
     },
-    getListTask (index, id) {
-      console.log(this.projectId)
+    getListTask (type, id, index) {
+      if (!id) return false
       listTask({
         pageSize: 100,
         page: 1,
@@ -480,30 +548,37 @@ export default {
         cityName: '',
         districtName: ''
       }).then((res) => {
-        this.addRows[index].taskList = res.data.data.taskDetailBeans
-        this.tableData[index].tname = this.addRows[index].taskList
+        switch (type) {
+          case 1:
+            this.addRows[index].taskList = res.data.data.taskDetailBeans
+            this.tableData[index].tname = this.addRows[index].taskList
+            break
+          case 2:
+            this.taskList = res.data.data.taskDetailBeans
+            break
+        }
       })
     },
-    getTask (index) {
-      listTask({
-        pageSize: 100,
-        page: 1,
-        businessProjectId: this.detailData.projectId,
-        type: '',
-        name: '',
-        taskStatus: '',
-        firstPartyScoring: '',
-        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b',
-        timeStatus: '',
-        startTime: '',
-        endTime: '',
-        provinceName: '',
-        cityName: '',
-        districtName: ''
-      }).then((res) => {
-        this.taskList = res.data.data.taskDetailBeans
-      })
-    },
+    // getTask () {
+    //   listTask({
+    //     pageSize: 100,
+    //     page: 1,
+    //     businessProjectId: this.detailData.projectId,
+    //     type: '',
+    //     name: '',
+    //     taskStatus: '',
+    //     firstPartyScoring: '',
+    //     userId: 'd3c6b26c272f4b0c96ec8f7a3062230b',
+    //     timeStatus: '',
+    //     startTime: '',
+    //     endTime: '',
+    //     provinceName: '',
+    //     cityName: '',
+    //     districtName: ''
+    //   }).then((res) => {
+    //     this.taskList = res.data.data.taskDetailBeans
+    //   })
+    // },
     getListProject () {
       listProject({
         pageSize: 100,
@@ -522,28 +597,29 @@ export default {
         endTime: ''
       }).then((res) => {
         this.addRows[this.rowIndex].projectList = res.data.data.projectList
-      })
-    },
-    getProject () {
-      listProject({
-        pageSize: 100,
-        page: 1,
-        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b',
-        projectName: '',
-        firstPartyCompanyId: '',
-        projectManagerId: '',
-        status: '',
-        firstPartyScoring: '',
-        provinceName: '',
-        cityName: '',
-        districtName: '',
-        timeStatus: '',
-        startTime: '',
-        endTime: ''
-      }).then((res) => {
         this.projectList = res.data.data.projectList
       })
     },
+    // getProject () {
+    //   listProject({
+    //     pageSize: 100,
+    //     page: 1,
+    //     userId: 'd3c6b26c272f4b0c96ec8f7a3062230b',
+    //     projectName: '',
+    //     firstPartyCompanyId: '',
+    //     projectManagerId: '',
+    //     status: '',
+    //     firstPartyScoring: '',
+    //     provinceName: '',
+    //     cityName: '',
+    //     districtName: '',
+    //     timeStatus: '',
+    //     startTime: '',
+    //     endTime: ''
+    //   }).then((res) => {
+    //     this.projectList = res.data.data.projectList
+    //   })
+    // },
     prevMonth () {
       if (this.showDate.year === 1900 && this.showDate.month === 1) {
         return false
@@ -641,8 +717,8 @@ export default {
         page: 1,
         from: '1',
         type: '6',
-        projectId: '',
-        taskId: '',
+        projectId: this.projectId,
+        taskId: this.taskId,
         startDate: startDate,
         endDate: endDate,
         currentDate: '',

@@ -221,10 +221,18 @@ export const createDaily = (params) => {
     method: 'post'
   })
 }
-// 新增日报
+// 删除日报
 export const deleteDaily = (params) => {
   return axios.request({
     url: '/dailyReport/delete',
+    data: params,
+    method: 'post'
+  })
+}
+// 删除日报
+export const updateDaily = (params) => {
+  return axios.request({
+    url: '/dailyReport/update',
     data: params,
     method: 'post'
   })
