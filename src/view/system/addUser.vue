@@ -69,7 +69,7 @@
         <FormItem label="归属单位" prop="officeId">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.officeId">
+              <Select v-model="formItem.officeId" @on-change="selectUnit">
                 <Option v-for="item in unitList" :value="item.id" :key="item.id">{{item.name}}</Option>
               </Select>
             </Col>
@@ -97,12 +97,11 @@
             </Col>
           </Row>
         </FormItem>
-        <FormItem label="角色" prop="role">
+        <FormItem label="角色" prop="roleId">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.role">
-                <Option value="beijing">经理</Option>
-                <Option value="shanghai">员工</Option>
+              <Select v-model="formItem.roleId">
+                <Option v-for="item in roleList" :value="item.id" :key="item.id">{{item.name}}</Option>
               </Select>
             </Col>
           </Row>
@@ -123,7 +122,7 @@
 </template>
 
 <script>
-import { insertOrUpdateUser, getUnitList } from '@/api/data'
+import { insertOrUpdateUser, getUnitList, listRoleByOfficeId } from '@/api/data'
 export default {
   data () {
     const validatePass = (rule, value, callback) => {
@@ -185,6 +184,7 @@ export default {
       }
     }
     return {
+      roleList: [],
       formItem: {
         userName: '',
         phone: '',
@@ -219,7 +219,7 @@ export default {
         officeId: [
           { required: true, message: '请选择用户归属单位', trigger: 'change' }
         ],
-        role: [
+        roleId: [
           { required: true, message: '请选择用户角色', trigger: 'change' }
         ]
       },
@@ -228,7 +228,7 @@ export default {
   },
   methods: {
     save () {
-      insertOrUpdateUser({
+      let params = {
         'loginName': this.formItem.userName,
         'phone': this.formItem.phone,
         'photo': '',
@@ -239,8 +239,26 @@ export default {
         'isLoginApp': this.formItem.isApp,
         'officeId': this.formItem.officeId,
         'roleId': this.formItem.roleId,
-        'userId': this.formItem.userId
-      }).then()
+        'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+      }
+      console.log(params)
+      insertOrUpdateUser(params).then((res) => {
+        if (res.data.status === '200') {
+          this.$Message.info('操作成功！')
+        } else {
+          this.$Message.info('操作失败，请重试！')
+        }
+      })
+    },
+    selectUnit () {
+      listRoleByOfficeId({
+        id: arguments[0]
+      }).then((res) => {
+        console.log(res)
+        if (res.data.status === '200') {
+          this.roleList = res.data.data
+        }
+      })
     }
   },
   mounted () {

@@ -182,3 +182,50 @@ export const deleteUserRole = (params) => {
     method: 'post'
   })
 }
+export const listRoleByOfficeId = (params) => {
+  return axios.request({
+    url: '/role/listRoleByOfficeId',
+    data: params,
+    method: 'post'
+  })
+}
+// 日报列表
+export const dailyList = (params) => {
+  return axios.request({
+    url: '/dailyReport/list',
+    data: params,
+    method: 'post'
+  })
+}
+// 项目列表
+export const listProject = (params) => {
+  return axios.request({
+    url: '/project/listProject',
+    data: params,
+    method: 'post'
+  })
+}
+// 任务列表
+export const listTask = (params) => {
+  return axios.request({
+    url: '/task/listTask',
+    data: params,
+    method: 'post'
+  })
+}
+// 新增日报
+export const createDaily = (params) => {
+  return axios.request({
+    url: '/dailyReport/createList',
+    data: params,
+    method: 'post'
+  })
+}
+// 新增日报
+export const deleteDaily = (params) => {
+  return axios.request({
+    url: '/dailyReport/delete',
+    data: params,
+    method: 'post'
+  })
+}

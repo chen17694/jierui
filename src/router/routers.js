@@ -372,6 +372,35 @@ export default [
     ]
   },
   {
+    path: '/my',
+    name: 'my',
+    meta: {
+      icon: 'md-menu',
+      title: '我的'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'my',
+        name: 'my',
+        meta: {
+          icon: 'md-funnel',
+          title: '我的项目'
+        },
+        component: () => import('@/view/my/myProject.vue')
+      },
+      {
+        path: 'myDaily',
+        name: 'myDaily',
+        meta: {
+          icon: 'md-funnel',
+          title: '我的日报'
+        },
+        component: () => import('@/view/my/myDaily.vue')
+      }
+    ]
+  },
+  {
     path: '/system',
     name: 'system',
     meta: {
@@ -469,7 +498,7 @@ export default [
             name: 'roleUserList',
             meta: {
               icon: 'md-funnel',
-              title: '编辑用户',
+              title: '角色用户管理',
               hideInMenu: true,
               needInBread: true
             },

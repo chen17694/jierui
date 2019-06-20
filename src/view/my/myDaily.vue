@@ -1,0 +1,782 @@
+<template>
+  <div>
+    <div class="pageHeader">
+      <Button type="primary">筛选</Button>
+      <div class="switchMonth">
+        <img src="../../assets/images/leftBtn.png" @click="prevMonth">
+        <div>{{title}}</div>
+        <img src="../../assets/images/rightBtn.png" @click="nextMonth">
+      </div>
+      <Button @click="addInit">新增日报</Button>
+    </div>
+    <Card>
+      <div class="calendar">
+        <div class="e-calendar-week">
+          <span class="e-calendar-week-day">周一</span>
+          <span class="e-calendar-week-day">周二</span>
+          <span class="e-calendar-week-day">周三</span>
+          <span class="e-calendar-week-day">周四</span>
+          <span class="e-calendar-week-day">周五</span>
+          <span class="e-calendar-week-day">周六</span>
+          <span class="e-calendar-week-day">周日</span>
+        </div>
+        <div class="e-calendar-monthday">
+          <div class="e-calendar-monthday-wrapper">
+            <div class="e-calendar-monthday-row" v-for="(row, index) in rows" :key="index" >
+                <span v-for="(day,index) in row" :key="index" class="e-calendar-monthday-row-day" :class="{'active': day.selected, 'disabled': day.disabled, 'pointer': day.value !== ''}">
+                  <span v-text="day.value" class="e-calendar-monthday-row-day-value"></span>
+                  <div style="text-align: left">
+                    <div v-for="(d,i) in day.daily" :key="d.id" v-if="i<2" @click="openDetail(d)" style="background-color: #e6e6e6; margin-bottom: 6px; padding: 2px 7px;cursor: pointer">
+                      <span style="margin-right: 5px; color: #2E8CEB">{{d.workingHours}}h</span>
+                      <span>{{d.workingContent.length > 8 ? d.workingContent.slice(0,9) +  '...' : d.workingContent}}</span>
+                    </div>
+                    <div v-else-if="i===2" style="text-align: right;">
+                      <Button size="small" type="primary" @click="more(day.daily)">更多...</Button>
+                    </div>
+                  </div>
+                </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Card>
+    <Modal
+      v-model="add"
+      width="1500px"
+      @on-ok="addSave"
+      title="新增日报">
+      <div class="tableWrapper">
+        <tables ref="tables"  v-model="tableData" :columns="columns" @on-add="addRow" @on-remove="delRow" :showPage="false"></tables>
+      </div>
+    </Modal>
+    <Modal
+      v-model="moreList"
+      title="我的日报">
+      <div v-for="d in dailyArr" :key="d.id" @click="openDetail(d)" style="background-color: #e6e6e6; margin-bottom: 6px; padding: 2px 7px;cursor: pointer">
+        <span style="margin-right: 5px; color: #2E8CEB">{{d.workingHours}}h</span>
+        <span>{{d.workingContent.length > 8 ? d.workingContent.slice(0,9) +  '...' : d.workingContent}}</span>
+      </div>
+    </Modal>
+    <Modal
+      v-model="edit"
+      title="编辑日报">
+      <Form ref="formValidate" :model="detailData" :rules="ruleValidate" :label-width="80">
+        <FormItem prop="userName" label="登记人">
+          {{detailData.userName}}
+        </FormItem>
+        <FormItem prop="projectName" label="选择项目">
+          <Select v-model="detailData.projectId" @on-change="getTask">
+            <Option v-for="item in projectList" :value="item.id" :labek="item.name" :key="item.id">{{ item.name }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem prop="taskName" label="选择任务">
+          <Select v-model="detailData.taskId">
+            <Option v-for="item in taskList" :value="item.id" :labek="item.name" :key="item.id">{{ item.name }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem prop="reportDate" label="日报日期">
+          <DatePicker type="date" v-model="detailData.reportDate"></DatePicker>
+        </FormItem>
+        <FormItem prop="workingHours" label="工作用时">
+          <Input v-model="detailData.workingHours" />
+        </FormItem>
+        <FormItem prop="workingContent" label="工作内容">
+          <Input v-model="detailData.workingContent" />
+        </FormItem>
+      </Form>
+    </Modal>
+    <Modal
+      v-model="detail"
+      title="日报详情">
+      <p style="font-weight: bold; margin-bottom: 10px">日报详情</p>
+      <div style="margin-left: 10px; line-height: 30px">
+        <p>
+          <span style="color: #000">项目名称:</span>
+          {{detailData.projectName}}
+        </p>
+        <p>
+          <span style="color: #000">任务名称: </span>
+          {{detailData.taskName}}
+        </p>
+        <p>
+          <span style="color: #000">登记人员: </span>
+          {{detailData.userName}}
+        </p>
+        <p style=" display: flex;">
+          <span style="flex: 1">
+            <span style="color: #000">工作时长: </span>
+            {{detailData.workingHours}}
+          </span>
+          <span style="flex: 1">
+            <span style="color: #000">日报日期: </span>
+            {{detailData.reportDate}}
+          </span>
+        </p>
+        <p>
+          <span style="color: #000">工作内容: </span>
+          {{detailData.workingContent}}
+        </p>
+      </div>
+      <div slot="footer">
+        <Button type="error" @click="delDaily(detailData.id)">删除</Button>
+        <Button type="primary" @click="editDaily">编辑</Button>
+      </div>
+    </Modal>
+  </div>
+</template>
+
+<script>
+import Tables from '_c/tables'
+import { listProject, listTask, createDaily, dailyList, deleteDaily } from '@/api/data'
+const monthJson = {
+  1: '一月',
+  2: '二月',
+  3: '三月',
+  4: '四月',
+  5: '五月',
+  6: '六月',
+  7: '七月',
+  8: '八月',
+  9: '九月',
+  10: '十月',
+  11: '十一月',
+  12: '十二月'
+}
+export default {
+  name: 'myDaily',
+  components: { Tables },
+  data () {
+    return {
+      edit: false,
+      moreList: false,
+      detail: false,
+      detailData: {},
+      dailyArr: [],
+      dailyList: {},
+      options: {
+        disabledDate (date) {
+          return date && date.valueOf() > Date.now()
+        }
+      },
+      ruleValidate: {
+        projectName: [
+          { required: true, message: '请选择行政区划类型', trigger: 'change' }
+        ],
+        taskName: [
+          { required: true, message: '请选择行政区划类型', trigger: 'change' }
+        ],
+        reportDate: [
+          { required: true, message: '请选择行政区划类型', trigger: 'change' }
+        ],
+        workingHours: [
+          { required: true, message: '请选择行政区划类型', trigger: 'change' }
+        ],
+        workingContent: [
+          { required: true, message: '请选择行政区划类型', trigger: 'change' }
+        ]
+      },
+      myName: 'chen',
+      projectId: '',
+      taskId: '',
+      workingHours: 0,
+      reportDate: '',
+      workingContent: '',
+      taskList: [],
+      projectList: [],
+      rowIndex: 0,
+      addRows: [
+        {
+          taskList: [],
+          projectList: [],
+          projectId: '',
+          taskId: '',
+          workingHours: 0,
+          reportDate: '',
+          workingContent: ''
+        }
+      ],
+      add: false,
+      tableData: [],
+      today: '',
+      columns: [
+        { title: '项目名称',
+          key: 'pname',
+          width: '250px',
+          render: (h, params) => {
+            return h('Select', {
+              props: {
+                value: this.addRows[params.index].projectId
+              },
+              on: {
+                'on-change': (id) => {
+                  this.addRows[params.index].projectId = id
+                  this.addRows[params.index].taskList = []
+                  this.addRows[params.index].taskId = ''
+                  this.getListTask(params.index, id)
+                }
+              }
+            }, params.row.pname.map((item) => {
+              return h('Option', {
+                props: {
+                  value: item.id
+                }
+              }, item.name)
+            }))
+          }
+        },
+        { title: '任务名称',
+          key: 'tname',
+          width: '250px',
+          render: (h, params) => {
+            return h('Select', {
+              props: {
+                value: this.addRows[params.index].taskId
+              },
+              on: {
+                'on-change': (id) => {
+                  this.addRows[params.index].taskId = id
+                }
+              }
+            }, params.row.tname.map((item) => {
+              return h('Option', {
+                props: {
+                  value: item.id
+                }
+              }, item.name)
+            }))
+          }
+        },
+        { title: '工时',
+          key: 'hour',
+          width: '100px',
+          render: (h, params) => {
+            return h('InputNumber', {
+              props: {
+                value: this.addRows[params.index].workingHours
+              },
+              on: {
+                'on-change': (hour) => {
+                  this.addRows[params.index].workingHours = hour
+                }
+              }
+            })
+          }
+        },
+        { title: '日期',
+          key: 'date',
+          width: '200px',
+          render: (h, params) => {
+            return h('DatePicker', {
+              props: {
+                value: this.addRows[params.index].reportDate,
+                options: this.options
+              },
+              on: {
+                'on-change': (date) => {
+                  this.addRows[params.index].reportDate = date
+                }
+              }
+            })
+          }
+        },
+        { title: '工作内容',
+          key: 'job',
+          width: '500px',
+          render: (h, params) => {
+            return h('Input', {
+              props: {
+                value: this.addRows[params.index].workingContent
+              },
+              on: {
+                'on-change': (e) => {
+                  this.addRows[params.index].workingContent = e.target.value
+                }
+              }
+            })
+          }
+        },
+        {
+          title: '操作',
+          key: 'handle',
+          options: ['add', 'remove']
+        }
+      ],
+      showDate: {
+        year: '',
+        month: '',
+        day: '',
+        week: '',
+        date: '',
+        monthStr: ''
+      },
+      selectDate: {
+        year: '',
+        month: '',
+        day: '',
+        week: '',
+        date: '',
+        monthStr: ''
+      },
+      copyMinDate: {
+        year: '',
+        month: '',
+        day: ''
+      },
+      copyMaxDate: {
+        year: '',
+        month: '',
+        day: ''
+      },
+      timestamp: new Date().getTime()
+    }
+  },
+  computed: {
+    title () {
+      return this.showDate.year + '年' + (this.showDate.month > 9 ? this.showDate.month + '月' : '0' + this.showDate.month + '月')
+    },
+    rows () {
+      const timestamp = this.timestamp
+      const { year, month } = this.showDate
+      const months = (new Date(year, month, 0)).getDate()
+      const result = []
+      let row = []
+      let arrs = [year, month, '01']
+      var weeks = new Date(arrs[0], parseInt(arrs[1] - 1), arrs[2])
+      let week = weeks.getDay()
+      let day = 0
+      for (let i = 1; i <= 42; i += 1) {
+        if (i < week) {
+          this.addRowEmptyValue(row)
+        } else {
+          if (day === months) {
+            this.addRowEmptyValue(row)
+          } else {
+            this.addRowDayValue(row, ++day)
+          }
+        }
+        if (i % 7 === 0) {
+          result.push(row)
+          row = []
+        }
+      }
+      console.log(timestamp)
+      return result
+    }
+  },
+  watch: {
+    showDate: {
+      handler (val) {
+        this.getDailyList(val.year, val.month)
+      },
+      deep: true
+    }
+  },
+  methods: {
+    editDaily () {
+      this.getProject()
+      this.getTask()
+      this.edit = true
+    },
+    delDaily () {
+      deleteDaily({
+        ids: [this.detailData.id],
+        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b'
+      }).then((res) => {
+        console.log(res)
+        if (res.data.status === '200') {
+          this.$Message.info('删除成功！')
+          this.getDailyList(this.showDate.year, this.showDate.month)
+          this.detail = false
+        } else {
+          this.$Message.info('操作失败，请重试！')
+        }
+      })
+    },
+    more (arr) {
+      this.dailyArr = arr
+      this.moreList = true
+    },
+    openDetail (d) {
+      console.log(d)
+      this.detailData = {
+        id: d.id,
+        projectName: d.projectName,
+        projectId: d.projectId,
+        taskName: d.taskName,
+        taskId: d.taskId,
+        userName: d.userName,
+        workingHours: d.workingHours,
+        reportDate: d.reportDate,
+        workingContent: d.workingContent
+      }
+      console.log(this.detailData)
+      this.detail = true
+    },
+    addSave () {
+      let params = []
+      this.addRows.forEach((item) => {
+        params.push({
+          projectId: item.projectId,
+          taskId: item.taskId,
+          workingHours: item.workingHours,
+          reportDate: item.reportDate,
+          workingContent: item.workingContent,
+          userId: 'd3c6b26c272f4b0c96ec8f7a3062230b'
+        })
+      })
+      createDaily(params).then((res) => {
+        if (res.data.status === '200') {
+          this.$Message.info('操作成功！')
+          this.getDailyList(this.showDate.year, this.showDate.month)
+          this.add = false
+        } else {
+          this.$Message.info('操作失败，请重试！')
+        }
+      })
+    },
+    delRow () {
+      this.addRows.splice(arguments[0].index, 1)
+      this.tableData.splice(arguments[0].index, 1)
+      this.rowIndex = arguments[0].index - 1
+    },
+    addRow () {
+      this.rowIndex = arguments[0].index + 1
+      this.addRows.push({
+        taskList: [],
+        projectList: this.addRows[0].projectList,
+        projectId: '',
+        taskId: '',
+        workingHours: 0,
+        reportDate: '',
+        workingContent: ''
+      })
+      this.tableData.push({
+        pname: this.addRows[this.rowIndex].projectList,
+        tname: this.addRows[this.rowIndex].taskList
+      })
+    },
+    addInit () {
+      this.tableData = [{
+        pname: this.addRows[0].projectList,
+        tname: this.addRows[0].taskList
+      }]
+      this.add = true
+    },
+    getListTask (index, id) {
+      console.log(this.projectId)
+      listTask({
+        pageSize: 100,
+        page: 1,
+        businessProjectId: id,
+        type: '',
+        name: '',
+        taskStatus: '',
+        firstPartyScoring: '',
+        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b',
+        timeStatus: '',
+        startTime: '',
+        endTime: '',
+        provinceName: '',
+        cityName: '',
+        districtName: ''
+      }).then((res) => {
+        this.addRows[index].taskList = res.data.data.taskDetailBeans
+        this.tableData[index].tname = this.addRows[index].taskList
+      })
+    },
+    getTask (index) {
+      listTask({
+        pageSize: 100,
+        page: 1,
+        businessProjectId: this.detailData.projectId,
+        type: '',
+        name: '',
+        taskStatus: '',
+        firstPartyScoring: '',
+        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b',
+        timeStatus: '',
+        startTime: '',
+        endTime: '',
+        provinceName: '',
+        cityName: '',
+        districtName: ''
+      }).then((res) => {
+        this.taskList = res.data.data.taskDetailBeans
+      })
+    },
+    getListProject () {
+      listProject({
+        pageSize: 100,
+        page: 1,
+        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b',
+        projectName: '',
+        firstPartyCompanyId: '',
+        projectManagerId: '',
+        status: '',
+        firstPartyScoring: '',
+        provinceName: '',
+        cityName: '',
+        districtName: '',
+        timeStatus: '',
+        startTime: '',
+        endTime: ''
+      }).then((res) => {
+        this.addRows[this.rowIndex].projectList = res.data.data.projectList
+      })
+    },
+    getProject () {
+      listProject({
+        pageSize: 100,
+        page: 1,
+        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b',
+        projectName: '',
+        firstPartyCompanyId: '',
+        projectManagerId: '',
+        status: '',
+        firstPartyScoring: '',
+        provinceName: '',
+        cityName: '',
+        districtName: '',
+        timeStatus: '',
+        startTime: '',
+        endTime: ''
+      }).then((res) => {
+        this.projectList = res.data.data.projectList
+      })
+    },
+    prevMonth () {
+      if (this.showDate.year === 1900 && this.showDate.month === 1) {
+        return false
+      }
+      if (this.showDate.month === 1) {
+        this.showDate.year--
+        this.showDate.month = 12
+      } else {
+        this.showDate.month--
+      }
+    },
+    nextMonth () {
+      if (this.showDate.year === 2900 && this.showDate.month === 12) {
+        return false
+      }
+      if (this.showDate.month === 12) {
+        this.showDate.year++
+        this.showDate.month = 1
+      } else {
+        this.showDate.month++
+      }
+    },
+    initDatePicker () {
+      this.showDate = { ...this.splitDate(this.today, true) }
+      this.copyMinDate = { ...this.splitDate('1900-01-01') }
+      this.copyMaxDate = { ...this.splitDate('2900-01-01') }
+      this.selectDate = { ...this.showDate }
+    },
+    splitDate (date, addStr) {
+      let result = {}
+      const splitValue = date.split('-')
+      try {
+        if (!splitValue || splitValue.length < 3) {
+          throw new Error('时间格式不正确')
+        }
+        result = {
+          year: Number(splitValue[0]),
+          month: Number(splitValue[1]),
+          day: Number(splitValue[2])
+        }
+        if (addStr) {
+          let arrs = [result.year, result.month, result.day]
+          var weeks = new Date(arrs[0], parseInt(arrs[1] - 1), arrs[2])
+          result.week = weeks.getDay()
+          result.monthStr = monthJson[result.month]
+        }
+      } catch (error) {
+        console.error(error)
+      }
+      return result
+    },
+    addRowEmptyValue (row) {
+      row.push({
+        value: ''
+      })
+    },
+    addRowDayValue (row, i) {
+      if (i < 10) {
+        i = '0' + i
+      }
+      let value = {}
+      if (this.dailyList[i]) {
+        value = { value: i, daily: this.dailyList[i].data }
+      } else {
+        value = { value: i }
+      }
+      const { day, month, year } = this.selectDate
+      const showDate = this.showDate
+      // 判断已经选择的
+      if (year === showDate.year && month === showDate.month && day === i) {
+        value.selected = true
+      }
+      // 当日期在最小值之外，禁止点击
+      if (this.isMinLimitMonth() && i < this.copyMinDate.day) {
+        value.disabled = true
+      }
+      // 当日期在最大值之外，禁止点击
+      if (this.isMaxLimitMonth() && i > this.copyMinDate.day) {
+        value.disabled = true
+      }
+      row.push(value)
+    },
+    isMinLimitMonth () {
+      return this.showDate.year <= this.copyMinDate.year && this.showDate.month <= this.copyMinDate.month
+    },
+    isMaxLimitMonth () {
+      return this.showDate.year >= this.copyMaxDate.year && this.showDate.month >= this.copyMaxDate.month
+    },
+    getDailyList (year, month) {
+      let startDate = (year + '-') + ((month > 10 ? month : '0' + month) + '-01')
+      let endDate = (year + '-') + ((month > 10 ? month : '0' + month) + '-') + ('' + (new Date(year, month, 0)).getDate())
+      this.dailyList = {}
+      dailyList({
+        pageSize: 300,
+        page: 1,
+        from: '1',
+        type: '6',
+        projectId: '',
+        taskId: '',
+        startDate: startDate,
+        endDate: endDate,
+        currentDate: '',
+        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b'
+      }).then((res) => {
+        let obj = {}
+        if (res.data.data.list.length > 0) {
+          console.log(res.data.data.list)
+          res.data.data.list.reverse().forEach((item) => {
+            if (!obj[item.reportDate]) {
+              this.dailyList[item.reportDate.split('-')[2]] = {
+                reportDate: item.reportDate.split('-')[2],
+                data: [item]
+              }
+              obj[item.reportDate] = item
+            } else {
+              for (let i in this.dailyList) {
+                if (this.dailyList[i].reportDate === item.reportDate.split('-')[2]) {
+                  this.dailyList[i].data.push(item)
+                  break
+                }
+              }
+            }
+          })
+        } else {
+          this.dailyList = {}
+        }
+        this.timestamp = new Date().getTime()
+        console.log(this.dailyList)
+      })
+    }
+  },
+  created () {
+    let d = new Date()
+    this.today = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
+    this.initDatePicker()
+  },
+  mounted () {
+    this.getListProject()
+  }
+}
+</script>
+
+<style scoped lang="less">
+  .tableWrapper{
+    /deep/ .ivu-table-wrapper{
+      overflow: inherit;
+    }
+  }
+  .pageHeader{
+    display: flex;
+    justify-content: space-between;
+    align-items: self-start;
+    .switchMonth{
+      display: flex;
+      justify-content: center;
+      margin-bottom: 15px;
+      img{
+        width: 40px;
+        height: 40px;
+      }
+      img:hover{
+        cursor: pointer;
+      }
+      div{
+        width: 198px;
+        height: 40px;
+        font-size: 20px;
+        font-weight: bold;
+        color: #333333;
+        line-height: 40px;
+        text-align: center;
+      }
+    }
+  }
+  .calendar{
+    width: 100%;
+    .e-calendar-week{
+      width: 100%;
+      font-size: 12px;
+      color: rgba(0,0,0,.87);
+      opacity: .5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .e-calendar-week-day{
+        flex: 1;
+        text-align: right;
+        padding: 20px;
+      }
+    }
+    .e-calendar-monthday{
+      font-size: 14px;
+      position: relative;
+      width: 100%;
+      height: 780px;
+      overflow: hidden;
+      .e-calendar-monthday-wrapper{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-right: 1px solid #c3c3c3;
+      }
+      .e-calendar-monthday-row{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .e-calendar-monthday-row-day{
+          flex: 1;
+          position: relative;
+          border: 1px solid #c3c3c3;
+          margin-right: -1px;
+          margin-bottom: -1px;
+          height: 130px;
+          padding: 7px 20px;
+          text-align: right;
+          .e-calendar-monthday-row-day.pointer{
+            cursor: pointer;
+          }
+          .e-calendar-monthday-row-day-value{
+            position: relative;
+            z-index: 1;
+            margin-bottom: 3px;
+            display: block;
+          }
+          .e-calendar-monthday-row-day.active{
+            color: #ffffff;
+          }
+          .e-calendar-monthday-row-day.disabled{
+            opacity: .4;
+            cursor: not-allowed;
+          }
+        }
+      }
+    }
+  }
+</style>

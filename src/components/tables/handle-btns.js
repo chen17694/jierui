@@ -52,6 +52,42 @@ const btns = {
         })
       ])
     ])
+  },
+  add: (h, params, vm) => {
+    return h('span', { 'style': { marginRight: '10px' } }, [
+      h('Button', [
+        h('Icon', {
+          props: {
+            type: 'md-add',
+            size: 14,
+            color: '#000000'
+          },
+          on: {
+            click: () => {
+              vm.$emit('on-add', params)
+            }
+          }
+        })
+      ])
+    ])
+  },
+  remove: (h, params, vm) => {
+    return h('span', [
+      h('Button', [
+        h('Icon', {
+          props: {
+            type: 'md-close',
+            size: 14,
+            color: '#000000'
+          },
+          on: {
+            click: () => {
+              vm.$emit('on-remove', params)
+            }
+          }
+        })
+      ])
+    ])
   }
 }
 

@@ -132,7 +132,7 @@
 
 <script>
 import Tables from '_c/tables'
-import AreaSelect from './area'
+import AreaSelect from './areaSelect'
 import { getUnitList, addOffice, delOffice, listAreaByType } from '@/api/data'
 export default{
   name: 'unit_table_page',

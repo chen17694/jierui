@@ -36,7 +36,7 @@
       <slot name="footer" slot="footer"></slot>
       <slot name="loading" slot="loading"></slot>
     </Table>
-    <div style="margin: 10px;overflow: hidden">
+    <div style="margin: 10px;overflow: hidden" v-show="this.showPage">
       <div style="float: right;">
         <Page :total="this.total" :current="1" @on-change="onChange" @on-page-size-change="onPageSizeChange" show-sizer show-elevator></Page>
       </div>
@@ -51,6 +51,10 @@ import './index.less'
 export default {
   name: 'Tables',
   props: {
+    showPage: {
+      type: Boolean,
+      default: true
+    },
     onChange: {
       type: Function,
       default () {
