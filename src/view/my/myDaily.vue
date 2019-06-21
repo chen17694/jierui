@@ -7,7 +7,10 @@
         <div>{{title}}</div>
         <img src="../../assets/images/rightBtn.png" @click="nextMonth">
       </div>
-      <Button @click="addInit">新增日报</Button>
+      <div>
+        <Button type="primary" @click="toList" style="margin-right: 10px">全部99+</Button>
+        <Button @click="addInit">新增日报</Button>
+      </div>
     </div>
     <Card v-show="filter === true" style="margin-bottom: 10px">
       <div class="filter" style="display: flex; justify-content: space-between;">
@@ -101,7 +104,7 @@
           <DatePicker type="date" @on-change="changetDate" :value="detailData.reportDate"></DatePicker>
         </FormItem>
         <FormItem prop="workingHours" label="工作用时">
-          <Input v-model="detailData.workingHours" />
+          <InputNumber :min="1" v-model="detailData.workingHours"></InputNumber>
         </FormItem>
         <FormItem prop="workingContent" label="工作内容">
           <Input v-model="detailData.workingContent" />
@@ -184,19 +187,19 @@ export default {
       },
       ruleValidate: {
         projectName: [
-          { required: true, message: '请选择行政区划类型', trigger: 'change' }
+          { required: true, message: '请选择项目', trigger: 'change' }
         ],
         taskName: [
-          { required: true, message: '请选择行政区划类型', trigger: 'change' }
+          { required: true, message: '请选择任务', trigger: 'change' }
         ],
         reportDate: [
-          { required: true, message: '请选择行政区划类型', trigger: 'change' }
+          { required: true, message: '请选择日期', trigger: 'change' }
         ],
         workingHours: [
-          { required: true, message: '请选择行政区划类型', trigger: 'blur' }
+          { required: true, type: 'number', message: '请设置工时', trigger: 'blur' }
         ],
         workingContent: [
-          { required: true, message: '请选择行政区划类型', trigger: 'blur' }
+          { required: true, message: '请填写工作内容', trigger: 'blur' }
         ]
       },
       myName: 'chen',
@@ -276,7 +279,8 @@ export default {
           render: (h, params) => {
             return h('InputNumber', {
               props: {
-                value: this.addRows[params.index].workingHours
+                value: this.addRows[params.index].workingHours,
+                min: 1
               },
               on: {
                 'on-change': (hour) => {
@@ -402,6 +406,11 @@ export default {
     }
   },
   methods: {
+    toList () {
+      this.$router.push({
+        name: 'myDailyList'
+      })
+    },
     clearFilter () {
       this.projectId = ''
       this.taskList = []

@@ -397,6 +397,25 @@ export default [
           title: '我的日报'
         },
         component: () => import('@/view/my/myDaily.vue')
+      },
+      {
+        path: 'myDailyList',
+        name: 'myDailyList',
+        meta: {
+          icon: 'md-funnel',
+          title: '我的日报',
+          hideInMenu: true
+        },
+        component: () => import('@/view/my/myDailyList.vue')
+      },
+      {
+        path: 'myAudit',
+        name: 'myAudit',
+        meta: {
+          icon: 'md-funnel',
+          title: '我的审核审批'
+        },
+        component: () => import('@/view/my/myAudit.vue')
       }
     ]
   },
