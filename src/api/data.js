@@ -237,3 +237,85 @@ export const updateDaily = (params) => {
     method: 'post'
   })
 }
+
+// 我的审批
+export const listHistory = (params) => {
+  return axios.request({
+    url: '/process/listHistory',
+    data: params,
+    method: 'post'
+  })
+}
+// 待我审批
+export const listWait = (params) => {
+  return axios.request({
+    url: '/process/listWait',
+    data: params,
+    method: 'post'
+  })
+}
+// 项目逾期列表
+export const listOverdueProject = (params) => {
+  return axios.request({
+    url: '/overdue/listOverdueProject',
+    data: params,
+    method: 'post'
+  })
+}
+// 项目功能方法
+export const projectFunction = (params) => {
+  return axios.request({
+    url: '/project/projectFunction',
+    data: params,
+    method: 'post'
+  })
+}
+// 项目逾期列表
+export const listOverdueTask = (params) => {
+  return axios.request({
+    url: '/overdue/listOverdueTask',
+    data: params,
+    method: 'post'
+  })
+}
+// 任务功能方法
+export const taskFunction = (params) => {
+  return axios.request({
+    url: '/task/taskFunction',
+    data: params,
+    method: 'post'
+  })
+}
+// 项目列表(用于筛选条件)
+export const listProjectSimple = (params) => {
+  return axios.request({
+    url: '/project/listProjectSimple',
+    data: params,
+    method: 'post'
+  })
+}
+// 任务路口逾期
+export const listOverdueTaskCrossing = (params) => {
+  return axios.request({
+    url: '/overdue/listOverdueTaskCrossing',
+    data: params,
+    method: 'post'
+  })
+}
+// 任务路口功能方法
+export const taskCrossingFunction = (params) => {
+  return axios.request({
+    url: '/taskCrossingRelation/taskCrossingFunction',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 物资归还列表
+export const listOverdueMaterial = (params) => {
+  return axios.request({
+    url: '/overdue/listOverdueMaterial',
+    data: params,
+    method: 'post'
+  })
+}

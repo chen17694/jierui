@@ -88,6 +88,24 @@ const btns = {
         })
       ])
     ])
+  },
+  urge: (h, params, vm) => {
+    return h('span', [
+      h('Button', [
+        h('Icon', {
+          props: {
+            type: 'md-alarm',
+            size: 14,
+            color: '#000000'
+          },
+          on: {
+            click: () => {
+              vm.$emit('on-urge', params)
+            }
+          }
+        })
+      ])
+    ])
   }
 }
 

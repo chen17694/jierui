@@ -416,6 +416,53 @@ export default [
           title: '我的审核审批'
         },
         component: () => import('@/view/my/myAudit.vue')
+      },
+      {
+        path: 'myOverdue',
+        name: 'myOverdue',
+        meta: {
+          icon: 'md-funnel',
+          title: '逾期信息'
+        },
+        component: parentView,
+        children: [
+          {
+            path: 'projectOverdue',
+            name: 'projectOverdue',
+            meta: {
+              icon: 'md-funnel',
+              title: '项目逾期'
+            },
+            component: () => import('@/view/my/projectOverdue.vue')
+          },
+          {
+            path: 'taskOverdue',
+            name: 'taskOverdue',
+            meta: {
+              icon: 'md-funnel',
+              title: '任务逾期'
+            },
+            component: () => import('@/view/my/taskOverdue.vue')
+          },
+          {
+            path: 'roadOverdue',
+            name: 'roadOverdue',
+            meta: {
+              icon: 'md-funnel',
+              title: '任务路口逾期'
+            },
+            component: () => import('@/view/my/roadOverdue.vue')
+          },
+          {
+            path: 'returnOverdue',
+            name: 'returnOverdue',
+            meta: {
+              icon: 'md-funnel',
+              title: '物资归还逾期'
+            },
+            component: () => import('@/view/my/returnOverdue.vue')
+          }
+        ]
       }
     ]
   },
