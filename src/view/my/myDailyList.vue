@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div style="margin-bottom: 20px; display: flex; justify-content: space-between">
-      <div style="display: flex;">
+    <Row type="flex" justify="space-between" style="padding: 10px 0">
+      <Col span="12">
         <ul class="dateRange">
           <li :class="{active: params.type === '' || params.type === '6'}" @click="dateRange('')">全部</li>
           <li :class="{active: params.type === '1'}" @click="dateRange('1')">本周</li>
@@ -11,21 +11,23 @@
         </ul>
         <DatePicker type="date" @on-change="dataDate"/>
         <Button type="primary" @click="openFilter" style="margin-left: 20px">筛选</Button>
-      </div>
-      <div>
-        <Dropdown @on-click="dropdownClick" style="margin-right: 10px">
-          <Button type="primary" ghost>
-            选择操作
-            <Icon type="ios-arrow-down"></Icon>
-          </Button>
-          <DropdownMenu slot="list">
-            <DropdownItem name="批量删除">批量删除</DropdownItem>
-            <DropdownItem name="取消">取消</DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
-        <Button type="success" @click="addInit">新增日报</Button>
-      </div>
-    </div>
+      </Col>
+      <Col span="12">
+        <div style="float: right;">
+          <Dropdown @on-click="dropdownClick" style="margin-right: 10px">
+            <Button type="primary" ghost>
+              选择操作
+              <Icon type="ios-arrow-down"></Icon>
+            </Button>
+            <DropdownMenu slot="list">
+              <DropdownItem name="批量删除">批量删除</DropdownItem>
+              <DropdownItem name="取消">取消</DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+          <Button type="success" @click="addInit">新增日报</Button>
+        </div>
+      </Col>
+    </Row>
     <Card v-show="filter === true" style="margin-bottom: 10px">
       <div class="filter" style="display: flex; justify-content: space-between;">
         <div>
@@ -526,6 +528,7 @@ export default {
     list-style-type: none;
     margin-top: 6px;
     zoom: 1;
+    float: left;
     li{
       float: left;
       cursor: pointer;

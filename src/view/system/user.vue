@@ -12,7 +12,7 @@
         </div>
       </Col>
       <Col span="12">
-        <div class="handle">
+        <div style="float: right">
           <Dropdown @on-click="dropdownClick" style="margin-right: 10px">
             <Button type="primary" ghost>
               选择操作
@@ -91,25 +91,12 @@
       </Card>
     </div>
     <tables ref="tables" search-place="top" v-model="tableData" :columns="columns" @on-edit="onEdit" @on-select="onSelect" @on-selection-change="onSelectionChange"></tables>
-    <Modal
-      v-model="deletePanel"
-      width="300"
-      title=""
-    >
-      <div>
-        <p>删除后不能找回，还要继续吗？</p>
-      </div>
-      <div slot="footer">
-        <Button type="text" size="large">取消</Button>
-        <Button type="primary" size="large">确定</Button>
-      </div>
-    </Modal>
   </div>
 </template>
 
 <script>
 import Tables from '_c/tables'
-import { getUserList } from '@/api/data'
+import { getUserList, deleteUser } from '@/api/data'
 export default{
   name: 'unit_table_page',
   components: { Tables },
@@ -180,7 +167,18 @@ export default{
             title: '是否执行删除操作',
             content: '<p>删除后不能找回，还要继续吗</p>',
             onOk: () => {
-              this.$Message.info('删除成功！')
+              let params = {
+                'ids': this.rowId,
+                'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+              }
+              deleteUser(params).then((res) => {
+                if (res.data.status === '200') {
+                  this.$Message.info('删除成功！')
+                  this.getData()
+                } else {
+                  this.$Message.info('操作失败，请重试！')
+                }
+              })
             }
           })
         }
@@ -223,7 +221,8 @@ export default{
     },
     // 搜索
     onSearch (val) {
-      console.log(val)
+      this.params.name = val
+      this.getData()
     },
     // 筛选提交
     filterSubmit () {
@@ -260,9 +259,6 @@ export default{
 </script>
 
 <style scoped lang="less">
-  .handle{
-    float: right;
-  }
   .searchInput{
     float: left;
     /deep/ .search-btn{

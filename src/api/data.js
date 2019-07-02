@@ -205,6 +205,23 @@ export const listProject = (params) => {
     method: 'post'
   })
 }
+// 项目列表
+export const listMapProject = (params) => {
+  return axios.request({
+    url: '/project/listMapProject',
+    data: params,
+    method: 'post'
+  })
+}
+// 项目详情
+export const selectProjectDetail = (params) => {
+  return axios.request({
+    url: '/project/selectProjectDetail',
+    data: params,
+    method: 'post'
+  })
+}
+
 // 任务列表
 export const listTask = (params) => {
   return axios.request({
@@ -315,6 +332,40 @@ export const taskCrossingFunction = (params) => {
 export const listOverdueMaterial = (params) => {
   return axios.request({
     url: '/overdue/listOverdueMaterial',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 删除用户
+export const deleteUser = (params) => {
+  return axios.request({
+    url: '/user/deleteUser',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 删除物资
+export const deleteMaterial = (params) => {
+  return axios.request({
+    url: '/materia/deleteMaterial',
+    data: params,
+    method: 'post'
+  })
+}
+// 我的物资
+export const listMyMaterial = (params) => {
+  return axios.request({
+    url: '/materia/listMyMaterial',
+    data: params,
+    method: 'post'
+  })
+}
+// 行政区划
+export const areaData = (params) => {
+  return axios.request({
+    url: '/area/listAreaRename',
     data: params,
     method: 'post'
   })

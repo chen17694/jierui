@@ -28,7 +28,7 @@ Vue.use(VOrgTree)
 Vue.use(VueAMap);
 VueAMap.initAMapApiLoader({
   key: '4a39b6a30a22fedf2647a6d0f759b010',
-  plugin: ['Geocoder', 'ToolBar']
+  plugin: ['Geocoder', 'ToolBar', 'PlaceSearch', 'MarkerClusterer']
 });
 /**
  * @description 注册admin内置插件

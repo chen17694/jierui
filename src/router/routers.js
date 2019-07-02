@@ -381,13 +381,22 @@ export default [
     component: Main,
     children: [
       {
-        path: 'my',
-        name: 'my',
+        path: 'myProject',
+        name: 'myProject',
         meta: {
           icon: 'md-funnel',
           title: '我的项目'
         },
         component: () => import('@/view/my/myProject.vue')
+      },
+      {
+        path: 'myMaterial',
+        name: 'myMaterial',
+        meta: {
+          icon: 'md-funnel',
+          title: '我的物资'
+        },
+        component: () => import('@/view/my/myMaterial.vue')
       },
       {
         path: 'myDaily',
@@ -463,6 +472,58 @@ export default [
             component: () => import('@/view/my/returnOverdue.vue')
           }
         ]
+      }
+    ]
+  },
+  {
+    path: '/project',
+    name: 'project',
+    meta: {
+      icon: 'md-menu',
+      title: '项目管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'projectManagement',
+        name: 'projectManagement',
+        meta: {
+          icon: 'md-funnel',
+          title: '项目管理'
+        },
+        component: parentView,
+        children: [
+          {
+            path: 'projectManagementList',
+            name: 'projectManagementList',
+            meta: {
+              icon: 'md-funnel',
+              title: '项目管理',
+              hideInBread: true
+            },
+            component: () => import('@/view/project/projectManagement.vue')
+          },
+          {
+            path: 'addProject',
+            name: 'addProject',
+            meta: {
+              icon: 'md-funnel',
+              title: '新建项目',
+              // hideInMenu: true,
+              needInBread: true
+            },
+            component: () => import('@/view/project/addProject.vue')
+          }
+        ]
+      },
+      {
+        path: 'taskManagement',
+        name: 'taskManagement',
+        meta: {
+          icon: 'md-funnel',
+          title: '任务管理'
+        },
+        component: () => import('@/view/project/taskManagement.vue')
       }
     ]
   },

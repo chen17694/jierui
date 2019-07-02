@@ -2,7 +2,7 @@
   <div>
     <Row type="flex" justify="end" style="padding: 10px 0">
       <Col span="24">
-        <div class="handle">
+        <div style="float: right">
           <Dropdown @on-click="dropdownClick" style="margin-right: 10px">
             <Button type="primary" ghost>
               选择操作
@@ -234,7 +234,4 @@ export default {
 </script>
 
 <style scoped>
-  .handle{
-    float: right;
-  }
 </style>

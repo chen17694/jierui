@@ -12,7 +12,7 @@
         </div>
       </Col>
       <Col span="12">
-        <div class="handle">
+        <div style="float: right">
           <Dropdown @on-click="dropdownClick" style="margin-right: 10px">
             <Button type="primary" ghost>
               选择操作
@@ -77,19 +77,6 @@
       </Card>
     </div>
     <tables ref="tables" :total="this.total" :on-change="this.pageChange" :on-page-size-change="this.PageSizeChange" v-model="tableData" :columns="columns" @on-edit="onEdit" @on-selection-change="onSelectionChange"></tables>
-    <Modal
-      v-model="deletePanel"
-      width="300"
-      title=""
-    >
-      <div>
-        <p>删除后不能找回，还要继续吗？</p>
-      </div>
-      <div slot="footer">
-        <Button type="text" size="large">取消</Button>
-        <Button type="primary" size="large">确定</Button>
-      </div>
-    </Modal>
     <Modal
       v-model="editPanel"
       @on-cancel="closeEdit"
@@ -509,9 +496,6 @@ export default{
 <style scoped lang="less">
   .ivu-select{
     margin-bottom: 10px;
-  }
-  .handle{
-    float: right;
   }
   .searchInput{
     float: left;
