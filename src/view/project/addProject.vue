@@ -32,48 +32,41 @@ export default {
         city: '全国'
       },
       menu: null,
+      lat: '',
+      lng: '',
       events: {
         complete () {
           let o = amapManager.getMap()
           let icon1 = self.icon1
-          let content = []
-          console.log(self.asdasdasd)
-          content.push('<div class="context-menu-content">')
-          content.push('<ul class="context_menu">')
-          content.push('<li style="border-bottom: 1px solid #e6e6e6;display: flex;align-items: center;"><img src="' + icon1 + '" style="width: 18px; margin-right: 5px">设为项目位置</li>')
-          content.push('<li id="closeBtn" style="padding-left: 33px">取消</li>')
-          content.push('</ul>')
-          content.push('</div>')
-          console.log(content.join(''))
-          self.menu = new AMap.ContextMenu({
-            isCustom: true,
-            content: content.join('')
-          })
+          self.menu = new AMap.ContextMenu()
+          self.menu.addItem('<img src="' + icon1 + '" style="width: 18px; margin-right: 5px"><span>设置项目位置</span>', function () {
+            self.toAdd()
+          }, 0)
+          self.menu.addItem('<span style="padding-left: 25px">取消</span>', function () {
+            self.close()
+          }, 0)
           o.on('rightclick', (e) => {
+            self.lat = e.lnglat.lat
+            self.lng = e.lnglat.lng
             self.menu.open(o, e.lnglat)
-            setTimeout(() => {
-              self.watchbtn()
-            }, 500)
           })
         }
       }
     }
   },
   methods: {
-    watchbtn () {
-      let closeBtn = document.getElementById('closeBtn')
-      closeBtn.addEventListener('click', function () {
-        console.log(123164798748654)
+    toAdd () {
+      this.$router.push({
+        name: 'addProjectForm',
+        params: {
+          lat: this.lat,
+          lng: this.lng
+        }
       })
-      console.log(closeBtn)
     },
-    asdasdasd () {
-      console.log(123123)
-      // return this.TrueClose
+    close () {
+      this.menu.close()
     },
-    // TrueClose () {
-    //   console.log('geiwodian')
-    // },
     cascaderChange () {
       let value = arguments[1].slice(1, arguments[1].length).map((item) => {
         return item.label
@@ -109,18 +102,14 @@ export default {
   .amap-page-container{
     height: 100%;
     position: relative;
-    /deep/ .context-menu-content{
+    /deep/ .amap-menu-outer{
       width: 150px;
-      background-color: #ffffff;
-      .context_menu{
-        list-style-type: none;
-        li{
-          padding: 10px 10px;
-          cursor: pointer;
-        }
-        li:hover{
-          background-color: #e6e6e6;
-        }
+      li{
+        display: flex;
+        align-items: center;
+      }
+      li:first-child{
+        border-bottom: 1px solid #e6e6e6;
       }
     }
   }

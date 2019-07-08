@@ -35,6 +35,9 @@
       <slot name="header" slot="header"></slot>
       <slot name="footer" slot="footer"></slot>
       <slot name="loading" slot="loading"></slot>
+      <template slot-scope="{ row, index }" slot="action" v-if="projectListBtnVisible">
+        <Button type="primary" v-for="(item, index) in row.projectButtonPermissionBeans" @click="onEdit(item, row)" :key="index">{{item.name}}</Button>
+      </template>
     </Table>
     <div style="margin: 10px;overflow: hidden" v-show="this.showPage">
       <div style="float: right;">
@@ -51,6 +54,10 @@ import './index.less'
 export default {
   name: 'Tables',
   props: {
+    projectListBtnVisible: {
+      type: Boolean,
+      default: false
+    },
     showPage: {
       type: Boolean,
       default: true
@@ -245,6 +252,9 @@ export default {
     },
     onCurrentChange (currentRow, oldCurrentRow) {
       this.$emit('on-current-change', currentRow, oldCurrentRow)
+    },
+    onEdit (params, row) {
+      this.$emit('on-edit', params, row)
     },
     onSelect (selection, row) {
       this.$emit('on-select', selection, row)

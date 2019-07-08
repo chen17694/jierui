@@ -84,7 +84,7 @@
           <span @click="close" style="cursor: pointer">收起</span>
         </div>
       </Card>
-      <Card v-if="isDetail" style="width:350px; position: absolute; left: 20px; top: 120px;">
+      <Card v-if="isDetail" style="width:350px; height: 550px; overflow-y: scroll; position: absolute; left: 20px; top: 120px;">
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px;border-bottom: 1px solid rgb(230, 230, 230);">
           <span style="color: #2E8CEB; font-size: 15px; font-weight: bold">{{detailData.name}}</span>
           <img src="../../assets/images/icon1.png" style="width: 22px;">
@@ -102,7 +102,7 @@
         <div style=" padding: 5px 15px; border-bottom: 1px solid rgb(230, 230, 230);">
           项目基本信息
         </div>
-        <div style="padding: 15px; border-bottom: 1px solid rgb(230, 230, 230);">
+        <div style="padding: 15px; ">
           <div style="line-height: 24px"><span class="label">项目名称：</span><span>{{detailData.name}}</span></div>
           <div style="line-height: 24px"><span class="label">甲方单位：</span><span>{{detailData.firstPartyCompanyName}}</span></div>
           <div style="line-height: 24px"><span class="label">甲方负责人：</span><span>{{detailData.firstPartyUserName}}</span></div>
@@ -113,7 +113,7 @@
           <div style="line-height: 24px"><span class="label">项目备注：</span><span>{{detailData.remarks}}</span></div>
         </div>
       </Card>
-      <Button type="primary" v-show="isDetail" @click="toList" style="position: absolute; top: 560px; left: 20px;">返回列表</Button>
+      <Button type="primary" v-show="isDetail" @click="toList" style="position: absolute; top: 680px; left: 20px;">返回列表</Button>
     </div>
   </div>
 </template>
@@ -142,7 +142,7 @@ export default {
       p_reject,
       p_revoke,
       avatar: p_start,
-      onStatus: '2',
+      onStatus: '1',
       isDetail: false,
       detailData: {},
       minClusterSize: 2,
@@ -163,25 +163,13 @@ export default {
         pName: 'ToolBar',
         position: 'RB',
         events: {
-          init (instance) {
-            console.log(instance)
-          }
+          init (instance) {}
         }
       }],
       events: {
-        init (o) {
-          setTimeout(() => {
-            self.map = new AMap.MarkerClusterer(o, self.markerRefs, {
-              gridSize: 80,
-              renderCluserMarker: self._renderCluserMarker,
-              minClusterSize: 2
-            })
-          }, 0)
-        },
         complete () {
           let o = amapManager.getMap()
           o.on('zoomchange', () => {
-            console.log(123)
             let zoom = o.getZoom()
             if (zoom > 13) {
               self.map.setMinClusterSize(2)
@@ -242,7 +230,17 @@ export default {
     }
   },
   methods: {
+    initMark (self, o) {
+      self.map = new AMap.MarkerClusterer(o, self.markerRefs, {
+        gridSize: 80,
+        renderCluserMarker: self._renderCluserMarker,
+        minClusterSize: 2
+      })
+    },
     statusChange () {
+      this.markers = []
+      this.markerRefs = []
+      this.map.clearMarkers()
       this.getMapProject()
       this.getProject()
     },
@@ -273,13 +271,12 @@ export default {
     },
     positioning (lng, lat) {
       this.center = [lng, lat]
-      console.log(this.center)
     },
     getProject () {
       listProject({
         pageSize: 20,
         page: this.page,
-        userId: 'dea2ebe067494cb782c3b123e5740989',
+        userId: '27275ab6e7644f05b9921193295e2c7b',
         projectName: '',
         firstPartyCompanyId: '',
         projectManagerId: '',
@@ -292,27 +289,30 @@ export default {
         startTime: '',
         endTime: ''
       }).then((res) => {
-        console.log(res)
         this.projectList = res.data.data.projectList
         this.total = res.data.data.count
+        if (this.total === '0') {
+          this.page = 0
+        } else {
+          this.page = 1
+        }
         this.maxPage = Math.ceil(this.total / 20)
       })
     },
     getProjectDetail (id) {
       selectProjectDetail({
         projectId: id,
-        userId: 'dea2ebe067494cb782c3b123e5740989'
+        userId: '27275ab6e7644f05b9921193295e2c7b'
       }).then((res) => {
         this.isDetail = true
         this.detailData = res.data.data
-        console.log(res.data.data)
       })
     },
     getMapProject () {
       listMapProject({
         pageSize: 0,
         page: 1,
-        userId: 'dea2ebe067494cb782c3b123e5740989',
+        userId: '27275ab6e7644f05b9921193295e2c7b',
         projectName: '',
         firstPartyCompanyId: '',
         projectManagerId: '',
@@ -326,14 +326,12 @@ export default {
         endTime: ''
       }).then((res) => {
         let projectList = res.data.data.projectList
-        console.log(projectList)
         if (projectList.length > 0) {
           this.center = [projectList[0].lng, projectList[0].lat]
         } else {
           this.center = this.center.length === 0 ? [116.397428, 39.90923] : this.center
         }
         let self = this
-        this.markers = []
         projectList.forEach((item) => {
           let status = ''
           if (item.pauseStatus === '1') {
@@ -373,8 +371,10 @@ export default {
               }
             }
           })
-          console.log(this.markers)
         })
+        setTimeout(() => {
+          self.initMark(self, amapManager.getMap())
+        }, 0)
       })
     },
     getAreaData () {

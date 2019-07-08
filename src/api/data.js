@@ -287,6 +287,14 @@ export const projectFunction = (params) => {
     method: 'post'
   })
 }
+// 项目/任务/任务路口提醒
+export const remindSet = (params) => {
+  return axios.request({
+    url: '/project/remindSet',
+    data: params,
+    method: 'post'
+  })
+}
 // 项目逾期列表
 export const listOverdueTask = (params) => {
   return axios.request({
@@ -366,6 +374,14 @@ export const listMyMaterial = (params) => {
 export const areaData = (params) => {
   return axios.request({
     url: '/area/listAreaRename',
+    data: params,
+    method: 'post'
+  })
+}
+// 创建项目
+export const addProject = (params) => {
+  return axios.request({
+    url: '/project/addProject',
     data: params,
     method: 'post'
   })

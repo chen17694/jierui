@@ -509,10 +509,33 @@ export default [
             meta: {
               icon: 'md-funnel',
               title: '新建项目',
-              // hideInMenu: true,
+              hideInMenu: true,
               needInBread: true
             },
             component: () => import('@/view/project/addProject.vue')
+          },
+          {
+            path: 'addProjectForm',
+            name: 'addProjectForm',
+            meta: {
+              icon: 'md-funnel',
+              title: '新建项目',
+              hideInMenu: true,
+              needInBread: true,
+              notCache: true
+            },
+            component: () => import('@/view/project/addProjectForm.vue')
+          },
+          {
+            path: 'projectReminder',
+            name: 'projectReminder',
+            meta: {
+              icon: 'md-funnel',
+              title: '项目提醒',
+              hideInMenu: true,
+              needInBread: true
+            },
+            component: () => import('@/view/project/projectReminder.vue')
           }
         ]
       },

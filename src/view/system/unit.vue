@@ -27,7 +27,7 @@
         </div>
       </Col>
     </Row>
-    <div slot="filterPanel" class="filterPanel" v-if="filter===true">
+    <div class="filterPanel" v-if="filter===true">
       <Card :bordered="false">
         <Row>
           <Col span="12">
@@ -69,7 +69,7 @@
           </Col>
           <Col span="24">
             <div class="btns">
-              <Button type="primary" @click="filterSubmit ">确定</Button>
+              <Button type="primary" @click="filterSubmit">确定</Button>
               <Button @click="filterReset">重置</Button>
             </div>
           </Col>
