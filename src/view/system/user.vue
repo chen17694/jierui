@@ -97,6 +97,7 @@
 <script>
 import Tables from '_c/tables'
 import { getUserList, deleteUser } from '@/api/data'
+import { getUserId } from '@/libs/util'
 export default{
   name: 'unit_table_page',
   components: { Tables },
@@ -169,7 +170,7 @@ export default{
             onOk: () => {
               let params = {
                 'ids': this.rowId,
-                'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+                'userId': getUserId()
               }
               deleteUser(params).then((res) => {
                 if (res.data.status === '200') {
@@ -251,9 +252,6 @@ export default{
   },
   mounted () {
     this.getData()
-    // getRegion().then(res => {
-    //   this.regionData = res.data
-    // })
   }
 }
 </script>

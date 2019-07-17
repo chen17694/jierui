@@ -546,7 +546,42 @@ export default [
           icon: 'md-funnel',
           title: '任务管理'
         },
-        component: () => import('@/view/project/taskManagement.vue')
+        component: parentView,
+        children: [
+          {
+            path: 'taskManagementList',
+            name: 'taskManagementList',
+            meta: {
+              icon: 'md-funnel',
+              title: '任务管理',
+              hideInBread: true
+            },
+            component: () => import('@/view/project/taskManagement.vue')
+          },
+          {
+            path: 'addTask',
+            name: 'addTask',
+            meta: {
+              icon: 'md-funnel',
+              title: '新建任务',
+              hideInMenu: true,
+              needInBread: true
+            },
+            component: () => import('@/view/project/addTask.vue')
+          },
+          {
+            path: 'addTaskForm',
+            name: 'addTaskForm',
+            meta: {
+              icon: 'md-funnel',
+              title: '新建任务',
+              hideInMenu: true,
+              needInBread: true,
+              notCache: true
+            },
+            component: () => import('@/view/project/addTaskForm.vue')
+          }
+        ]
       }
     ]
   },

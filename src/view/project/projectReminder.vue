@@ -26,12 +26,13 @@
 
 <script>
 import { remindSet, getRemindSet } from '@/api/data'
+import { getUserId } from '@/libs/util'
 export default {
   name: 'projectReminder',
   data () {
     return {
       formItem: {
-        remindStatus: '',
+        remindStatus: false,
         remindPercentage: 0
       }
     }
@@ -42,7 +43,7 @@ export default {
         remindStatus: this.formItem.remindStatus ? '0' : '1',
         remindPercentage: String(this.formItem.remindPercentage),
         type: '1',
-        userId: '27275ab6e7644f05b9921193295e2c7b'
+        userId: getUserId()
       }).then((res) => {
         if (res.data.status === '200') {
           this.$Message.info('设置成功！')
@@ -53,10 +54,15 @@ export default {
     },
     getRemindSet () {
       getRemindSet({
-        type: '1,',
-        userId: '27275ab6e7644f05b9921193295e2c7b'
+        type: '1',
+        userId: getUserId()
       }).then((res) => {
         console.log(res)
+        if (res.data.status === '200') {
+          console.log(res.data.remindPercentage)
+          this.formItem.remindPercentage = Number(res.data.data.remindPercentage)
+          this.formItem.remindStatus = res.data.data.remindStatus === '0'
+        }
       })
     },
     back () {
@@ -65,7 +71,7 @@ export default {
       })
     }
   },
-  mounted () {
+  created () {
     this.getRemindSet()
   }
 }

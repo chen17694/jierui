@@ -38,16 +38,16 @@
       <template slot-scope="{ row, index }" slot="action" v-if="projectListBtnVisible">
         <div style="display: flex">
           <div v-for="(item, index) in row.projectButtonPermissionBeans" :key="index" style="height: 30px">
-            <img src="../../assets/images/p1.png" v-if="item.permissionCode === '1'" alt="开始项目" class="btn" @click="onEdit(item, row)">
-            <img src="../../assets/images/p1.png" v-if="item.permissionCode === '2' && row.pauseStatus === '1' " alt="开始项目" class="btn" @click="onEdit(item, row)">
-            <img src="../../assets/images/p2.png" v-if="item.permissionCode === '2' && row.pauseStatus === '0' " alt="暂停项目" class="btn" @click="onEdit(item, row)">
-            <img src="../../assets/images/p3.png" v-if="item.permissionCode === '3'" alt="申请暂停项目" class="btn" @click="onEdit(item, row)">
-            <img src="../../assets/images/p4.png" v-if="item.permissionCode === '4'" alt="撤销项目" class="btn" @click="onEdit(item, row)">
-            <img src="../../assets/images/p5.png" v-if="item.permissionCode === '5'" alt="申请撤销项目" class="btn" @click="onEdit(item, row)">
-            <img src="../../assets/images/p6.png" v-if="item.permissionCode === '6'" alt="逾期催办项目" class="btn" @click="onEdit(item, row)">
-            <img src="../../assets/images/p7.png" v-if="item.permissionCode === '7'" alt="提交审核项目" class="btn" @click="onEdit(item, row)">
-            <img src="../../assets/images/p8.png" v-if="item.permissionCode === '8'" alt="删除项目" class="btn" @click="onEdit(item, row)">
-            <img src="../../assets/images/p9.png" v-if="item.permissionCode === '9'" alt="创建任务" class="btn" @click="onEdit(item, row)">
+            <img src="../../assets/images/p1.png" v-if="item.permissionCode === '1'" title="开始项目" class="btn" @click="onEdit(item, row)">
+            <img src="../../assets/images/p1.png" v-if="item.permissionCode === '2' && row.pauseStatus === '1' " title="开始项目" class="btn" @click="onEdit(item, row)">
+            <img src="../../assets/images/p2.png" v-if="item.permissionCode === '2' && row.pauseStatus === '0' " title="暂停项目" class="btn" @click="onEdit(item, row)">
+            <img src="../../assets/images/p3.png" v-if="item.permissionCode === '3'" title="申请暂停项目" class="btn" @click="onEdit(item, row)">
+            <img src="../../assets/images/p4.png" v-if="item.permissionCode === '4'" title="撤销项目" class="btn" @click="onEdit(item, row)">
+            <img src="../../assets/images/p5.png" v-if="item.permissionCode === '5'" title="申请撤销项目" class="btn" @click="onEdit(item, row)">
+            <img src="../../assets/images/p6.png" v-if="item.permissionCode === '6'" title="逾期催办项目" class="btn" @click="onEdit(item, row)">
+            <img src="../../assets/images/p7.png" v-if="item.permissionCode === '7'" title="提交审核项目" class="btn" @click="onEdit(item, row)">
+            <img src="../../assets/images/p8.png" v-if="item.permissionCode === '8'" title="删除项目" class="btn" @click="onEdit(item, row)">
+            <img src="../../assets/images/p9.png" v-if="item.permissionCode === '9'" title="创建任务" class="btn" @click="onEdit(item, row)">
           </div>
         </div>
       </template>
