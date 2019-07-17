@@ -25,7 +25,7 @@
 </template>
 
 <script>
-import { remindSet } from '@/api/data'
+import { remindSet, getRemindSet } from '@/api/data'
 export default {
   name: 'projectReminder',
   data () {
@@ -51,11 +51,22 @@ export default {
         }
       })
     },
+    getRemindSet () {
+      getRemindSet({
+        type: '1,',
+        userId: '27275ab6e7644f05b9921193295e2c7b'
+      }).then((res) => {
+        console.log(res)
+      })
+    },
     back () {
       this.$router.push({
         name: 'projectManagementList'
       })
     }
+  },
+  mounted () {
+    this.getRemindSet()
   }
 }
 </script>

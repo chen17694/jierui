@@ -69,7 +69,7 @@
             </div>
           </div>
         </div>
-        <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 11px 10px 15px; border-bottom: 1px solid #e6e6e6;">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 11px 10px 15px; border-bottom: 1px solid #e6e6e6;"  v-show="panelShow">
           <div>{{page}}/{{maxPage}}页</div>
           <div style="display: flex">
             <Button style="margin-right: 4px" @click="firstPage">首页</Button>
@@ -81,7 +81,7 @@
         </div>
         <div style="display: flex; justify-content: space-between; padding: 10px 15px; color: #2E8CEB;">
           <span @click="allProject" style="cursor: pointer">所有项目</span>
-          <span @click="close" style="cursor: pointer">收起</span>
+          <span @click="close" style="cursor: pointer">{{this.panelShow ? '收起' : '展开'}}</span>
         </div>
       </Card>
       <Card v-if="isDetail" style="width:350px; height: 550px; overflow-y: scroll; position: absolute; left: 20px; top: 120px;">

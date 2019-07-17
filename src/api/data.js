@@ -65,7 +65,6 @@ export const insertOrUpdateUser = (params) => {
   })
 }
 
-// 单位列表
 export const getUnitList = (params) => {
   return axios.request({
     url: '/office/listOffice',
@@ -73,7 +72,6 @@ export const getUnitList = (params) => {
     method: 'post'
   })
 }
-// 新增+修改单位
 export const addOffice = (params) => {
   return axios.request({
     url: '/office/insertOrUpdateOffice',
@@ -81,7 +79,6 @@ export const addOffice = (params) => {
     method: 'post'
   })
 }
-// 删除单位
 export const delOffice = (params) => {
   return axios.request({
     url: '/office/deleteOffice',
@@ -89,14 +86,12 @@ export const delOffice = (params) => {
     method: 'post'
   })
 }
-// 行政区域列表
 export const getRegionList = () => {
   return axios.request({
     url: '/area/listArea',
     method: 'post'
   })
 }
-// 新增+修改行政区域
 export const insertOrUpdateOffice = (params) => {
   return axios.request({
     url: '/area/insertOrUpdateOffice',
@@ -104,7 +99,6 @@ export const insertOrUpdateOffice = (params) => {
     method: 'post'
   })
 }
-// 删除行政区域
 export const deleteArea = (params) => {
   return axios.request({
     url: '/area/deleteArea',
@@ -112,7 +106,6 @@ export const deleteArea = (params) => {
     method: 'post'
   })
 }
-// 角色列表
 export const listRole = (params) => {
   return axios.request({
     url: '/role/listRole',
@@ -120,7 +113,6 @@ export const listRole = (params) => {
     method: 'post'
   })
 }
-// 角色权限
 export const ListAllMenu = (params) => {
   return axios.request({
     url: '/role/listAllMenu',
@@ -128,7 +120,6 @@ export const ListAllMenu = (params) => {
     method: 'post'
   })
 }
-// 保存角色权限
 export const insertOrUpdateRole = (params) => {
   return axios.request({
     url: '/role/insertOrUpdateRole',
@@ -136,7 +127,6 @@ export const insertOrUpdateRole = (params) => {
     method: 'post'
   })
 }
-// 角色用户列表
 export const listUserRole = (params) => {
   return axios.request({
     url: '/role/listUserRole',
@@ -144,7 +134,6 @@ export const listUserRole = (params) => {
     method: 'post'
   })
 }
-// 删除角色
 export const deleteRole = (params) => {
   return axios.request({
     url: '/role/deleteRole',
@@ -152,7 +141,6 @@ export const deleteRole = (params) => {
     method: 'post'
   })
 }
-// 所属地
 export const listAreaByType = (params) => {
   return axios.request({
     url: '/area/listAreaByType',
@@ -189,7 +177,6 @@ export const listRoleByOfficeId = (params) => {
     method: 'post'
   })
 }
-// 日报列表
 export const dailyList = (params) => {
   return axios.request({
     url: '/dailyReport/list',
@@ -197,7 +184,6 @@ export const dailyList = (params) => {
     method: 'post'
   })
 }
-// 项目列表
 export const listProject = (params) => {
   return axios.request({
     url: '/project/listProject',
@@ -205,7 +191,6 @@ export const listProject = (params) => {
     method: 'post'
   })
 }
-// 项目列表
 export const listMapProject = (params) => {
   return axios.request({
     url: '/project/listMapProject',
@@ -213,7 +198,6 @@ export const listMapProject = (params) => {
     method: 'post'
   })
 }
-// 项目详情
 export const selectProjectDetail = (params) => {
   return axios.request({
     url: '/project/selectProjectDetail',
@@ -222,7 +206,6 @@ export const selectProjectDetail = (params) => {
   })
 }
 
-// 任务列表
 export const listTask = (params) => {
   return axios.request({
     url: '/task/listTask',
@@ -230,7 +213,6 @@ export const listTask = (params) => {
     method: 'post'
   })
 }
-// 新增日报
 export const createDaily = (params) => {
   return axios.request({
     url: '/dailyReport/createList',
@@ -238,7 +220,6 @@ export const createDaily = (params) => {
     method: 'post'
   })
 }
-// 删除日报
 export const deleteDaily = (params) => {
   return axios.request({
     url: '/dailyReport/delete',
@@ -246,7 +227,6 @@ export const deleteDaily = (params) => {
     method: 'post'
   })
 }
-// 删除日报
 export const updateDaily = (params) => {
   return axios.request({
     url: '/dailyReport/update',
@@ -254,8 +234,13 @@ export const updateDaily = (params) => {
     method: 'post'
   })
 }
-
-// 我的审批
+export const getRemindSet = (params) => {
+  return axios.request({
+    url: '/project/getRemindSet',
+    data: params,
+    method: 'post'
+  })
+}
 export const listHistory = (params) => {
   return axios.request({
     url: '/process/listHistory',
@@ -263,7 +248,6 @@ export const listHistory = (params) => {
     method: 'post'
   })
 }
-// 待我审批
 export const listWait = (params) => {
   return axios.request({
     url: '/process/listWait',
@@ -271,7 +255,6 @@ export const listWait = (params) => {
     method: 'post'
   })
 }
-// 项目逾期列表
 export const listOverdueProject = (params) => {
   return axios.request({
     url: '/overdue/listOverdueProject',
@@ -279,7 +262,6 @@ export const listOverdueProject = (params) => {
     method: 'post'
   })
 }
-// 项目功能方法
 export const projectFunction = (params) => {
   return axios.request({
     url: '/project/projectFunction',
@@ -287,7 +269,6 @@ export const projectFunction = (params) => {
     method: 'post'
   })
 }
-// 项目/任务/任务路口提醒
 export const remindSet = (params) => {
   return axios.request({
     url: '/project/remindSet',
@@ -295,7 +276,6 @@ export const remindSet = (params) => {
     method: 'post'
   })
 }
-// 项目逾期列表
 export const listOverdueTask = (params) => {
   return axios.request({
     url: '/overdue/listOverdueTask',
@@ -303,7 +283,6 @@ export const listOverdueTask = (params) => {
     method: 'post'
   })
 }
-// 任务功能方法
 export const taskFunction = (params) => {
   return axios.request({
     url: '/task/taskFunction',
@@ -311,7 +290,6 @@ export const taskFunction = (params) => {
     method: 'post'
   })
 }
-// 项目列表(用于筛选条件)
 export const listProjectSimple = (params) => {
   return axios.request({
     url: '/project/listProjectSimple',
@@ -319,7 +297,6 @@ export const listProjectSimple = (params) => {
     method: 'post'
   })
 }
-// 任务路口逾期
 export const listOverdueTaskCrossing = (params) => {
   return axios.request({
     url: '/overdue/listOverdueTaskCrossing',
@@ -327,7 +304,6 @@ export const listOverdueTaskCrossing = (params) => {
     method: 'post'
   })
 }
-// 任务路口功能方法
 export const taskCrossingFunction = (params) => {
   return axios.request({
     url: '/taskCrossingRelation/taskCrossingFunction',
@@ -336,7 +312,6 @@ export const taskCrossingFunction = (params) => {
   })
 }
 
-// 物资归还列表
 export const listOverdueMaterial = (params) => {
   return axios.request({
     url: '/overdue/listOverdueMaterial',
@@ -345,7 +320,6 @@ export const listOverdueMaterial = (params) => {
   })
 }
 
-// 删除用户
 export const deleteUser = (params) => {
   return axios.request({
     url: '/user/deleteUser',
@@ -354,7 +328,6 @@ export const deleteUser = (params) => {
   })
 }
 
-// 删除物资
 export const deleteMaterial = (params) => {
   return axios.request({
     url: '/materia/deleteMaterial',
@@ -362,7 +335,6 @@ export const deleteMaterial = (params) => {
     method: 'post'
   })
 }
-// 我的物资
 export const listMyMaterial = (params) => {
   return axios.request({
     url: '/materia/listMyMaterial',
@@ -370,7 +342,6 @@ export const listMyMaterial = (params) => {
     method: 'post'
   })
 }
-// 行政区划
 export const areaData = (params) => {
   return axios.request({
     url: '/area/listAreaRename',
@@ -378,7 +349,6 @@ export const areaData = (params) => {
     method: 'post'
   })
 }
-// 创建项目
 export const addProject = (params) => {
   return axios.request({
     url: '/project/addProject',

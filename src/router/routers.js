@@ -551,6 +551,26 @@ export default [
     ]
   },
   {
+    path: '/statistics',
+    name: 'statistics',
+    meta: {
+      icon: 'md-menu',
+      title: '统计分析'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'projectStatistics',
+        name: 'projectStatistics',
+        meta: {
+          icon: 'md-funnel',
+          title: '项目统计'
+        },
+        component: () => import('@/view/statistics/projectStatistics.vue')
+      }
+    ]
+  },
+  {
     path: '/system',
     name: 'system',
     meta: {
