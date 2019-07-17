@@ -85,14 +85,13 @@
 
 <script>
 import { getUnitList, getUserList, addProject } from '@/api/data'
+import { getUserId } from '@/libs/util'
 export default {
   name: 'addProjectForm',
   data () {
     let self = this
     const validateName = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入项目名称'))
-      } else if (value.length > 20) {
+      if (value === '' || value.length > 20) {
         callback(new Error('请输入项目名称(20字以内)'))
       } else {
         callback()
@@ -205,7 +204,7 @@ export default {
             'cityName': this.formItem.cityName,
             'districtName': this.formItem.districtName,
             'specificAddress': this.formItem.specificAddress,
-            'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+            'userId': getUserId()
           }).then((res) => {
             if (res.data.status === '200') {
               this.$Message.info('操作成功！')
@@ -265,7 +264,7 @@ export default {
         'name': '',
         'areaId': '',
         'type': '3',
-        'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+        'userId': getUserId()
       }).then(res => {
         if (res.data.status === '200') {
           this.firstPartyCompany = res.data.data.list

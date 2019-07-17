@@ -85,6 +85,7 @@
 
 <script>
 import { getUnitList, getUserList, addProject } from '@/api/data'
+import { getUserId } from '@/libs/util'
 export default {
   name: 'addProjectForm',
   data () {
@@ -205,7 +206,7 @@ export default {
             'cityName': this.formItem.cityName,
             'districtName': this.formItem.districtName,
             'specificAddress': this.formItem.specificAddress,
-            'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+            'userId': getUserId()
           }).then((res) => {
             if (res.data.status === '200') {
               this.$Message.info('操作成功！')
@@ -265,7 +266,7 @@ export default {
         'name': '',
         'areaId': '',
         'type': '3',
-        'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+        'userId': getUserId()
       }).then(res => {
         if (res.data.status === '200') {
           this.firstPartyCompany = res.data.data.list
