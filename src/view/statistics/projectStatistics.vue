@@ -36,7 +36,6 @@
 <script>
 import echarts from 'echarts'
 import tdTheme from './theme.json'
-import { on, off } from '@/libs/tools'
 echarts.registerTheme('tdTheme', tdTheme)
 export default {
   name: 'projectStatistics',
@@ -63,14 +62,10 @@ export default {
     }
   },
   methods: {
-    resize () {
-      this.dom.resize()
-    },
     getPercentWithPrecision (valueList, idx, precision) {
       if (!valueList[idx]) {
         return 0
       }
-
       let sum = valueList.reduce(function (acc, val) {
         return acc + (isNaN(val) ? 0 : val)
       }, 0)
@@ -78,7 +73,6 @@ export default {
         return 0
       }
       let digits = Math.pow(10, precision)
-      console.log('digits', digits)
       let votesPerQuota = valueList.map(function (val) {
         return (isNaN(val) ? 0 : val) / sum * digits * 100
       })
@@ -86,11 +80,9 @@ export default {
       let seats = votesPerQuota.map(function (votes) {
         return Math.floor(votes)
       })
-      console.log('seats', seats)
       let currentSum = seats.reduce(function (acc, val) {
         return acc + val
       }, 0)
-      console.log('currentSum', currentSum)
       let remainder = votesPerQuota.map(function (votes, idx) {
         return votes - seats[idx]
       })
@@ -179,11 +171,7 @@ export default {
       }
       this.dom = echarts.init(this.$refs.dom, 'tdTheme')
       this.dom.setOption(option)
-      on(window, 'resize', this.resize)
     })
-  },
-  beforeDestroy () {
-    off(window, 'resize', this.resize)
   }
 }
 </script>
