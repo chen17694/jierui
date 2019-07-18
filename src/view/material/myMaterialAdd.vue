@@ -4,8 +4,8 @@
       <Col span="12">
         <div class="searchInput">
           <div class="search">
-            <Input search @on-search="handleSearch" placeholder="请输入物资名称关键字" type="text" enter-button="搜索">
-            <span slot="prepend">物资名称:</span>
+            <Input search @on-search="handleSearch" placeholder="请输入用户姓名关键字" type="text" enter-button="搜索">
+            <span slot="prepend">姓名:</span>
             </Input>
           </div>
           <Button class="search-btn" type="primary" @click="openFilter"><Icon type="search"/>筛选</Button>
@@ -27,7 +27,6 @@
         </div>
       </Col>
     </Row>
-    <tables ref="tables" :total="this.total" v-model="tableData" :columns="columns"></tables>
   </div>
 </template>
 
@@ -35,7 +34,7 @@
 import Tables from '_c/tables'
 import { deleteMaterial, listMyMaterial } from '@/api/data'
 export default {
-  name: 'myMaterial',
+  name: 'myMaterialAdd',
   components: { Tables },
   data () {
     return {
@@ -46,6 +45,7 @@ export default {
       params: {
         pageSize: 10,
         page: 1,
+        id: 'dea2ebe067494cb782c3b123e5740989',
         name: ''
       },
       columns: [
@@ -55,11 +55,11 @@ export default {
           align: 'center'
         },
         { title: '物资名称', key: 'name' },
-        { title: '物资总数', key: 'amount' },
-        { title: '剩余数量', key: 'surplusAmount' },
-        { title: '出借数量', key: 'lendAmount' },
-        { title: '所属单位', key: 'officeName' },
-        { title: '物资类型', key: 'materialCategoryName' },
+        { title: '项目名称', key: 'projectNane' },
+        { title: '任务名称', key: 'taskName' },
+        { title: '物资数量', key: 'amount' },
+        { title: '归还日期', key: 'completionTime' },
+        { title: '剩余天数', key: 'remainderDays' },
         {
           title: '操作',
           key: 'handle',
@@ -78,9 +78,9 @@ export default {
     },
     getData () {
       listMyMaterial(this.params).then((res) => {
-        console.log(res.data.data)
+        console.log(res)
         if (res.data.status === '200') {
-          this.tableData = res.data.data.businessTaskMaterialBeanList
+          this.tableData = res.data.data
         }
       })
     },

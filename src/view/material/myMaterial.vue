@@ -35,7 +35,7 @@
 import Tables from '_c/tables'
 import { deleteMaterial, listMyMaterial } from '@/api/data'
 export default {
-  name: 'myMaterial',
+  name: 'myMaterialList',
   components: { Tables },
   data () {
     return {

@@ -393,7 +393,7 @@ export default [
         path: 'myMaterial',
         name: 'myMaterial',
         meta: {
-          icon: 'md-funnel',
+          icon: 'md-boat',
           title: '我的物资'
         },
         component: () => import('@/view/my/myMaterial.vue')
@@ -567,6 +567,47 @@ export default [
           title: '项目统计'
         },
         component: () => import('@/view/statistics/projectStatistics.vue')
+      }
+    ]
+  },
+  {
+    path: 'myMaterial',
+    name: 'myMaterial',
+    meta: {
+      icon: 'md-boat',
+      title: '物资管理'
+    },
+    component: parentView,
+    children: [
+      {
+        path: 'myMaterialList',
+        name: 'myMaterialList',
+        meta: {
+          icon: 'md-funnel',
+          title: '物资列表',
+          hideInMenu: false
+        },
+        component: () => import('@/view/material/myMaterial.vue')
+      },
+      {
+        path: 'myMaterialAdd',
+        name: 'myMaterialAdd',
+        meta: {
+          icon: 'md-funnel',
+          title: '创建物资',
+          hideInMenu: true
+        },
+        component: () => import('@/view/material/myMaterialAdd.vue')
+      },
+      {
+        path: 'myMaterialDetail',
+        name: 'myMaterialDetail',
+        meta: {
+          icon: 'md-funnel',
+          title: '物资详情',
+          hideInMenu: true
+        },
+        component: () => import('@/view/material/myMaterialDetail.vue')
       }
     ]
   },

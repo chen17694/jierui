@@ -356,3 +356,5 @@ export const addProject = (params) => {
     method: 'post'
   })
 }
+// 物资管理
+export const materialList = (params) => { return axios.request({ url: '/materia/listMaterial', data: params, method: 'post' }) } // 物资列表
