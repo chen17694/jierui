@@ -546,7 +546,42 @@ export default [
           icon: 'md-funnel',
           title: '任务管理'
         },
-        component: () => import('@/view/project/taskManagement.vue')
+        component: parentView,
+        children: [
+          {
+            path: 'taskManagementList',
+            name: 'taskManagementList',
+            meta: {
+              icon: 'md-funnel',
+              title: '任务管理',
+              hideInBread: true
+            },
+            component: () => import('@/view/project/taskManagement.vue')
+          },
+          {
+            path: 'addTask',
+            name: 'addTask',
+            meta: {
+              icon: 'md-funnel',
+              title: '新建任务',
+              hideInMenu: true,
+              needInBread: true
+            },
+            component: () => import('@/view/project/addTask.vue')
+          },
+          {
+            path: 'addTaskForm',
+            name: 'addTaskForm',
+            meta: {
+              icon: 'md-funnel',
+              title: '新建任务',
+              hideInMenu: true,
+              needInBread: true,
+              notCache: true
+            },
+            component: () => import('@/view/project/addTaskForm.vue')
+          }
+        ]
       }
     ]
   },
@@ -567,47 +602,165 @@ export default [
           title: '项目统计'
         },
         component: () => import('@/view/statistics/projectStatistics.vue')
+      },
+      {
+        path: 'tastStatistics',
+        name: 'tastStatistics',
+        meta: {
+          icon: 'md-funnel',
+          title: '任务统计'
+        },
+        component: () => import('@/view/statistics/taskStatistics.vue')
+      },
+      {
+        path: 'taskIntersectionStatistics',
+        name: 'taskIntersectionStatistics',
+        meta: {
+          icon: 'md-funnel',
+          title: '任务路口统计'
+        },
+        component: () => import('@/view/statistics/taskIntersectionStatistics.vue')
+      },
+      {
+        path: 'IntersectionStatistics',
+        name: 'IntersectionStatistics',
+        meta: {
+          icon: 'md-funnel',
+          title: '路口统计'
+        },
+        component: () => import('@/view/statistics/IntersectionStatistics.vue')
+      },
+      {
+        path: 'MaterialStatistics',
+        name: 'MaterialStatistics',
+        meta: {
+          icon: 'md-funnel',
+          title: '物资统计'
+        },
+        component: () => import('@/view/statistics/MaterialStatistics.vue')
+      },
+      {
+        path: 'EmployeeWorkloadStatistics',
+        name: 'EmployeeWorkloadStatistics',
+        meta: {
+          icon: 'md-funnel',
+          title: '员工工作量统计'
+        },
+        component: () => import('@/view/statistics/EmployeeWorkloadStatistics.vue')
       }
     ]
   },
   {
-    path: 'myMaterial',
-    name: 'myMaterial',
+    path: '/MaterialManager',
+    name: 'MaterialManager',
     meta: {
       icon: 'md-boat',
-      title: '物资管理'
+      title: '物资管理',
+      hideInMenu: false
     },
-    component: parentView,
+    component: Main,
     children: [
       {
-        path: 'myMaterialList',
-        name: 'myMaterialList',
+        path: 'MaterialList',
+        name: 'MaterialList',
         meta: {
           icon: 'md-funnel',
           title: '物资列表',
           hideInMenu: false
         },
-        component: () => import('@/view/material/myMaterial.vue')
+        component: () => import('@/view/material/Material.vue')
       },
       {
-        path: 'myMaterialAdd',
-        name: 'myMaterialAdd',
+        path: 'MaterialAdd',
+        name: 'MaterialAdd',
         meta: {
           icon: 'md-funnel',
           title: '创建物资',
-          hideInMenu: true
+          hideInMenu: false
         },
-        component: () => import('@/view/material/myMaterialAdd.vue')
+        component: () => import('@/view/material/MaterialAdd.vue')
       },
       {
-        path: 'myMaterialDetail',
-        name: 'myMaterialDetail',
+        path: 'MaterialDetail',
+        name: 'MaterialDetail',
         meta: {
           icon: 'md-funnel',
           title: '物资详情',
           hideInMenu: true
         },
-        component: () => import('@/view/material/myMaterialDetail.vue')
+        component: () => import('@/view/material/MaterialDetail.vue')
+      }
+    ]
+  },
+  {
+    path: '/DailyReview',
+    name: 'DailyReview',
+    meta: {
+      icon: 'md-boat',
+      title: '日报审阅'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'dailyList',
+        name: 'dailyList',
+        meta: {
+          icon: 'md-funnel',
+          title: '日报列表',
+          hideInMenu: false
+        },
+        component: () => import('@/view/daily/dailyList.vue')
+      },
+      {
+        path: 'dailyDetail',
+        name: 'dailyDetail',
+        meta: {
+          icon: 'md-funnel',
+          title: '日报详情',
+          hideInMenu: false
+        },
+        component: () => import('@/view/daily/dailyDetail.vue')
+      }
+    ]
+  },
+  {
+    path: '/info',
+    name: 'info',
+    meta: {
+      icon: 'ios-chatboxes',
+      title: '消息'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'infoList',
+        name: 'infoList',
+        meta: {
+          icon: 'md-funnel',
+          title: '消息列表',
+          hideInMenu: false
+        },
+        component: () => import('@/view/info/infoList.vue')
+      },
+      {
+        path: 'infoDetail',
+        name: 'infoDetail',
+        meta: {
+          icon: 'md-funnel',
+          title: '消息详情',
+          hideInMenu: true
+        },
+        component: () => import('@/view/info/infoDetail.vue')
+      },
+      {
+        path: 'infoPush',
+        name: 'infoPush',
+        meta: {
+          icon: 'md-funnel',
+          title: '消息推送',
+          hideInMenu: false
+        },
+        component: () => import('@/view/info/infoPush.vue')
       }
     ]
   },

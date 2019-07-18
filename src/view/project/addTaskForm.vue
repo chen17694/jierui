@@ -91,7 +91,9 @@ export default {
   data () {
     let self = this
     const validateName = (rule, value, callback) => {
-      if (value === '' || value.length > 20) {
+      if (value === '') {
+        callback(new Error('请输入项目名称'))
+      } else if (value.length > 20) {
         callback(new Error('请输入项目名称(20字以内)'))
       } else {
         callback()

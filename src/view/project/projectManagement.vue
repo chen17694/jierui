@@ -92,6 +92,7 @@
 
 <script>
 import { listProject, projectFunction, getUnitList, getUserList } from '@/api/data'
+import { getUserId } from '@/libs/util'
 import Tables from '_c/tables'
 export default {
   name: 'projectManagement',
@@ -101,7 +102,7 @@ export default {
       params: {
         pageSize: 10,
         page: 1,
-        userId: '27275ab6e7644f05b9921193295e2c7b',
+        userId: getUserId(),
         projectName: '',
         firstPartyCompanyId: '',
         projectManagerId: '',
@@ -199,7 +200,7 @@ export default {
         'name': '',
         'areaId': '',
         'type': '3',
-        'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+        'userId': getUserId()
       }).then(res => {
         if (res.data.status === '200') {
           this.firstPartyCompany = res.data.data.list
@@ -227,7 +228,7 @@ export default {
           onOk: () => {
             projectFunction({
               'projectId': row.id,
-              'userId': '27275ab6e7644f05b9921193295e2c7b',
+              'userId': getUserId(),
               'functionType': params.permissionCode,
               'pauseStatus': row.pauseStatus === '0' ? '1' : '0'
             }).then((res) => {
@@ -270,7 +271,7 @@ export default {
           onOk: () => {
             projectFunction({
               'projectId': row.id,
-              'userId': '27275ab6e7644f05b9921193295e2c7b',
+              'userId': getUserId(),
               'functionType': params.permissionCode
             }).then((res) => {
               console.log(res)

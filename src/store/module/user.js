@@ -1,7 +1,6 @@
 import {
   login,
   logout,
-  getUserInfo,
   getMessage,
   getContentByMsgId,
   hasRead,
@@ -9,12 +8,13 @@ import {
   restoreTrash,
   getUnreadCount
 } from '@/api/user'
-import { setToken, getToken } from '@/libs/util'
+import { setToken, getToken, setUserId, setOffice } from '@/libs/util'
 
 export default {
   state: {
     userName: '',
     userId: '',
+    office: {},
     avatarImgPath: '',
     token: getToken(),
     access: '',
@@ -31,20 +31,25 @@ export default {
     },
     setUserId (state, id) {
       state.userId = id
+      setUserId(id)
     },
-    setUserName (state, name) {
-      state.userName = name
+    setOffice (state, office) {
+      state.office = office
+      setOffice(office)
     },
-    setAccess (state, access) {
-      state.access = access
-    },
+    // setUserName (state, name) {
+    //   state.userName = name
+    // },
+    // setAccess (state, access) {
+    //   state.access = access
+    // },
     setToken (state, token) {
       state.token = token
       setToken(token)
     },
-    setHasGetInfo (state, status) {
-      state.hasGetInfo = status
-    },
+    // setHasGetInfo (state, status) {
+    //   state.hasGetInfo = status
+    // },
     setMessageCount (state, count) {
       state.unreadCount = count
     },
@@ -81,9 +86,15 @@ export default {
           userName,
           password
         }).then(res => {
-          const data = res.data
-          commit('setToken', data.token)
-          resolve()
+          if (res.data.status === '200') {
+            const data = res.data
+            commit('setToken', data.data.token.authToken)
+            commit('setUserId', data.data.id)
+            commit('setOffice', data.data)
+            resolve(res)
+          } else {
+            reject(res.data.msg)
+          }
         }).catch(err => {
           reject(err)
         })
@@ -94,7 +105,8 @@ export default {
       return new Promise((resolve, reject) => {
         logout(state.token).then(() => {
           commit('setToken', '')
-          commit('setAccess', [])
+          commit('setUserId', '')
+          commit('setOffice', {})
           resolve()
         }).catch(err => {
           reject(err)
@@ -106,25 +118,25 @@ export default {
       })
     },
     // 获取用户相关信息
-    getUserInfo ({ state, commit }) {
-      return new Promise((resolve, reject) => {
-        try {
-          getUserInfo(state.token).then(res => {
-            const data = res.data
-            commit('setAvatar', data.avatar)
-            commit('setUserName', data.name)
-            commit('setUserId', data.user_id)
-            commit('setAccess', data.access)
-            commit('setHasGetInfo', true)
-            resolve(data)
-          }).catch(err => {
-            reject(err)
-          })
-        } catch (error) {
-          reject(error)
-        }
-      })
-    },
+    // getUserInfo ({ state, commit }) {
+    //   return new Promise((resolve, reject) => {
+    //     try {
+    //       getUserInfo(state.token).then(res => {
+    //         const data = res.data
+    //         commit('setAvatar', data.avatar)
+    //         commit('setUserName', data.name)
+    //         commit('setUserId', data.user_id)
+    //         commit('setAccess', data.access)
+    //         commit('setHasGetInfo', true)
+    //         resolve(data)
+    //       }).catch(err => {
+    //         reject(err)
+    //       })
+    //     } catch (error) {
+    //       reject(error)
+    //     }
+    //   })
+    // },
     // 此方法用来获取未读消息条数，接口只返回数值，不返回消息列表
     getUnreadMessageCount ({ state, commit }) {
       getUnreadCount().then(res => {

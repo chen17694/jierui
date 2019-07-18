@@ -1,0 +1,289 @@
+<template>
+  <div class="MaterialAdd">
+    <div class="head-title">创建物资</div>
+    <Form ref="formMaterial" :model="formMaterial" :rules="ruleValidate" :label-width="180">
+        <FormItem label="物资名称" prop="name">
+          <Row>
+              <Col span="20">
+                <Input v-model="formMaterial.name" :maxlength="20" placeholder="请输入物资名称"></Input>
+              </Col>
+              <Col span="4">
+                  <div style="text-align:center;color:#808695;">(20字以内)</div>
+              </Col>
+          </Row>
+        </FormItem>
+        <FormItem label="物资数量" prop="amount">
+          <Row>
+              <Col span="20">
+                <!-- <Input v-model="formMaterial.amount" type="number" placeholder="请输入物资数量" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"></Input>  -->
+                <Input v-model="formMaterial.amount" type="number" placeholder="请输入物资数量"></Input>
+              </Col>
+          </Row>
+        </FormItem>
+        <FormItem label="是否需要单位负责人审批" prop="approvalStatus">
+            <RadioGroup v-model="formMaterial.approvalStatus">
+                <Radio label="1">是</Radio>
+                <Radio label="0">否</Radio>
+            </RadioGroup>
+        </FormItem>
+        <FormItem label="所属单位" prop="officeId">
+          <Row>
+              <Col span="20">
+                <Select v-model="formMaterial.officeId" placeholder="请选择" label-in-value @on-change="officeCategoryChange">
+                  <Option v-for="(item, key) in officeCategory" :value="item.value">{{item.label}}</Option>
+                </Select>
+              </Col>
+          </Row>
+        </FormItem>
+        <FormItem label="物资类别" prop="materialCategoryName">
+          <Row>
+                <Col span="20">
+                   <Select v-model="formMaterial.materialCategoryId" placeholder="请选择" label-in-value @on-change="materialCategoryChange">
+                      <Option v-for="(item, key) in materialCategory" :value="item.value">{{item.label}}</Option>
+                  </Select>
+                </Col>
+                <Col span="4">
+                  <Button type="text" style="color:#2d8cf0;" @click="categoryModal = true">新增</Button>
+                </Col>
+            </Row>
+        </FormItem>
+        <FormItem label="是否需要归还" prop="needReturnStatus">
+            <RadioGroup v-model="formMaterial.needReturnStatus">
+                <Radio label="1">是</Radio>
+                <Radio label="0">否</Radio>
+            </RadioGroup>
+        </FormItem>
+        <FormItem>
+            <Button type="primary" @click="handleSubmit('formMaterial')">保存</Button>
+            <Button @click="handleReset('formMaterial')" style="margin-left: 8px">返回</Button>
+        </FormItem>
+    </Form>
+    <Modal
+        v-model="categoryModal"
+        title="新增物资类别"
+        @on-ok="categoryOk"
+        :loading="categoryLoading"
+        @on-cancel="categoryCancel">
+        <Alert v-if="categoryWarning" type="error" closable>请输入物资类别/物资类别已存在</Alert>
+        <Form :model="formModal" :rules="modalValidate" :label-width="80">
+          <FormItem label="物资类别
+          " prop="materialCategoryName">
+            <Row>
+                <Col span="20">
+                  <Input v-model="formModal.materialCategoryName" :maxlength="20" placeholder="请输入物资名称"></Input>
+                </Col>
+                <Col span="4">
+                    <div style="text-align:center;color:#808695;">(20字以内)</div>
+                </Col>
+            </Row>
+          </FormItem>
+        </Form>
+    </Modal>
+  </div>
+</template>
+
+<script>
+import Tables from '_c/tables'
+import { getUserId, getOffice } from '@/libs/util'
+import { materialCategory, listOffice, addMaterial, addMaterialCategory, materialDetail, updateMaterial } from '@/api/data'
+export default {
+  name: 'MaterialAdd',
+  components: { Tables },
+  data () {
+    return {
+      formModal: {
+        materialCategoryName: ''
+      },
+      modalValidate: {
+        materialCategoryName: [{ required: true, message: ' ', trigger: 'blur' }]
+      },
+      categoryWarning: false,
+      categoryLoading: true,
+      categoryModal: false,
+      officeCategory: [],
+      materialCategory: [],
+      materialCategoryName: '',
+      formMaterial: {
+        id: '',
+        name: '',
+        approvalStatus: null,
+        amount: '',
+        materialCategoryName: '',
+        materialCategoryId: '',
+        officeId: '',
+        officeName: '',
+        needReturnStatus: ''
+      },
+      ruleValidate: {
+        name: [
+          { required: true, message: '请输入少于20字的物资名称/物资名称已重复', trigger: 'blur' }
+        ],
+        amount: [
+          { required: true, message: '请输入物资的数量', trigger: 'blur' }
+        ],
+        needReturnStatus: [
+          { require: true, trigger: 'change' }
+        ],
+        officeId: [
+          { required: true, message: '请选择物资所属单位', trigger: 'change' }
+        ],
+        materialCategoryId: [
+          { required: true, message: '请选择物资类别', trigger: 'change' }
+        ],
+        needReturnStatus: [
+          { required: true, trigger: 'change' }
+        ]
+      }
+    }
+  },
+  created () {
+    if (this.$route.query.id) {
+      this.MaterialDetail(this.$route.query.id)
+    }
+    this.MaterialCategory()
+    this.ListOffice(() => {
+      this.formMaterial.officeId = getOffice().officeId // 默认设置，当前用户所属单位信息
+      this.formMaterial.officeName = getOffice().office
+    })
+  },
+  methods: {
+    MaterialDetail (id) {
+      materialDetail({ id: id }).then((res) => {
+        if (res.data.status == '200') {
+          let gdata = res.data.data
+          console.log(gdata.amount)
+          this.formMaterial.id = gdata.id
+          this.formMaterial.name = gdata.name
+          this.formMaterial.amount = gdata.amount
+          this.formMaterial.approvalStatus = gdata.approvalStatus
+          this.formMaterial.materialCategoryName = gdata.materialCategoryName
+          this.formMaterial.materialCategoryId = gdata.materialCategoryId
+          this.formMaterial.officeId = gdata.officeId
+          this.formMaterial.officeName = gdata.officeName
+          this.formMaterial.needReturnStatus = gdata.needReturnStatus
+          console.log(this.formMaterial)
+        } else {}
+      })
+    },
+    AddMaterialCategory () {
+      let _this = this
+      addMaterialCategory({ name: _this.formModal.materialCategoryName }).then((res) => {
+        _this.categoryLoading = false
+        if (res.data.status == '200') {
+          _this.$Message.success('添加成功！')
+          _this.categoryModal = false
+        } else {
+          _this.$Message.error(res.data.msg)
+        }
+      })
+    },
+    UpdateMaterial () {
+      let _this = this
+      updateMaterial(_this.formMaterial).then((res) => {
+        if (res.data.status == '200') {
+          _this.$Message.success('修改成功')
+          _this.$router.push('materialList')
+        } else {
+          _this.$Message.error(res.data.msg)
+        }
+      })
+    },
+    categoryCancel () {
+      this.formModal.materialCategoryName = ''
+      this.categoryWarning = false
+    },
+    categoryOk () {
+      if (this.formModal.materialCategoryName) {
+        this.categoryLoading = true
+        this.AddMaterialCategory()
+      } else {
+        this.categoryWarning = true
+        this.categoryLoading = false
+      }
+    },
+    handleSubmit (name) {
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          if (this.$route.query.id) {
+            this.UpdateMaterial()
+          } else {
+            this.AddMaterial()
+          }
+        } else {
+          this.$Message.error('请检查填写信息！')
+        }
+      })
+    },
+    handleReset (name) {
+      this.$router.push('materialList')
+    },
+    AddMaterial () {
+      let _this = this
+      addMaterial(_this.formMaterial).then((res) => {
+        console.log(res.data)
+        if (res.data.status == '200') {
+          _this.$Message.success('创建成功')
+          _this.$router.push('materialList')
+        } else {
+          _this.$Message.error(res.data.msg)
+        }
+      })
+    },
+    materialCategoryChange (val) {
+      this.formMaterial.materialCategoryName = val.label
+    },
+    officeCategoryChange (val) {
+      this.formMaterial.officeName = val.label
+    },
+    ListOffice (func) {
+      let _this = this
+      let params = {
+        page: 0,
+        pageSize: 1000,
+        userId: getUserId()
+      }
+      listOffice(params).then((res) => {
+        if (res.data.status === '200') {
+          _this.officeCategory = res.data.data.list.map((item) => {
+            return {
+              value: item.id,
+              label: item.name
+            }
+          })
+          if (func && typeof func === 'function') {
+            func()
+          }
+        } else {
+          _this.$Message.error(res.data.msg)
+        }
+      })
+    },
+    MaterialCategory () {
+      let _this = this
+      materialCategory().then((res) => {
+        if (res.data.status === '200') {
+          _this.materialCategory = res.data.data.map((item) => {
+            return {
+              value: item.id,
+              label: item.name
+            }
+          })
+        } else {
+          _this.$Message.error(res.data.msg)
+        }
+      })
+    }
+  }
+}
+</script>
+
+<style scoped lang="less">
+  .MaterialAdd{
+    width: 50%;
+  }
+  .head-title{
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+</style>

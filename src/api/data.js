@@ -327,14 +327,6 @@ export const deleteUser = (params) => {
     method: 'post'
   })
 }
-
-export const deleteMaterial = (params) => {
-  return axios.request({
-    url: '/materia/deleteMaterial',
-    data: params,
-    method: 'post'
-  })
-}
 export const listMyMaterial = (params) => {
   return axios.request({
     url: '/materia/listMyMaterial',
@@ -358,3 +350,38 @@ export const addProject = (params) => {
 }
 // 物资管理
 export const materialList = (params) => { return axios.request({ url: '/materia/listMaterial', data: params, method: 'post' }) } // 物资列表
+export const materialCategory = (params) => { return axios.request({ url: '/materia/listMaterialCategory', data: params, method: 'post' }) } // 物资类别
+export const listOffice = (params) => { return axios.request({ url: '/office/listOffice', data: params, method: 'post' }) } // 单位列表
+export const addMaterial = (params) => { return axios.request({ url: '/materia/addMaterial', data: params, method: 'post' }) } // 创建物料
+export const addMaterialCategory = (params) => { return axios.request({ url: '/materia/addMaterialCategory', data: params, method: 'post' }) } // 添加物资类别
+export const materialDetail = (params) => { return axios.request({ url: '/materia/MaterialDetail', data: params, method: 'post' }) } // 物资详情
+export const deleteMaterial = (params) => { return axios.request({ url: '/materia/deleteMaterial', data: params, method: 'post' }) } // 批量删除物资
+export const updateMaterial = (params) => { return axios.request({ url: '/materia/updateMaterial', data: params, method: 'post' }) } // 编辑物资
+export const overdueRush = (params) => { return axios.request({ url: '/materia/overdueRush', data: params, method: 'post' }) } // 物资催办
+export const listMessage = (params) => { return axios.request({ url: '/index/listMessage', data: params, method: 'post' }) } // 消息列表
+export const messageDetail = (params) => { return axios.request({ url: '/index/getMessageDetail', data: params, method: 'post' }) } // 消息详情
+export const createMessage = (params) => { return axios.request({ url: '/index/createMessage', data: params, method: 'post' }) } // 创建推送消息
+export const delMessage = (params) => { return axios.request({ url: '/index/delMessage', data: params, method: 'post' }) } // 消息删除
+export const optMessage = (params) => { return axios.request({ url: '/index/optMessage', data: params, method: 'post' }) } // 设为已读
+export const projectStatusCount = (params) => { return axios.request({ url: '/statistics/projectStatusCount', data: params, method: 'post' }) } // 项目总数与各项目状态，项目评分结果占比
+export const overdueProjectStatistics = (params) => { return axios.request({ url: '/statistics/overdueProjectStatistics', data: params, method: 'post' }) } // 逾期项目统计
+export const projectWorkloadCount = (params) => { return axios.request({ url: '/statistics/projectWorkloadCount', data: params, method: 'post' }) } // 各项指标数量统计
+export const finishProjectTaskCount = (params) => { return axios.request({ url: '/statistics/finishProjectTaskCount', data: params, method: 'post' }) } // 项目任务完成百分比
+export const areaProjectCount = (params) => { return axios.request({ url: '/statistics/areaProjectCount', data: params, method: 'post' }) } // 按地区统计项目
+export const areaTaskCount = (params) => { return axios.request({ url: '/statistics/areaTaskCount', data: params, method: 'post' }) } // 按地区统计任务
+export const completeAndFollowTaskBean = (params) => { return axios.request({ url: '/statistics/completeAndFollowTaskBean', data: params, method: 'post' }) } // 项目完成审核的任务路口与关注路口
+export const overdueTaskStatistics = (params) => { return axios.request({ url: '/statistics/overdueTaskStatistics', data: params, method: 'post' }) } // 逾期任务统计
+export const taskStatusAndTypeCount = (params) => { return axios.request({ url: '/statistics/taskStatusAndTypeCount', data: params, method: 'post' }) } // 任务数量和百分比
+export const taskScoringAndWorkloadBean = (params) => { return axios.request({ url: '/statistics/taskScoringAndWorkloadBean', data: params, method: 'post' }) } // 项目下各任务统计及项目满意度百分比
+export const taskCrossingUpdateStatistics = (params) => { return axios.request({ url: '/statistics/taskCrossingUpdateStatistics', data: params, method: 'post' }) } // 更新版本前20路口
+export const taskCrossingStatistics = (params) => { return axios.request({ url: '/statistics/taskCrossingStatistics', data: params, method: 'post' }) } // 任务路口统计数据查询(显示总数)
+export const taskCrossingAreaCount = (params) => { return axios.request({ url: '/statistics/taskCrossingAreaCount', data: params, method: 'post' }) } // 按地区统计任务路口
+export const taskCountStatisticsByTpye = (params) => { return axios.request({ url: '/statistics/taskCountStatisticsByTpye', data: params, method: 'post' }) } // 单路口执行的各类任务
+export const userWorkingHours = (params) => { return axios.request({ url: '/statistics/userWorkingHours', data: params, method: 'post' }) } // 员工工作量统计
+export const consumablesMargin = (params) => { return axios.request({ url: '/statistics/consumablesMargin', data: params, method: 'post' }) } // 消耗品余量查询
+export const projectMaterialCount = (params) => { return axios.request({ url: '/statistics/projectMaterialCount', data: params, method: 'post' }) } // 各项目物资使用量
+export const materialOccupy = (params) => { return axios.request({ url: '/statistics/materialOccupy', data: params, method: 'post' }) } // 物资占用一览表
+export const materialCategoryLend = (params) => { return axios.request({ url: '/statistics/materialCategoryLend', data: params, method: 'post' }) } // 各类物资支出与百分比查询
+export const listProjectMaterial = (params) => { return axios.request({ url: '/materia/listProjectMaterial', data: params, method: 'post' }) } // 项目物资列表
+export const listCrossing = (params) => { return axios.request({ url: '/CrossingAPI/listCrossing', data: params, method: 'post' }) } // 路口列表
+export const dailyFind = (params) => { return axios.request({ url: '/dailyReport/find', data: params, method: 'post' }) } // 日报详情

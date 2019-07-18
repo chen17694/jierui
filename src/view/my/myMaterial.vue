@@ -80,7 +80,7 @@ export default {
       listMyMaterial(this.params).then((res) => {
         console.log(res.data.data)
         if (res.data.status === '200') {
-          this.tableData = res.data.data.businessTaskMaterialBeanList
+          this.tableData = res.data.data
         }
       })
     },

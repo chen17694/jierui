@@ -9,15 +9,34 @@ export const TOKEN_KEY = 'token'
 export const setToken = (token) => {
   Cookies.set(TOKEN_KEY, token, { expires: cookieExpires || 1 })
 }
-
+export const setUserId = (id) => {
+  Cookies.set('userId', id, { expires: cookieExpires || 1 })
+}
+export const setOffice = (office) => {
+  Cookies.set('office', office, { expires: cookieExpires || 1 })
+}
 export const getToken = () => {
   const token = Cookies.get(TOKEN_KEY)
   if (token) return token
   else return false
 }
-
+export const getUserId = () => {
+  const id = Cookies.get('userId')
+  if (id) return id
+  else return false
+}
+export const getOffice = () => {
+  const id = Cookies.get('office')
+  if (id) return JSON.parse(id)
+  else return false
+}
 export const hasChild = (item) => {
   return item.children && item.children.length !== 0
+}
+
+export const formateTime = (time) => {
+  var d = new Date(time)
+  return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate()
 }
 
 const showThisMenuEle = (item, access) => {
@@ -397,4 +416,11 @@ export const setTitle = (routeItem, vm) => {
   const pageTitle = showTitle(handledRoute, vm)
   const resTitle = pageTitle ? `${title} - ${pageTitle}` : title
   window.document.title = resTitle
+}
+export const Percentage = (num1, num2) => {
+  // 计算百分比
+  return (
+    // Math.round((parseFloat(num1) / parseFloat(num2)) * 10000) / 100.0 + "%"
+    isNaN(Math.round((parseFloat(num1) / parseFloat(num2)) * 10000) / 100.0) ? '0%' : Math.round((parseFloat(num1) / parseFloat(num2)) * 10000) / 100.0 + '%'
+  )
 }
