@@ -58,9 +58,10 @@
           <Row>
             <Col span="11">
               {{formItem.location}}
-              <Button type="primary" @click="reLocation" style="margin-left: 10px">重新定位</Button>
+              <Button type="primary" @click="reLocation" v-if="formItem.lat && formItem.lng" style="margin-left: 10px">重新定位</Button>
+              <Button type="primary" @click="reLocation" v-else>重新定位</Button>
             </Col>
-            <Col span="14" style="margin-top: 30px">
+            <Col span="14" style="margin-top: 30px" v-if="formItem.lat && formItem.lng">
               <el-amap ref="map" :center="center" vid="amapDemo" :zoom="zoom" class="amap-demo" :events="events">
                 <el-amap-marker v-for="(marker, index) in markers" :position="marker.position" :key="index" :vid="index"/>
               </el-amap>
@@ -163,9 +164,24 @@ export default {
               if (result && result.regeocode) {
                 self.formItem.location = result.regeocode.formattedAddress
                 self.formItem.provinceName = result.regeocode.addressComponent.province
-                self.formItem.cityName = result.regeocode.addressComponent.city
                 self.formItem.districtName = result.regeocode.addressComponent.district
                 self.formItem.specificAddress = result.regeocode.addressComponent.township + result.regeocode.addressComponent.street + result.regeocode.addressComponent.streetNumber
+                switch (result.regeocode.addressComponent.citycode) {
+                  case ('010') :
+                    self.formItem.cityName = '北京'
+                    break
+                  case ('022') :
+                    self.formItem.cityName = '天津'
+                    break
+                  case ('021') :
+                    self.formItem.cityName = '上海'
+                    break
+                  case ('023') :
+                    self.formItem.cityName = '重庆'
+                    break
+                  default :
+                    self.formItem.cityName = result.regeocode.addressComponent.city
+                }
               }
             }
           })

@@ -191,6 +191,20 @@ export const listProject = (params) => {
     method: 'post'
   })
 }
+export const addTask = (params) => {
+  return axios.request({
+    url: '/task/addTask',
+    data: params,
+    method: 'post'
+  })
+}
+export const listProjectUser = (params) => {
+  return axios.request({
+    url: '/project/listProjectUser',
+    data: params,
+    method: 'post'
+  })
+}
 export const listMapProject = (params) => {
   return axios.request({
     url: '/project/listMapProject',
@@ -205,7 +219,21 @@ export const selectProjectDetail = (params) => {
     method: 'post'
   })
 }
+export const listMyNotAcceptedTask = (params) => {
+  return axios.request({
+    url: '/task/listMyNotAcceptedTask',
+    data: params,
+    method: 'post'
+  })
+}
 
+export const selectTaskDetail = (params) => {
+  return axios.request({
+    url: '/task/selectTaskDetail',
+    data: params,
+    method: 'post'
+  })
+}
 export const listTask = (params) => {
   return axios.request({
     url: '/task/listTask',
@@ -352,6 +380,13 @@ export const areaData = (params) => {
 export const addProject = (params) => {
   return axios.request({
     url: '/project/addProject',
+    data: params,
+    method: 'post'
+  })
+}
+export const listMapTask = (params) => {
+  return axios.request({
+    url: '/task/listMapTask',
     data: params,
     method: 'post'
   })

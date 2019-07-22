@@ -1,5 +1,6 @@
 import Main from '@/components/main'
 import parentView from '@/components/parent-view'
+import addTask from '@/view/project/addTask.vue'
 /**
  * iview-admin中meta除了原生参数外可配置的参数:
  * meta: {
@@ -390,6 +391,15 @@ export default [
         component: () => import('@/view/my/myProject.vue')
       },
       {
+        path: 'myTask',
+        name: 'myTask',
+        meta: {
+          icon: 'md-funnel',
+          title: '我的任务'
+        },
+        component: () => import('@/view/my/myTask.vue')
+      },
+      {
         path: 'myMaterial',
         name: 'myMaterial',
         meta: {
@@ -567,7 +577,7 @@ export default [
               hideInMenu: true,
               needInBread: true
             },
-            component: () => import('@/view/project/addTask.vue')
+            component: addTask
           },
           {
             path: 'addTaskForm',
@@ -580,6 +590,38 @@ export default [
               notCache: true
             },
             component: () => import('@/view/project/addTaskForm.vue')
+          },
+          {
+            path: 'taskReminder',
+            name: 'taskReminder',
+            meta: {
+              icon: 'md-funnel',
+              title: '任务提醒',
+              hideInMenu: true,
+              needInBread: true
+            },
+            component: () => import('@/view/project/taskReminder.vue')
+          }
+        ]
+      },
+      {
+        path: 'taskRoadManagement',
+        name: 'taskRoadManagement',
+        meta: {
+          icon: 'md-funnel',
+          title: '任务路口管理'
+        },
+        component: parentView,
+        children: [
+          {
+            path: 'taskRoadManagementList',
+            name: 'taskRoadManagementList',
+            meta: {
+              icon: 'md-funnel',
+              title: '任务路口管理',
+              hideInBread: true
+            },
+            component: () => import('@/view/project/taskRoadManagement.vue')
           }
         ]
       }

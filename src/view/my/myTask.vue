@@ -1,0 +1,679 @@
+<template>
+  <div style="height: 100%">
+    <div class="amap-page-container">
+      <div class="amap-demo" v-if="this.center.length === 0">
+        <div class="spin-container">
+          <Spin size="large" fix></Spin>
+        </div>
+      </div>
+      <el-amap
+        v-if="this.center.length === 2"
+        :amap-manager="amapManager"
+        :center="center"
+        vid="amapDemo"
+        :zoom="zoom"
+        class="amap-demo"
+        :events="events"
+        :plugin="plugin"
+      >
+        <el-amap-marker v-for="(marker, index) in markers" :key="index" :extData = "marker.id" vid="chenyiming" :position="marker.position" :content="marker.content" :events="marker.events"></el-amap-marker>
+      </el-amap>
+      <Cascader :data="areaData" v-model="areaValue" change-on-select style="position: absolute; right: 20px; top: 20px; width: 200px;" @on-change="cascaderChange"></Cascader>
+      <div style="color: #666666; display: flex; width:350px; position: absolute; left: 20px; top: 20px; border: 0 none">
+        <div style="background-color: #F2F2F2; padding: 10px 20px; line-height: 20px; cursor: pointer" @click="onChangeNav('myProjectt')">我的项目</div>
+        <div style="background-color: #ffffff; padding: 10px 20px; line-height: 20px; cursor: pointer">我的任务</div>
+        <div style="background-color: #F2F2F2; padding: 10px 20px; line-height: 20px; cursor: pointer">我的任务路口</div>
+      </div>
+      <Card style="width:350px; position: absolute; left: 20px; top: 60px; border: 0 none">
+        <div style="display: flex">
+          <input type="text" placeholder="Enter something..." class="ivu-input ivu-input-default" style="height: 50px; border: 0 none; border-radius: 0; font-size: 15px; color: #999999">
+          <img src="../../assets/images/search.png" style=" cursor: pointer">
+        </div>
+      </Card>
+      <div style="width:350px; position: absolute; left: 20px; top: 110px; background-color: #ffffff">
+        <Tabs :animated="false" v-model="tab">
+          <TabPane name="tab1" label="已接受" >
+            <Card v-if="!isDetail">
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; border-bottom: 1px solid #e6e6e6;">
+                <div style="font-size: 16px; font-weight: bold">
+                  任务数量：{{this.total}}
+                </div>
+                <Select v-model="onStatus" style="width:100px" @on-change="statusChange">
+                  <Avatar :src="avatar" slot="prefix" size="small" />
+                  <Option value="1" >未领取</Option>
+                  <Option value="2" >已拒绝</Option>
+                  <Option value="3" >未开始</Option>
+                  <Option value="4" >进行中</Option>
+                  <Option value="5" >审核中</Option>
+                  <Option value="6" >已完成</Option>
+                  <Option value="7" >已驳回</Option>
+                  <Option value="8" >已撤销</Option>
+                  <Option value="9" >已暂停</Option>
+                </Select>
+              </div>
+              <div v-for="(item, index) in taskList" :key="index" @click="positioning(item.lng, item.lat)" v-show="panelShow" style="position: relative; padding: 15px; border-bottom: 1px solid #e6e6e6;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px">
+                  <div style="font-size: 16px; display: flex; align-items: center;">
+                    <img src="../../assets/images/icon1.png" style="width: 18px; margin-right: 5px">{{item.name}}
+                  </div>
+                  <div style="line-height: 20px;">
+                    <p :style="{ 'font-size': '20px', color: ( item.progress === '100' ? '#15C41B' : '#FB861B' ) }">{{item.progress ? item.progress : 0}}%</p>
+                    <p style="color: #999999">进度</p>
+                  </div>
+                </div>
+                <div style="display: flex; justify-content: space-between">
+                  <span style="color:#999999;">项目角色：{{item.userTopRoleName}}</span>
+                  <span style="color:#BC0000;" v-if="item.isOverdue === '1'">已逾期{{item.overdueDays}}天</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 10px">
+                  <div>
+                    <span v-for="(i, index) in item.projectButtonPermissionBeans" :key="index" style="margin-right: 19px; float: left">{{i.name}}</span>
+                  </div>
+                  <div>
+                    <button typeof="button" style="border: 1px solid #2E8CEB; width: 58px; height: 41px; background-color: #ffffff; border-radius: 3px; color: #2E8CEB; cursor: pointer">详情</button>
+                  </div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 11px 10px 15px; border-bottom: 1px solid #e6e6e6;">
+                <div>{{page}}/{{maxPage}}页</div>
+                <div style="display: flex">
+                  <Button style="margin-right: 4px" @click="firstPage">首页</Button>
+                  <ul class="ivu-page">
+                    <li title="上一页" @click="prevPage" class="ivu-page-prev"><a><i class="ivu-icon ivu-icon-ios-arrow-back"></i></a></li>
+                    <li title="下一页" @click="nextPage" class="ivu-page-prev"><a><i class="ivu-icon ivu-icon-ios-arrow-forward"></i></a></li>
+                  </ul>
+                </div>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 10px 15px; color: #2E8CEB;">
+                <span @click="allProject" style="cursor: pointer">所有项目</span>
+                <span @click="close" style="cursor: pointer">{{this.panelShow ? '收起' : '展开'}}</span>
+              </div>
+            </Card>
+            <Card v-if="isDetail" style="height: 550px; overflow-y: scroll;">
+              <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px;border-bottom: 1px solid rgb(230, 230, 230);">
+                <span style="color: #2E8CEB; font-size: 15px; font-weight: bold">{{detailData.name}}</span>
+                <img src="../../assets/images/icon1.png" style="width: 22px;">
+              </div>
+              <div style="padding: 15px; border-bottom: 1px solid rgb(230, 230, 230); position: relative">
+                <div style="position: absolute; right: 15px; top: 5px; text-align: right;">
+                  <p :style="{ 'font-size': '30px', color: ( detailData.progress === '100' ? '#15C41B' : '#FB861B' ) }">{{detailData.progress ? detailData.progress : 0}}%</p>
+                  <p>项目进度</p>
+                </div>
+                <div style="line-height: 24px"><span class="label">项目状态：</span><span>{{pStatus}}</span></div>
+                <div style="line-height: 24px"><span class="label">项目角色：</span><span>{{detailData.userTopRoleName}}</span></div>
+                <div style="line-height: 24px"><span class="label">逾期天数：</span><span>{{detailData.overdueDays}}</span></div>
+                <div style="line-height: 24px"><span class="label">甲方评分：</span><span>{{detailData.firstPartyScoring}}</span></div>
+              </div>
+              <div style=" padding: 5px 15px; border-bottom: 1px solid rgb(230, 230, 230);">
+                项目基本信息
+              </div>
+              <div style="padding: 15px; ">
+                <div style="line-height: 24px"><span class="label">项目名称：</span><span>{{detailData.name}}</span></div>
+                <div style="line-height: 24px"><span class="label">甲方单位：</span><span>{{detailData.firstPartyCompanyName}}</span></div>
+                <div style="line-height: 24px"><span class="label">甲方负责人：</span><span>{{detailData.firstPartyUserName}}</span></div>
+                <div style="line-height: 24px"><span class="label">项目位置：</span><span>{{detailData.specificAddress}}</span></div>
+                <div style="line-height: 24px"><span class="label">起止日期：</span><span>{{detailData.startTime}} 至 {{detailData.completionTime}}</span></div>
+                <div style="line-height: 24px"><span class="label">主导单位：</span><span>{{detailData.officeName}}</span></div>
+                <div style="line-height: 24px"><span class="label">项目经理：</span><span>{{detailData.projectManagerName}}</span></div>
+                <div style="line-height: 24px"><span class="label">项目备注：</span><span>{{detailData.remarks}}</span></div>
+              </div>
+            </Card>
+            <Button type="primary" v-show="isDetail" @click="toList" style="position: absolute; top: 680px; left: 20px;">返回列表</Button>
+          </TabPane>
+          <TabPane name="tab2" label="新任务">
+            <Card v-if="!isDetail">
+              <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; border-bottom: 1px solid #e6e6e6;">
+                <div style="font-size: 16px; font-weight: bold">
+                  任务数量：{{this.total}}
+                </div>
+                <Select v-model="onType" style="width:110px" @on-change="typeChange">
+                  <Avatar :src="avatar2" slot="prefix" size="small" />
+                  <Option value="1" >调查任务</Option>
+                  <Option value="2" >优化任务</Option>
+                  <Option value="3" >宣传任务</Option>
+                </Select>
+              </div>
+              <div v-for="(item, index) in taskListNew" :key="index" @click="positioning(item.lng, item.lat)" v-show="panelShow" style="position: relative; padding: 15px; border-bottom: 1px solid #e6e6e6;">
+                <Collapse simple>
+                  <Panel>
+                    <div style="display: flex;width: 100%;justify-content: space-between;margin-bottom: 10px">
+                      <div style="padding-right: 10px">
+                        <span>{{item.businessProjectName}}</span>
+                        <div v-if="item.taskStatus === 1" style="font-size: 12px"><p>任务类型: 调查任务</p><p>路口数量: {{item.crossingList.length}}</p></div>
+                        <div v-if="item.taskStatus === 2" style="font-size: 12px"><p>任务类型: 优化任务</p><p>路口数量: {{item.crossingList.length}}</p></div>
+                        <div v-if="item.taskStatus === 3" style="font-size: 12px"><p>任务类型: 宣传任务</p><p>路口数量: {{item.crossingList.length}}</p></div>
+                      </div>
+                      <div style="text-align: right">
+                        <Button type="success" style="margin-bottom: 10px; display: block">接受</Button>
+                        <Button type="error">拒绝</Button>
+                      </div>
+                    </div>
+                    <p slot="content" v-for="(i, index) in item.crossingList" :key="index" style="border-bottom: 1px solid #e6e6e6; padding: 10px 0; font-size: 12px">
+                      {{i.alias}}
+                    </p>
+                  </Panel>
+                </Collapse>
+              </div>
+            </Card>
+          </TabPane>
+        </Tabs>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { listTask, areaData, listMapTask, selectTaskDetail, listMyNotAcceptedTask } from '@/api/data'
+import tx1 from '../../assets/images/tx1.png'
+import tx2 from '../../assets/images/tx2.png'
+import tx3 from '../../assets/images/tx3.png'
+import tx4 from '../../assets/images/tx4.png'
+import tx5 from '../../assets/images/tx5.png'
+import tx6 from '../../assets/images/tx6.png'
+import tx7 from '../../assets/images/tx7.png'
+import tx8 from '../../assets/images/tx8.png'
+import tx9 from '../../assets/images/tx9.png'
+import txj1 from '../../assets/images/txj1.png'
+import ty1 from '../../assets/images/ty1.png'
+import { AMapManager, lazyAMapApiLoaderInstance } from 'vue-amap'
+let amapManager = new AMapManager()
+export default {
+  name: 'my',
+  data () {
+    let self = this
+    return {
+      tab: 'tab1',
+      tx1,
+      tx2,
+      tx3,
+      tx4,
+      tx5,
+      tx6,
+      tx7,
+      tx8,
+      tx9,
+      txj1,
+      ty1,
+      avatar: tx1,
+      avatar2: tx1,
+      onStatus: '1',
+      isDetail: false,
+      detailData: {},
+      minClusterSize: 2,
+      panelShow: true,
+      zoom: 16,
+      amapManager,
+      center: [],
+      areaData: [],
+      areaValue: [],
+      keywords: '',
+      searchOptions: {
+        city: '全国'
+      },
+      markers: [],
+      markerRefs: [],
+      map: null,
+      plugin: [{
+        pName: 'ToolBar',
+        position: 'RB',
+        events: {
+          init (instance) {}
+        }
+      }],
+      events: {
+        complete () {
+          let o = amapManager.getMap()
+          o.on('zoomchange', () => {
+            let zoom = o.getZoom()
+            if (zoom > 13) {
+              self.map.setMinClusterSize(2)
+            } else {
+              self.map.setMinClusterSize(1)
+            }
+          })
+        }
+      },
+      taskList: [],
+      taskListNew: [],
+      total: 0,
+      page: 1,
+      maxPage: 1,
+      onType: '1'
+    }
+  },
+  watch: {
+    'tab': function (val) {
+      this.markers = []
+      this.markerRefs = []
+      this.map.clearMarkers()
+      if (val === 'tab1') {
+        this.getTask()
+        this.getMapTask()
+      } else {
+        this.getMapTaskNew()
+      }
+    },
+    'onStatus': function (val) {
+      switch (val) {
+        case '1':
+          this.avatar = tx1
+          break
+        case '2':
+          this.avatar = tx2
+          break
+        case '3':
+          this.avatar = tx3
+          break
+        case '4':
+          this.avatar = tx4
+          break
+        case '5':
+          this.avatar = tx5
+          break
+        case '6':
+          this.avatar = tx6
+          break
+        case '7':
+          this.avatar = tx7
+          break
+        case '8':
+          this.avatar = tx8
+          break
+        case '9':
+          this.avatar = tx9
+          break
+      }
+    }
+  },
+  computed: {
+    pStatus () {
+      if (this.detailData.status === '1') {
+        return '未领取'
+      } else if (this.detailData.status === '2') {
+        return '已拒绝'
+      } else if (this.detailData.status === '3') {
+        return '未开始'
+      } else if (this.detailData.status === '4') {
+        return '进行中'
+      } else if (this.detailData.status === '5') {
+        return '审核中'
+      } else if (this.detailData.status === '6') {
+        return '已完成'
+      } else if (this.detailData.status === '7') {
+        return '已驳回'
+      } else if (this.detailData.status === '8') {
+        return '已撤销'
+      } else if (this.detailData.status === '9') {
+        return '已暂停'
+      }
+    }
+  },
+  methods: {
+    onChangeNav (to) {
+      this.$router.push({
+        name: to
+      })
+    },
+    initMark (self, o) {
+      self.map = new AMap.MarkerClusterer(o, self.markerRefs, {
+        gridSize: 80,
+        minClusterSize: 2
+      })
+    },
+    statusChange () {
+      this.markers = []
+      this.markerRefs = []
+      this.map.clearMarkers()
+      this.getMapTask()
+      this.getTask()
+    },
+    toList () {
+      this.isDetail = false
+    },
+    firstPage () {
+      this.page = 1
+    },
+    prevPage () {
+      if (this.page !== 1) {
+        this.page--
+        this.getTask()
+      }
+    },
+    nextPage () {
+      if (this.page < this.maxPage) {
+        this.page++
+        this.getTask()
+      }
+    },
+    allProject () {
+      let o = amapManager.getMap()
+      o.setFitView(this.markerRefs)
+    },
+    close () {
+      this.panelShow = !this.panelShow
+    },
+    positioning (lng, lat) {
+      this.center = [lng, lat]
+    },
+    getTask () {
+      listTask({
+        pageSize: 20,
+        page: this.page,
+        userId: '27275ab6e7644f05b9921193295e2c7b',
+        businessProjectId: '',
+        type: '',
+        name: '',
+        taskStatus: this.onStatus,
+        firstPartyScoring: '',
+        provinceName: '',
+        cityName: '',
+        districtName: '',
+        timeStatus: '',
+        startTime: '',
+        endTime: ''
+      }).then((res) => {
+        console.log(res.data.data)
+        this.taskList = res.data.data.taskDetailBeans
+        console.log(this.taskList)
+        this.total = res.data.data.count
+        if (this.total === '0') {
+          this.page = 0
+        } else {
+          this.page = 1
+        }
+        this.maxPage = Math.ceil(this.total / 20)
+      })
+    },
+    getProjectDetail (id) {
+      selectTaskDetail({
+        taskId: id,
+        userId: '27275ab6e7644f05b9921193295e2c7b'
+      }).then((res) => {
+        this.isDetail = true
+        this.detailData = res.data.data
+      })
+    },
+    getMapTask () {
+      listMapTask({
+        pageSize: 0,
+        page: 0,
+        userId: '27275ab6e7644f05b9921193295e2c7b',
+        businessProjectId: '',
+        type: '',
+        name: '',
+        taskStatus: this.onStatus,
+        firstPartyScoring: '',
+        provinceName: '',
+        cityName: '',
+        districtName: '',
+        timeStatus: '',
+        startTime: '',
+        endTime: ''
+      }).then((res) => {
+        let taskList = res.data.data.taskList
+        if (taskList.length > 0) {
+          this.center = [taskList[0].lng, taskList[0].lat]
+        } else {
+          this.center = this.center.length === 0 ? [116.397428, 39.90923] : this.center
+        }
+        let self = this
+        taskList.forEach((item) => {
+          let status = ''
+          if (item.pauseStatus === '1') {
+            switch (item.type) {
+              case '1' :
+                status = `<div><img src="${tx9}" style="width: 40px; height: 40px"></div>`
+                break
+              case '2' :
+                status = `<div><img src="${tx9}" style="width: 40px; height: 40px"></div>`
+                break
+              case '3' :
+                status = `<div><img src="${tx9}" style="width: 40px; height: 40px"></div>`
+                break
+            }
+          } else {
+            switch (item.type) {
+              case '1' :
+                switch (item.taskStatus) {
+                  case '1':
+                    status = `<div><img src="${tx1}" style="width: 40px; height: 40px"></div>`
+                    break
+                  case '2':
+                    status = `<div><img src="${tx2}" style="width: 40px; height: 40px"></div>`
+                    break
+                  case '3':
+                    status = `<div><img src="${tx3}" style="width: 40px; height: 40px"></div>`
+                    break
+                  case '4':
+                    status = `<div><img src="${tx4}" style="width: 40px; height: 40px"></div>`
+                    break
+                  case '5':
+                    status = `<div><img src="${tx5}" style="width: 40px; height: 40px"></div>`
+                    break
+                  case '6':
+                    status = `<div><img src="${tx6}" style="width: 40px; height: 40px"></div>`
+                    break
+                  case '7':
+                    status = `<div><img src="${tx7}" style="width: 40px; height: 40px"></div>`
+                    break
+                  case '8':
+                    status = `<div><img src="${tx8}" style="width: 40px; height: 40px"></div>`
+                    break
+                }
+                break
+              case '2' :
+                switch (item.taskStatus) {
+                  case '1':
+                    status = `<div><img src="${tx1}" style="width: 40px; height: 40px"></div>`
+                    break
+                  case '2':
+                    status = `<div><img src="${tx2}" style="width: 40px; height: 40px"></div>`
+                    break
+                  case '3':
+                    status = `<div><img src="${tx3}" style="width: 40px; height: 40px"></div>`
+                    break
+                  case '4':
+                    status = `<div><img src="${tx4}" style="width: 40px; height: 40px"></div>`
+                    break
+                  case '5':
+                    status = `<div><img src="${tx5}" style="width: 40px; height: 40px"></div>`
+                    break
+                  case '6':
+                    status = `<div><img src="${tx6}" style="width: 40px; height: 40px"></div>`
+                    break
+                  case '7':
+                    status = `<div><img src="${tx7}" style="width: 40px; height: 40px"></div>`
+                    break
+                  case '8':
+                    status = `<div><img src="${tx8}" style="width: 40px; height: 40px"></div>`
+                    break
+                }
+                break
+              case '3' :
+                switch (item.taskStatus) {
+                  case '1':
+                    status = `<div><img src="${tx1}" style="width: 40px; height: 40px"></div>`
+                    break
+                  case '2':
+                    status = `<div><img src="${tx2}" style="width: 40px; height: 40px"></div>`
+                    break
+                  case '3':
+                    status = `<div><img src="${tx3}" style="width: 40px; height: 40px"></div>`
+                    break
+                  case '4':
+                    status = `<div><img src="${tx4}" style="width: 40px; height: 40px"></div>`
+                    break
+                  case '5':
+                    status = `<div><img src="${tx5}" style="width: 40px; height: 40px"></div>`
+                    break
+                  case '6':
+                    status = `<div><img src="${tx6}" style="width: 40px; height: 40px"></div>`
+                    break
+                  case '7':
+                    status = `<div><img src="${tx7}" style="width: 40px; height: 40px"></div>`
+                    break
+                  case '8':
+                    status = `<div><img src="${tx8}" style="width: 40px; height: 40px"></div>`
+                    break
+                }
+                break
+            }
+          }
+          console.log(status)
+          this.markers.push({
+            position: [item.lng, item.lat],
+            id: item.id,
+            content: status,
+            events: {
+              init (o) {
+                self.markerRefs.push(o)
+              },
+              click (e) {
+                self.getProjectDetail(e.target.get('extData'))
+              }
+            }
+          })
+        })
+        setTimeout(() => {
+          self.initMark(self, amapManager.getMap())
+        }, 0)
+      })
+    },
+    getMapTaskNew () {
+      listMyNotAcceptedTask({
+        'businessProjectId': '',
+        'type': this.onType,
+        'name': '',
+        'provinceName': '',
+        'cityName': '',
+        'districtName': '',
+        'userId': ''
+      }).then((res) => {
+        let taskList = this.taskListNew = res.data.data = res.data.data
+        console.log(taskList)
+        if (taskList.length > 0) {
+          this.center = [taskList[0].lng || 116.397428, taskList[0].lat || 39.90923]
+        } else {
+          this.center = this.center.length === 0 ? [116.397428, 39.90923] : this.center
+        }
+        console.log(this.center)
+        let self = this
+        taskList.forEach((item) => {
+          let status = ''
+          switch (item.type) {
+            case '1' :
+              status = `<div><img src="${txj1}" style="width: 40px; height: 40px"></div>`
+              break
+            case '2' :
+              status = `<div><img src="${ty1}" style="width: 40px; height: 40px"></div>`
+              break
+            case '3' :
+              status = `<div><img src="${tx1}" style="width: 40px; height: 40px"></div>`
+              break
+          }
+          if (item.lng && item.lat) {
+            this.markers.push({
+              position: [item.lng, item.lat],
+              id: item.id,
+              content: status,
+              events: {
+                init (o) {
+                  self.markerRefs.push(o)
+                },
+                click (e) {
+                  self.getProjectDetail(e.target.get('extData'))
+                }
+              }
+            })
+          }
+        })
+        setTimeout(() => {
+          self.initMark(self, amapManager.getMap())
+        }, 0)
+      })
+    },
+    typeChange () {
+      this.markers = []
+      this.markerRefs = []
+      this.map.clearMarkers()
+      this.getMapTaskNew()
+    },
+    getAreaData () {
+      areaData().then(res => {
+        if (res.data.status === '200') {
+          this.areaData = res.data.data
+        }
+      })
+    },
+    searchArea () {
+      if (!this.keywords) return false
+      let placeSearch = new AMap.PlaceSearch(this.searchOptions)
+      placeSearch.search(this.keywords, (status, result) => {
+        this.center = [result.poiList.pois[0].location.lng, result.poiList.pois[0].location.lat]
+      })
+    },
+    cascaderChange () {
+      let value = arguments[1].slice(1, arguments[1].length).map((item) => {
+        return item.label
+      })
+      this.keywords = value.join()
+      this.searchArea()
+    }
+  },
+  mounted () {
+    this.getAreaData()
+    lazyAMapApiLoaderInstance.load().then(() => {
+      this.getMapTask()
+    })
+  }
+}
+</script>
+
+<style scoped lang="less">
+  .amap-page-container{
+    height: 100%;
+    position: relative;
+    /deep/ .ivu-card-body{
+      padding: 0;
+    }
+  }
+  .amap-demo {
+    height: 100%;
+  }
+  .spin-container{
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    border: 1px solid #eee;
+  }
+  .ivu-card{
+    border-radius: 0px;
+  }
+  .label{
+    color: rgb(153, 153, 153);
+    width: 84px;
+    display: inline-block;
+  }
+  .ivu-tabs {
+    overflow: inherit;
+    /deep/ .ivu-tabs-bar{
+      margin: 0;
+    }
+  }
+  .ivu-collapse{
+    border: 0 none;
+  }
+  .ivu-collapse-item{
+    /deep/ .ivu-collapse-header{
+      display: flex;
+      align-items: center;
+      height: auto;
+      line-height: normal;
+      padding-left: 0;
+      .ivu-icon-ios-arrow-forward{
+        margin-right: 5px;
+      }
+    }
+  }
+</style>
