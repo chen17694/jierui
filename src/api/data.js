@@ -219,6 +219,20 @@ export const selectProjectDetail = (params) => {
     method: 'post'
   })
 }
+export const addCrossing = (params) => {
+  return axios.request({
+    url: '/CrossingAPI/addCrossing',
+    data: params,
+    method: 'post'
+  })
+}
+export const addTaskCrossing = (params) => {
+  return axios.request({
+    url: '/taskCrossingRelation/addTaskCrossing',
+    data: params,
+    method: 'post'
+  })
+}
 export const listMyNotAcceptedTask = (params) => {
   return axios.request({
     url: '/task/listMyNotAcceptedTask',
@@ -237,6 +251,20 @@ export const selectTaskDetail = (params) => {
 export const listTask = (params) => {
   return axios.request({
     url: '/task/listTask',
+    data: params,
+    method: 'post'
+  })
+}
+export const listTaskCrossing = (params) => {
+  return axios.request({
+    url: '/taskCrossingRelation/listTaskCrossing',
+    data: params,
+    method: 'post'
+  })
+}
+export const listCrossing = (params) => {
+  return axios.request({
+    url: '/CrossingAPI/listCrossing',
     data: params,
     method: 'post'
   })

@@ -8,7 +8,7 @@ import {
   restoreTrash,
   getUnreadCount
 } from '@/api/user'
-import { setToken, getToken, setUserId } from '@/libs/util'
+import { setToken, getToken, setUserId, setUserInfo } from '@/libs/util'
 
 export default {
   state: {
@@ -27,6 +27,10 @@ export default {
   mutations: {
     setAvatar (state, avatarPath) {
       state.avatarImgPath = avatarPath
+    },
+    setUserInfo (state, info) {
+      state.userInfo = info
+      setUserInfo(info)
     },
     setUserId (state, id) {
       state.userId = id
@@ -85,6 +89,7 @@ export default {
             const data = res.data
             commit('setToken', data.data.token.authToken)
             commit('setUserId', data.data.id)
+            commit('setUserInfo', data.data)
             resolve(res)
           } else {
             reject(res.data.msg)
@@ -100,6 +105,7 @@ export default {
         logout(state.token).then(() => {
           commit('setToken', '')
           commit('setUserId', '')
+          commit('setUserInfo', '')
           resolve()
         }).catch(err => {
           reject(err)

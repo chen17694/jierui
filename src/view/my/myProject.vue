@@ -238,7 +238,7 @@ export default {
     initMark (self, o) {
       self.map = new AMap.MarkerClusterer(o, self.markerRefs, {
         gridSize: 80,
-        renderCluserMarker: self._renderCluserMarker,
+        // renderCluserMarker: self._renderCluserMarker,
         minClusterSize: 2
       })
     },

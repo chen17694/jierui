@@ -622,6 +622,17 @@ export default [
               hideInBread: true
             },
             component: () => import('@/view/project/taskRoadManagement.vue')
+          },
+          {
+            path: 'addTaskRoad',
+            name: 'addTaskRoad',
+            meta: {
+              icon: 'md-funnel',
+              title: '新建任务路口',
+              hideInMenu: true,
+              needInBread: true
+            },
+            component: () => import('@/view/project/addTaskRoad.vue')
           }
         ]
       }

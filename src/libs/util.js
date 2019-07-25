@@ -12,6 +12,9 @@ export const setToken = (token) => {
 export const setUserId = (id) => {
   Cookies.set('userId', id, { expires: cookieExpires || 1 })
 }
+export const setUserInfo = (data) => {
+  Cookies.set('userInfo', data, { expires: cookieExpires || 1 })
+}
 export const getToken = () => {
   const token = Cookies.get(TOKEN_KEY)
   if (token) return token
@@ -20,6 +23,11 @@ export const getToken = () => {
 export const getUserId = () => {
   const id = Cookies.get('userId')
   if (id) return id
+  else return false
+}
+export const getUserInfo = () => {
+  const userInfo = Cookies.get('userInfo')
+  if (userInfo) return userInfo
   else return false
 }
 export const hasChild = (item) => {

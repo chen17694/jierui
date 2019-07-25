@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import { listTask, projectFunction, listProject } from '@/api/data'
+import { projectFunction, listProject, listTaskCrossing } from '@/api/data'
 import { getUserId } from '@/libs/util'
 import Tables from '_c/tables'
 export default {
@@ -148,7 +148,7 @@ export default {
       })
     },
     getData () {
-      listTask(this.params).then((res) => {
+      listTaskCrossing(this.params).then((res) => {
         console.log(res.data.data)
         this.tableData = res.data.data.taskDetailBeans
         this.total = Number(res.data.data.count)

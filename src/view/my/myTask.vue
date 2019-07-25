@@ -31,6 +31,17 @@
         </div>
       </Card>
       <div style="width:350px; position: absolute; left: 20px; top: 110px; background-color: #ffffff">
+        <div v-if="tab === 'tab2'" style="padding: 10px">
+          <Form :label-width="80">
+            <FormItem label="项目选择：">
+              {{onProject}}
+              <Select v-model="businessProjectId" @on-change="changeProject">
+                <Option value="">全部</Option>
+                <Option v-for="(item, index) in projectList" :value="item.id " :key="index">{{item.name}}</Option>
+              </Select>
+            </FormItem>
+          </Form>
+        </div>
         <Tabs :animated="false" v-model="tab">
           <TabPane name="tab1" label="已接受" >
             <Card v-if="!isDetail">
@@ -163,7 +174,7 @@
 </template>
 
 <script>
-import { listTask, areaData, listMapTask, selectTaskDetail, listMyNotAcceptedTask } from '@/api/data'
+import { listTask, areaData, listMapTask, selectTaskDetail, listMyNotAcceptedTask, listMapProject } from '@/api/data'
 import tx1 from '../../assets/images/tx1.png'
 import tx2 from '../../assets/images/tx2.png'
 import tx3 from '../../assets/images/tx3.png'
@@ -182,6 +193,8 @@ export default {
   data () {
     let self = this
     return {
+      projectList: [],
+      businessProjectId: '',
       tab: 'tab1',
       tx1,
       tx2,
@@ -309,6 +322,9 @@ export default {
     }
   },
   methods: {
+    changeProject () {
+      this.getMapTaskNew()
+    },
     onChangeNav (to) {
       this.$router.push({
         name: to
@@ -541,7 +557,7 @@ export default {
     },
     getMapTaskNew () {
       listMyNotAcceptedTask({
-        'businessProjectId': '',
+        'businessProjectId': this.businessProjectId,
         'type': this.onType,
         'name': '',
         'provinceName': '',
@@ -622,6 +638,24 @@ export default {
   },
   mounted () {
     this.getAreaData()
+    listMapProject({
+      pageSize: 0,
+      page: 0,
+      userId: '27275ab6e7644f05b9921193295e2c7b',
+      projectName: '',
+      firstPartyCompanyId: '',
+      projectManagerId: '',
+      status: '',
+      firstPartyScoring: '',
+      provinceName: '',
+      cityName: '',
+      districtName: '',
+      timeStatus: '',
+      startTime: '',
+      endTime: ''
+    }).then((res) => {
+      this.projectList = res.data.data.projectList
+    })
     lazyAMapApiLoaderInstance.load().then(() => {
       this.getMapTask()
     })
