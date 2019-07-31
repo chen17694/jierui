@@ -461,12 +461,5 @@ export const projectMaterialCount = (params) => { return axios.request({ url: '/
 export const materialOccupy = (params) => { return axios.request({ url: '/statistics/materialOccupy', data: params, method: 'post' }) } // 物资占用一览表
 export const materialCategoryLend = (params) => { return axios.request({ url: '/statistics/materialCategoryLend', data: params, method: 'post' }) } // 各类物资支出与百分比查询
 export const listProjectMaterial = (params) => { return axios.request({ url: '/materia/listProjectMaterial', data: params, method: 'post' }) } // 项目物资列表
-export const listCrossing = (params) => { return axios.request({ url: '/CrossingAPI/listCrossing', data: params, method: 'post' }) } // 路口列表
 export const dailyFind = (params) => { return axios.request({ url: '/dailyReport/find', data: params, method: 'post' }) } // 日报详情
-export const listMapTask = (params) => {
-  return axios.request({
-    url: '/task/listMapTask',
-    data: params,
-    method: 'post'
-  })
-}
+export const listMapTask = (params) => { return axios.request({ url: '/task/listMapTask', data: params, method: 'post'}) }
