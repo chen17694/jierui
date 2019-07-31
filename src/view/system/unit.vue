@@ -36,20 +36,7 @@
                 <span class="label">所属地:</span>
               </Col>
               <Col span="19">
-                <AreaSelect
-                  name="area1"
-                  :province="areaParams1.province"
-                  :city="areaParams1.city"
-                  :district="areaParams1.district"
-                  :obj="areaParams1"
-                  :getProvince="getProvince"
-                  :getCity="getCity"
-                  :getDistrict="getDistrict"
-                  :provinceId="listParams.provinceId"
-                  :cityId="listParams.cityId"
-                  :districtId="listParams.districtId"
-                  @getId="getId"
-                />
+                <Cascader :data="areaData" v-model="area1" @on-change="filterAreaChange"></Cascader>
               </Col>
             </Row>
           </Col>
@@ -120,7 +107,7 @@
 <script>
 import Tables from '_c/tables'
 import AreaSelect from './areaSelect'
-import { getUnitList, addOffice, delOffice, listAreaByType } from '@/api/data'
+import { getUnitList, addOffice, delOffice, listAreaByType, areaData } from '@/api/data'
 import { getUserId } from '@/libs/util'
 export default{
   name: 'unit_table_page',
@@ -139,6 +126,9 @@ export default{
       },
       total: 0,
       tableData: [],
+      areaData: [],
+      area1: [],
+      area2: [],
       editParams: {
         name: '',
         isFirstParty: '',
@@ -209,6 +199,16 @@ export default{
     }
   },
   methods: {
+    filterAreaChange () {
+      console.log(arguments)
+      let value = arguments[1].slice(1, arguments[1].length).map((item) => {
+        return item.value
+      })
+      this.listParams.provinceId = value[0]
+      this.listParams.cityId = value[1]
+      this.listParams.districtId = value[2]
+      console.log(this.listParams)
+    },
     getId (val, name, type) {
       if (name === 'area1') {
         switch (type) {
@@ -484,6 +484,11 @@ export default{
   mounted () {
     this.getData()
     this.getProvince(this.areaParams1)
+    areaData().then(res => {
+      if (res.data.status === '200') {
+        this.areaData = res.data.data
+      }
+    })
   }
 }
 </script>
@@ -533,6 +538,11 @@ export default{
       .ivu-btn{
         width: 80px;
       }
+    }
+  }
+  .ivu-cascader{
+    /deep/ .ivu-select-dropdown{
+      width: 100%;
     }
   }
 </style>

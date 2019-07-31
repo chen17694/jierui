@@ -260,8 +260,8 @@ export default {
   },
   mounted () {
     getUnitList({
-      'pageSize': 100,
-      'page': 1,
+      'pageSize': 0,
+      'page': 0,
       'name': '',
       'areaId': '',
       'type': '',

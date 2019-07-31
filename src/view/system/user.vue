@@ -36,9 +36,8 @@
                 <span class="label">归属单位:</span>
               </Col>
               <Col span="19">
-                <Select v-model="unit">
-                  <Option value="沈阳稻田">沈阳稻田</Option>
-                  <Option value="稻田">稻田</Option>
+                <Select v-model="params.office" @on-change="selectUnit">
+                  <Option v-for="item in unitList" :value="item.id" :key="item.id">{{item.name}}</Option>
                 </Select>
               </Col>
             </Row>
@@ -49,32 +48,29 @@
                 <span class="label">角色:</span>
               </Col>
               <Col span="19">
-                <Select v-model="role">
-                  <Option value="经理">经理</Option>
-                  <Option value="员工">员工</Option>
+                <Select v-model="params.role">
+                  <Option v-for="item in roleList" :value="item.id" :key="item.id">{{item.name}}</Option>
                 </Select>
               </Col>
             </Row>
           </Col>
-          <Col span="12" style="margin-bottom: 16px">
-            <Row>
-              <Col span="5">
-                <span class="label">所属地:</span>
-              </Col>
-              <Col span="19">
-                <Select v-model="region">
-                  <Option v-for="item in regionData" :value="item.value" :key="item.id">{{ item.value }}</Option>
-                </Select>
-              </Col>
-            </Row>
-          </Col>
+          <!--<Col span="12" style="margin-bottom: 16px">-->
+            <!--<Row>-->
+              <!--<Col span="5">-->
+                <!--<span class="label">所属地:</span>-->
+              <!--</Col>-->
+              <!--<Col span="19">-->
+                <!--<Cascader :data="areaData" v-model="params.area"></Cascader>-->
+              <!--</Col>-->
+            <!--</Row>-->
+          <!--</Col>-->
           <Col span="12" style="margin-bottom: 16px">
             <Row>
               <Col span="5">
                 <span class="label">APP登录:</span>
               </Col>
               <Col span="19">
-                <Select v-model="isApp">
+                <Select v-model="params.isLoginApp">
                   <Option value="1">是</Option>
                   <Option value="0">否</Option>
                 </Select>
@@ -96,7 +92,7 @@
 
 <script>
 import Tables from '_c/tables'
-import { getUserList, deleteUser } from '@/api/data'
+import { getUserList, deleteUser, getUnitList, listRoleByOfficeId, areaData } from '@/api/data'
 import { getUserId } from '@/libs/util'
 export default{
   name: 'unit_table_page',
@@ -112,6 +108,7 @@ export default{
         'isLoginApp': ''
       },
       total: 0,
+      unitList: [],
       formValidate: {
         name: '',
         region: '',
@@ -141,7 +138,6 @@ export default{
           width: 60,
           align: 'center'
         },
-        { title: 'ID', key: 'id' },
         { title: '用户名', key: 'loginName' },
         { title: '姓名', key: 'name' },
         { title: '邮箱', key: 'email' },
@@ -156,10 +152,22 @@ export default{
           options: ['edit']
         }
       ],
-      tableData: []
+      tableData: [],
+      roleList: [],
+      areaData: []
     }
   },
   methods: {
+    selectUnit () {
+      listRoleByOfficeId({
+        id: arguments[0]
+      }).then((res) => {
+        console.log(res)
+        if (res.data.status === '200') {
+          this.roleList = res.data.data
+        }
+      })
+    },
     // 批量删除
     dropdownClick (name) {
       if (name === '批量删除') {
@@ -223,10 +231,7 @@ export default{
     },
     // 筛选提交
     filterSubmit () {
-      console.log(this.region ? this.region : '')
-      console.log(this.isApp ? this.isApp : '')
-      console.log(this.role ? this.role : '')
-      console.log(this.unit ? this.unit : '')
+      this.getData()
     },
     // 筛选重置
     filterReset () {
@@ -246,6 +251,23 @@ export default{
   },
   mounted () {
     this.getData()
+    getUnitList({
+      'pageSize': 0,
+      'page': 0,
+      'name': '',
+      'areaId': '',
+      'type': '',
+      'userId': getUserId()
+    }).then(res => {
+      if (res.data.status === '200') {
+        this.unitList = res.data.data.list
+      }
+    })
+    areaData().then(res => {
+      if (res.data.status === '200') {
+        this.areaData = res.data.data
+      }
+    })
   }
 }
 </script>
@@ -291,6 +313,11 @@ export default{
       .ivu-btn{
         width: 80px;
       }
+    }
+  }
+  .ivu-cascader{
+    /deep/ .ivu-select-dropdown{
+      width: 100%;
     }
   }
 </style>
