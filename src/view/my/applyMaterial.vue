@@ -9,7 +9,7 @@
                 <span class="label">选择项目:</span>
               </Col>
               <Col span="17">
-                <Select v-model="params.projectId" @on-change="projectChange">
+                <Select v-model="params.projectId" @on-change="projectChange" label-in-value>
                   <Option v-for="(item, index) in businessProject" :value="item.id " :key="index">{{item.name}}</Option>
                 </Select>
               </Col>
@@ -21,7 +21,7 @@
                 <span class="label">选择任务:</span>
               </Col>
               <Col span="17">
-                <Select v-model="params.taskId">
+                <Select v-model="params.taskId" @on-change="taskChange" label-in-value>
                   <Option v-for="(item, index) in taskList" :key="index" :value="item.id">{{item.name}}</Option>
                 </Select>
               </Col>
@@ -34,16 +34,20 @@
       <div class="tableWrapper">
         <tables ref="tables"  v-model="tableData" :columns="columns" @on-add="addRow" @on-remove="delRow" :showPage="false"></tables>
       </div>
-      <div>
-        <Button type="primary" @click="addSave" style="margin-right: 10px">确定</Button>
-        <Button @click="clear">重置</Button>
-      </div>
+      <Row>
+        <Col span="24">
+          <div class="btns">
+            <Button type="primary" @click="addSave">确定</Button>
+            <Button @click="clear">重置</Button>
+          </div>
+        </Col>
+      </Row>
     </div>
   </div>
 </template>
 
 <script>
-import { listProject, listTask, listMaterialCategory, listMaterial } from '@/api/data'
+import { listProject, listTask, listMaterialCategory, listMaterial, materialApplication } from '@/api/data'
 import { getUserId } from '@/libs/util'
 import Tables from '_c/tables'
 export default {
@@ -52,8 +56,10 @@ export default {
   data () {
     return {
       params: {
-        project: '',
-        task: ''
+        projectId: '',
+        projectName: '',
+        taskId: '',
+        taskName: ''
       },
       businessProject: [],
       taskList: [],
@@ -64,9 +70,11 @@ export default {
           categoryList: [],
           materialList: [],
           materialId: '',
-          surplusAmount: 0,
+          surplusNum: 0,
           applyNum: '',
-          returnDate: ''
+          returnDate: '',
+          materialName: '',
+          materialTypeName: ''
         }
       ],
       columns: [
@@ -84,6 +92,11 @@ export default {
                   this.addRows[params.index].materialList = []
                   this.addRows[params.index].materialId = ''
                   this.changeCategory(id, params.index)
+                  this.addRows[params.index].categoryList.forEach((item) => {
+                    if (item.id === id) {
+                      this.addRows[params.index].materialTypeName = item.name
+                    }
+                  })
                 }
               }
             }, params.row.cname.map((item) => {
@@ -99,18 +112,20 @@ export default {
           key: 'mname',
           width: '250px',
           render: (h, params) => {
+            let materialId = this.addRows[params.index].materialId
+            console.log(materialId)
+            console.log(params)
             return h('Select', {
               props: {
-                value: this.addRows[params.index].materialId
+                value: materialId
               },
               on: {
                 'on-change': (id) => {
-                  let materialId = id
-                  this.addRows[params.index].materialId = materialId
-                  console.log(this.addRows[params.index])
+                  this.addRows[params.index].materialId = id
                   this.addRows[params.index].materialList.forEach((item) => {
-                    if (item.id === materialId) {
-                      this.addRows[params.index].surplusAmount = item.surplusAmount
+                    if (item.id === id) {
+                      this.addRows[params.index].surplusNum = item.surplusAmount
+                      this.addRows[params.index].materialName = item.name
                     }
                   })
                 }
@@ -128,7 +143,7 @@ export default {
           key: 'amount ',
           width: '100px',
           render: (h, params) => {
-            return h('span', {}, this.addRows[params.index].surplusAmount)
+            return h('span', {}, this.addRows[params.index].surplusNum)
           }
         },
         { title: '申请数量',
@@ -139,7 +154,7 @@ export default {
               props: {
                 value: Number(this.addRows[params.index].applyNum),
                 min: 0,
-                max: Number(this.addRows[params.index].surplusAmount)
+                max: Number(this.addRows[params.index].surplusNum)
               },
               on: {
                 'on-change': (applyNum) => {
@@ -179,6 +194,30 @@ export default {
   methods: {
     addSave () {
       console.log(this.addRows)
+      let materialList = []
+      this.addRows.forEach((item) => {
+        materialList.push({
+          materialTypeId: item.categoryId,
+          materialTypeName: item.materialTypeName,
+          materialId: item.materialId,
+          materialName: item.materialName,
+          returnDate: item.returnDate,
+          surplusNum: item.surplusNum,
+          applyNum: item.applyNum
+        })
+      })
+      let obj = {
+        projectId: this.params.projectId,
+        projectName: this.params.projectName,
+        taskId: this.params.taskId,
+        taskName: this.params.taskName,
+        userId: getUserId(),
+        materialList: materialList
+      }
+      console.log(obj)
+      materialApplication(obj).then((res) => {
+        this.$Message.info(res.data.msg)
+      })
     },
     clear () {
 
@@ -198,9 +237,11 @@ export default {
         categoryList: this.addRows[0].categoryList,
         materialList: [],
         materialId: '',
-        surplusAmount: 0,
+        surplusNum: 0,
         applyNum: '',
-        returnDate: ''
+        returnDate: '',
+        materialName: '',
+        materialTypeName: ''
       })
       this.tableData.push({
         cname: this.addRows[this.rowIndex].categoryList,
@@ -224,7 +265,7 @@ export default {
         startTime: '',
         endTime: ''
       }).then((res) => {
-        this.businessProject = res.data.data.categoryList
+        this.businessProject = res.data.data.projectList
       })
     },
     addInit () {
@@ -235,6 +276,7 @@ export default {
     },
     changeCategory (id, index) {
       if (!id) return false
+      this.addRows[index].materialId = ''
       listMaterial({
         pageSize: 0,
         page: 0,
@@ -246,13 +288,18 @@ export default {
         this.tableData[index].mname = this.addRows[index].materialList
       })
     },
+    taskChange () {
+      this.params.taskName = arguments[0].label
+    },
     projectChange () {
+      console.log(arguments)
+      this.params.projectName = arguments[0].label
       this.taskList = []
-      this.params.task = ''
+      this.params.taskId = ''
       listTask({
         pageSize: 0,
         page: 0,
-        businessProjectId: arguments[0],
+        businessProjectId: arguments[0].value,
         type: '',
         name: '',
         taskStatus: '',
@@ -292,6 +339,16 @@ export default {
   .tableWrapper{
     /deep/ .ivu-table-wrapper{
       overflow: inherit;
+    }
+  }
+  .btns{
+    margin-top: 20px;
+    text-align: center;
+    .ivu-btn-primary{
+      margin-right: 10px;
+    }
+    .ivu-btn{
+      width: 80px;
     }
   }
 </style>

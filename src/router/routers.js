@@ -91,7 +91,8 @@ export default [
         name: 'applyMaterial',
         meta: {
           icon: 'md-funnel',
-          title: '物资申请'
+          title: '物资申请',
+          hideInMenu: true
         },
         component: () => import('@/view/my/applyMaterial.vue')
       },
