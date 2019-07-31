@@ -150,12 +150,8 @@ export default {
             content: '<p>删除后不能找回，还要继续吗</p>',
             onOk: () => {
               deleteArea(params).then((res) => {
-                if (res.data.status === '200') {
-                  this.$Message.info('删除成功！')
-                  this.getData()
-                } else {
-                  this.$Message.info('操作失败，请重试！')
-                }
+                this.$Message.info(res.data.msg)
+                this.getData()
               })
             }
           })
@@ -201,12 +197,8 @@ export default {
       this.$refs['formValidate'].validate((valid) => {
         if (valid) {
           insertOrUpdateOffice(params).then(res => {
-            if (res.data.status === '200') {
-              this.$Message.info('操作成功！')
-              this.getData()
-            } else {
-              this.$Message.info('操作失败，请重试！')
-            }
+            this.$Message.info(res.data.msg)
+            this.getData()
             this.newRegionPanel = false
             this.$refs['formValidate'].resetFields()
           })
@@ -222,8 +214,6 @@ export default {
       getRegionList().then(res => {
         if (res.data.status === '200') {
           this.tableData = res.data.data
-        } else {
-          this.$Message.info('操作失败，请重试！')
         }
       })
     }

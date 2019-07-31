@@ -37,7 +37,7 @@
               </Col>
               <Col span="19">
                 <Select v-model="params.officeId" placeholder="请选择" label-in-value>
-                  <Option v-for="(item, key) in officeCategory" :value="item.value">{{item.label}}</Option>
+                  <Option v-for="(item, key) in officeCategory" :key="key" :value="item.value">{{item.label}}</Option>
                 </Select>
               </Col>
             </Row>
@@ -49,7 +49,7 @@
               </Col>
               <Col span="19">
                 <Select v-model="params.materialCategoryId" placeholder="请选择" label-in-value>
-                      <Option v-for="(item, key) in materialCategory" :value="item.value">{{item.label}}</Option>
+                      <Option v-for="(item, key) in materialCategory" :key="key" :value="item.value">{{item.label}}</Option>
                   </Select>
               </Col>
             </Row>
@@ -120,7 +120,7 @@ export default {
                     this.$router.push({ path: 'materialAdd', query: { id: params.row.id } })
                   }
                 }
-              }, [<Icon size="16" type="md-create" />]),
+              }, ['<Icon size="16" type="md-create" />']),
               h('Button', {
                 style: {
                   marginLeft: '6px'
@@ -134,7 +134,7 @@ export default {
                     this.$router.push({ path: 'materialDetail', query: { id: params.row.id } })
                   }
                 }
-              }, [<Icon size="16" type="md-list-box" />]),
+              }, ['<Icon size="16" type="md-list-box" />']),
               h('Button', {
                 style: {
                   marginLeft: '6px'
@@ -159,7 +159,7 @@ export default {
                     })
                   }
                 }
-              }, [<Icon size="16" type="md-trash" />])
+              }, ['<Icon size="16" type="md-trash" />'])
             ])
           }
         }
@@ -193,7 +193,7 @@ export default {
             }
           })
         } else {
-          _this.$Message.error(res.data.msg)
+          _this.$Message.info(res.data.msg)
         }
       })
     },
@@ -208,7 +208,7 @@ export default {
             }
           })
         } else {
-          _this.$Message.error(res.data.msg)
+          _this.$Message.info(res.data.msg)
         }
       })
     },
@@ -257,12 +257,8 @@ export default {
     },
     DeleteMaterial (ids) {
       deleteMaterial({ idList: ids }).then((res) => {
-        if (res.data.status === '200') {
-          this.$Message.info('删除成功！')
-          this.getData()
-        } else {
-          this.$Message.info('操作失败，请重试！')
-        }
+        this.$Message.info(res.data.msg)
+        this.getData()
       })
     },
     // 批量删除

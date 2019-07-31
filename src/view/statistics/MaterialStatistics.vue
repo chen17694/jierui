@@ -260,7 +260,7 @@ export default {
     PieInterface (func) {
       let _this = this
       materialCategoryLend(_this.pieSearch).then((res) => {
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           _this.PieData = res.data.data
           if (func && typeof func === 'function') {
             func()
@@ -272,10 +272,10 @@ export default {
       let _this = this
       _this.tableData1 = []
       materialOccupy(_this.oneSearch).then((res) => {
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           _this.tableData1 = res.data.data
         } else {
-          _this.$Message.error(res.data.msg)
+          _this.$Message.info(res.data.msg)
         }
       })
     },
@@ -283,20 +283,20 @@ export default {
       let _this = this
       _this.tableData2 = []
       projectMaterialCount(_this.twoSearch).then((res) => {
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           _this.tableData2 = res.data.data
         } else {
-          _this.$Message.error(res.data.msg)
+          _this.$Message.info(res.data.msg)
         }
       })
     },
     threeInterface () {
       let _this = this
       consumablesMargin(_this.threeSearch).then((res) => {
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           _this.tableData3 = res.data.data
         } else {
-          _this.$Message.error(res.data.msg)
+          _this.$Message.info(res.data.msg)
         }
       })
     },
@@ -345,7 +345,7 @@ export default {
             }
           })
         } else {
-          _this.$Message.error(res.data.msg)
+          _this.$Message.info(res.data.msg)
         }
       })
     },
@@ -366,7 +366,7 @@ export default {
             }
           })
         } else {
-          _this.$Message.error(res.data.msg)
+          _this.$Message.info(res.data.msg)
         }
       })
     },
@@ -458,7 +458,7 @@ export default {
       let _this = this
       _this.materialCategory = []
       materialCategory().then((res) => {
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           _this.materialCategory = res.data.data.map((item) => {
             return {
               value: item.id,
@@ -478,7 +478,7 @@ export default {
       }
       _this.listProjectMaterial = []
       materialList(params).then((res) => {
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           _this.listProjectMaterial = res.data.data.businessMaterialBeanList.map((ele) => {
             return {
               value: ele.id,

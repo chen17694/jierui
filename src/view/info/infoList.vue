@@ -78,8 +78,8 @@
 
 <script>
 import Tables from '_c/tables'
-import { listMessage, messageDetail, delMessage, optMessage } from '@/api/data'
-import { getUserId, getOffice } from '@/libs/util'
+import { listMessage, delMessage, optMessage } from '@/api/data'
+import { getUserId } from '@/libs/util'
 export default {
   name: 'infoList',
   components: { Tables },
@@ -114,7 +114,6 @@ export default {
         },
         { title: '消息名称',
           render: (h, params) => {
-            let con = params.row.content
             // let title = [
             //   '',
             //   con + '(根据审核审批类型' + params.row.createDate + ')' + '被' + getOffice().role + '同意/拒绝',
@@ -136,9 +135,9 @@ export default {
           render: (h, params) => {
             return h('div', {
               style: {
-                color: params.row.isRead == '0' ? 'red' : 'gray'
+                color: params.row.isRead === '0' ? 'red' : 'gray'
               }
-            }, params.row.isRead == '0' ? '未读' : '已读')
+            }, params.row.isRead === '0' ? '未读' : '已读')
           }
         },
         {
@@ -245,22 +244,14 @@ export default {
     },
     OptMessage (ids) {
       optMessage({ ids: ids, userId: getUserId() }).then((res) => {
-        if (res.data.status === '200') {
-          this.$Message.info('设为已读成功！')
-          this.getData()
-        } else {
-          this.$Message.info('操作失败，请重试！')
-        }
+        this.$Message.info(res.data.msg)
+        this.getData()
       })
     },
     DelMessage (ids) {
       delMessage({ ids: ids, userId: getUserId() }).then((res) => {
-        if (res.data.status === '200') {
-          this.$Message.info('删除成功！')
-          this.getData()
-        } else {
-          this.$Message.info('操作失败，请重试！')
-        }
+        this.$Message.info(res.data.msg)
+        this.getData()
       })
     },
     // 批量删除
@@ -289,7 +280,7 @@ export default {
           this.ids = []
         }
       } else {
-        this.$Message.warning('暂无可操作数据！')
+        this.$Message.info('暂无可操作数据！')
       }
     }
   },

@@ -89,7 +89,7 @@ export default {
         this.progressPercent = Math.round(e.loaded / e.total * 100)
       }
       reader.onerror = e => {
-        this.$Message.error('文件读取出错')
+        this.$Message.info('文件读取出错')
       }
       reader.onload = e => {
         this.$Message.info('文件读取成功')

@@ -91,12 +91,8 @@ export default{
           deleteUserRole({
             id: arguments[0].row.id
           }).then((res) => {
-            if (res.data.status === '200') {
-              this.$Message.info('删除成功！')
-              this.getData()
-            } else {
-              this.$Message.info('操作失败，请重试！')
-            }
+            this.$Message.info(res.data.msg)
+            this.getData()
           })
         }
       })
@@ -107,12 +103,8 @@ export default{
         'officeId': this.officeId,
         'roleId': this.$route.params.id
       }).then((res) => {
-        if (res.data.status === '200') {
-          this.$Message.info('操作成功！')
-          this.getData()
-        } else {
-          this.$Message.info('操作失败，请重试！')
-        }
+        this.$Message.info(res.data.msg)
+        this.getData()
       })
     },
     selectUnit () {
@@ -153,9 +145,7 @@ export default{
       listUserRole(this.params).then(res => {
         if (res.data.status === '200') {
           this.tableData = res.data.data
-          // this.total = res.data.data.total
-        } else {
-          this.$Message.info('操作失败，请重试！')
+          this.total = res.data.data.total
         }
       })
     }
@@ -173,8 +163,6 @@ export default{
       }).then(res => {
         if (res.data.status === '200') {
           this.unitList = res.data.data.list
-        } else {
-          this.$Message.info('操作失败，请重试！')
         }
       })
     } else {

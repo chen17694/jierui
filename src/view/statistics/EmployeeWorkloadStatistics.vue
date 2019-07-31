@@ -5,7 +5,7 @@
     <div style="display:inline-block;">
       选择人员:
       <Select v-model="Search.userId" style="width:200px;text-align:left" @on-change="userSel">
-          <Option v-for="(item, key) in userList" :value="item.value" :key="item.key">{{item.label}}</Option>
+          <Option v-for="(item, key) in userList" :key="key" :value="item.value">{{item.label}}</Option>
         </Select>
     </div>
     <div style="display:inline-block;float:right">
@@ -54,7 +54,7 @@
                       </li>
                       <li style="display: flex; align-items: center; justify-content: flex-start;margin-bottom:20px">
                         <div class="dian" style="background-color: #3aa0ff"></div>
-                        <div class="status">　　满意</div>
+                        <div class="status">满意</div>
                         <div
                           class="proportion"
                         >{{oneData.taskCrossingSatisfiedCount == '0' ? '0%' : Percentage(oneData.taskCrossingSatisfiedCount, oneData.taskCrossingScoringCount)}}</div>
@@ -62,7 +62,7 @@
                       </li>
                       <li style="display: flex; align-items: center; justify-content: flex-start;margin-bottom:20px">
                         <div class="dian" style="background-color: #fe7777"></div>
-                        <div class="status">　不满意</div>
+                        <div class="status">不满意</div>
                         <div
                           class="proportion"
                         >{{oneData.taskCrossingNotSatisfiedCount == '0' ? '0%' : Percentage(oneData.taskCrossingNotSatisfiedCount, oneData.taskCrossingScoringCount)}}</div>
@@ -115,7 +115,6 @@ import echarts from 'echarts'
 import tdTheme from './theme.json'
 import CountTo from '_c/count-to'
 import Tables from '_c/tables'
-import { getUserId } from '@/libs/util'
 import { userWorkingHours, getUserList } from '@/api/data'
 import { getLastMonthStartDate, getLastMonthEndDate, getMonthStartDate, getMonthEndDate, getQuarterStartDate, getQuarterEndDate, getLastQuarterStartDate, getLastQuarterEndDate, getCurrentYear, getLastYear } from '@/libs/mdate.js'
 
@@ -172,7 +171,7 @@ export default {
         page: 1
       }
       getUserList(params).then((res) => {
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           _this.userList = res.data.data.list.map((item) => {
             return { value: item.id, label: item.name }
           })
@@ -182,7 +181,7 @@ export default {
     oneInterface (func) { // one 单路口执行的各类任务
       let _this = this
       userWorkingHours(_this.Search).then((res) => {
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           _this.oneData = res.data.data
           _this.tableData = res.data.data.taskWorkingHoursBeanList
           if (func && typeof func === 'function') {
@@ -194,7 +193,7 @@ export default {
     twoInterface (func) { // two 按地区统计任务路口
       let _this = this
       taskCrossingAreaCount(_this.Search).then((res) => {
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           if (res.data.data && res.data.data.length > 0) {
             _this.twoData = res.data.data
             if (func && typeof func === 'function') {

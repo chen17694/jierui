@@ -16,7 +16,7 @@
           <Row>
               <Col span="20">
                 <Select v-model="formInfo.officeId" placeholder="请选择" label-in-value @on-change="officeCategoryChange">
-                  <Option v-for="(item, key) in officeCategory" :value="item.value">{{item.label}}</Option>
+                  <Option v-for="(item, key) in officeCategory" :key="key" :value="item.value">{{item.label}}</Option>
                 </Select>
               </Col>
           </Row>
@@ -148,7 +148,7 @@ export default {
         type: '1'
       }
       listRole(params).then((res) => {
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           _this.roleList = res.data.data.list
         }
       })
@@ -162,9 +162,9 @@ export default {
       this.indeterminate = false
 
       if (this.checkAll) {
-        if (this.formInfo.score == '1') {
+        if (this.formInfo.score === '1') {
           this.formInfo.ids = this.userList.map((item) => { return item.id })
-        } else if (this.formInfo.score == '2') {
+        } else if (this.formInfo.score === '2') {
           this.formInfo.ids = this.roleList.map((item) => { return item.id })
         } else {
           this.formInfo.ids = this.projectList.map((item) => { return item.id })
@@ -175,9 +175,9 @@ export default {
     },
     checkAllGroupChange (data) {
       let List = []
-      if (this.formInfo.score == '1') {
+      if (this.formInfo.score === '1') {
         List = this.userList
-      } else if (this.formInfo.score == '2') {
+      } else if (this.formInfo.score === '2') {
         List = this.roleList
       } else {
         List = this.projectList
@@ -198,7 +198,7 @@ export default {
         if (valid) {
           this.CreateMessage()
         } else {
-          this.$Message.error('请检查填写信息！')
+          this.$Message.info('请检查填写信息！')
         }
       })
     },
@@ -221,7 +221,7 @@ export default {
             }
           })
         } else {
-          _this.$Message.error(res.data.msg)
+          _this.$Message.info(res.data.msg)
         }
       })
     },
@@ -241,11 +241,11 @@ export default {
       let _this = this
       createMessage(_this.formInfo).then((res) => {
         console.log(res.data)
-        if (res.data.status == '200') {
-          _this.$Message.success('创建成功')
+        if (res.data.status === '200') {
+          _this.$Message.info(res.data.msg)
           _this.$router.push('infolist')
         } else {
-          _this.$Message.error(res.data.msg)
+          _this.$Message.info(res.data.msg)
         }
       })
     },
@@ -271,7 +271,7 @@ export default {
             func()
           }
         } else {
-          _this.$Message.error(res.data.msg)
+          _this.$Message.info(res.data.msg)
         }
       })
     }

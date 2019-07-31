@@ -119,7 +119,7 @@
                   </li>
                   <li style="display: flex; align-items: center; justify-content: center;">
                     <div class="dian" style="background-color: #3aa0ff"></div>
-                    <div class="status">满意　　</div>
+                    <div class="status">满意</div>
                     <div
                       class="proportion"
                     >{{projectData.projectSatisfiedCount == '0' ? '0%' : Percentage(projectData.projectNotStartStatusCount, projectData.projectCount)}}</div>
@@ -127,7 +127,7 @@
                   </li>
                   <li style="display: flex; align-items: center; justify-content: center;">
                     <div class="dian" style="background-color: #fe7777"></div>
-                    <div class="status">不满意　</div>
+                    <div class="status">不满意</div>
                     <div
                       class="proportion"
                     >{{projectData.projectNotSatisfiedCount == '0' ? '0%' : Percentage(projectData.projectOnGoingStatusCount, projectData.projectCount)}}</div>
@@ -358,11 +358,11 @@ export default {
             return h(
               'div',
               {},
-              params.row.firstPartyScoring == '1'
+              params.row.firstPartyScoring === '1'
                 ? '非常满意'
-                : params.row.firstPartyScoring == '2'
+                : params.row.firstPartyScoring === '2'
                   ? '满意'
-                  : params.row.firstPartyScoring == '3'
+                  : params.row.firstPartyScoring === '3'
                     ? '不满意'
                     : '-'
             )
@@ -399,17 +399,17 @@ export default {
       if (val) {
         this.activeName = val
       }
-      if (this.activeName == '1') {
+      if (this.activeName === '1') {
         this.ProjectStatusCount(() => {
           this.setPie()
           this.setPie2()
         })
-      } else if (this.activeName == '2') {
+      } else if (this.activeName === '2') {
         this.ProjectWorkloadCount()
         this.FinishProjectTaskCount(() => {
           this.setPie4()
         })
-      } else if (this.activeName == '3') {
+      } else if (this.activeName === '3') {
         this.AreaTaskCount(() => {
           this.setBar1()
         })
@@ -439,7 +439,7 @@ export default {
       // one-3-1 地区项目个数统计
       let _this = this
       areaProjectCount(_this.oneSearch).then(res => {
-        if ((res.data.status = '200')) {
+        if (res.data.status === '200') {
           _this.areaTaskData = res.data.data
           if (func && typeof func === 'function') {
             func()
@@ -483,7 +483,7 @@ export default {
             func(_this.projectList[0])
           }
         } else {
-          _this.$Message.error(res.data.msg)
+          _this.$Message.info(res.data.msg)
         }
       })
     },
@@ -492,7 +492,7 @@ export default {
       let _this = this
       _this.threeSearch.userId = getUserId()
       completeAndFollowTaskBean(_this.threeSearch).then(res => {
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           _this.threeData = res.data.data
         }
       })
@@ -501,7 +501,7 @@ export default {
       // one-2-2项目任务完成百分比
       let _this = this
       finishProjectTaskCount(_this.oneSearch).then(res => {
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           _this.finishProjectTaskData = res.data.data
           console.log(res.data.data)
           if (func && typeof func === 'function') {
@@ -514,7 +514,7 @@ export default {
       // two-1 项目逾期统计
       let _this = this
       overdueProjectStatistics(_this.twoSearch).then(res => {
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           _this.overdueData = res.data.data
           if (func && typeof func === 'function') {
             func()
@@ -526,7 +526,7 @@ export default {
       // one-2-1 各项指标数量统计
       let _this = this
       projectWorkloadCount(_this.oneSearch).then(res => {
-        if ((res.data.status = '200')) {
+        if (res.data.status === '200') {
           _this.tableData = res.data.data.list
           _this.total = parseInt(res.data.data.total)
         }
@@ -542,7 +542,7 @@ export default {
       // one-1 按状态统计
       let _this = this
       projectStatusCount(_this.oneSearch).then(res => {
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           _this.projectData = res.data.data
           if (func && typeof func === 'function') {
             func()
@@ -961,17 +961,17 @@ export default {
     lastMonthSlot () {
       this.oneSearch.startTime = getLastMonthStartDate()
       this.oneSearch.endTime = getLastMonthEndDate()
-      if (this.activeName == '1') {
+      if (this.activeName === '1') {
         this.ProjectStatusCount(() => {
           this.setPie()
           this.setPie2()
         })
-      } else if (this.activeName == '2') {
+      } else if (this.activeName === '2') {
         this.ProjectWorkloadCount()
         this.FinishProjectTaskCount(() => {
           this.setPie4()
         })
-      } else if (this.activeName == '3') {
+      } else if (this.activeName === '3') {
         this.AreaTaskCount(() => {
           this.setBar1()
         })
@@ -980,17 +980,17 @@ export default {
     nowMonthSlot () {
       this.oneSearch.startTime = getMonthStartDate()
       this.oneSearch.endTime = getMonthEndDate()
-      if (this.activeName == '1') {
+      if (this.activeName === '1') {
         this.ProjectStatusCount(() => {
           this.setPie()
           this.setPie2()
         })
-      } else if (this.activeName == '2') {
+      } else if (this.activeName === '2') {
         this.ProjectWorkloadCount()
         this.FinishProjectTaskCount(() => {
           this.setPie4()
         })
-      } else if (this.activeName == '3') {
+      } else if (this.activeName === '3') {
         this.AreaTaskCount(() => {
           this.setBar1()
         })
@@ -999,17 +999,17 @@ export default {
     lastSeasonSlot () {
       this.oneSearch.startTime = getLastQuarterStartDate()
       this.oneSearch.endTime = getLastQuarterEndDate()
-      if (this.activeName == '1') {
+      if (this.activeName === '1') {
         this.ProjectStatusCount(() => {
           this.setPie()
           this.setPie2()
         })
-      } else if (this.activeName == '2') {
+      } else if (this.activeName === '2') {
         this.ProjectWorkloadCount()
         this.FinishProjectTaskCount(() => {
           this.setPie4()
         })
-      } else if (this.activeName == '3') {
+      } else if (this.activeName === '3') {
         this.AreaTaskCount(() => {
           this.setBar1()
         })
@@ -1018,17 +1018,17 @@ export default {
     nowSeasonSlot () {
       this.oneSearch.startTime = getQuarterStartDate()
       this.oneSearch.endTime = getQuarterEndDate()
-      if (this.activeName == '1') {
+      if (this.activeName === '1') {
         this.ProjectStatusCount(() => {
           this.setPie()
           this.setPie2()
         })
-      } else if (this.activeName == '2') {
+      } else if (this.activeName === '2') {
         this.ProjectWorkloadCount()
         this.FinishProjectTaskCount(() => {
           this.setPie4()
         })
-      } else if (this.activeName == '3') {
+      } else if (this.activeName === '3') {
         this.AreaTaskCount(() => {
           this.setBar1()
         })
@@ -1037,17 +1037,17 @@ export default {
     lastYearSlot () {
       this.oneSearch.startTime = getLastYear().startTime
       this.oneSearch.endTime = getLastYear().endTime
-      if (this.activeName == '1') {
+      if (this.activeName === '1') {
         this.ProjectStatusCount(() => {
           this.setPie()
           this.setPie2()
         })
-      } else if (this.activeName == '2') {
+      } else if (this.activeName === '2') {
         this.ProjectWorkloadCount()
         this.FinishProjectTaskCount(() => {
           this.setPie4()
         })
-      } else if (this.activeName == '3') {
+      } else if (this.activeName === '3') {
         this.AreaTaskCount(() => {
           this.setBar1()
         })
@@ -1056,17 +1056,17 @@ export default {
     nowYearSlot () {
       this.oneSearch.startTime = getCurrentYear().startTime
       this.oneSearch.endTime = getCurrentYear().endTime
-      if (this.activeName == '1') {
+      if (this.activeName === '1') {
         this.ProjectStatusCount(() => {
           this.setPie()
           this.setPie2()
         })
-      } else if (this.activeName == '2') {
+      } else if (this.activeName === '2') {
         this.ProjectWorkloadCount()
         this.FinishProjectTaskCount(() => {
           this.setPie4()
         })
-      } else if (this.activeName == '3') {
+      } else if (this.activeName === '3') {
         this.AreaTaskCount(() => {
           this.setBar1()
         })

@@ -106,7 +106,6 @@
               <Col span="8">
                 <div ref="dom3" class="charts chart-pie" style="height: 30vh; position:relative;"></div>
               </Col>
-              <!-- <Col span="1">&NBSP;</Col> -->
               <Col span="14">
                 <ul
                   style="margin-top:6%; height: 30vh; display: flex; flex-direction: column; justify-content: center;text-align:left;">
@@ -120,7 +119,7 @@
                   </li>
                   <li style="display: flex; align-items: center; justify-content: flex-start;margin-bottom:20px">
                     <div class="dian" style="background-color: #3aa0ff"></div>
-                    <div class="status">　　满意</div>
+                    <div class="status">满意</div>
                     <div
                       class="proportion"
                     >{{threeData.taskCrossingSatisfiedCount == '0' ? '0%' : Percentage(threeData.taskCrossingSatisfiedCount, threeData.taskCrossingCount)}}</div>
@@ -128,7 +127,7 @@
                   </li>
                   <li style="display: flex; align-items: center; justify-content: flex-start;margin-bottom:20px">
                     <div class="dian" style="background-color: #fe7777"></div>
-                    <div class="status">　不满意</div>
+                    <div class="status">不满意</div>
                     <div
                       class="proportion"
                     >{{threeData.taskCrossingNotSatisfiedCount == '0' ? '0%' : Percentage(threeData.taskCrossingNotSatisfiedCount, threeData.taskCrossingCount)}}</div>
@@ -189,7 +188,7 @@ export default {
     oneInterface (func) { // one 单路口执行的各类任务
       let _this = this
       taskCountStatisticsByTpye(_this.Search).then((res) => {
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           _this.oneData = res.data.data
           if (func && typeof func === 'function') {
             func()
@@ -200,14 +199,14 @@ export default {
     twoInterface (func) { // two 按地区统计任务路口
       let _this = this
       taskCrossingAreaCount(_this.Search).then((res) => {
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           if (res.data.data && res.data.data.length > 0) {
             _this.twoData = res.data.data
             if (func && typeof func === 'function') {
               func()
             }
           } else {
-            _this.$Message.warning('地区完成审核任务路口数量, 未获取到数据！')
+            _this.$Message.info('地区完成审核任务路口数量, 未获取到数据！')
           }
         }
       })
@@ -215,13 +214,13 @@ export default {
     threeInterface (func) { // three 任务路口数据查询
       let _this = this
       taskCrossingStatistics(_this.Search).then((res) => {
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           _this.threeData = res.data.data
           if (func && typeof func === 'function') {
             func()
           }
         } else {
-          _this.$Message.error(res.data.msg)
+          _this.$Message.info(res.data.msg)
         }
       })
     },
@@ -232,7 +231,7 @@ export default {
         pageSize: 50000
       }
       listCrossing(params).then((res) => {
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           _this.crossList = res.data.data.map((item) => {
             return { value: item.id, label: item.alias }
           })

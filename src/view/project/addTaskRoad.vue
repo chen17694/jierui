@@ -228,10 +228,8 @@ export default {
       }
       console.log(params)
       addCrossing(params).then((res) => {
-        if (res.data.status === '200') {
-          this.$Message.info('创建成功')
-          this.getRoad()
-        }
+        this.$Message.info(res.data.msg)
+        this.getRoad()
       })
     },
     areaChange () {

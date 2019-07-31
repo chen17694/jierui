@@ -30,7 +30,7 @@
           <Row>
               <Col span="20">
                 <Select v-model="formMaterial.officeId" placeholder="请选择" label-in-value @on-change="officeCategoryChange">
-                  <Option v-for="(item, key) in officeCategory" :value="item.value">{{item.label}}</Option>
+                  <Option v-for="(item, key) in officeCategory" :key="key" :value="item.value">{{item.label}}</Option>
                 </Select>
               </Col>
           </Row>
@@ -39,7 +39,7 @@
           <Row>
                 <Col span="20">
                    <Select v-model="formMaterial.materialCategoryId" placeholder="请选择" label-in-value @on-change="materialCategoryChange">
-                      <Option v-for="(item, key) in materialCategory" :value="item.value">{{item.label}}</Option>
+                      <Option v-for="(item, key) in materialCategory" :key="key" :value="item.value">{{item.label}}</Option>
                   </Select>
                 </Col>
                 <Col span="4">
@@ -129,9 +129,6 @@ export default {
         ],
         materialCategoryId: [
           { required: true, message: '请选择物资类别', trigger: 'change' }
-        ],
-        needReturnStatus: [
-          { required: true, trigger: 'change' }
         ]
       }
     }
@@ -149,7 +146,7 @@ export default {
   methods: {
     MaterialDetail (id) {
       materialDetail({ id: id }).then((res) => {
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           let gdata = res.data.data
           console.log(gdata.amount)
           this.formMaterial.id = gdata.id
@@ -169,22 +166,22 @@ export default {
       let _this = this
       addMaterialCategory({ name: _this.formModal.materialCategoryName }).then((res) => {
         _this.categoryLoading = false
-        if (res.data.status == '200') {
-          _this.$Message.success('添加成功！')
+        if (res.data.status === '200') {
+          _this.$Message.info(res.data.msg)
           _this.categoryModal = false
         } else {
-          _this.$Message.error(res.data.msg)
+          _this.$Message.info(res.data.msg)
         }
       })
     },
     UpdateMaterial () {
       let _this = this
       updateMaterial(_this.formMaterial).then((res) => {
-        if (res.data.status == '200') {
-          _this.$Message.success('修改成功')
+        if (res.data.status === '200') {
+          _this.$Message.info(res.data.msg)
           _this.$router.push('materialList')
         } else {
-          _this.$Message.error(res.data.msg)
+          _this.$Message.info(res.data.msg)
         }
       })
     },
@@ -210,7 +207,7 @@ export default {
             this.AddMaterial()
           }
         } else {
-          this.$Message.error('请检查填写信息！')
+          this.$Message.info('请检查填写信息！')
         }
       })
     },
@@ -221,11 +218,11 @@ export default {
       let _this = this
       addMaterial(_this.formMaterial).then((res) => {
         console.log(res.data)
-        if (res.data.status == '200') {
-          _this.$Message.success('创建成功')
+        if (res.data.status === '200') {
+          _this.$Message.info(res.data.msg)
           _this.$router.push('materialList')
         } else {
-          _this.$Message.error(res.data.msg)
+          _this.$Message.info(res.data.msg)
         }
       })
     },
@@ -254,7 +251,7 @@ export default {
             func()
           }
         } else {
-          _this.$Message.error(res.data.msg)
+          _this.$Message.info(res.data.msg)
         }
       })
     },
@@ -269,7 +266,7 @@ export default {
             }
           })
         } else {
-          _this.$Message.error(res.data.msg)
+          _this.$Message.info(res.data.msg)
         }
       })
     }

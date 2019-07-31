@@ -328,12 +328,8 @@ export default{
                 'userId': getUserId()
               }
               delOffice(params).then((res) => {
-                if (res.data.status === '200') {
-                  this.$Message.info('删除成功！')
-                  this.getData()
-                } else {
-                  this.$Message.info('操作失败，请重试！')
-                }
+                this.$Message.info(res.data.msg)
+                this.getData()
               })
             }
           })
@@ -432,12 +428,12 @@ export default{
           }
           addOffice(params).then(res => {
             if (res.data.status === '200') {
-              this.$Message.success('操作成功!')
+              this.$Message.success(res.data.msg)
               this.editPanel = false
               this.$refs['editParams'].resetFields()
               this.getData()
             } else {
-              this.$Message.info('操作失败，请重试！')
+              this.$Message.info(res.data.msg)
             }
           })
         } else {
@@ -461,8 +457,6 @@ export default{
           })
           this.tableData = res.data.data.list
           this.total = res.data.data.total
-        } else {
-          this.$Message.info('操作失败，请重试！')
         }
       })
     },

@@ -256,7 +256,7 @@
                   </li>
                   <li style="display: flex; align-items: center; justify-content: center;">
                     <div class="dian" style="background-color: #3aa0ff"></div>
-                    <div class="status">满意　　</div>
+                    <div class="status">满意</div>
                     <div
                       class="proportion"
                     >{{fourData.taskSatisfiedCount == '0' ? '0%' : Percentage(fourData.taskSatisfiedCount, fourData.taskScoringCount)}}</div>
@@ -264,7 +264,7 @@
                   </li>
                   <li style="display: flex; align-items: center; justify-content: center;">
                     <div class="dian" style="background-color: #fe7777"></div>
-                    <div class="status">不满意　</div>
+                    <div class="status">不满意</div>
                     <div
                       class="proportion"
                     >{{fourData.taskNotSatisfiedCount == '0' ? '0%' : Percentage(fourData.taskNotSatisfiedCount, fourData.taskScoringCount)}}</div>
@@ -363,11 +363,11 @@ export default {
             return h(
               'div',
               {},
-              params.row.firstPartyScoring == '1'
+              params.row.firstPartyScoring === '1'
                 ? '非常满意'
-                : params.row.firstPartyScoring == '2'
+                : params.row.firstPartyScoring === '2'
                   ? '满意'
-                  : params.row.firstPartyScoring == '3'
+                  : params.row.firstPartyScoring === '3'
                     ? '不满意'
                     : '-'
             )
@@ -404,7 +404,7 @@ export default {
     OverdueTaskStatistics (func) { // one 逾期任务统计
       let _this = this
       overdueTaskStatistics(_this.oneSearch).then((res) => {
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           _this.oneData = res.data.data
           if (func && typeof func === 'function') {
             func()
@@ -415,7 +415,7 @@ export default {
     AreaTaskCount (func) { // two 按地区任务统计
       let _this = this
       areaTaskCount(_this.twoSearch).then((res) => {
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           _this.TwoData = res.data.data
           if (func && typeof func === 'function') {
             func()
@@ -426,7 +426,7 @@ export default {
     TaskStatusAndTypeCount (func) { // three 任务和数量百分比
       let _this = this
       taskStatusAndTypeCount(_this.threeSearch).then((res) => {
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           _this.threeData = res.data.data
           if (func && typeof func === 'function') {
             func()
@@ -437,7 +437,7 @@ export default {
     TaskScoringAndWorkloadBean (func) { // four 项目下各任务统计 任务满意度百分比
       let _this = this
       taskScoringAndWorkloadBean(_this.fourSearch).then((res) => {
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           _this.fourData = res.data.data
           _this.tableData = res.data.data.taskWorkloadCountBeanList
           if (func && typeof func === 'function') {
@@ -515,7 +515,7 @@ export default {
             func(_this.projectList[0])
           }
         } else {
-          _this.$Message.error(res.data.msg)
+          _this.$Message.info(res.data.msg)
         }
       })
     },
@@ -937,26 +937,26 @@ export default {
       this.dom5.setOption(option)
     },
     lastMonthSlot (ind) {
-      if (ind == 1) {
+      if (ind === 1) {
         this.oneSearch.startTime = getLastMonthStartDate()
         this.oneSearch.endTime = getLastMonthEndDate()
         this.OverdueTaskStatistics(() => {
           this.setPie1()
         })
-      } else if (ind == 2) {
+      } else if (ind === 2) {
         this.twoSearch.startTime = getLastMonthStartDate()
         this.twoSearch.endTime = getLastMonthEndDate()
         this.AreaTaskCount(() => {
           this.setBar1()
         })
-      } else if (ind == 3) {
+      } else if (ind === 3) {
         this.threeSearch.startTime = getLastMonthStartDate()
         this.threeSearch.endTime = getLastMonthEndDate()
         this.TaskStatusAndTypeCount(() => {
           this.setPie3()
           this.setPie4()
         })
-      } else if (ind == 4) {
+      } else if (ind === 4) {
         this.fourSearch.startTime = getLastMonthStartDate()
         this.fourSearch.endTime = getLastMonthEndDate()
         // this.ListProject((res) => {
@@ -971,26 +971,26 @@ export default {
       }
     },
     nowMonthSlot (ind) {
-      if (ind == 1) {
+      if (ind === 1) {
         this.oneSearch.startTime = getMonthStartDate()
         this.oneSearch.endTime = getMonthEndDate()
         this.OverdueTaskStatistics(() => {
           this.setPie1()
         })
-      } else if (ind == 2) {
+      } else if (ind === 2) {
         this.twoSearch.startTime = getMonthStartDate()
         this.twoSearch.endTime = getMonthEndDate()
         this.AreaTaskCount(() => {
           this.setBar1()
         })
-      } else if (ind == 3) {
+      } else if (ind === 3) {
         this.threeSearch.startTime = getMonthStartDate()
         this.threeSearch.endTime = getMonthEndDate()
         this.TaskStatusAndTypeCount(() => {
           this.setPie3()
           this.setPie4()
         })
-      } else if (ind == 4) {
+      } else if (ind === 4) {
         this.fourSearch.startTime = getMonthStartDate()
         this.fourSearch.endTime = getMonthEndDate()
         this.TaskScoringAndWorkloadBean(() => {
@@ -999,26 +999,26 @@ export default {
       }
     },
     lastSeasonSlot (ind) {
-      if (ind == 1) {
+      if (ind === 1) {
         this.oneSearch.startTime = getLastQuarterStartDate()
         this.oneSearch.endTime = getLastQuarterEndDate()
         this.OverdueTaskStatistics(() => {
           this.setPie1()
         })
-      } else if (ind == 2) {
+      } else if (ind === 2) {
         this.twoSearch.startTime = getLastQuarterStartDate()
         this.twoSearch.endTime = getLastQuarterEndDate()
         this.AreaTaskCount(() => {
           this.setBar1()
         })
-      } else if (ind == 3) {
+      } else if (ind === 3) {
         this.threeSearch.startTime = getLastQuarterStartDate()
         this.threeSearch.endTime = getLastQuarterEndDate()
         this.TaskStatusAndTypeCount(() => {
           this.setPie3()
           this.setPie4()
         })
-      } else if (ind == 4) {
+      } else if (ind === 4) {
         this.fourSearch.startTime = getLastQuarterStartDate()
         this.fourSearch.endTime = getLastQuarterEndDate()
         this.TaskScoringAndWorkloadBean(() => {
@@ -1027,26 +1027,26 @@ export default {
       }
     },
     nowSeasonSlot (ind) {
-      if (ind == 1) {
+      if (ind === 1) {
         this.oneSearch.startTime = getQuarterStartDate()
         this.oneSearch.endTime = getQuarterEndDate()
         this.OverdueTaskStatistics(() => {
           this.setPie1()
         })
-      } else if (ind == 2) {
+      } else if (ind === 2) {
         this.twoSearch.startTime = getQuarterStartDate()
         this.twoSearch.endTime = getQuarterEndDate()
         this.AreaTaskCount(() => {
           this.setBar1()
         })
-      } else if (ind == 3) {
+      } else if (ind === 3) {
         this.threeSearch.startTime = getQuarterStartDate()
         this.threeSearch.endTime = getQuarterEndDate()
         this.TaskStatusAndTypeCount(() => {
           this.setPie3()
           this.setPie4()
         })
-      } else if (ind == 4) {
+      } else if (ind === 4) {
         this.fourSearch.startTime = getQuarterStartDate()
         this.fourSearch.endTime = getQuarterEndDate()
         this.TaskScoringAndWorkloadBean(() => {
@@ -1055,26 +1055,26 @@ export default {
       }
     },
     lastYearSlot (ind) {
-      if (ind == 1) {
+      if (ind === 1) {
         this.oneSearch.startTime = getLastYear().startTime
         this.oneSearch.endTime = getLastYear().endTime
         this.OverdueTaskStatistics(() => {
           this.setPie1()
         })
-      } else if (ind == 2) {
+      } else if (ind === 2) {
         this.twoSearch.startTime = getLastYear().startTime
         this.twoSearch.endTime = getLastYear().endTime
         this.AreaTaskCount(() => {
           this.setBar1()
         })
-      } else if (ind == 3) {
+      } else if (ind === 3) {
         this.threeSearch.startTime = getLastYear().startTime
         this.threeSearch.endTime = getLastYear().endTime
         this.TaskStatusAndTypeCount(() => {
           this.setPie3()
           this.setPie4()
         })
-      } else if (ind == 4) {
+      } else if (ind === 4) {
         this.fourSearch.startTime = getLastYear().startTime
         this.fourSearch.endTime = getLastYear().endTime
         this.TaskScoringAndWorkloadBean(() => {
@@ -1083,26 +1083,26 @@ export default {
       }
     },
     nowYearSlot (ind) {
-      if (ind == 1) {
+      if (ind === 1) {
         this.oneSearch.startTime = getCurrentYear().startTime
         this.oneSearch.endTime = getCurrentYear().endTime
         this.OverdueTaskStatistics(() => {
           this.setPie1()
         })
-      } else if (ind == 2) {
+      } else if (ind === 2) {
         this.twoSearch.startTime = getCurrentYear().startTime
         this.twoSearch.endTime = getCurrentYear().endTime
         this.AreaTaskCount(() => {
           this.setBar1()
         })
-      } else if (ind == 3) {
+      } else if (ind === 3) {
         this.threeSearch.startTime = getCurrentYear().startTime
         this.threeSearch.endTime = getCurrentYear().endTime
         this.TaskStatusAndTypeCount(() => {
           this.setPie3()
           this.setPie4()
         })
-      } else if (ind == 4) {
+      } else if (ind === 4) {
         this.fourSearch.startTime = getCurrentYear().startTime
         this.fourSearch.endTime = getCurrentYear().endTime
         this.TaskScoringAndWorkloadBean(() => {

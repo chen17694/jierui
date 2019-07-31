@@ -84,11 +84,7 @@ export default {
       this.$refs['formItem'].validate((valid) => {
         if (valid) {
           insertOrUpdateRole(params).then((res) => {
-            if (res.data.status === '200') {
-              this.$Message.info('操作成功！')
-            } else {
-              this.$Message.info('操作失败，请重试！')
-            }
+            this.$Message.info(res.data.msg)
           })
         }
       })

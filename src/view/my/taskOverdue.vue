@@ -112,11 +112,7 @@ export default{
         userId: getUserId(),
         functionType: '4'
       }).then((res) => {
-        if (res.data.status === '200') {
-          this.$Message.info('催办成功！')
-        } else {
-          this.$Message.info('操作失败，请重试！')
-        }
+        this.$Message.info(res.data.msg)
       })
     },
     getData () {

@@ -318,12 +318,8 @@ export default {
                 'userId': getUserId()
               }
               deleteDaily(params).then((res) => {
-                if (res.data.status === '200') {
-                  this.$Message.info('删除成功！')
-                  this.getData()
-                } else {
-                  this.$Message.info('操作失败，请重试！')
-                }
+                this.$Message.info(res.data.msg)
+                this.getData()
               })
             }
           })
@@ -343,13 +339,9 @@ export default {
         })
       })
       createDaily(params).then((res) => {
-        if (res.data.status === '200') {
-          this.$Message.info('操作成功！')
-          this.getData()
-          this.add = false
-        } else {
-          this.$Message.info('操作失败，请重试！')
-        }
+        this.$Message.info(res.data.msg)
+        this.getData()
+        this.add = false
       })
     },
     addInit () {
@@ -418,14 +410,9 @@ export default {
         workingContent: this.formValidate.workingContent,
         userId: getUserId()
       }).then((res) => {
-        console.log(res)
-        if (res.data.status === '200') {
-          this.$Message.info('操作成功！')
-          this.getData()
-          this.edit = false
-        } else {
-          this.$Message.info('操作失败，请重试！')
-        }
+        this.$Message.info(res.data.msg)
+        this.getData()
+        this.edit = false
       })
     },
     changetDate () {

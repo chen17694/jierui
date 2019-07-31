@@ -222,12 +222,8 @@ export default {
               'functionType': params.permissionCode,
               'pauseStatus': row.pauseStatus === '0' ? '1' : '0'
             }).then((res) => {
-              if (res.data.status === '200') {
-                this.$Message.info('操作成功！')
-                this.getData()
-              } else {
-                this.$Message.info('操作失败，请重试！')
-              }
+              this.$Message.info(res.data.msg)
+              this.getData()
             })
           }
         })
@@ -264,13 +260,8 @@ export default {
               'userId': getUserId(),
               'functionType': params.permissionCode
             }).then((res) => {
-              console.log(res)
-              if (res.data.status === '200') {
-                this.$Message.info('操作成功！')
-                this.getData()
-              } else {
-                this.$Message.info('操作失败，请重试！')
-              }
+              this.$Message.info(res.data.msg)
+              this.getData()
             })
           }
         })

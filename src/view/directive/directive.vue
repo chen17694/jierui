@@ -47,10 +47,10 @@
     clipOptions: {
       value: this.inputValue,
       success: (e) => {
-        this.$Message.success('复制成功')
+        this.$Message.info('复制成功')
       },
       error: () => {
-        this.$Message.error('复制失败')
+        this.$Message.info('复制失败')
       }
     }
                 </pre>
@@ -90,10 +90,10 @@ export default {
       return {
         value: this.inputValue,
         success: (e) => {
-          this.$Message.success('复制成功')
+          this.$Message.info('复制成功')
         },
         error: () => {
-          this.$Message.error('复制失败')
+          this.$Message.info('复制失败')
         }
       }
     }

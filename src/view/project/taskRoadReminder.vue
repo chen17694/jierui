@@ -45,11 +45,7 @@ export default {
         type: '3',
         userId: getUserId()
       }).then((res) => {
-        if (res.data.status === '200') {
-          this.$Message.info('设置成功！')
-        } else {
-          this.$Message.info('操作失败，请重试！')
-        }
+        this.$Message.info(res.data.msg)
       })
     },
     getRemindSet () {

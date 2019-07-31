@@ -250,9 +250,7 @@ export default {
             'specificAddress': this.formItem.specificAddress,
             'userId': getUserId()
           }).then((res) => {
-            if (res.data.status === '200') {
-              this.$Message.info('操作成功！')
-            }
+            this.$Message.info(res.data.msg)
           })
         }
       })

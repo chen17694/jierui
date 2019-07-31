@@ -136,11 +136,7 @@ export default {
         content: '<p>确认催办此物资？</p>',
         onOk: () => {
           overdueRush(params).then((res) => {
-            if (res.data.status == '200') {
-              _this.$Message.success('逾期催办成功！')
-            } else {
-              _this.$Message.error('逾期催办失败！')
-            }
+            _this.$Message.info(res.data.msg)
           })
         }
       })

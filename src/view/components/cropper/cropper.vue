@@ -34,7 +34,7 @@ export default {
       const formData = new FormData()
       formData.append('croppedImg', blob)
       uploadImg(formData).then(() => {
-        this.$Message.success('Upload success~')
+        this.$Message.info('Upload success~')
       })
     }
   }

@@ -36,7 +36,7 @@
               </Col>
               <Col span="19">
                 <Select v-model="params.projectId" placeholder="请选择" label-in-value>
-                      <Option v-for="(item, key) in projectList" :value="item.value">{{item.label}}</Option>
+                      <Option v-for="(item, key) in projectList" :key="key" :value="item.value">{{item.label}}</Option>
                   </Select>
               </Col>
             </Row>
@@ -48,7 +48,7 @@
               </Col>
               <Col span="19">
                 <Select v-model="params.taskId" placeholder="请选择" label-in-value>
-                      <Option v-for="(item, key) in listTask" :value="item.value">{{item.label}}</Option>
+                      <Option v-for="(item, key) in listTask" :key="key" :value="item.value">{{item.label}}</Option>
                   </Select>
               </Col>
             </Row>
@@ -60,7 +60,7 @@
               </Col>
               <Col span="19">
                 <Select v-model="params.userId" placeholder="请选择" label-in-value>
-                      <Option v-for="(item, key) in userList" :value="item.value">{{item.label}}</Option>
+                      <Option v-for="(item, key) in userList" :key="key" :value="item.value">{{item.label}}</Option>
                   </Select>
               </Col>
             </Row>
@@ -82,7 +82,7 @@
 import Tables from '_c/tables'
 import { getLastWeekStartDate, getLastWeekEndDate, getWeekStartDate, getWeekEndDate, getLastMonthStartDate, getLastMonthEndDate, getMonthStartDate, getMonthEndDate } from '@/libs/mdate.js'
 import { dailyList, listProject, listTask, getUserList } from '@/api/data'
-import { getUserId, formateTime } from '@/libs/util'
+import { getUserId } from '@/libs/util'
 export default {
   name: 'dailyList',
   components: { Tables },
@@ -188,7 +188,7 @@ export default {
         pageSize: 5000
       }
       getUserList(params).then((res) => {
-        if (res.data.status == 200) {
+        if (res.data.status === 200) {
           _this.userList = res.data.data.list.map((item) => {
             return { value: item.id, label: item.name }
           })
@@ -203,7 +203,7 @@ export default {
       _this.tableLoading = true
       dailyList(_this.params).then((res) => {
         _this.tableLoading = false
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           _this.tableData = res.data.data.list
         }
       })
@@ -224,7 +224,7 @@ export default {
             }
           })
         } else {
-          _this.$Message.error(res.data.msg)
+          _this.$Message.info(res.data.msg)
         }
       })
     },
@@ -244,7 +244,7 @@ export default {
             }
           })
         } else {
-          _this.$Message.error(res.data.msg)
+          _this.$Message.info(res.data.msg)
         }
       })
     },

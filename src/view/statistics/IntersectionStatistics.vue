@@ -81,10 +81,10 @@ export default {
       let _this = this
       _this.tableData = []
       taskCrossingUpdateStatistics(_this.Search).then((res) => {
-        if (res.data.status == '200') {
+        if (res.data.status === '200') {
           _this.tableData = res.data.data
         } else {
-          _this.$Message.error(res.data.msg)
+          _this.$Message.info(res.data.msg)
         }
       })
     },

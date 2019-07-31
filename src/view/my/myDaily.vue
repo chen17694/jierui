@@ -440,13 +440,12 @@ export default {
         workingContent: this.detailData.workingContent,
         userId: getUserId()
       }).then((res) => {
-        console.log(res)
         if (res.data.status === '200') {
-          this.$Message.info('操作成功！')
+          this.$Message.info(res.data.msg)
           this.getDailyList(this.showDate.year, this.showDate.month)
           this.edit = false
         } else {
-          this.$Message.info('操作失败，请重试！')
+          this.$Message.info(res.data.msg)
         }
       })
     },
@@ -459,13 +458,12 @@ export default {
         ids: [this.detailData.id],
         userId: getUserId()
       }).then((res) => {
-        console.log(res)
         if (res.data.status === '200') {
-          this.$Message.info('删除成功！')
+          this.$Message.info(res.data.msg)
           this.getDailyList(this.showDate.year, this.showDate.month)
           this.detail = false
         } else {
-          this.$Message.info('操作失败，请重试！')
+          this.$Message.info(res.data.msg)
         }
       })
     },
@@ -504,11 +502,11 @@ export default {
       })
       createDaily(params).then((res) => {
         if (res.data.status === '200') {
-          this.$Message.info('操作成功！')
+          this.$Message.info(res.data.msg)
           this.getDailyList(this.showDate.year, this.showDate.month)
           this.add = false
         } else {
-          this.$Message.info('操作失败，请重试！')
+          this.$Message.info(res.data.msg)
         }
       })
     },

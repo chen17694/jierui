@@ -244,11 +244,7 @@ export default {
       }
       console.log(params)
       insertOrUpdateUser(params).then((res) => {
-        if (res.data.status === '200') {
-          this.$Message.info('操作成功！')
-        } else {
-          this.$Message.info('操作失败，请重试！')
-        }
+        this.$Message.info(res.data.msg)
       })
     },
     selectUnit () {
@@ -273,8 +269,6 @@ export default {
     }).then(res => {
       if (res.data.status === '200') {
         this.unitList = res.data.data.list
-      } else {
-        this.$Message.info('操作失败，请重试！')
       }
     })
   }

@@ -222,9 +222,7 @@ export default {
             'specificAddress': this.formItem.specificAddress,
             'userId': getUserId()
           }).then((res) => {
-            if (res.data.status === '200') {
-              this.$Message.info('操作成功！')
-            }
+            this.$Message.info(res.data.msg)
           })
         }
       })
@@ -254,8 +252,6 @@ export default {
       }).then((res) => {
         if (res.data.status === '200') {
           this.firstPartyUser = res.data.data.list
-        } else {
-          this.$Message.info('操作失败，请重试！')
         }
       })
     },
@@ -284,8 +280,6 @@ export default {
       }).then(res => {
         if (res.data.status === '200') {
           this.firstPartyCompany = res.data.data.list
-        } else {
-          this.$Message.info('操作失败，请重试！')
         }
       })
     }
