@@ -121,6 +121,7 @@
 import Tables from '_c/tables'
 import AreaSelect from './areaSelect'
 import { getUnitList, addOffice, delOffice, listAreaByType } from '@/api/data'
+import { getUserId } from '@/libs/util'
 export default{
   name: 'unit_table_page',
   components: { Tables, AreaSelect },
@@ -134,7 +135,7 @@ export default{
         'provinceId': '',
         'cityId': '',
         'districtId': '',
-        'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+        'userId': getUserId()
       },
       total: 0,
       tableData: [],
@@ -147,7 +148,7 @@ export default{
         cityName: '',
         districtId: '',
         districtName: '',
-        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b'
+        userId: getUserId()
       },
       areaParams1: {
         province: [],
@@ -324,7 +325,7 @@ export default{
             onOk: () => {
               let params = {
                 'ids': this.rowId,
-                'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+                'userId': getUserId()
               }
               delOffice(params).then((res) => {
                 if (res.data.status === '200') {

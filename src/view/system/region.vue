@@ -60,6 +60,7 @@
 
 <script>
 import { getRegionList, insertOrUpdateOffice, deleteArea } from '@/api/data'
+import { getUserId } from '@/libs/util'
 export default {
   name: 'unit_table_page',
   data () {
@@ -141,7 +142,7 @@ export default {
       if (name === '批量删除') {
         let params = {
           'ids': this.rowId,
-          'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+          'userId': getUserId()
         }
         if (this.rowId.length > 0) {
           this.$Modal.confirm({
@@ -187,14 +188,14 @@ export default {
           'name': this.formValidate.name,
           'parentId': this.formValidate.parentId,
           'type': this.formValidate.type,
-          'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+          'userId': getUserId()
         }
       } else {
         params = {
           'name': this.formValidate.name,
           'parentId': this.formValidate.parentId,
           'type': this.formValidate.type,
-          'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+          'userId': getUserId()
         }
       }
       this.$refs['formValidate'].validate((valid) => {

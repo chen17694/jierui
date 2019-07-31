@@ -32,6 +32,7 @@
 <script>
 import Tables from '_c/tables'
 import { listOverdueMaterial, taskCrossingFunction, listProject, listTask } from '@/api/data'
+import { getUserId } from '@/libs/util'
 export default{
   name: 'unit_table_page',
   components: { Tables },
@@ -41,7 +42,7 @@ export default{
         pageSize: 10,
         page: 1,
         name: '',
-        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b',
+        userId: getUserId(),
         status: '',
         projectId: '',
         taskId: '',
@@ -72,7 +73,7 @@ export default{
       listProject({
         pageSize: 100,
         page: 1,
-        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b',
+        userId: getUserId(),
         projectName: '',
         firstPartyCompanyId: '',
         projectManagerId: '',
@@ -117,7 +118,7 @@ export default{
         name: '',
         taskStatus: '',
         firstPartyScoring: '',
-        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b',
+        userId: getUserId(),
         timeStatus: '',
         startTime: '',
         endTime: '',
@@ -132,7 +133,7 @@ export default{
       console.log(arguments[0].row)
       taskCrossingFunction({
         taskCrossingId: arguments[0].row.id,
-        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b',
+        userId: getUserId(),
         functionType: '1'
       }).then((res) => {
         if (res.data.status === '200') {

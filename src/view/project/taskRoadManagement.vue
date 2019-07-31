@@ -5,7 +5,7 @@
         <div class="searchInput">
           <div class="search">
             <Input search @on-search="handleSearch" placeholder="输入关键字搜索" type="text" enter-button="搜索">
-            <span slot="prepend">任务名称:</span>
+            <span slot="prepend">路口别名:</span>
             </Input>
           </div>
           <Button class="search-btn" type="primary" @click="openFilter"><Icon type="search"/>筛选</Button>
@@ -13,8 +13,8 @@
       </Col>
       <Col span="12">
         <div style="float: right">
-          <Button type="warning" style="margin-right: 10px" @click="reminder">任务提醒</Button>
-          <Button type="success" @click="toAdd">新建任务</Button>
+          <Button type="warning" style="margin-right: 10px" @click="reminder">任务路口提醒</Button>
+          <Button type="success" @click="toAdd">新建任务路口</Button>
         </div>
       </Col>
     </Row>
@@ -27,7 +27,7 @@
                 <span class="label">项目:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.businessProjectId">
+                <Select v-model="params.projectId" @on-change="projectChange">
                   <Option v-for="(item, index) in businessProject" :value="item.id " :key="index">{{item.name}}</Option>
                 </Select>
               </Col>
@@ -36,13 +36,11 @@
           <Col span="12" style="margin-bottom: 16px">
             <Row>
               <Col span="5">
-                <span class="label">任务类型:</span>
+                <span class="label">任务:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.type">
-                  <Option value="1">调查任务</Option>
-                  <Option value="2">优化任务</Option>
-                  <Option value="3">宣传任务</Option>
+                <Select v-model="params.taskId">
+                  <Option v-for="(item, index) in taskList" :key="index" :value="item.id">{{item.name}}</Option>
                 </Select>
               </Col>
             </Row>
@@ -50,10 +48,10 @@
           <Col span="12" style="margin-bottom: 16px">
             <Row>
               <Col span="5">
-                <span class="label">任务状态:</span>
+                <span class="label">任务路口状态:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.taskStatus">
+                <Select v-model="params.taskCrossingStatus">
                   <Option value="1">未领取</Option>
                   <Option value="2">已拒绝</Option>
                   <Option value="3">未开始</Option>
@@ -62,7 +60,6 @@
                   <Option value="6">已完成</Option>
                   <Option value="7">已驳回</Option>
                   <Option value="8">已撤销</Option>
-                  <Option value="9">已暂停</Option>
                 </Select>
               </Col>
             </Row>
@@ -95,7 +92,7 @@
 </template>
 
 <script>
-import { listTask, projectFunction, listProject } from '@/api/data'
+import { projectFunction, listProject, listTaskCrossing, listTask } from '@/api/data'
 import { getUserId } from '@/libs/util'
 import Tables from '_c/tables'
 export default {
@@ -106,12 +103,11 @@ export default {
       params: {
         pageSize: 10,
         page: 1,
+        projectId: '',
+        taskId: '',
         userId: getUserId(),
-        businessProjectId: '',
-        type: '',
-        name: '',
-        taskStatus: '',
-        firstPartyScoring: '',
+        alias: '',
+        taskCrossingStatus: '',
         timeStatus: '',
         startTime: '',
         endTime: '',
@@ -121,13 +117,12 @@ export default {
       },
       columns: [
         { title: '项目名称', key: 'businessProjectName' },
-        { title: '任务名称', key: 'name' },
-        { title: '任务类型', key: 'type' },
-        { title: '任务负责人', key: 'taskHoldersName' },
+        { title: '任务名称', key: 'businessTaskName' },
+        { title: '路口别名', key: 'alias' },
+        { title: '任务负责人', key: 'userName' },
         { title: '起始日期', key: 'startTime' },
         { title: '截止日期', key: 'completionTime' },
-        { title: '任务性质', key: 'nature' },
-        { title: '任务状态', key: 'taskStatus' },
+        { title: '路口状态', key: 'status' },
         { title: '逾期天数', key: 'overdueDays' },
         { title: '甲方评分', key: 'firstPartyScoring' },
         {
@@ -138,38 +133,62 @@ export default {
       tableData: [],
       total: 0,
       filter: false,
-      businessProject: []
+      businessProject: [],
+      taskList: []
     }
   },
   methods: {
     reminder () {
       this.$router.push({
-        name: 'taskReminder'
+        name: 'taskRoadReminder'
       })
     },
     getData () {
-      listTask(this.params).then((res) => {
+      listTaskCrossing(this.params).then((res) => {
         console.log(res.data.data)
-        this.tableData = res.data.data.taskDetailBeans
+        this.tableData = res.data.data.taskCrossingDetailBeanList
         this.total = Number(res.data.data.count)
+      })
+    },
+    projectChange () {
+      this.taskList = []
+      this.params.taskId = ''
+      listTask({
+        pageSize: 0,
+        page: 0,
+        businessProjectId: arguments[0],
+        type: '',
+        name: '',
+        taskStatus: '',
+        firstPartyScoring: '',
+        userId: getUserId(),
+        timeStatus: '',
+        startTime: '',
+        endTime: '',
+        provinceName: '',
+        cityName: '',
+        districtName: ''
+      }).then((res) => {
+        console.log(res)
+        this.taskList = res.data.data.taskDetailBeans
       })
     },
     filterReset () {
       this.params.firstPartyScoring = ''
-      this.params.businessProjectId = ''
-      this.params.type = ''
-      this.params.taskStatus = ''
+      this.params.projectId = ''
+      this.params.taskId = ''
+      this.params.taskCrossingStatus = ''
     },
     openFilter () {
       this.filter = !this.filter
     },
     handleSearch (val) {
-      this.params.name = val
+      this.params.alias = val
       this.getData()
     },
     toAdd () {
       this.$router.push({
-        name: 'addTask'
+        name: 'addTaskRoad'
       })
     },
     getProject () {

@@ -191,6 +191,20 @@ export const listProject = (params) => {
     method: 'post'
   })
 }
+export const addTask = (params) => {
+  return axios.request({
+    url: '/task/addTask',
+    data: params,
+    method: 'post'
+  })
+}
+export const listProjectUser = (params) => {
+  return axios.request({
+    url: '/project/listProjectUser',
+    data: params,
+    method: 'post'
+  })
+}
 export const listMapProject = (params) => {
   return axios.request({
     url: '/project/listMapProject',
@@ -205,10 +219,52 @@ export const selectProjectDetail = (params) => {
     method: 'post'
   })
 }
+export const addCrossing = (params) => {
+  return axios.request({
+    url: '/CrossingAPI/addCrossing',
+    data: params,
+    method: 'post'
+  })
+}
+export const addTaskCrossing = (params) => {
+  return axios.request({
+    url: '/taskCrossingRelation/addTaskCrossing',
+    data: params,
+    method: 'post'
+  })
+}
+export const listMyNotAcceptedTask = (params) => {
+  return axios.request({
+    url: '/task/listMyNotAcceptedTask',
+    data: params,
+    method: 'post'
+  })
+}
 
+export const selectTaskDetail = (params) => {
+  return axios.request({
+    url: '/task/selectTaskDetail',
+    data: params,
+    method: 'post'
+  })
+}
 export const listTask = (params) => {
   return axios.request({
     url: '/task/listTask',
+    data: params,
+    method: 'post'
+  })
+}
+export const listTaskCrossing = (params) => {
+  return axios.request({
+    url: '/taskCrossingRelation/listTaskCrossing',
+    data: params,
+    method: 'post'
+  })
+}
+export const listCrossing = (params) => {
+  return axios.request({
+    url: '/CrossingAPI/listCrossing',
     data: params,
     method: 'post'
   })
@@ -290,6 +346,28 @@ export const taskFunction = (params) => {
     method: 'post'
   })
 }
+export const materialReturn = (params) => {
+  return axios.request({
+    url: '/materia/materialReturn',
+    data: params,
+    method: 'post'
+  })
+}
+export const listMaterialCategory = (params) => {
+  return axios.request({
+    url: '/materia/listMaterialCategory',
+    data: params,
+    method: 'post'
+  })
+}
+export const listMaterial = (params) => {
+  return axios.request({
+    url: '/materia/listMaterial',
+    data: params,
+    method: 'post'
+  })
+}
+
 export const listProjectSimple = (params) => {
   return axios.request({
     url: '/project/listProjectSimple',
@@ -385,3 +463,10 @@ export const materialCategoryLend = (params) => { return axios.request({ url: '/
 export const listProjectMaterial = (params) => { return axios.request({ url: '/materia/listProjectMaterial', data: params, method: 'post' }) } // 项目物资列表
 export const listCrossing = (params) => { return axios.request({ url: '/CrossingAPI/listCrossing', data: params, method: 'post' }) } // 路口列表
 export const dailyFind = (params) => { return axios.request({ url: '/dailyReport/find', data: params, method: 'post' }) } // 日报详情
+export const listMapTask = (params) => {
+  return axios.request({
+    url: '/task/listMapTask',
+    data: params,
+    method: 'post'
+  })
+}

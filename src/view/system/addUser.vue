@@ -123,6 +123,7 @@
 
 <script>
 import { insertOrUpdateUser, getUnitList, listRoleByOfficeId } from '@/api/data'
+import { getUserId } from '@/libs/util'
 export default {
   data () {
     const validatePass = (rule, value, callback) => {
@@ -239,7 +240,7 @@ export default {
         'isLoginApp': this.formItem.isApp,
         'officeId': this.formItem.officeId,
         'roleId': this.formItem.roleId,
-        'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+        'userId': getUserId()
       }
       console.log(params)
       insertOrUpdateUser(params).then((res) => {
@@ -268,7 +269,7 @@ export default {
       'name': '',
       'areaId': '',
       'type': '',
-      'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+      'userId': getUserId()
     }).then(res => {
       if (res.data.status === '200') {
         this.unitList = res.data.data.list

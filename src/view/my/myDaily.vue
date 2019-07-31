@@ -154,6 +154,7 @@
 <script>
 import Tables from '_c/tables'
 import { listProject, listTask, createDaily, dailyList, deleteDaily, updateDaily } from '@/api/data'
+import { getUserId } from '@/libs/util'
 const monthJson = {
   1: '一月',
   2: '二月',
@@ -437,7 +438,7 @@ export default {
         workingHours: this.detailData.workingHours,
         reportDate: this.detailData.reportDate,
         workingContent: this.detailData.workingContent,
-        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b'
+        userId: getUserId()
       }).then((res) => {
         console.log(res)
         if (res.data.status === '200') {
@@ -456,7 +457,7 @@ export default {
     delDaily () {
       deleteDaily({
         ids: [this.detailData.id],
-        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b'
+        userId: getUserId()
       }).then((res) => {
         console.log(res)
         if (res.data.status === '200') {
@@ -498,7 +499,7 @@ export default {
           workingHours: item.workingHours,
           reportDate: item.reportDate,
           workingContent: item.workingContent,
-          userId: 'd3c6b26c272f4b0c96ec8f7a3062230b'
+          userId: getUserId()
         })
       })
       createDaily(params).then((res) => {
@@ -549,7 +550,7 @@ export default {
         name: '',
         taskStatus: '',
         firstPartyScoring: '',
-        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b',
+        userId: getUserId(),
         timeStatus: '',
         startTime: '',
         endTime: '',
@@ -577,7 +578,7 @@ export default {
     //     name: '',
     //     taskStatus: '',
     //     firstPartyScoring: '',
-    //     userId: 'd3c6b26c272f4b0c96ec8f7a3062230b',
+    //     userId: getUserId(),
     //     timeStatus: '',
     //     startTime: '',
     //     endTime: '',
@@ -592,7 +593,7 @@ export default {
       listProject({
         pageSize: 100,
         page: 1,
-        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b',
+        userId: getUserId(),
         projectName: '',
         firstPartyCompanyId: '',
         projectManagerId: '',
@@ -613,7 +614,7 @@ export default {
     //   listProject({
     //     pageSize: 100,
     //     page: 1,
-    //     userId: 'd3c6b26c272f4b0c96ec8f7a3062230b',
+    //     userId: getUserId(),
     //     projectName: '',
     //     firstPartyCompanyId: '',
     //     projectManagerId: '',
@@ -731,7 +732,7 @@ export default {
         startDate: startDate,
         endDate: endDate,
         currentDate: '',
-        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b'
+        userId: getUserId()
       }).then((res) => {
         let obj = {}
         if (res.data.data.list.length > 0) {

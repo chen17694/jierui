@@ -1,76 +1,83 @@
 <template>
   <div>
     <Card>
-      <p class="pageHead">新建项目</p>
+      <p class="pageHead">新建任务</p>
       <Form ref="formItem" :model="formItem" :label-width="150" :rules="ruleValidate" >
-        <FormItem label="项目名称" prop="name">
+        <FormItem label="项目" prop="businessProjectId">
           <Row>
             <Col span="11">
-              <Input v-model="formItem.name" placeholder="请输入项目名称"/>
+              <Select v-model="formItem.businessProjectId" label-in-value @on-change="businessProjectOnChange">
+                <Option v-for="(item, index) in businessProject" :value="item.id " :key="index">{{item.name}}</Option>
+              </Select>
+            </Col>
+          </Row>
+        </FormItem>
+        <FormItem label="任务名称" prop="name">
+          <Row>
+            <Col span="11">
+              <Input v-model="formItem.name" placeholder="请输入任务名称"/>
             </Col>
             <Col span="11">
               （20字以内）
             </Col>
           </Row>
         </FormItem>
-        <FormItem label="甲方公司" prop="firstPartyCompanyId">
+        <FormItem label="任务类型" prop="type">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.firstPartyCompanyId" label-in-value @on-change="firstPartyCompanyOnChange">
-                <Option v-for="(item, index) in firstPartyCompany" :value="item.id " :key="index">{{item.name}}</Option>
+              <Select v-model="formItem.type" label-in-value>
+                <Option value="1">调查任务</Option>
+                <Option value="2">优化任务</Option>
+                <Option value="3">宣传任务</Option>
               </Select>
             </Col>
           </Row>
         </FormItem>
-        <FormItem label="甲方负责人" prop="firstPartyUserId">
+        <FormItem label="任务负责人" prop="taskHoldersId">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.firstPartyUserId" label-in-value @on-change="firstPartyUserOnChange">
-                <Option v-for="(item, index) in firstPartyUser" :value="item.id " :key="index">{{item.name}}</Option>
+              <Select v-model="formItem.taskHoldersId" label-in-value @on-change="taskHoldersOnChange">
+                <Option v-for="(item, index) in taskHold" :value="item.id " :key="index">{{item.name}}</Option>
               </Select>
             </Col>
           </Row>
         </FormItem>
-        <FormItem label="项目起止日期" prop="dates">
+        <FormItem label="任务起止日期" prop="dates">
           <Row>
             <Col span="11">
-              <DatePicker v-model="formItem.dates" type="daterange" placeholder="请选择项目起止日期" @on-change="dateChange" style="width: 200px"></DatePicker>
+              <DatePicker v-model="formItem.dates" type="daterange" placeholder="请选择任务起止日期" @on-change="dateChange" style="width: 200px"></DatePicker>
             </Col>
           </Row>
         </FormItem>
-        <FormItem label="项目主导单位">
+        <FormItem label="任务性质" prop="nature">
           <Row>
             <Col span="11">
-              {{this.formItem.officeName}}
-            </Col>
-          </Row>
-        </FormItem>
-        <FormItem label="项目经理" prop="projectManagerId">
-          <Row>
-            <Col span="11">
-              <Select v-model="formItem.projectManagerId" label-in-value @on-change="projectManagerOnChange">
-                <Option v-for="(item, index) in projectManager" :value="item.id " :key="index">{{item.name}}</Option>
+              <Select v-model="formItem.nature" label-in-value>
+                <Option value="1">单点优化</Option>
+                <Option value="2">线优化</Option>
+                <Option value="3">区域优化</Option>
               </Select>
             </Col>
           </Row>
         </FormItem>
-        <FormItem label="项目位置">
+        <FormItem label="任务位置">
           <Row>
             <Col span="11">
               {{formItem.location}}
-              <Button type="primary" @click="reLocation" style="margin-left: 10px">重新定位</Button>
+              <Button type="primary" @click="reLocation" v-if="formItem.lat && formItem.lng" style="margin-left: 10px">重新定位</Button>
+              <Button type="primary" @click="reLocation" v-else>重新定位</Button>
             </Col>
-            <Col span="14" style="margin-top: 30px">
+            <Col span="14" style="margin-top: 30px" v-if="formItem.lat && formItem.lng">
               <el-amap ref="map" :center="center" vid="amapDemo" :zoom="zoom" class="amap-demo" :events="events">
                 <el-amap-marker v-for="(marker, index) in markers" :position="marker.position" :key="index" :vid="index"/>
               </el-amap>
             </Col>
           </Row>
         </FormItem>
-        <FormItem label="项目备注" prop="remarks">
+        <FormItem label="任务描述" prop="remarks">
           <Row>
             <Col span="11">
-              <Input v-model="formItem.remarks" type="textarea" :autosize="{minRows: 7,maxRows: 7}" placeholder="请填写项目备注内容" />
+              <Input v-model="formItem.remarks" type="textarea" :autosize="{minRows: 7,maxRows: 7}" placeholder="请填写任务描述内容" />
             </Col>
           </Row>
         </FormItem>
@@ -84,16 +91,14 @@
 </template>
 
 <script>
-import { getUnitList, getUserList, addProject } from '@/api/data'
+import { listProject, addTask, listProjectUser } from '@/api/data'
 import { getUserId } from '@/libs/util'
 export default {
-  name: 'addProjectForm',
+  name: 'addTaskForm',
   data () {
-    let self = this
+    const self = this
     const validateName = (rule, value, callback) => {
-      if (value === '') {
-        callback(new Error('请输入项目名称'))
-      } else if (value.length > 20) {
+      if (value === '' || value.length > 20) {
         callback(new Error('请输入项目名称(20字以内)'))
       } else {
         callback()
@@ -112,46 +117,47 @@ export default {
       center: [this.$route.params.lng, this.$route.params.lat],
       zoom: 14,
       formItem: {
+        businessProjectId: '',
+        businessProjectName: '',
         name: '',
-        firstPartyCompanyId: '',
-        firstPartyCompanyName: '',
-        firstPartyUserId: '',
-        firstPartyUserName: '',
-        startTime: '',
-        completionTime: '',
-        officeName: '啦啦啦',
-        officeId: 'ca452cb4392f41f28aab87ea9d884781',
-        projectManagerId: '',
-        projectManagerName: '',
+        type: '',
+        taskHoldersId: '',
+        dates: [],
+        nature: '',
         location: '',
-        lng: this.$route.params.lng,
-        lat: this.$route.params.lat,
         remarks: '',
-        dates: []
+        provinceName: '',
+        cityName: '',
+        districtName: '',
+        specificAddress: '',
+        lng: this.$route.params.lng,
+        lat: this.$route.params.lat
       },
       ruleValidate: {
         name: [
           { required: true, validator: validateName, trigger: 'blur' }
         ],
-        firstPartyCompanyId: [
-          { required: true, message: '请选择甲方公司', trigger: 'change' }
+        businessProjectId: [
+          { required: true, message: '请选择项目', trigger: 'change' }
         ],
-        firstPartyUserId: [
-          { required: true, message: '请选择甲方负责人', trigger: 'change' }
+        taskHoldersId: [
+          { required: true, message: '请选择任务负责人', trigger: 'change' }
+        ],
+        type: [
+          { required: true, message: '请选择任务类型', trigger: 'change' }
+        ],
+        nature: [
+          { required: true, message: '请选择任务性质', trigger: 'change' }
         ],
         dates: [
           { required: true, validator: validateDates, trigger: 'change' }
         ],
-        projectManagerId: [
-          { required: true, message: '请选择项目经理', trigger: 'change' }
-        ],
         remarks: [
-          { required: true, message: '请填写项目备注内容', trigger: 'blur' }
+          { required: true, message: '请填写任务描述内容', trigger: 'blur' }
         ]
       },
-      firstPartyCompany: [],
-      firstPartyUser: [],
-      projectManager: [],
+      businessProject: [],
+      taskHold: [],
       markers: [],
       events: {
         init () {
@@ -165,9 +171,24 @@ export default {
               if (result && result.regeocode) {
                 self.formItem.location = result.regeocode.formattedAddress
                 self.formItem.provinceName = result.regeocode.addressComponent.province
-                self.formItem.cityName = result.regeocode.addressComponent.city
                 self.formItem.districtName = result.regeocode.addressComponent.district
                 self.formItem.specificAddress = result.regeocode.addressComponent.township + result.regeocode.addressComponent.street + result.regeocode.addressComponent.streetNumber
+                switch (result.regeocode.addressComponent.citycode) {
+                  case ('010') :
+                    self.formItem.cityName = '北京'
+                    break
+                  case ('022') :
+                    self.formItem.cityName = '天津'
+                    break
+                  case ('021') :
+                    self.formItem.cityName = '上海'
+                    break
+                  case ('023') :
+                    self.formItem.cityName = '重庆'
+                    break
+                  default :
+                    self.formItem.cityName = result.regeocode.addressComponent.city
+                }
               }
             }
           })
@@ -176,29 +197,50 @@ export default {
     }
   },
   methods: {
-    reLocation () {
-      this.$router.push({
-        name: 'addProject'
+    taskHoldersOnChange () {
+      this.formItem.taskHoldersName = arguments[0].label
+    },
+    businessProjectOnChange () {
+      this.formItem.businessProjectName = arguments[0].label
+      listProjectUser({
+        pageSize: 0,
+        page: 0,
+        id: arguments[0].value,
+        userId: getUserId(),
+        officeId: ''
+      }).then((res) => {
+        console.log(res)
+        this.taskHold = res.data.data.list
       })
     },
-    projectManagerOnChange () {
-      this.formItem.projectManagerName = arguments[0].label
+    dateChange () {
+      this.formItem.startTime = arguments[0][0]
+      this.formItem.completionTime = arguments[0][1]
+    },
+    reLocation () {
+      this.$router.push({
+        name: 'addTask'
+      })
+    },
+    addMarker () {
+      let marker = {
+        position: [this.$route.params.lng, this.$route.params.lat]
+      }
+      this.markers.push(marker)
     },
     save () {
       this.$refs['formItem'].validate((valid) => {
         if (valid) {
-          addProject({
+          addTask({
             'name': this.formItem.name,
-            'firstPartyCompanyId': this.formItem.firstPartyCompanyId,
-            'firstPartyCompanyName': this.formItem.firstPartyCompanyName,
-            'firstPartyUserId': this.formItem.firstPartyUserId,
-            'firstPartyUserName': this.formItem.firstPartyUserName,
-            'startTime': this.formItem.startTime,
+            'businessProjectId': this.formItem.businessProjectId,
+            'businessProjectName': this.formItem.businessProjectName,
+            'type': this.formItem.type,
             'completionTime': this.formItem.completionTime,
-            'projectManagerId': this.formItem.projectManagerId,
-            'projectManagerName': this.formItem.projectManagerName,
-            'officeId': this.formItem.officeId,
-            'officeName': this.formItem.officeName,
+            'startTime': this.formItem.startTime,
+            'taskHoldersId': this.formItem.taskHoldersId,
+            'taskHoldersName': this.formItem.taskHoldersName,
+            'nature': this.formItem.nature,
             'lng': this.formItem.lng,
             'lat': this.formItem.lat,
             'remarks': this.formItem.remarks,
@@ -214,73 +256,28 @@ export default {
           })
         }
       })
-    },
-    addMarker () {
-      let marker = {
-        position: [this.$route.params.lng, this.$route.params.lat]
-      }
-      this.markers.push(marker)
-    },
-    dateChange () {
-      this.formItem.startTime = arguments[0][0]
-      this.formItem.completionTime = arguments[0][1]
-    },
-    firstPartyUserOnChange () {
-      this.formItem.firstPartyUserName = arguments[0].label
-    },
-    firstPartyCompanyOnChange () {
-      this.formItem.firstPartyCompanyName = arguments[0].label
-      getUserList({
-        'pageSize': 0,
-        'page': 0,
-        'name': '',
-        'office': arguments[0].value,
-        'role': '',
-        'isLoginApp': ''
-      }).then((res) => {
-        if (res.data.status === '200') {
-          this.firstPartyUser = res.data.data.list
-        } else {
-          this.$Message.info('操作失败，请重试！')
-        }
-      })
-    },
-    getProjectManager () {
-      getUserList({
-        'pageSize': 0,
-        'page': 0,
-        'name': '',
-        'office': this.formItem.officeId,
-        'role': '',
-        'isLoginApp': ''
-      }).then((res) => {
-        if (res.data.status === '200') {
-          this.projectManager = res.data.data.list
-        }
-      })
-    },
-    getFirstPartyCompany () {
-      getUnitList({
-        'pageSize': 0,
-        'page': 0,
-        'name': '',
-        'areaId': '',
-        'type': '3',
-        'userId': getUserId()
-      }).then(res => {
-        if (res.data.status === '200') {
-          this.firstPartyCompany = res.data.data.list
-        } else {
-          this.$Message.info('操作失败，请重试！')
-        }
-      })
     }
   },
   mounted () {
-    console.log(this.$route.params)
-    this.getFirstPartyCompany()
-    this.getProjectManager()
     this.addMarker()
+    listProject({
+      pageSize: 0,
+      page: 0,
+      userId: getUserId(),
+      projectName: '',
+      firstPartyCompanyId: '',
+      projectManagerId: '',
+      status: '',
+      firstPartyScoring: '',
+      provinceName: '',
+      cityName: '',
+      districtName: '',
+      timeStatus: '',
+      startTime: '',
+      endTime: ''
+    }).then((res) => {
+      this.businessProject = res.data.data.projectList
+    })
   }
 }
 </script>

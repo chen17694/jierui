@@ -5,7 +5,7 @@ import App from './App'
 import router from './router'
 import store from './store'
 import iView from 'iview'
-import VueAMap from 'vue-amap'
+import VueAMap, { lazyAMapApiLoaderInstance } from 'vue-amap'
 import i18n from '@/locale'
 import config from '@/config'
 import importDirective from '@/directive'
@@ -30,6 +30,10 @@ VueAMap.initAMapApiLoader({
   key: '4a39b6a30a22fedf2647a6d0f759b010',
   plugin: ['Geocoder', 'ToolBar', 'PlaceSearch', 'MarkerClusterer']
 });
+lazyAMapApiLoaderInstance.load().then(()=>{
+  localStorage.removeItem('_AMap_raster');
+  Vue.use(VueAMap);
+})
 /**
  * @description 注册admin内置插件
  */

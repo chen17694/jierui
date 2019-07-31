@@ -12,8 +12,13 @@ export const setToken = (token) => {
 export const setUserId = (id) => {
   Cookies.set('userId', id, { expires: cookieExpires || 1 })
 }
+<<<<<<< HEAD
 export const setOffice = (office) => {
   Cookies.set('office', office, { expires: cookieExpires || 1 })
+=======
+export const setUserInfo = (data) => {
+  Cookies.set('userInfo', data, { expires: cookieExpires || 1 })
+>>>>>>> beb4c2b135f6d7f973d871cc04a82bd6bca2106a
 }
 export const getToken = () => {
   const token = Cookies.get(TOKEN_KEY)
@@ -28,6 +33,10 @@ export const getUserId = () => {
 export const getOffice = () => {
   const id = Cookies.get('office')
   if (id) return JSON.parse(id)
+}
+export const getUserInfo = () => {
+  const userInfo = Cookies.get('userInfo')
+  if (userInfo) return userInfo
   else return false
 }
 export const hasChild = (item) => {

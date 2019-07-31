@@ -4,7 +4,7 @@
       <Col span="12">
         <div class="searchInput">
           <div class="search">
-            <Input search @on-search="handleSearch" placeholder="请输入物资名称关键字" type="text" enter-button="搜索">
+            <Input search @on-search="handleSearch" type="text" enter-button="搜索">
             <span slot="prepend">物资名称:</span>
             </Input>
           </div>
@@ -19,21 +19,58 @@
               <Icon type="ios-arrow-down"></Icon>
             </Button>
             <DropdownMenu slot="list">
-              <DropdownItem name="批量删除">批量删除</DropdownItem>
+              <DropdownItem name="批量归还">批量归还</DropdownItem>
               <DropdownItem name="取消">取消</DropdownItem>
             </DropdownMenu>
           </Dropdown>
-          <Button type="success">新增用户</Button>
+          <Button type="success" @click="apply">物资申请</Button>
         </div>
       </Col>
     </Row>
-    <tables ref="tables" :total="this.total" v-model="tableData" :columns="columns"></tables>
+    <div class="filterPanel" v-if="filter===true">
+      <Card :bordered="false">
+        <Row>
+          <Col span="12" style="margin-bottom: 16px">
+            <Row>
+              <Col span="5">
+                <span class="label">项目:</span>
+              </Col>
+              <Col span="19">
+                <Select v-model="params.projectId" @on-change="projectChange">
+                  <Option v-for="(item, index) in businessProject" :value="item.id " :key="index">{{item.name}}</Option>
+                </Select>
+              </Col>
+            </Row>
+          </Col>
+          <Col span="12" style="margin-bottom: 16px">
+            <Row>
+              <Col span="5">
+                <span class="label">任务:</span>
+              </Col>
+              <Col span="19">
+                <Select v-model="params.taskId">
+                  <Option v-for="(item, index) in taskList" :key="index" :value="item.id">{{item.name}}</Option>
+                </Select>
+              </Col>
+            </Row>
+          </Col>
+          <Col span="24">
+            <div class="btns">
+              <Button type="primary" @click="getData()">确定</Button>
+              <Button @click="filterReset">重置</Button>
+            </div>
+          </Col>
+        </Row>
+      </Card>
+    </div>
+    <tables ref="tables" :total="this.total" v-model="tableData" :columns="columns" @on-back="onBack" @on-selection-change="onSelectionChange"></tables>
   </div>
 </template>
 
 <script>
 import Tables from '_c/tables'
-import { deleteMaterial, listMyMaterial } from '@/api/data'
+import { listMyMaterial, listProject, listTask, materialReturn } from '@/api/data'
+import { getUserId } from '@/libs/util'
 export default {
   name: 'myMaterial',
   components: { Tables },
@@ -46,7 +83,10 @@ export default {
       params: {
         pageSize: 10,
         page: 1,
-        name: ''
+        id: 'dea2ebe067494cb782c3b123e5740989',
+        name: '',
+        projectId: '',
+        taskId: ''
       },
       columns: [
         {
@@ -63,9 +103,11 @@ export default {
         {
           title: '操作',
           key: 'handle',
-          options: ['edit']
+          options: ['back']
         }
-      ]
+      ],
+      businessProject: [],
+      taskList: []
     }
   },
   methods: {
@@ -76,33 +118,108 @@ export default {
     openFilter () {
       this.filter = !this.filter
     },
+    onSelectionChange (row) {
+      this.rowId = []
+      row.forEach((item) => {
+        this.rowId.push({
+          materialId: item.materialId,
+          amount: item.amount
+        })
+      })
+    },
     getData () {
       listMyMaterial(this.params).then((res) => {
         console.log(res.data.data)
         if (res.data.status === '200') {
-          this.tableData = res.data.data
+          this.tableData = res.data.data.businessTaskMaterialBeanList
+          this.total = Number(res.data.data.count)
         }
+      })
+    },
+    apply () {
+      this.$router.push({
+        name: 'applyMaterial'
+      })
+    },
+    onBack () {
+      let materialReturnParameterList = [{
+        taskMaterialId: arguments[0].row.materialId,
+        returnNum: arguments[0].row.amount
+      }]
+      materialReturn({
+        userId: getUserId(),
+        materialReturnParameterList
+      }).then((res) => {
+        this.$Message.info(res.data.msg)
+      })
+    },
+    filterReset () {
+      this.params.projectId = ''
+      this.params.taskId = ''
+    },
+    projectChange () {
+      this.taskList = []
+      this.params.taskId = ''
+      listTask({
+        pageSize: 0,
+        page: 0,
+        businessProjectId: arguments[0],
+        type: '',
+        name: '',
+        taskStatus: '',
+        firstPartyScoring: '',
+        userId: getUserId(),
+        timeStatus: '',
+        startTime: '',
+        endTime: '',
+        provinceName: '',
+        cityName: '',
+        districtName: ''
+      }).then((res) => {
+        console.log(res)
+        this.taskList = res.data.data.taskDetailBeans
+      })
+    },
+    getProject () {
+      listProject({
+        pageSize: 0,
+        page: 0,
+        userId: getUserId(),
+        projectName: '',
+        firstPartyCompanyId: '',
+        projectManagerId: '',
+        status: '',
+        firstPartyScoring: '',
+        provinceName: '',
+        cityName: '',
+        districtName: '',
+        timeStatus: '',
+        startTime: '',
+        endTime: ''
+      }).then((res) => {
+        this.businessProject = res.data.data.projectList
       })
     },
     // 批量删除
     dropdownClick (name) {
-      if (name === '批量删除') {
+      if (name === '批量归还') {
         if (this.rowId.length > 0) {
           this.$Modal.confirm({
-            title: '是否执行删除操作',
-            content: '<p>删除后不能找回，还要继续吗</p>',
+            title: '确定要批量归还吗？',
             onOk: () => {
-              let params = {
-                'ids': this.rowId,
-                'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
-              }
-              deleteMaterial(params).then((res) => {
-                if (res.data.status === '200') {
-                  this.$Message.info('删除成功！')
-                  this.getData()
-                } else {
-                  this.$Message.info('操作失败，请重试！')
-                }
+              let materialReturnParameterList = []
+              this.rowId.forEach((item) => {
+                materialReturnParameterList.push({
+                  taskMaterialId: item.materialId,
+                  returnNum: item.amount
+                })
+              })
+              console.log(materialReturnParameterList)
+              materialReturn({
+                userId: getUserId(),
+                materialReturnParameterList
+              }).then((res) => {
+                this.$Message.info(res.data.msg)
               })
             }
           })
@@ -112,6 +229,7 @@ export default {
   },
   mounted () {
     this.getData()
+    this.getProject()
   }
 }
 </script>
@@ -138,6 +256,25 @@ export default {
     }
     .search-btn{
       float: right;
+    }
+  }
+  .filterPanel{
+    clear: both;
+    padding: 0 0 10px 0;
+    .label{
+      display: block;
+      text-align: right;
+      padding-right: 10px;
+      line-height: 32px;
+    }
+    .btns{
+      text-align: center;
+      .ivu-btn-primary{
+        margin-right: 10px;
+      }
+      .ivu-btn{
+        width: 80px;
+      }
     }
   }
 </style>

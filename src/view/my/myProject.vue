@@ -21,7 +21,7 @@
       <Cascader :data="areaData" v-model="areaValue" change-on-select style="position: absolute; right: 20px; top: 20px; width: 200px;" @on-change="cascaderChange"></Cascader>
       <div style="color: #666666; display: flex; width:350px; position: absolute; left: 20px; top: 20px; border: 0 none">
         <div style="background-color: #ffffff; padding: 10px 20px; line-height: 20px; cursor: pointer">我的项目</div>
-        <div style="background-color: #F2F2F2; padding: 10px 20px; line-height: 20px; cursor: pointer">我的任务</div>
+        <div style="background-color: #F2F2F2; padding: 10px 20px; line-height: 20px; cursor: pointer" @click="onChangeNav('myTask')">我的任务</div>
         <div style="background-color: #F2F2F2; padding: 10px 20px; line-height: 20px; cursor: pointer">我的任务路口</div>
       </div>
       <Card style="width:350px; position: absolute; left: 20px; top: 60px; border: 0 none">
@@ -69,7 +69,7 @@
             </div>
           </div>
         </div>
-        <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 11px 10px 15px; border-bottom: 1px solid #e6e6e6;"  v-show="panelShow">
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 11px 10px 15px; border-bottom: 1px solid #e6e6e6;">
           <div>{{page}}/{{maxPage}}页</div>
           <div style="display: flex">
             <Button style="margin-right: 4px" @click="firstPage">首页</Button>
@@ -120,6 +120,7 @@
 
 <script>
 import { listProject, areaData, listMapProject, selectProjectDetail } from '@/api/data'
+import { getUserId } from '@/libs/util'
 import p_pause from '../../assets/images/p_pause.png'
 import p_noStarted from '../../assets/images/p_noStarted.png'
 import p_start from '../../assets/images/p_start.png'
@@ -127,7 +128,7 @@ import p_review from '../../assets/images/p_review.png'
 import p_completed from '../../assets/images/p_completed.png'
 import p_reject from '../../assets/images/p_reject.png'
 import p_revoke from '../../assets/images/p_revoke.png'
-import { AMapManager } from 'vue-amap'
+import { AMapManager, lazyAMapApiLoaderInstance } from 'vue-amap'
 let amapManager = new AMapManager()
 export default {
   name: 'my',
@@ -230,10 +231,15 @@ export default {
     }
   },
   methods: {
+    onChangeNav (to) {
+      this.$router.push({
+        name: to
+      })
+    },
     initMark (self, o) {
       self.map = new AMap.MarkerClusterer(o, self.markerRefs, {
         gridSize: 80,
-        renderCluserMarker: self._renderCluserMarker,
+        // renderCluserMarker: self._renderCluserMarker,
         minClusterSize: 2
       })
     },
@@ -276,7 +282,7 @@ export default {
       listProject({
         pageSize: 20,
         page: this.page,
-        userId: '27275ab6e7644f05b9921193295e2c7b',
+        userId: getUserId(),
         projectName: '',
         firstPartyCompanyId: '',
         projectManagerId: '',
@@ -302,7 +308,7 @@ export default {
     getProjectDetail (id) {
       selectProjectDetail({
         projectId: id,
-        userId: '27275ab6e7644f05b9921193295e2c7b'
+        userId: getUserId()
       }).then((res) => {
         this.isDetail = true
         this.detailData = res.data.data
@@ -311,8 +317,8 @@ export default {
     getMapProject () {
       listMapProject({
         pageSize: 0,
-        page: 1,
-        userId: '27275ab6e7644f05b9921193295e2c7b',
+        page: 0,
+        userId: getUserId(),
         projectName: '',
         firstPartyCompanyId: '',
         projectManagerId: '',
@@ -327,7 +333,7 @@ export default {
       }).then((res) => {
         let projectList = res.data.data.projectList
         if (projectList.length > 0) {
-          this.center = [projectList[0].lng, projectList[0].lat]
+          this.center = [projectList[0].lng || 116.397428, projectList[0].lat || 39.90923]
         } else {
           this.center = this.center.length === 0 ? [116.397428, 39.90923] : this.center
         }
@@ -395,6 +401,7 @@ export default {
       let value = arguments[1].slice(1, arguments[1].length).map((item) => {
         return item.label
       })
+      console.log(value)
       this.keywords = value.join()
       this.searchArea()
     },
@@ -424,7 +431,9 @@ export default {
   },
   mounted () {
     this.getAreaData()
-    this.getMapProject()
+    lazyAMapApiLoaderInstance.load().then(() => {
+      this.getMapProject()
+    })
     this.getProject()
   }
 }

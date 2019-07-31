@@ -8,7 +8,7 @@ import {
   restoreTrash,
   getUnreadCount
 } from '@/api/user'
-import { setToken, getToken, setUserId, setOffice } from '@/libs/util'
+import { setToken, getToken, setUserId, setUserInfo, setOffice } from '@/libs/util'
 
 export default {
   state: {
@@ -28,6 +28,10 @@ export default {
   mutations: {
     setAvatar (state, avatarPath) {
       state.avatarImgPath = avatarPath
+    },
+    setUserInfo (state, info) {
+      state.userInfo = info
+      setUserInfo(info)
     },
     setUserId (state, id) {
       state.userId = id
@@ -91,6 +95,7 @@ export default {
             commit('setToken', data.data.token.authToken)
             commit('setUserId', data.data.id)
             commit('setOffice', data.data)
+            commit('setUserInfo', data.data)
             resolve(res)
           } else {
             reject(res.data.msg)
@@ -107,6 +112,7 @@ export default {
           commit('setToken', '')
           commit('setUserId', '')
           commit('setOffice', {})
+          commit('setUserInfo', '')
           resolve()
         }).catch(err => {
           reject(err)
