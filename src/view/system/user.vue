@@ -235,10 +235,10 @@ export default{
     },
     // 筛选重置
     filterReset () {
-      this.region = ''
-      this.isApp = ''
-      this.role = ''
-      this.unit = ''
+      this.params.office = ''
+      this.params.role = ''
+      this.params.isLoginApp = ''
+      this.roleList = []
     },
     getData () {
       getUserList(this.params).then(res => {
