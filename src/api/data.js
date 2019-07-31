@@ -346,6 +346,28 @@ export const taskFunction = (params) => {
     method: 'post'
   })
 }
+export const materialReturn = (params) => {
+  return axios.request({
+    url: '/materia/materialReturn',
+    data: params,
+    method: 'post'
+  })
+}
+export const listMaterialCategory = (params) => {
+  return axios.request({
+    url: '/materia/listMaterialCategory',
+    data: params,
+    method: 'post'
+  })
+}
+export const listMaterial = (params) => {
+  return axios.request({
+    url: '/materia/listMaterial',
+    data: params,
+    method: 'post'
+  })
+}
+
 export const listProjectSimple = (params) => {
   return axios.request({
     url: '/project/listProjectSimple',

@@ -95,6 +95,7 @@
 <script>
 import Tables from '_c/tables'
 import { dailyList, listProject, listTask, updateDaily, createDaily, deleteDaily } from '@/api/data'
+import { getUserId } from '@/libs/util'
 
 export default {
   name: 'myDailyList',
@@ -235,7 +236,7 @@ export default {
         startDate: '',
         endDate: '',
         currentDate: '',
-        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b'
+        userId: getUserId()
       },
       formValidate: {
         id: '',
@@ -314,7 +315,7 @@ export default {
             onOk: () => {
               let params = {
                 'ids': this.rowId,
-                'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+                'userId': getUserId()
               }
               deleteDaily(params).then((res) => {
                 if (res.data.status === '200') {
@@ -338,7 +339,7 @@ export default {
           workingHours: item.workingHours,
           reportDate: item.reportDate,
           workingContent: item.workingContent,
-          userId: 'd3c6b26c272f4b0c96ec8f7a3062230b'
+          userId: getUserId()
         })
       })
       createDaily(params).then((res) => {
@@ -415,7 +416,7 @@ export default {
         workingHours: this.formValidate.workingHours,
         reportDate: this.formValidate.reportDate,
         workingContent: this.formValidate.workingContent,
-        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b'
+        userId: getUserId()
       }).then((res) => {
         console.log(res)
         if (res.data.status === '200') {
@@ -467,7 +468,7 @@ export default {
       listProject({
         pageSize: 100,
         page: 1,
-        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b',
+        userId: getUserId(),
         projectName: '',
         firstPartyCompanyId: '',
         projectManagerId: '',
@@ -494,7 +495,7 @@ export default {
         name: '',
         taskStatus: '',
         firstPartyScoring: '',
-        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b',
+        userId: getUserId(),
         timeStatus: '',
         startTime: '',
         endTime: '',

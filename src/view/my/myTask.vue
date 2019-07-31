@@ -175,6 +175,7 @@
 
 <script>
 import { listTask, areaData, listMapTask, selectTaskDetail, listMyNotAcceptedTask, listMapProject } from '@/api/data'
+import { getUserId } from '@/libs/util'
 import tx1 from '../../assets/images/tx1.png'
 import tx2 from '../../assets/images/tx2.png'
 import tx3 from '../../assets/images/tx3.png'
@@ -375,7 +376,7 @@ export default {
       listTask({
         pageSize: 20,
         page: this.page,
-        userId: '27275ab6e7644f05b9921193295e2c7b',
+        userId: getUserId(),
         businessProjectId: '',
         type: '',
         name: '',
@@ -403,7 +404,7 @@ export default {
     getProjectDetail (id) {
       selectTaskDetail({
         taskId: id,
-        userId: '27275ab6e7644f05b9921193295e2c7b'
+        userId: getUserId()
       }).then((res) => {
         this.isDetail = true
         this.detailData = res.data.data
@@ -413,7 +414,7 @@ export default {
       listMapTask({
         pageSize: 0,
         page: 0,
-        userId: '27275ab6e7644f05b9921193295e2c7b',
+        userId: getUserId(),
         businessProjectId: '',
         type: '',
         name: '',
@@ -563,7 +564,7 @@ export default {
         'provinceName': '',
         'cityName': '',
         'districtName': '',
-        'userId': ''
+        'userId': getUserId()
       }).then((res) => {
         let taskList = this.taskListNew = res.data.data = res.data.data
         console.log(taskList)
@@ -641,7 +642,7 @@ export default {
     listMapProject({
       pageSize: 0,
       page: 0,
-      userId: '27275ab6e7644f05b9921193295e2c7b',
+      userId: getUserId(),
       projectName: '',
       firstPartyCompanyId: '',
       projectManagerId: '',
@@ -709,5 +710,8 @@ export default {
         margin-right: 5px;
       }
     }
+  }
+  .ivu-form-item{
+    margin-bottom: 0;
   }
 </style>

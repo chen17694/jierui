@@ -25,6 +25,7 @@
 <script>
 import Tables from '_c/tables'
 import { listRole, deleteRole } from '@/api/data'
+import { getUserId } from '@/libs/util'
 export default{
   name: 'role',
   components: { Tables },
@@ -93,7 +94,7 @@ export default{
             onOk: () => {
               let params = {
                 'ids': this.rowId,
-                'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+                'userId': getUserId()
               }
               deleteRole(params).then((res) => {
                 if (res.data.status === '200') {

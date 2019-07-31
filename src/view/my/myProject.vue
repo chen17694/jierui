@@ -120,6 +120,7 @@
 
 <script>
 import { listProject, areaData, listMapProject, selectProjectDetail } from '@/api/data'
+import { getUserId } from '@/libs/util'
 import p_pause from '../../assets/images/p_pause.png'
 import p_noStarted from '../../assets/images/p_noStarted.png'
 import p_start from '../../assets/images/p_start.png'
@@ -281,7 +282,7 @@ export default {
       listProject({
         pageSize: 20,
         page: this.page,
-        userId: '27275ab6e7644f05b9921193295e2c7b',
+        userId: getUserId(),
         projectName: '',
         firstPartyCompanyId: '',
         projectManagerId: '',
@@ -307,7 +308,7 @@ export default {
     getProjectDetail (id) {
       selectProjectDetail({
         projectId: id,
-        userId: '27275ab6e7644f05b9921193295e2c7b'
+        userId: getUserId()
       }).then((res) => {
         this.isDetail = true
         this.detailData = res.data.data
@@ -317,7 +318,7 @@ export default {
       listMapProject({
         pageSize: 0,
         page: 0,
-        userId: '27275ab6e7644f05b9921193295e2c7b',
+        userId: getUserId(),
         projectName: '',
         firstPartyCompanyId: '',
         projectManagerId: '',

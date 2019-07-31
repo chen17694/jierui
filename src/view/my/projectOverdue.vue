@@ -9,6 +9,7 @@
 <script>
 import Tables from '_c/tables'
 import { listOverdueProject, projectFunction } from '@/api/data'
+import { getUserId } from '@/libs/util'
 export default{
   name: 'unit_table_page',
   components: { Tables },
@@ -18,7 +19,7 @@ export default{
         pageSize: 10,
         page: 1,
         name: '',
-        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b',
+        userId: getUserId(),
         status: '',
         projectId: '',
         taskId: ''
@@ -47,7 +48,7 @@ export default{
       console.log(arguments[0].row)
       projectFunction({
         projectId: arguments[0].row.id,
-        userId: 'd3c6b26c272f4b0c96ec8f7a3062230b',
+        userId: getUserId(),
         functionType: '6'
       }).then((res) => {
         if (res.data.status === '200') {
