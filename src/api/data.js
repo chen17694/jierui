@@ -382,6 +382,13 @@ export const listOverdueTaskCrossing = (params) => {
     method: 'post'
   })
 }
+export const getHeadOffice = (params) => {
+  return axios.request({
+    url: '/office/getHeadOffice',
+    data: params,
+    method: 'post'
+  })
+}
 export const materialApplication = (params) => {
   return axios.request({
     url: '/materia/materialApplication',

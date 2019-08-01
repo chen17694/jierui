@@ -1,5 +1,21 @@
 <template>
   <div>
+    <Card>
+      <Row style="display: flex; align-items: center">
+        <Col span="6">
+          <span style="font-size: 16px; font-weight: bold;">{{companyName}}</span>
+        </Col>
+        <Col span="6">
+          <span>所属地：{{companyArea}}</span>
+        </Col>
+        <Col span="6">
+          <span>人数：{{numbers}}</span>
+        </Col>
+        <Col span="6" style="text-align: right">
+          <Button type="primary" @click="companyEdit">编辑</Button>
+        </Col>
+      </Row>
+    </Card>
     <Row type="flex" justify="space-between" style="padding: 10px 0">
       <Col span="12">
         <div class="searchInput">
@@ -67,27 +83,14 @@
     <Modal
       v-model="editPanel"
       @on-cancel="closeEdit"
+      width="600"
       :title="editType === 0 ? '新增单位' : '编辑单位'">
       <Form ref="editParams" :model="editParams" :rules="ruleValidate" :label-width="120">
         <FormItem label="单位名称" prop="name">
           <Input v-model="editParams.name" placeholder="请输入单位名称"/>
         </FormItem>
         <FormItem label="所属地" prop="provinceId">
-          <AreaSelect
-            name="area2"
-            :province="areaParams2.province"
-            :city="areaParams2.city"
-            :district="areaParams2.district"
-            :obj="areaParams2"
-            :getProvince="getProvince"
-            :getCity="getCity"
-            :getDistrict="getDistrict"
-            :provinceId="editParams.provinceId"
-            :cityId="editParams.cityId"
-            :districtId="editParams.districtId"
-            @getId="getId"
-          />
-          <Input v-model="editParams.provinceId" v-show="1===2"/>
+          <Cascader :data="areaData" v-model="area2" @on-change="editAreaChange"></Cascader>
         </FormItem>
         <FormItem label="是否设为甲方单位" prop="isFirstParty" v-if="this.editType===0">
           <RadioGroup v-model="editParams.isFirstParty">
@@ -106,14 +109,17 @@
 
 <script>
 import Tables from '_c/tables'
-import AreaSelect from './areaSelect'
-import { getUnitList, addOffice, delOffice, listAreaByType, areaData } from '@/api/data'
+import { getUnitList, addOffice, delOffice, areaData, getHeadOffice } from '@/api/data'
 import { getUserId } from '@/libs/util'
 export default{
   name: 'unit_table_page',
-  components: { Tables, AreaSelect },
+  components: { Tables },
   data () {
     return {
+      companyData: null,
+      companyName: '',
+      companyArea: '',
+      numbers: 0,
       listParams: {
         'pageSize': 10,
         'page': 1,
@@ -140,16 +146,6 @@ export default{
         districtName: '',
         userId: getUserId()
       },
-      areaParams1: {
-        province: [],
-        city: [],
-        district: []
-      },
-      areaParams2: {
-        province: [],
-        city: [],
-        district: []
-      },
       ruleValidate: {
         name: [
           { required: true, message: '请输入单位名称', trigger: 'blur' }
@@ -173,7 +169,6 @@ export default{
         { title: '单位类型',
           key: 'type',
           render: (h, params) => {
-            console.log(params)
             let text = ''
             if (params.row.type === '1') {
               text = '主管单位'
@@ -199,118 +194,44 @@ export default{
     }
   },
   methods: {
+    companyEdit () {
+      this.editType = 1
+      this.area2 = ['1', this.companyData.provinceId, this.companyData.cityId, this.companyData.districtId]
+      this.editParams = {
+        id: this.companyData.id,
+        name: this.companyData.name,
+        provinceId: this.companyData.provinceId,
+        provinceName: this.companyData.provinceName,
+        cityId: this.companyData.cityId,
+        cityName: this.companyData.cityName,
+        districtId: this.companyData.districtId,
+        districtName: this.companyData.districtName,
+        userId: getUserId()
+      }
+      this.editPanel = true
+    },
     filterAreaChange () {
-      console.log(arguments)
       let value = arguments[1].slice(1, arguments[1].length).map((item) => {
         return item.value
       })
       this.listParams.provinceId = value[0]
       this.listParams.cityId = value[1]
       this.listParams.districtId = value[2]
-      console.log(this.listParams)
     },
-    getId (val, name, type) {
-      if (name === 'area1') {
-        switch (type) {
-          case 1:
-            this.listParams.provinceId = val
-            break
-          case 2:
-            this.listParams.cityId = val
-            break
-          case 3:
-            this.listParams.districtId = val
-            break
-        }
-      } else if (name === 'area2') {
-        switch (type) {
-          case 1:
-            if (!val) {
-              this.editParams.provinceId = ''
-              this.editParams.provinceName = ''
-            } else {
-              this.editParams.provinceId = val
-              for (let i = 0; i < this.areaParams2.province.length; i++) {
-                if (this.areaParams2.province[i].id === val) {
-                  this.editParams.provinceName = this.areaParams2.province[i].name
-                  break
-                }
-              }
-            }
-            break
-          case 2:
-            if (!val) {
-              this.editParams.cityId = ''
-              this.editParams.cityName = ''
-            } else {
-              this.editParams.cityId = val
-              for (let i = 0; i < this.areaParams2.city.length; i++) {
-                if (this.areaParams2.city[i].id === val) {
-                  this.editParams.cityName = this.areaParams2.city[i].name
-                  break
-                }
-              }
-            }
-            break
-          case 3:
-            if (!val) {
-              this.editParams.districtId = ''
-              this.editParams.districtName = ''
-            } else {
-              this.editParams.districtId = val
-              for (let i = 0; i < this.areaParams2.district.length; i++) {
-                if (this.areaParams2.district[i].id === val) {
-                  this.editParams.districtName = this.areaParams2.district[i].name
-                  break
-                }
-              }
-            }
-            break
-        }
-      }
-    },
-    getProvince (obj) {
-      obj.city = []
-      obj.district = []
-      return new Promise((resolve) => {
-        listAreaByType({
-          'parentId': '1',
-          'type': '2'
-        }).then(res => {
-          if (res.data.status === '200') {
-            obj.province = res.data.data
-            resolve()
-          }
-        })
+    editAreaChange () {
+      console.log(arguments)
+      let value = arguments[1].slice(1, arguments[1].length).map((item) => {
+        return item.value
       })
-    },
-    getCity (id, obj) {
-      console.log(id)
-      obj.district = []
-      return new Promise((resolve) => {
-        listAreaByType({
-          'parentId': id,
-          'type': '3'
-        }).then(res => {
-          if (res.data.status === '200') {
-            obj.city = res.data.data
-            resolve()
-          }
-        })
+      let label = arguments[1].slice(1, arguments[1].length).map((item) => {
+        return item.label
       })
-    },
-    getDistrict (id, obj) {
-      return new Promise((resolve) => {
-        listAreaByType({
-          'parentId': id,
-          'type': '4'
-        }).then(res => {
-          if (res.data.status === '200') {
-            obj.district = res.data.data
-            resolve()
-          }
-        })
-      })
+      this.editParams.provinceId = value[0]
+      this.editParams.cityId = value[1]
+      this.editParams.districtId = value[2]
+      this.editParams.provinceName = label[0]
+      this.editParams.cityName = label[1]
+      this.editParams.districtName = label[2]
     },
     // 批量删除
     dropdownClick (name) {
@@ -342,51 +263,54 @@ export default{
     },
     onAdd () {
       this.editType = 0
-      this.getProvince(this.areaParams2)
+      this.editParams = {
+        name: '',
+        isFirstParty: '',
+        provinceId: '',
+        provinceName: '',
+        cityId: '',
+        cityName: '',
+        districtId: '',
+        districtName: '',
+        userId: getUserId()
+      }
+      this.editPanel = true
+    },
+    // 编辑
+    onEdit () {
+      console.log(arguments)
+      this.editType = 1
+      this.area2 = ['1', arguments[0].row.provinceId, arguments[0].row.cityId, arguments[0].row.districtId]
+      this.editParams = {
+        id: arguments[0].row.id,
+        name: arguments[0].row.name,
+        provinceId: arguments[0].row.provinceId,
+        provinceName: arguments[0].row.provinceName,
+        cityId: arguments[0].row.cityId,
+        cityName: arguments[0].row.cityName,
+        districtId: arguments[0].row.districtId,
+        districtName: arguments[0].row.districtName,
+        userId: getUserId()
+      }
       this.editPanel = true
     },
     // 关闭编辑面板
     closeEdit () {
       this.editPanel = false
-      this.areaParams2.province = []
-      this.areaParams2.city = []
-      this.areaParams2.district = []
-      this.editParams.provinceId = ''
-      this.editParams.provinceName = ''
-      this.editParams.cityId = ''
-      this.editParams.cityName = ''
-      this.editParams.districtId = ''
-      this.editParams.districtName = ''
-      this.$refs['editParams'].resetFields()
-    },
-    // 编辑
-    onEdit () {
-      this.editType = 1
-      let provinceId = arguments[0].row.provinceId
-      let cityId = arguments[0].row.cityId
-      let districtId = arguments[0].row.districtId
-      this.editParams.id = arguments[0].row.id
-      this.editParams.name = arguments[0].row.name
-      this.editParams.provinceName = arguments[0].row.provinceName
-      this.editParams.cityName = arguments[0].row.cityName
-      this.editParams.districtName = arguments[0].row.districtName
-      this.getArea(provinceId, cityId, districtId)
-      this.editPanel = true
-    },
-    getArea (provinceId, cityId, districtId) {
-      this.getProvince(this.areaParams2).then(() => {
-        this.editParams.provinceId = provinceId
-        return provinceId
-      }).then((res) => {
-        this.getCity(res, this.areaParams2).then(() => {
-          this.editParams.cityId = cityId
-          return cityId
-        }).then((res) => {
-          this.getDistrict(res, this.areaParams2).then(() => {
-            this.editParams.districtId = districtId
-          })
-        })
-      })
+      this.area2 = []
+      if (this.editType === 1) {
+        this.editParams = {
+          id: '',
+          name: '',
+          provinceId: '',
+          provinceName: '',
+          cityId: '',
+          cityName: '',
+          districtId: '',
+          districtName: '',
+          userId: getUserId()
+        }
+      }
     },
     // 选择
     onSelectionChange (row) {
@@ -398,35 +322,8 @@ export default{
     // 新建&编辑提交
     handleSubmit () {
       this.$refs['editParams'].validate((valid) => {
-        console.log(valid)
         if (valid) {
-          let params = {}
-          if (this.editType === 1) {
-            params = {
-              'id': this.editParams.id,
-              'name': this.editParams.name,
-              'provinceId': this.editParams.provinceId,
-              'provinceName': this.editParams.provinceName,
-              'cityId': this.editParams.cityId,
-              'cityName': this.editParams.cityName,
-              'districtId': this.editParams.districtId,
-              'districtName': this.editParams.districtName,
-              'userId': this.editParams.userId
-            }
-          } else {
-            params = {
-              'name': this.editParams.name,
-              'isFirstParty': this.editParams.isFirstParty,
-              'provinceId': this.editParams.provinceId,
-              'provinceName': this.editParams.provinceName,
-              'cityId': this.editParams.cityId,
-              'cityName': this.editParams.cityName,
-              'districtId': this.editParams.districtId,
-              'districtName': this.editParams.districtName,
-              'userId': this.editParams.userId
-            }
-          }
-          addOffice(params).then(res => {
+          addOffice(this.editParams).then(res => {
             if (res.data.status === '200') {
               this.$Message.success(res.data.msg)
               this.editPanel = false
@@ -459,6 +356,13 @@ export default{
           this.total = res.data.data.total
         }
       })
+      getHeadOffice().then((res) => {
+        console.log(res.data.data)
+        this.companyData = res.data.data
+        this.companyName = res.data.data.name
+        this.companyArea = (res.data.data.provinceName ? res.data.data.provinceName : '') + (res.data.data.cityName ? res.data.data.cityName : '') + (res.data.data.districtName ? res.data.data.districtName : '')
+        this.numbers = res.data.data.num
+      })
     },
     // 搜索
     handleSearch (val) {
@@ -471,19 +375,22 @@ export default{
     },
     // 筛选重置
     filterReset () {
-      this.areaParams1.province = []
-      this.areaParams1.city = []
-      this.areaParams1.district = []
       this.listParams.type = ''
       this.listParams.provinceId = ''
       this.listParams.cityId = ''
       this.listParams.districtId = ''
-      this.getProvince(this.areaParams1)
+      this.area1 = []
     }
   },
   mounted () {
     this.getData()
-    this.getProvince(this.areaParams1)
+    getHeadOffice().then((res) => {
+      console.log(res.data.data)
+      this.companyData = res.data.data
+      this.companyName = res.data.data.name
+      this.companyArea = (res.data.data.provinceName ? res.data.data.provinceName : '') + (res.data.data.cityName ? res.data.data.cityName : '') + (res.data.data.districtName ? res.data.data.districtName : '')
+      this.numbers = res.data.data.num
+    })
     areaData().then(res => {
       if (res.data.status === '200') {
         this.areaData = res.data.data

@@ -120,7 +120,19 @@ export default {
                     this.$router.push({ path: 'materialAdd', query: { id: params.row.id } })
                   }
                 }
-              }, ['<Icon size="16" type="md-create" />']),
+              }, [
+                h('Icon', {
+                  props: {
+                    type: 'md-create',
+                    size: 16
+                  },
+                  on: {
+                    click: () => {
+                      vm.$emit('on-delete', params)
+                    }
+                  }
+                })
+              ]),
               h('Button', {
                 style: {
                   marginLeft: '6px'
@@ -134,7 +146,19 @@ export default {
                     this.$router.push({ path: 'materialDetail', query: { id: params.row.id } })
                   }
                 }
-              }, ['<Icon size="16" type="md-list-box" />']),
+              }, [
+                h('Icon', {
+                  props: {
+                    type: 'md-list-box',
+                    size: 16
+                  },
+                  on: {
+                    click: () => {
+                      vm.$emit('on-delete', params)
+                    }
+                  }
+                })
+              ]),
               h('Button', {
                 style: {
                   marginLeft: '6px'
@@ -159,7 +183,19 @@ export default {
                     })
                   }
                 }
-              }, ['<Icon size="16" type="md-trash" />'])
+              }, [
+                h('Icon', {
+                  props: {
+                    type: 'md-trash',
+                    size: 16
+                  },
+                  on: {
+                    click: () => {
+                      vm.$emit('on-delete', params)
+                    }
+                  }
+                })
+              ])
             ])
           }
         }

@@ -34,7 +34,6 @@
         <div v-if="tab === 'tab2'" style="padding: 10px">
           <Form :label-width="80">
             <FormItem label="项目选择：">
-              {{onProject}}
               <Select v-model="businessProjectId" @on-change="changeProject">
                 <Option value="">全部</Option>
                 <Option v-for="(item, index) in projectList" :value="item.id " :key="index">{{item.name}}</Option>
