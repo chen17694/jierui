@@ -26,8 +26,8 @@
       </div>
       <Card style="width:350px; position: absolute; left: 20px; top: 60px; border: 0 none">
         <div style="display: flex">
-          <input type="text" placeholder="Enter something..." class="ivu-input ivu-input-default" style="height: 50px; border: 0 none; border-radius: 0; font-size: 15px; color: #999999">
-          <img src="../../assets/images/search.png" style=" cursor: pointer">
+          <input type="text" v-model="projectName" class="ivu-input ivu-input-default" style="height: 50px; border: 0 none; border-radius: 0; font-size: 15px; color: #999999">
+          <img src="../../assets/images/search.png" style=" cursor: pointer" @click="searchProject">
         </div>
       </Card>
       <Card v-if="!isDetail" style="width:350px; position: absolute; left: 20px; top: 120px;">
@@ -46,7 +46,7 @@
             <Option value="7" >已暂停</Option>
           </Select>
         </div>
-        <div v-for="(item, index) in projectList" :key="index" @click="positioning(item.lng, item.lat)" v-show="panelShow" style="position: relative; padding: 15px; border-bottom: 1px solid #e6e6e6;">
+        <div v-for="(item, index) in projectList" :key="index" @click="positioning(item.lng, item.lat)" v-show="panelShow" style="position: relative; padding: 15px; padding-bottom: 10px; border-bottom: 1px solid #e6e6e6;">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px">
             <div style="font-size: 16px; display: flex; align-items: center;">
               <img src="../../assets/images/icon1.png" style="width: 18px; margin-right: 5px">{{item.name}}
@@ -60,12 +60,23 @@
             <span style="color:#999999;">项目角色：{{item.userTopRoleName}}</span>
             <span style="color:#BC0000;" v-if="item.isOverdue === '1'">已逾期{{item.overdueDays}}天</span>
           </div>
-          <div style="display: flex; justify-content: space-between; margin-top: 10px">
+          <div style="display: flex; justify-content: space-between; margin-top: 10px" @click.stop>
             <div>
-              <span v-for="(i, index) in item.projectButtonPermissionBeans" :key="index" style="margin-right: 19px; float: left">{{i.name}}</span>
+              <span v-for="(i, index) in item.projectButtonPermissionBeans" :key="index" >
+                <Button v-if="i.permissionCode === '1'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">开始项目</Button>
+                <Button v-if="i.permissionCode === '2' && item.pauseStatus === '1'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">开始项目</Button>
+                <Button v-if="i.permissionCode === '2' && item.pauseStatus === '0'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">暂停项目</Button>
+                <Button v-if="i.permissionCode === '3'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">申请暂停项目</Button>
+                <Button v-if="i.permissionCode === '4'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">撤销项目</Button>
+                <Button v-if="i.permissionCode === '5'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">申请撤销项目</Button>
+                <Button v-if="i.permissionCode === '6'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">逾期催办项目</Button>
+                <Button v-if="i.permissionCode === '7'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">提交审核项目</Button>
+                <Button v-if="i.permissionCode === '8'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">删除项目</Button>
+                <Button v-if="i.permissionCode === '9'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">创建任务</Button>
+              </span>
             </div>
             <div>
-              <button typeof="button" style="border: 1px solid #2E8CEB; width: 58px; height: 41px; background-color: #ffffff; border-radius: 3px; color: #2E8CEB; cursor: pointer">详情</button>
+              <button typeof="button" @click="getProjectDetail(item.id)" style="border: 1px solid #2E8CEB; width: 58px; height: 41px; background-color: #ffffff; border-radius: 3px; color: #2E8CEB; cursor: pointer">详情</button>
             </div>
           </div>
         </div>
@@ -119,7 +130,7 @@
 </template>
 
 <script>
-import { listProject, areaData, listMapProject, selectProjectDetail } from '@/api/data'
+import { listProject, areaData, listMapProject, selectProjectDetail, projectFunction } from '@/api/data'
 import { getUserId } from '@/libs/util'
 import p_pause from '../../assets/images/p_pause.png'
 import p_noStarted from '../../assets/images/p_noStarted.png'
@@ -183,7 +194,8 @@ export default {
       projectList: [],
       total: 0,
       page: 1,
-      maxPage: 1
+      maxPage: 1,
+      projectName: ''
     }
   },
   watch: {
@@ -236,6 +248,79 @@ export default {
         name: to
       })
     },
+    onEdit (params, row) {
+      console.log(params)
+      console.log(row)
+      if (params.permissionCode === '2' || params.permissionCode === '3') {
+        this.$Modal.confirm({
+          title: params.permissionCode === '2' ? '确定要' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该项目吗？' : '确定要申请' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该项目吗？',
+          onOk: () => {
+            projectFunction({
+              'projectId': row.id,
+              'userId': getUserId(),
+              'functionType': params.permissionCode,
+              'pauseStatus': row.pauseStatus === '0' ? '1' : '0'
+            }).then((res) => {
+              this.$Message.info(res.data.msg)
+              this.markers = []
+              this.markerRefs = []
+              this.map.clearMarkers()
+              this.getMapProject()
+              this.getProject()
+            })
+          }
+        })
+      } else {
+        let str = ''
+        switch (params.permissionCode) {
+          case '1':
+            str = '确定要开始该项目吗？'
+            break
+          case '4':
+            str = '确定要撤销该项目吗？'
+            break
+          case '5':
+            str = '确定要申请撤销该项目吗？'
+            break
+          case '6':
+            str = '确定要催办该项目吗？'
+            break
+          case '7':
+            str = '确定要将该项目提交审核吗？'
+            break
+          case '8':
+            str = '确定要删除该项目吗？'
+            break
+          case '99':
+            str = '确定要为该项目创建新的任务吗？'
+            break
+        }
+        this.$Modal.confirm({
+          title: str,
+          onOk: () => {
+            projectFunction({
+              'projectId': row.id,
+              'userId': getUserId(),
+              'functionType': params.permissionCode
+            }).then((res) => {
+              this.$Message.info(res.data.msg)
+              this.markers = []
+              this.markerRefs = []
+              this.map.clearMarkers()
+              this.getMapProject()
+              this.getProject()
+            })
+          }
+        })
+      }
+    },
+    searchProject () {
+      this.markers = []
+      this.markerRefs = []
+      this.map.clearMarkers()
+      this.getMapProject()
+      this.getProject()
+    },
     initMark (self, o) {
       self.map = new AMap.MarkerClusterer(o, self.markerRefs, {
         gridSize: 80,
@@ -283,7 +368,7 @@ export default {
         pageSize: 20,
         page: this.page,
         userId: getUserId(),
-        projectName: '',
+        projectName: this.projectName,
         firstPartyCompanyId: '',
         projectManagerId: '',
         status: this.onStatus,
@@ -319,7 +404,7 @@ export default {
         pageSize: 0,
         page: 0,
         userId: getUserId(),
-        projectName: '',
+        projectName: this.projectName,
         firstPartyCompanyId: '',
         projectManagerId: '',
         status: this.onStatus,

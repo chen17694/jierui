@@ -92,7 +92,7 @@
 
 <script>
 import { listProject, projectFunction, getUnitList, getUserList } from '@/api/data'
-import { getUserId } from '@/libs/util'
+import { getUserId, getUserInfo } from '@/libs/util'
 import Tables from '_c/tables'
 export default {
   name: 'projectManagement',
@@ -184,7 +184,7 @@ export default {
         'pageSize': 0,
         'page': 0,
         'name': '',
-        'office': 'ca452cb4392f41f28aab87ea9d884781',
+        'office': JSON.parse(getUserInfo()).officeId,
         'role': '',
         'isLoginApp': ''
       }).then((res) => {
@@ -256,7 +256,7 @@ export default {
           case '8':
             str = '确定要删除该项目吗？'
             break
-          case '9':
+          case '99':
             str = '确定要为该项目创建新的任务吗？'
             break
         }

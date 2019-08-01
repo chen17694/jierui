@@ -657,6 +657,7 @@ export default {
       this.projectList = res.data.data.projectList
     })
     lazyAMapApiLoaderInstance.load().then(() => {
+      this.getTask()
       this.getMapTask()
     })
   }

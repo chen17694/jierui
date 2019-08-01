@@ -47,7 +47,7 @@
             <img src="../../assets/images/p6.png" v-if="item.permissionCode === '6'" title="逾期催办项目" class="btn" @click="onEdit(item, row)">
             <img src="../../assets/images/p7.png" v-if="item.permissionCode === '7'" title="提交审核项目" class="btn" @click="onEdit(item, row)">
             <img src="../../assets/images/p8.png" v-if="item.permissionCode === '8'" title="删除项目" class="btn" @click="onEdit(item, row)">
-            <img src="../../assets/images/p9.png" v-if="item.permissionCode === '9'" title="创建任务" class="btn" @click="onEdit(item, row)">
+            <img src="../../assets/images/p9.png" v-if="item.permissionCode === '99'" title="创建任务" class="btn" @click="onEdit(item, row)">
           </div>
         </div>
       </template>
