@@ -86,7 +86,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tables" search-place="top" v-model="tableData" :columns="columns" @on-edit="onEdit" @on-select="onSelect" @on-selection-change="onSelectionChange"></tables>
+    <tables ref="tables" search-place="top" :total="this.total" :on-change="this.pageChange" :on-page-size-change="this.PageSizeChange" v-model="tableData" :columns="columns" @on-edit="onEdit" @on-select="onSelect" @on-selection-change="onSelectionChange"></tables>
   </div>
 </template>
 
@@ -158,6 +158,14 @@ export default{
     }
   },
   methods: {
+    pageChange (page) {
+      this.params.page = page
+      this.getData()
+    },
+    PageSizeChange (size) {
+      this.params.pageSize = size
+      this.getData()
+    },
     selectUnit () {
       listRoleByOfficeId({
         id: arguments[0]
@@ -245,6 +253,7 @@ export default{
         if (res.data.status === '200') {
           this.tableData = res.data.data.list
           this.total = res.data.data.total
+          console.log(this.total)
         }
       })
     }

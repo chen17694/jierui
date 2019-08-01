@@ -90,7 +90,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tables" :total="this.total" :columns="columns" v-model="tableData" :projectListBtnVisible="true" @on-edit="onEdit"/>
+    <tables ref="tables" :total="this.total" :columns="columns" v-model="tableData" :taskListBtnVisible="true" @on-edit="onEdit"/>
   </div>
 </template>
 

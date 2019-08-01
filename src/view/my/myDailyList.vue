@@ -60,13 +60,13 @@
           {{formValidate.userName}}
         </FormItem>
         <FormItem prop="projectName" label="选择项目">
-          <Select v-model="formValidate.projectId">
+          <Select v-model="formValidate.projectId" @on-change="editChangeProject">
             <Option v-for="(item, index) in projectList" :value="item.id" :labek="item.name" :key="index">{{ item.name }}</Option>
           </Select>
         </FormItem>
         <FormItem prop="taskName" label="选择任务">
           <Select v-model="formValidate.taskId">
-            <Option v-for="item in taskList" :value="item.id" :labek="item.name" :key="item.id">{{ item.name }}</Option>
+            <Option v-for="item in editTaskList" :value="item.id" :labek="item.name" :key="item.id">{{ item.name }}</Option>
           </Select>
         </FormItem>
         <FormItem prop="reportDate" label="日报日期">
@@ -226,6 +226,7 @@ export default {
       projectId: '',
       taskId: '',
       filter: false,
+      editTaskList: [],
       params: {
         pageSize: 10,
         page: 1,
@@ -295,6 +296,10 @@ export default {
   watch: {
   },
   methods: {
+    editChangeProject () {
+      this.formValidate.taskId = ''
+      this.getListTask(3, arguments[0])
+    },
     // 选择
     onSelectionChange (row) {
       this.rowId = []
@@ -432,7 +437,7 @@ export default {
         reportDate: arguments[0].row.reportDate,
         workingContent: arguments[0].row.workingContent
       }
-      this.getListTask(2, arguments[0].row.projectId)
+      this.getListTask(3, arguments[0].row.projectId)
       this.edit = true
     },
     pageChange (page) {
@@ -475,8 +480,8 @@ export default {
     getListTask (type, id, index) {
       if (!id) return false
       listTask({
-        pageSize: 100,
-        page: 1,
+        pageSize: 0,
+        page: 0,
         businessProjectId: id,
         type: '',
         name: '',
@@ -497,6 +502,9 @@ export default {
             break
           case 2:
             this.taskList = res.data.data.taskDetailBeans
+            break
+          case 3:
+            this.editTaskList = res.data.data.taskDetailBeans
             break
         }
       })

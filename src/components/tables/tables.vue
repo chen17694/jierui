@@ -51,6 +51,19 @@
           </div>
         </div>
       </template>
+      <template slot-scope="{ row, index }" slot="action" v-if="taskListBtnVisible">
+        <div style="display: flex">
+          <div v-for="(item, index) in row.taskButtonPermissionBeans" :key="index" style="height: 30px">
+            <img src="../../assets/images/t1.png" v-if="item.permissionCode === '1'" title="下达任务" class="btn" @click="onEdit(item, row)">
+            <img src="../../assets/images/t2.png" v-if="item.permissionCode === '2' && row.pauseStatus === '1' " title="开始项目" class="btn" @click="onEdit(item, row)">
+            <img src="../../assets/images/t2.png" v-if="item.permissionCode === '2' && row.pauseStatus === '0' " title="暂停项目" class="btn" @click="onEdit(item, row)">
+            <img src="../../assets/images/t3.png" v-if="item.permissionCode === '3'" title="撤销任务" class="btn" @click="onEdit(item, row)">
+            <img src="../../assets/images/t4.png" v-if="item.permissionCode === '4'" title="撤销项目" class="btn" @click="onEdit(item, row)">
+            <img src="../../assets/images/t5.png" v-if="item.permissionCode === '5'" title="新增任务路口" class="btn" @click="onEdit(item, row)">
+            <img src="../../assets/images/t6.png" v-if="item.permissionCode === '6'" title="删除任务" class="btn" @click="onEdit(item, row)">
+          </div>
+        </div>
+      </template>
     </Table>
     <div style="margin: 10px;overflow: hidden" v-show="this.showPage">
       <div style="float: right;">
@@ -72,6 +85,10 @@ export default {
       default: 10
     },
     projectListBtnVisible: {
+      type: Boolean,
+      default: false
+    },
+    taskListBtnVisible: {
       type: Boolean,
       default: false
     },
