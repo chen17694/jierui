@@ -151,7 +151,7 @@ export default {
         { title: '甲方评分', key: 'firstPartyScoring' },
         {
           title: '操作',
-          slot: 'action'
+          slot: 'action1'
         }
       ],
       tableData: [],

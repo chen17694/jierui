@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import { listTask, projectFunction, listProject } from '@/api/data'
+import { listTask, taskFunction, listProject } from '@/api/data'
 import { getUserId } from '@/libs/util'
 import Tables from '_c/tables'
 export default {
@@ -132,7 +132,7 @@ export default {
         { title: '甲方评分', key: 'firstPartyScoring' },
         {
           title: '操作',
-          slot: 'action'
+          slot: 'action2'
         }
       ],
       tableData: [],
@@ -193,12 +193,12 @@ export default {
       })
     },
     onEdit (params, row) {
-      if (params.permissionCode === '2' || params.permissionCode === '3') {
+      if (params.permissionCode === '2') {
         this.$Modal.confirm({
-          title: params.permissionCode === '2' ? '确定要' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该项目吗？' : '确定要申请' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该项目吗？',
+          title: params.permissionCode === '2' ? '确定要' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该任务吗？' : '确定要申请' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该任务吗？',
           onOk: () => {
-            projectFunction({
-              'projectId': row.id,
+            taskFunction({
+              'taskId': row.id,
               'userId': getUserId(),
               'functionType': params.permissionCode,
               'pauseStatus': row.pauseStatus === '0' ? '1' : '0'
@@ -212,32 +212,26 @@ export default {
         let str = ''
         switch (params.permissionCode) {
           case '1':
-            str = '确定要开始该项目吗？'
+            str = '确定要下达该任务吗？'
+            break
+          case '3':
+            str = '确定要撤销该任务吗？'
             break
           case '4':
-            str = '确定要撤销该项目吗？'
+            str = '确定要催办该任务吗？'
             break
           case '5':
-            str = '确定要申请撤销该项目吗？'
+            str = '确定要提交审核吗？'
             break
           case '6':
-            str = '确定要催办该项目吗？'
-            break
-          case '7':
-            str = '确定要将该项目提交审核吗？'
-            break
-          case '8':
-            str = '确定要删除该项目吗？'
-            break
-          case '9':
-            str = '确定要为该项目创建新的任务吗？'
+            str = '确定要删除该任务吗？'
             break
         }
         this.$Modal.confirm({
           title: str,
           onOk: () => {
-            projectFunction({
-              'projectId': row.id,
+            taskFunction({
+              'taskId': row.id,
               'userId': getUserId(),
               'functionType': params.permissionCode
             }).then((res) => {

@@ -78,6 +78,15 @@ export default [
         component: () => import('@/view/my/myTask.vue')
       },
       {
+        path: 'myTaskRoad',
+        name: 'myTaskRoad',
+        meta: {
+          icon: 'md-funnel',
+          title: '我的任务路口'
+        },
+        component: () => import('@/view/my/myTaskRoad.vue')
+      },
+      {
         path: 'myMaterial',
         name: 'myMaterial',
         meta: {

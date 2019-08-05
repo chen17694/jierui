@@ -35,9 +35,9 @@
       <slot name="header" slot="header"></slot>
       <slot name="footer" slot="footer"></slot>
       <slot name="loading" slot="loading"></slot>
-      <template slot-scope="{ row, index }" slot="action" v-if="projectListBtnVisible">
+      <template slot-scope="{ row, index }" slot="action1" v-if="projectListBtnVisible">
         <div style="display: flex">
-          <div v-for="(item, index) in row.projectButtonPermissionBeans" :key="index" style="height: 30px">
+          <div v-for="(item, index) in row.projectButtonPermissionBeans" :key="index" style="height: 30px;display: flex; align-items: center">
             <img src="../../assets/images/p1.png" v-if="item.permissionCode === '1'" title="开始项目" class="btn" @click="onEdit(item, row)">
             <img src="../../assets/images/p1.png" v-if="item.permissionCode === '2' && row.pauseStatus === '1' " title="开始项目" class="btn" @click="onEdit(item, row)">
             <img src="../../assets/images/p2.png" v-if="item.permissionCode === '2' && row.pauseStatus === '0' " title="暂停项目" class="btn" @click="onEdit(item, row)">
@@ -51,16 +51,16 @@
           </div>
         </div>
       </template>
-      <template slot-scope="{ row, index }" slot="action" v-if="taskListBtnVisible">
+      <template slot-scope="{ row, index }" slot="action2" v-if="taskListBtnVisible">
         <div style="display: flex">
-          <div v-for="(item, index) in row.taskButtonPermissionBeans" :key="index" style="height: 30px">
-            <img src="../../assets/images/t1.png" v-if="item.permissionCode === '1'" title="下达任务" class="btn" @click="onEdit(item, row)">
-            <img src="../../assets/images/t2.png" v-if="item.permissionCode === '2' && row.pauseStatus === '1' " title="开始项目" class="btn" @click="onEdit(item, row)">
-            <img src="../../assets/images/t2.png" v-if="item.permissionCode === '2' && row.pauseStatus === '0' " title="暂停项目" class="btn" @click="onEdit(item, row)">
-            <img src="../../assets/images/t3.png" v-if="item.permissionCode === '3'" title="撤销任务" class="btn" @click="onEdit(item, row)">
-            <img src="../../assets/images/t4.png" v-if="item.permissionCode === '4'" title="撤销项目" class="btn" @click="onEdit(item, row)">
-            <img src="../../assets/images/t5.png" v-if="item.permissionCode === '5'" title="新增任务路口" class="btn" @click="onEdit(item, row)">
-            <img src="../../assets/images/t6.png" v-if="item.permissionCode === '6'" title="删除任务" class="btn" @click="onEdit(item, row)">
+          <div v-for="(item, index) in row.taskButtonPermissionBeans" :key="index" style="height: 30px; display: flex; align-items: center">
+            <img src="../../assets/images/t1.png" v-if="item.permissionCode === '1'" title="下达任务" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
+            <img src="../../assets/images/t2.png" v-if="item.permissionCode === '2' && row.pauseStatus === '1' " style="margin: 0 3px" title="开始任务" class="btn" @click="onEdit(item, row)">
+            <img src="../../assets/images/t2.png" v-if="item.permissionCode === '2' && row.pauseStatus === '0' " style="margin: 0 3px" title="暂停任务" class="btn" @click="onEdit(item, row)">
+            <img src="../../assets/images/t3.png" v-if="item.permissionCode === '3'" title="撤销任务" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
+            <img src="../../assets/images/t4.png" v-if="item.permissionCode === '4'" title="催办任务" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
+            <img src="../../assets/images/t5.png" v-if="item.permissionCode === '5'" title="新增任务路口" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
+            <img src="../../assets/images/t6.png" v-if="item.permissionCode === '6'" title="删除任务" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
           </div>
         </div>
       </template>
@@ -339,7 +339,6 @@ export default {
 </script>
 <style>
   .btn{
-    width: 30px;
     cursor: pointer;
   }
 </style>

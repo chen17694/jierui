@@ -240,7 +240,20 @@ export const listMyNotAcceptedTask = (params) => {
     method: 'post'
   })
 }
-
+export const acceptOrRefuseTask = (params) => {
+  return axios.request({
+    url: '/task/acceptOrRefuseTask',
+    data: params,
+    method: 'post'
+  })
+}
+export const listMapTaskCrossing = (params) => {
+  return axios.request({
+    url: '/taskCrossingRelation/listMapTaskCrossing',
+    data: params,
+    method: 'post'
+  })
+}
 export const selectTaskDetail = (params) => {
   return axios.request({
     url: '/task/selectTaskDetail',

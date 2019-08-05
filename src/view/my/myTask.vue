@@ -49,7 +49,7 @@
                   任务数量：{{this.total}}
                 </div>
                 <Select v-model="onStatus" style="width:100px" @on-change="statusChange">
-                  <Avatar :src="avatar" slot="prefix" size="small" />
+                  <span :style="{ backgroundColor: avatar }" style="width: 15px; height: 15px; display: inline-block; border-radius: 50%; vertical-align: middle;" slot="prefix"></span>
                   <Option value="1" >未领取</Option>
                   <Option value="2" >已拒绝</Option>
                   <Option value="3" >未开始</Option>
@@ -75,9 +75,17 @@
                   <span style="color:#999999;">项目角色：{{item.userTopRoleName}}</span>
                   <span style="color:#BC0000;" v-if="item.isOverdue === '1'">已逾期{{item.overdueDays}}天</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; margin-top: 10px">
+                <div style="display: flex; justify-content: space-between; margin-top: 10px" @click.stop>
                   <div>
-                    <span v-for="(i, index) in item.projectButtonPermissionBeans" :key="index" style="margin-right: 19px; float: left">{{i.name}}</span>
+                    <span v-for="(i, index) in item.taskButtonPermissionBeans" :key="index" >
+                      <Button v-if="i.permissionCode === '1'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">下达任务</Button>
+                      <Button v-if="i.permissionCode === '2' && item.pauseStatus === '1'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">开始任务</Button>
+                      <Button v-if="i.permissionCode === '2' && item.pauseStatus === '0'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">暂停任务</Button>
+                      <Button v-if="i.permissionCode === '3'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">撤销任务</Button>
+                      <Button v-if="i.permissionCode === '4'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">催办任务</Button>
+                      <Button v-if="i.permissionCode === '5'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">新增任务路口</Button>
+                      <Button v-if="i.permissionCode === '6'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">删除任务</Button>
+                    </span>
                   </div>
                   <div>
                     <button typeof="button" style="border: 1px solid #2E8CEB; width: 58px; height: 41px; background-color: #ffffff; border-radius: 3px; color: #2E8CEB; cursor: pointer">详情</button>
@@ -144,23 +152,23 @@
                 </Select>
               </div>
               <div v-for="(item, index) in taskListNew" :key="index" @click="positioning(item.lng, item.lat)" v-show="panelShow" style="position: relative; padding: 15px; border-bottom: 1px solid #e6e6e6;">
-                <Collapse simple>
-                  <Panel>
+                <Collapse simple accordion>
+                  <Panel :hide-arrow="true">
                     <div style="display: flex;width: 100%;justify-content: space-between;margin-bottom: 10px">
                       <div style="padding-right: 10px">
                         <span>{{item.businessProjectName}}</span>
-                        <div v-if="item.taskStatus === 1" style="font-size: 12px"><p>任务类型: 调查任务</p><p>路口数量: {{item.crossingList.length}}</p></div>
-                        <div v-if="item.taskStatus === 2" style="font-size: 12px"><p>任务类型: 优化任务</p><p>路口数量: {{item.crossingList.length}}</p></div>
-                        <div v-if="item.taskStatus === 3" style="font-size: 12px"><p>任务类型: 宣传任务</p><p>路口数量: {{item.crossingList.length}}</p></div>
+                        <div v-if="item.taskStatus === 1" style="font-size: 12px"><span style="margin-right: 5px">任务类型: 调查任务</span><span>路口数量: {{item.crossingList.length}}</span></div>
+                        <div v-if="item.taskStatus === 2" style="font-size: 12px"><span style="margin-right: 5px">任务类型: 优化任务</span><span>路口数量: {{item.crossingList.length}}</span></div>
+                        <div v-if="item.taskStatus === 3" style="font-size: 12px"><span style="margin-right: 5px">任务类型: 宣传任务</span><span>路口数量: {{item.crossingList.length}}</span></div>
                       </div>
                       <div style="text-align: right">
-                        <Button type="success" style="margin-bottom: 10px; display: block">接受</Button>
-                        <Button type="error">拒绝</Button>
+                        <Button type="success" @click="handleTask(item, '1')" style="margin-bottom: 10px; display: block">接受</Button>
+                        <Button type="error" @click="handleTask(item, '2')">拒绝</Button>
                       </div>
                     </div>
-                    <p slot="content" v-for="(i, index) in item.crossingList" :key="index" style="border-bottom: 1px solid #e6e6e6; padding: 10px 0; font-size: 12px">
-                      {{i.alias}}
-                    </p>
+                    <div slot="content">
+                      4566asd4789a7s89d7as9d7
+                    </div>
                   </Panel>
                 </Collapse>
               </div>
@@ -173,7 +181,7 @@
 </template>
 
 <script>
-import { listTask, areaData, listMapTask, selectTaskDetail, listMyNotAcceptedTask, listMapProject } from '@/api/data'
+import { listTask, areaData, listMapTask, selectTaskDetail, listMyNotAcceptedTask, listMapProject, acceptOrRefuseTask } from '@/api/data'
 import { getUserId } from '@/libs/util'
 import tx1 from '../../assets/images/tx1.png'
 import tx2 from '../../assets/images/tx2.png'
@@ -185,7 +193,23 @@ import tx7 from '../../assets/images/tx7.png'
 import tx8 from '../../assets/images/tx8.png'
 import tx9 from '../../assets/images/tx9.png'
 import txj1 from '../../assets/images/txj1.png'
+import txj2 from '../../assets/images/txj2.png'
+import txj3 from '../../assets/images/txj3.png'
+import txj4 from '../../assets/images/txj4.png'
+import txj5 from '../../assets/images/txj5.png'
+import txj6 from '../../assets/images/txj6.png'
+import txj7 from '../../assets/images/txj7.png'
+import txj8 from '../../assets/images/txj8.png'
+import txj9 from '../../assets/images/txj9.png'
 import ty1 from '../../assets/images/ty1.png'
+import ty2 from '../../assets/images/ty2.png'
+import ty3 from '../../assets/images/ty3.png'
+import ty4 from '../../assets/images/ty4.png'
+import ty5 from '../../assets/images/ty5.png'
+import ty6 from '../../assets/images/ty6.png'
+import ty7 from '../../assets/images/ty7.png'
+import ty8 from '../../assets/images/ty8.png'
+import ty9 from '../../assets/images/ty9.png'
 import { AMapManager, lazyAMapApiLoaderInstance } from 'vue-amap'
 let amapManager = new AMapManager()
 export default {
@@ -206,8 +230,24 @@ export default {
       tx8,
       tx9,
       txj1,
+      txj2,
+      txj3,
+      txj4,
+      txj5,
+      txj6,
+      txj7,
+      txj8,
+      txj9,
       ty1,
-      avatar: tx1,
+      ty2,
+      ty3,
+      ty4,
+      ty5,
+      ty6,
+      ty7,
+      ty8,
+      ty9,
+      avatar: '#FF5000',
       avatar2: tx1,
       onStatus: '1',
       isDetail: false,
@@ -269,31 +309,31 @@ export default {
     'onStatus': function (val) {
       switch (val) {
         case '1':
-          this.avatar = tx1
+          this.avatar = '#FF5000'
           break
         case '2':
-          this.avatar = tx2
+          this.avatar = '#E33C00'
           break
         case '3':
-          this.avatar = tx3
+          this.avatar = '#2E8CEB'
           break
         case '4':
-          this.avatar = tx4
+          this.avatar = '#41BE68'
           break
         case '5':
-          this.avatar = tx5
+          this.avatar = '#F79800'
           break
         case '6':
-          this.avatar = tx6
+          this.avatar = '#50DAE6'
           break
         case '7':
-          this.avatar = tx7
+          this.avatar = '#DC6CBC'
           break
         case '8':
-          this.avatar = tx8
+          this.avatar = '#CCCCCC'
           break
         case '9':
-          this.avatar = tx9
+          this.avatar = '#FFC44D'
           break
       }
     }
@@ -322,6 +362,16 @@ export default {
     }
   },
   methods: {
+    handleTask (item, type) {
+      acceptOrRefuseTask({
+        taskId: item.id,
+        userId: getUserId(),
+        functionType: type,
+        reason: ''
+      }).then((res) => {
+        this.$Message.info(res.data.msg)
+      })
+    },
     changeProject () {
       this.getMapTaskNew()
     },
@@ -370,6 +420,56 @@ export default {
     },
     positioning (lng, lat) {
       this.center = [lng, lat]
+    },
+    onEdit (params, row) {
+      if (params.permissionCode === '2') {
+        this.$Modal.confirm({
+          title: params.permissionCode === '2' ? '确定要' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该任务吗？' : '确定要申请' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该任务吗？',
+          onOk: () => {
+            taskFunction({
+              'taskId': row.id,
+              'userId': getUserId(),
+              'functionType': params.permissionCode,
+              'pauseStatus': row.pauseStatus === '0' ? '1' : '0'
+            }).then((res) => {
+              this.$Message.info(res.data.msg)
+              this.getData()
+            })
+          }
+        })
+      } else {
+        let str = ''
+        switch (params.permissionCode) {
+          case '1':
+            str = '确定要下达该任务吗？'
+            break
+          case '3':
+            str = '确定要撤销该任务吗？'
+            break
+          case '4':
+            str = '确定要催办该任务吗？'
+            break
+          case '5':
+            str = '确定要提交审核吗？'
+            break
+          case '6':
+            str = '确定要删除该任务吗？'
+            break
+        }
+        this.$Modal.confirm({
+          title: str,
+          onOk: () => {
+            taskFunction({
+              'taskId': row.id,
+              'userId': getUserId(),
+              'functionType': params.permissionCode
+            }).then((res) => {
+              this.$Message.info(res.data.msg)
+              this.getData()
+            })
+          }
+        })
+      }
     },
     getTask () {
       listTask({
@@ -438,10 +538,10 @@ export default {
           if (item.pauseStatus === '1') {
             switch (item.type) {
               case '1' :
-                status = `<div><img src="${tx9}" style="width: 40px; height: 40px"></div>`
+                status = `<div><img src="${txj9}" style="width: 40px; height: 40px"></div>`
                 break
               case '2' :
-                status = `<div><img src="${tx9}" style="width: 40px; height: 40px"></div>`
+                status = `<div><img src="${ty9}" style="width: 40px; height: 40px"></div>`
                 break
               case '3' :
                 status = `<div><img src="${tx9}" style="width: 40px; height: 40px"></div>`
@@ -452,56 +552,56 @@ export default {
               case '1' :
                 switch (item.taskStatus) {
                   case '1':
-                    status = `<div><img src="${tx1}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${txj1}" style="width: 40px; height: 40px"></div>`
                     break
                   case '2':
-                    status = `<div><img src="${tx2}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${txj2}" style="width: 40px; height: 40px"></div>`
                     break
                   case '3':
-                    status = `<div><img src="${tx3}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${txj3}" style="width: 40px; height: 40px"></div>`
                     break
                   case '4':
-                    status = `<div><img src="${tx4}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${txj4}" style="width: 40px; height: 40px"></div>`
                     break
                   case '5':
-                    status = `<div><img src="${tx5}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${txj5}" style="width: 40px; height: 40px"></div>`
                     break
                   case '6':
-                    status = `<div><img src="${tx6}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${txj6}" style="width: 40px; height: 40px"></div>`
                     break
                   case '7':
-                    status = `<div><img src="${tx7}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${txj7}" style="width: 40px; height: 40px"></div>`
                     break
                   case '8':
-                    status = `<div><img src="${tx8}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${txj8}" style="width: 40px; height: 40px"></div>`
                     break
                 }
                 break
               case '2' :
                 switch (item.taskStatus) {
                   case '1':
-                    status = `<div><img src="${tx1}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${ty1}" style="width: 40px; height: 40px"></div>`
                     break
                   case '2':
-                    status = `<div><img src="${tx2}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${ty2}" style="width: 40px; height: 40px"></div>`
                     break
                   case '3':
-                    status = `<div><img src="${tx3}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${ty3}" style="width: 40px; height: 40px"></div>`
                     break
                   case '4':
-                    status = `<div><img src="${tx4}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${ty4}" style="width: 40px; height: 40px"></div>`
                     break
                   case '5':
-                    status = `<div><img src="${tx5}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${ty5}" style="width: 40px; height: 40px"></div>`
                     break
                   case '6':
-                    status = `<div><img src="${tx6}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${ty6}" style="width: 40px; height: 40px"></div>`
                     break
                   case '7':
-                    status = `<div><img src="${tx7}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${ty7}" style="width: 40px; height: 40px"></div>`
                     break
                   case '8':
-                    status = `<div><img src="${tx8}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${ty8}" style="width: 40px; height: 40px"></div>`
                     break
                 }
                 break
@@ -566,6 +666,7 @@ export default {
         'userId': getUserId()
       }).then((res) => {
         let taskList = this.taskListNew = res.data.data = res.data.data
+        this.total = res.data.data.length > 0 ? res.data.data.count : 0
         console.log(taskList)
         if (taskList.length > 0) {
           this.center = [taskList[0].lng || 116.397428, taskList[0].lat || 39.90923]
