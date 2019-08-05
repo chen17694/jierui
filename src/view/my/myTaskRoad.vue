@@ -20,9 +20,9 @@
       </el-amap>
       <Cascader :data="areaData" v-model="areaValue" change-on-select style="position: absolute; right: 20px; top: 20px; width: 200px;" @on-change="cascaderChange"></Cascader>
       <div style="color: #666666; display: flex; width:350px; position: absolute; left: 20px; top: 20px; border: 0 none">
-        <div style="background-color: #ffffff; padding: 10px 20px; line-height: 20px; cursor: pointer">我的项目</div>
-        <div style="background-color: #F2F2F2; padding: 10px 20px; line-height: 20px; cursor: pointer" @click="onChangeNav('myTask')">我的任务</div>
-        <div style="background-color: #F2F2F2; padding: 10px 20px; line-height: 20px; cursor: pointer">我的任务路口</div>
+        <div style="background-color: #F2F2F2; padding: 10px 20px; line-height: 20px; cursor: pointer">我的项目</div>
+        <div style="background-color: #F2F2F2; padding: 10px 20px; line-height: 20px; cursor: pointer">我的任务</div>
+        <div style="background-color: #ffffff; padding: 10px 20px; line-height: 20px; cursor: pointer">我的任务路口</div>
       </div>
       <Card style="width:350px; position: absolute; left: 20px; top: 60px; border: 0 none">
         <div style="display: flex">
@@ -33,10 +33,10 @@
       <Card v-if="!isDetail" style="width:350px; position: absolute; left: 20px; top: 120px;">
         <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; border-bottom: 1px solid #e6e6e6;">
           <div style="font-size: 16px; font-weight: bold">
-            项目数量：{{this.total}}
+            任务路口数量：{{this.total}}
           </div>
           <Select v-model="onStatus" style="width:100px" @on-change="statusChange">
-            <Avatar :src="avatar" slot="prefix" size="small" />
+            <span :style="{ backgroundColor: avatar }" style="width: 15px; height: 15px; display: inline-block; border-radius: 50%; vertical-align: middle;" slot="prefix"></span>
             <Option value="1" >未开始</Option>
             <Option value="2" >进行中</Option>
             <Option value="3" >审核中</Option>
@@ -65,11 +65,10 @@
               <span v-for="(i, index) in item.taskCrossingButtonPermissionBeanList" :key="index" >
                 <Button v-if="i.permissionCode === '1'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">逾期催办</Button>
                 <Button v-if="i.permissionCode === '2'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">提交审核</Button>
-                <Button v-if="i.permissionCode === '3'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">删除任务路口</Button>
               </span>
             </div>
             <div>
-              <button typeof="button" @click="getProjectDetail(item.id)" style="border: 1px solid #2E8CEB; width: 58px; height: 41px; background-color: #ffffff; border-radius: 3px; color: #2E8CEB; cursor: pointer">详情</button>
+              <button typeof="button" @click="getDetail(item.id)" style="border: 1px solid #2E8CEB; width: 58px; height: 41px; background-color: #ffffff; border-radius: 3px; color: #2E8CEB; cursor: pointer">详情</button>
             </div>
           </div>
         </div>
@@ -90,7 +89,7 @@
       </Card>
       <Card v-if="isDetail" style="width:350px; height: 550px; overflow-y: scroll; position: absolute; left: 20px; top: 120px;">
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px;border-bottom: 1px solid rgb(230, 230, 230);">
-          <span style="color: #2E8CEB; font-size: 15px; font-weight: bold">{{detailData.name}}</span>
+          <span style="color: #2E8CEB; font-size: 15px; font-weight: bold">{{detailData.alias}}</span>
           <img src="../../assets/images/icon1.png" style="width: 22px;">
         </div>
         <div style="padding: 15px; border-bottom: 1px solid rgb(230, 230, 230); position: relative">
@@ -107,14 +106,14 @@
           项目基本信息
         </div>
         <div style="padding: 15px; ">
-          <div style="line-height: 24px"><span class="label">项目名称：</span><span>{{detailData.name}}</span></div>
-          <div style="line-height: 24px"><span class="label">甲方单位：</span><span>{{detailData.firstPartyCompanyName}}</span></div>
-          <div style="line-height: 24px"><span class="label">甲方负责人：</span><span>{{detailData.firstPartyUserName}}</span></div>
-          <div style="line-height: 24px"><span class="label">项目位置：</span><span>{{detailData.specificAddress}}</span></div>
-          <div style="line-height: 24px"><span class="label">起止日期：</span><span>{{detailData.startTime}} 至 {{detailData.completionTime}}</span></div>
-          <div style="line-height: 24px"><span class="label">主导单位：</span><span>{{detailData.officeName}}</span></div>
-          <div style="line-height: 24px"><span class="label">项目经理：</span><span>{{detailData.projectManagerName}}</span></div>
-          <div style="line-height: 24px"><span class="label">项目备注：</span><span>{{detailData.remarks}}</span></div>
+          <div style="line-height: 24px"><span class="label">项目名称：</span><span>{{detailData.businessProjectName}}</span></div>
+          <div style="line-height: 24px"><span class="label">任务名称：</span><span>{{detailData.businessTaskName}}</span></div>
+          <div style="line-height: 24px" v-if="detailData.type === '1'"><span class="label">任务类型：</span><span>调查任务</span></div>
+          <div style="line-height: 24px" v-if="detailData.type === '2'"><span class="label">任务类型：</span><span>优化任务</span></div>
+          <div style="line-height: 24px" v-if="detailData.type === '3'"><span class="label">任务类型：</span><span>宣传任务</span></div>
+          <div style="line-height: 24px"><span class="label">路口别名：</span><span>{{detailData.alias}}</span></div>
+          <div style="line-height: 24px"><span class="label">负责人：</span><span>{{detailData.userName}}</span></div>
+          <div style="line-height: 24px"><span class="label">起止时间：</span><span>{{detailData.startTime}} 至 {{detailData.completionTime}}</span></div>
         </div>
       </Card>
       <Button type="primary" v-show="isDetail" @click="toList" style="position: absolute; top: 680px; left: 20px;">返回列表</Button>
@@ -123,7 +122,7 @@
 </template>
 
 <script>
-import { areaData, selectProjectDetail, projectFunction, listTaskCrossing, listMapTaskCrossing } from '@/api/data'
+import { areaData, projectFunction, listTaskCrossing, listMapTaskCrossing, selectTaskCrossingDetailBean } from '@/api/data'
 import { getUserId } from '@/libs/util'
 import trx1 from '../../assets/images/trx1.png'
 import trx2 from '../../assets/images/trx2.png'
@@ -186,7 +185,7 @@ export default {
       try7,
       try8,
       try9,
-      avatar: trx1,
+      avatar: '#FF5000',
       onStatus: '1',
       isDetail: false,
       detailData: {},
@@ -235,25 +234,31 @@ export default {
     'onStatus': function (val) {
       switch (val) {
         case '1':
-          this.avatar = p_noStarted
+          this.avatar = '#FF5000'
           break
         case '2':
-          this.avatar = p_start
+          this.avatar = '#E33C00'
           break
         case '3':
-          this.avatar = p_review
+          this.avatar = '#2E8CEB'
           break
         case '4':
-          this.avatar = p_completed
+          this.avatar = '#41BE68'
           break
         case '5':
-          this.avatar = p_reject
+          this.avatar = '#F79800'
           break
         case '6':
-          this.avatar = p_revoke
+          this.avatar = '#50DAE6'
           break
         case '7':
-          this.avatar = p_pause
+          this.avatar = '#DC6CBC'
+          break
+        case '8':
+          this.avatar = '#CCCCCC'
+          break
+        case '9':
+          this.avatar = '#FFC44D'
           break
       }
     }
@@ -284,68 +289,35 @@ export default {
     onEdit (params, row) {
       console.log(params)
       console.log(row)
-      if (params.permissionCode === '2' || params.permissionCode === '3') {
-        this.$Modal.confirm({
-          title: params.permissionCode === '2' ? '确定要' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该项目吗？' : '确定要申请' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该项目吗？',
-          onOk: () => {
-            projectFunction({
-              'projectId': row.id,
-              'userId': getUserId(),
-              'functionType': params.permissionCode,
-              'pauseStatus': row.pauseStatus === '0' ? '1' : '0'
-            }).then((res) => {
-              this.$Message.info(res.data.msg)
-              this.markers = []
-              this.markerRefs = []
-              this.map.clearMarkers()
-              this.getMapProject()
-              this.getProject()
-            })
-          }
-        })
-      } else {
-        let str = ''
-        switch (params.permissionCode) {
-          case '1':
-            str = '确定要开始该项目吗？'
-            break
-          case '4':
-            str = '确定要撤销该项目吗？'
-            break
-          case '5':
-            str = '确定要申请撤销该项目吗？'
-            break
-          case '6':
-            str = '确定要催办该项目吗？'
-            break
-          case '7':
-            str = '确定要将该项目提交审核吗？'
-            break
-          case '8':
-            str = '确定要删除该项目吗？'
-            break
-          case '99':
-            str = '确定要为该项目创建新的任务吗？'
-            break
-        }
-        this.$Modal.confirm({
-          title: str,
-          onOk: () => {
-            projectFunction({
-              'projectId': row.id,
-              'userId': getUserId(),
-              'functionType': params.permissionCode
-            }).then((res) => {
-              this.$Message.info(res.data.msg)
-              this.markers = []
-              this.markerRefs = []
-              this.map.clearMarkers()
-              this.getMapProject()
-              this.getProject()
-            })
-          }
-        })
+      let str = ''
+      switch (params.permissionCode) {
+        case '1':
+          str = '确定要催办该任务路口吗？'
+          break
+        case '2':
+          str = '确定要提交审核吗？'
+          break
+        case '3':
+          str = '确定要删除该任务路口吗？'
+          break
       }
+      this.$Modal.confirm({
+        title: str,
+        onOk: () => {
+          projectFunction({
+            'taskCrossingId': row.id,
+            'userId': getUserId(),
+            'functionType': params.permissionCode
+          }).then((res) => {
+            this.$Message.info(res.data.msg)
+            this.markers = []
+            this.markerRefs = []
+            this.map.clearMarkers()
+            this.getMapProject()
+            this.getProject()
+          })
+        }
+      })
     },
     searchProject () {
       this.markers = []
@@ -404,7 +376,7 @@ export default {
         taskId: '',
         userId: getUserId(),
         alias: '',
-        taskCrossingStatus: '',
+        taskCrossingStatus: this.onStatus,
         timeStatus: '',
         startTime: '',
         endTime: '',
@@ -423,9 +395,9 @@ export default {
         this.maxPage = Math.ceil(this.total / 20)
       })
     },
-    getProjectDetail (id) {
-      selectProjectDetail({
-        projectId: id,
+    getDetail (id) {
+      selectTaskCrossingDetailBean({
+        taskCrossingId: id,
         userId: getUserId()
       }).then((res) => {
         this.isDetail = true
@@ -440,7 +412,7 @@ export default {
         taskId: '',
         userId: getUserId(),
         alias: '',
-        taskCrossingStatus: '',
+        taskCrossingStatus: this.onStatus,
         timeStatus: '',
         startTime: '',
         endTime: '',
@@ -461,7 +433,7 @@ export default {
           let status = ''
           switch (item.type) {
             case '1' :
-              switch (item.taskStatus) {
+              switch (item.status) {
                 case '1':
                   status = `<div><img src="${trxj1}" style="width: 40px; height: 40px"></div>`
                   break
@@ -492,7 +464,7 @@ export default {
               }
               break
             case '2' :
-              switch (item.taskStatus) {
+              switch (item.status) {
                 case '1':
                   status = `<div><img src="${try1}" style="width: 40px; height: 40px"></div>`
                   break
@@ -523,7 +495,7 @@ export default {
               }
               break
             case '3' :
-              switch (item.taskStatus) {
+              switch (item.status) {
                 case '1':
                   status = `<div><img src="${trx1}" style="width: 40px; height: 40px"></div>`
                   break
@@ -564,7 +536,7 @@ export default {
                 self.markerRefs.push(o)
               },
               click (e) {
-                self.getProjectDetail(e.target.get('extData'))
+                self.getDetail(e.target.get('extData'))
               }
             }
           })

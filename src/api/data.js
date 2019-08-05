@@ -247,6 +247,20 @@ export const acceptOrRefuseTask = (params) => {
     method: 'post'
   })
 }
+export const selectTaskCrossingDetailBean = (params) => {
+  return axios.request({
+    url: '/taskCrossingRelation/selectTaskCrossingDetailBean',
+    data: params,
+    method: 'post'
+  })
+}
+export const detailMaterialApplication = (params) => {
+  return axios.request({
+    url: '/process/detailMaterialApplication',
+    data: params,
+    method: 'post'
+  })
+}
 export const listMapTaskCrossing = (params) => {
   return axios.request({
     url: '/taskCrossingRelation/listMapTaskCrossing',

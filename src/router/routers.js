@@ -131,7 +131,29 @@ export default [
           icon: 'md-funnel',
           title: '我的审核审批'
         },
-        component: () => import('@/view/my/myProcessed.vue')
+        component: parentView,
+        children: [
+          {
+            path: 'projectOverdue',
+            name: 'projectOverdue',
+            meta: {
+              icon: 'md-funnel',
+              title: '我的审核审批',
+              hideInBread: true
+            },
+            component: () => import('@/view/my/myProcessed.vue')
+          },
+          {
+            path: 'dwzsq',
+            name: 'dwzsq',
+            meta: {
+              icon: 'md-funnel',
+              title: '物资申请审批',
+              hideInBread: true
+            },
+            component: () => import('@/view/my/dwzsq.vue')
+          }
+        ]
       },
       {
         path: 'myOverdue',

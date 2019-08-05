@@ -64,6 +64,15 @@
           </div>
         </div>
       </template>
+      <template slot-scope="{ row, index }" slot="action3" v-if="taskRoadListBtnVisible">
+        <div style="display: flex">
+          <div v-for="(item, index) in row.taskCrossingButtonPermissionBeanList" :key="index" style="height: 30px; display: flex; align-items: center">
+            <img src="../../assets/images/t4.png" v-if="item.permissionCode === '1'" title="逾期催办" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
+            <img src="../../assets/images/p7.png" v-if="item.permissionCode === '2'" title="提交审核" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
+            <img src="../../assets/images/t6.png" v-if="item.permissionCode === '3'" title="删除任务路口" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
+          </div>
+        </div>
+      </template>
     </Table>
     <div style="margin: 10px;overflow: hidden" v-show="this.showPage">
       <div style="float: right;">
@@ -89,6 +98,10 @@ export default {
       default: false
     },
     taskListBtnVisible: {
+      type: Boolean,
+      default: false
+    },
+    taskRoadListBtnVisible: {
       type: Boolean,
       default: false
     },

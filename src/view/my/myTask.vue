@@ -20,7 +20,7 @@
       </el-amap>
       <Cascader :data="areaData" v-model="areaValue" change-on-select style="position: absolute; right: 20px; top: 20px; width: 200px;" @on-change="cascaderChange"></Cascader>
       <div style="color: #666666; display: flex; width:350px; position: absolute; left: 20px; top: 20px; border: 0 none">
-        <div style="background-color: #F2F2F2; padding: 10px 20px; line-height: 20px; cursor: pointer" @click="onChangeNav('myProjectt')">我的项目</div>
+        <div style="background-color: #F2F2F2; padding: 10px 20px; line-height: 20px; cursor: pointer">我的项目</div>
         <div style="background-color: #ffffff; padding: 10px 20px; line-height: 20px; cursor: pointer">我的任务</div>
         <div style="background-color: #F2F2F2; padding: 10px 20px; line-height: 20px; cursor: pointer">我的任务路口</div>
       </div>

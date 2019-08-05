@@ -87,7 +87,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tables" :total="this.total" :columns="columns" v-model="tableData" :projectListBtnVisible="true" @on-edit="onEdit"/>
+    <tables ref="tables" :total="this.total" :columns="columns" v-model="tableData" :taskRoadListBtnVisible="true" @on-edit="onEdit"/>
   </div>
 </template>
 
@@ -127,7 +127,7 @@ export default {
         { title: '甲方评分', key: 'firstPartyScoring' },
         {
           title: '操作',
-          slot: 'action'
+          slot: 'action3'
         }
       ],
       tableData: [],
