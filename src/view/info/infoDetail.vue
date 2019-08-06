@@ -4,7 +4,7 @@
       <Col span="24">
        <div class="baseInfo">消息详情</div>
       </Col>
-      <div v-if="Type == '1'">
+      <div v-if="Type == '1' || Type == '2'">
         <Col span="24">
         <div class="infoItem">消息名称：{{info.projectName}}{{info.days ? '还有' + days + '天将逾期' : '已逾期'}}</div>
         </Col>
@@ -18,7 +18,7 @@
         <div class="infoItem">起止日期：{{info.startTime}} 至 {{info.endTime}}</div>
         </Col>
       </div>
-      <div v-if="Type == '2'">
+      <div v-if="Type == '3'">
         <Col span="24">
         <div class="infoItem">消息名称：{{info.title}}</div>
         </Col>
@@ -35,7 +35,7 @@
         <div class="infoItem">逾期天数：{{info.days}}天</div>
         </Col>
       </div>
-      <div v-if="Type == '3'">
+      <div v-if="Type == '4'">
         <Col span="24">
         <div class="infoItem">消息名称：{{info.title}}</div>
         </Col>
@@ -49,7 +49,7 @@
         <div class="infoItem">推送内容：{{info.content}}</div>
         </Col>
       </div>
-      <div v-if="Type == '4'">
+      <div v-if="Type == '6'">
         <Col span="24">
         <div class="infoItem">消息名称：{{info.projectName}}中的{{info.taskName}}{{info.days}}个任务路口被{{info.userName}}拒绝</div>
         </Col>

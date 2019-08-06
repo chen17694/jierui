@@ -248,7 +248,7 @@
                 >
                   <li style="display: flex; align-items: center; justify-content: center;">
                     <div class="dian" style="background-color: #4dcb73"></div>
-                    <div class="status">非常满意</div>
+                    <div class="status">非常满意&nbsp;</div>
                     <div
                       class="proportion"
                     >{{fourData.taskVerySatisfiedCount == '0' ? '0%' : Percentage(fourData.taskVerySatisfiedCount, fourData.taskScoringCount)}}</div>
@@ -256,7 +256,7 @@
                   </li>
                   <li style="display: flex; align-items: center; justify-content: center;">
                     <div class="dian" style="background-color: #3aa0ff"></div>
-                    <div class="status">满意</div>
+                    <div class="status">满意&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
                     <div
                       class="proportion"
                     >{{fourData.taskSatisfiedCount == '0' ? '0%' : Percentage(fourData.taskSatisfiedCount, fourData.taskScoringCount)}}</div>
@@ -264,7 +264,7 @@
                   </li>
                   <li style="display: flex; align-items: center; justify-content: center;">
                     <div class="dian" style="background-color: #fe7777"></div>
-                    <div class="status">不满意</div>
+                    <div class="status">不满意&nbsp;&nbsp;&nbsp;&nbsp;</div>
                     <div
                       class="proportion"
                     >{{fourData.taskNotSatisfiedCount == '0' ? '0%' : Percentage(fourData.taskNotSatisfiedCount, fourData.taskScoringCount)}}</div>

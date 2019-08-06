@@ -46,7 +46,7 @@
                       style="margin-top:0%; height: 24vh; display: flex; flex-direction: column; justify-content: center;text-align:left;">
                       <li style="display: flex; align-items: center; justify-content: flex-start;margin-bottom:20px">
                         <div class="dian" style="background-color: #4dcb73"></div>
-                        <div class="status">非常满意</div>
+                        <div class="status">非常满意&nbsp;</div>
                         <div
                           class="proportion"
                         >{{oneData.taskCrossingVerySatisfiedCount == '0' ? '0%' : Percentage(oneData.taskCrossingVerySatisfiedCount, oneData.taskCrossingScoringCount)}}</div>
@@ -54,7 +54,7 @@
                       </li>
                       <li style="display: flex; align-items: center; justify-content: flex-start;margin-bottom:20px">
                         <div class="dian" style="background-color: #3aa0ff"></div>
-                        <div class="status">满意</div>
+                        <div class="status">满意&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
                         <div
                           class="proportion"
                         >{{oneData.taskCrossingSatisfiedCount == '0' ? '0%' : Percentage(oneData.taskCrossingSatisfiedCount, oneData.taskCrossingScoringCount)}}</div>
@@ -62,7 +62,7 @@
                       </li>
                       <li style="display: flex; align-items: center; justify-content: flex-start;margin-bottom:20px">
                         <div class="dian" style="background-color: #fe7777"></div>
-                        <div class="status">不满意</div>
+                        <div class="status">不满意&nbsp;&nbsp;&nbsp;&nbsp;</div>
                         <div
                           class="proportion"
                         >{{oneData.taskCrossingNotSatisfiedCount == '0' ? '0%' : Percentage(oneData.taskCrossingNotSatisfiedCount, oneData.taskCrossingScoringCount)}}</div>
@@ -89,7 +89,7 @@
       <p slot="title">各任务下的工作量</p>
       <ul class="mlist">
         <li v-for="(item, key) in tableData" :key="key">
-          <div class="table-left"><span class="index">{{key}}</span> | {{item.taskName}}</div>
+          <div class="table-left"><span class="index">{{key + 1}}</span> | {{item.taskName}}</div>
           <div class="table-right">
             | <span class="progress" >
               <span class="showNum" :style="{width: (320*parseFloat(item.workingHours) / parseFloat(oneData.workingHours)) + 'px'}"></span>

@@ -111,7 +111,7 @@
                 >
                   <li style="display: flex; align-items: center; justify-content: center;">
                     <div class="dian" style="background-color: #4dcb73"></div>
-                    <div class="status">非常满意</div>
+                    <div class="status">非常满意&nbsp;</div>
                     <div
                       class="proportion"
                     >{{projectData.projectVerySatisfiedCount == '0' ? '0%' : Percentage(projectData.projectOnGoingStatusCount, projectData.projectCount)}}</div>
@@ -119,7 +119,7 @@
                   </li>
                   <li style="display: flex; align-items: center; justify-content: center;">
                     <div class="dian" style="background-color: #3aa0ff"></div>
-                    <div class="status">满意</div>
+                    <div class="status">满意&nbsp;&nbsp;&nbsp;&nbsp;</div>
                     <div
                       class="proportion"
                     >{{projectData.projectSatisfiedCount == '0' ? '0%' : Percentage(projectData.projectNotStartStatusCount, projectData.projectCount)}}</div>
@@ -127,7 +127,7 @@
                   </li>
                   <li style="display: flex; align-items: center; justify-content: center;">
                     <div class="dian" style="background-color: #fe7777"></div>
-                    <div class="status">不满意</div>
+                    <div class="status">不满意&nbsp;&nbsp;&nbsp;&nbsp;</div>
                     <div
                       class="proportion"
                     >{{projectData.projectNotSatisfiedCount == '0' ? '0%' : Percentage(projectData.projectOnGoingStatusCount, projectData.projectCount)}}</div>
@@ -268,8 +268,8 @@
           <ul class="ranking">
             <li v-for="(item, key) in threeData.taskTaskCrossingCountBean" :key="key">
               <span class="num" :class="key > 2 ? '': 'bg2'">{{key + 1}}</span>
-              <span class="company">{{item.alias}}</span>
-              <span class="count3">{{item.count}}</span>
+              <span class="company">{{item.name}}</span>
+              <span class="count3">{{item.taskCrossingCount}}</span>
             </li>
           </ul>
         </Col>
