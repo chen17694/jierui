@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { listProject, listTask, listMaterialCategory, listMaterial, materialApplication } from '@/api/data'
+import { listProject, listTask, listMaterial, materialApplication, listProjectMaterial } from '@/api/data'
 import { getUserId } from '@/libs/util'
 import Tables from '_c/tables'
 export default {
@@ -296,6 +296,18 @@ export default {
       this.params.projectName = arguments[0].label
       this.taskList = []
       this.params.taskId = ''
+      listProjectMaterial({
+        pageSize: 0,
+        page: 0,
+        name: '',
+        projectId: arguments[0].value,
+        materialCategoryId: '',
+        userId: getUserId()
+      }).then((res) => {
+        console.log(res)
+        this.addRows[this.rowIndex].categoryList = res.data.data.businessProjectMaterialBeanList
+        this.addInit()
+      })
       listTask({
         pageSize: 0,
         page: 0,
@@ -318,10 +330,6 @@ export default {
   },
   mounted () {
     this.getProject()
-    listMaterialCategory().then((res) => {
-      this.addRows[this.rowIndex].categoryList = res.data.data
-      this.addInit()
-    })
   }
 }
 </script>

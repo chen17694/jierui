@@ -69,11 +69,22 @@ export default [
         component: () => import('@/view/my/myProject.vue')
       },
       {
+        path: 'projectDetail',
+        name: 'projectDetail',
+        meta: {
+          icon: 'md-funnel',
+          title: '项目详情',
+          hideInMenu: true
+        },
+        component: () => import('@/view/my/projectDetail.vue')
+      },
+      {
         path: 'myTask',
         name: 'myTask',
         meta: {
           icon: 'md-funnel',
-          title: '我的任务'
+          title: '我的任务',
+          hideInMenu: true
         },
         component: () => import('@/view/my/myTask.vue')
       },
@@ -82,7 +93,8 @@ export default [
         name: 'myTaskRoad',
         meta: {
           icon: 'md-funnel',
-          title: '我的任务路口'
+          title: '我的任务路口',
+          hideInMenu: true
         },
         component: () => import('@/view/my/myTaskRoad.vue')
       },
@@ -149,9 +161,19 @@ export default [
             meta: {
               icon: 'md-funnel',
               title: '物资申请审批',
-              hideInBread: true
+              hideInMenu: true
             },
             component: () => import('@/view/my/dwzsq.vue')
+          },
+          {
+            path: 'dwzjrxm',
+            name: 'dwzjrxm',
+            meta: {
+              icon: 'md-funnel',
+              title: '物资加入项目申请审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/dwzjrxm.vue')
           }
         ]
       },
