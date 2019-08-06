@@ -500,7 +500,7 @@ export default [
         meta: {
           icon: 'md-funnel',
           title: '日报详情',
-          hideInMenu: false
+          hideInMenu: true
         },
         component: () => import('@/view/daily/dailyDetail.vue')
       }

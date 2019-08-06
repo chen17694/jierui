@@ -1,6 +1,6 @@
 <template>
   <div class="user-avatar-dropdown">
-    <Dropdown @on-click="handleClick">
+    <Dropdown :transfer="true" @on-click="handleClick">
       <Badge :dot="!!messageUnreadCount">
         <Avatar :src="userAvatar"/>
       </Badge>
@@ -35,15 +35,13 @@ export default {
       'handleLogOut'
     ]),
     logout () {
-      this.handleLogOut().then(() => {
-        this.$router.push({
-          name: 'login'
-        })
+      this.$router.push({
+        name: 'login'
       })
     },
     message () {
       this.$router.push({
-        name: 'message_page'
+        name: 'infoList'
       })
     },
     handleClick (name) {
