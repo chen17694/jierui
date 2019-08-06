@@ -240,9 +240,19 @@ export default [
         name: 'addRoad',
         meta: {
           icon: 'md-funnel',
-          title: '新建路口'
+          title: '新建路口',
+          hideInMenu: true
         },
         component: () => import('@/view/road/addRoad.vue')
+      },
+      {
+        path: 'roadList',
+        name: 'roadList',
+        meta: {
+          icon: 'md-funnel',
+          title: '路口列表'
+        },
+        component: () => import('@/view/road/roadList.vue')
       }
     ]
   },
