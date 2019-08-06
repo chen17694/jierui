@@ -5,7 +5,7 @@
         <Avatar :src="userAvatar"/>
       </Badge>
       <Icon :size="18" type="md-arrow-dropdown"></Icon>
-      <DropdownMenu slot="list">
+      <DropdownMenu slot="list" @on-click="handleClick" >
         <DropdownItem name="message">
           消息中心<Badge style="margin-left: 10px" :count="messageUnreadCount"></Badge>
         </DropdownItem>
