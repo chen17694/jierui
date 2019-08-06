@@ -227,6 +227,26 @@ export default [
     ]
   },
   {
+    path: '/road',
+    name: 'road',
+    meta: {
+      icon: 'md-menu',
+      title: '路口管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'addRoad',
+        name: 'addRoad',
+        meta: {
+          icon: 'md-funnel',
+          title: '新建路口'
+        },
+        component: () => import('@/view/road/addRoad.vue')
+      }
+    ]
+  },
+  {
     path: '/project',
     name: 'project',
     meta: {
