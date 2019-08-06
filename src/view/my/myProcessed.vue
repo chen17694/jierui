@@ -126,7 +126,25 @@ export default {
       this.getData()
     },
     onRowClick () {
-      console.log(arguments)
+      console.log(arguments[0])
+      switch (arguments[0].type) {
+        case ('4'):
+          this.$router.push({
+            name: 'dwzsq',
+            params: {
+              data: arguments[0]
+            }
+          })
+          break
+        case ('8'):
+          this.$router.push({
+            name: 'dwzjrxm',
+            params: {
+              data: arguments[0]
+            }
+          })
+          break
+      }
     },
     getData () {
       if (this.tab === 'myAudit') {

@@ -247,6 +247,20 @@ export const acceptOrRefuseTask = (params) => {
     method: 'post'
   })
 }
+export const opt = (params) => {
+  return axios.request({
+    url: '/process/opt',
+    data: params,
+    method: 'post'
+  })
+}
+export const detailMaterialReturnService = (params) => {
+  return axios.request({
+    url: '/process/detailMaterialReturnService',
+    data: params,
+    method: 'post'
+  })
+}
 export const selectTaskCrossingDetailBean = (params) => {
   return axios.request({
     url: '/taskCrossingRelation/selectTaskCrossingDetailBean',
@@ -456,6 +470,14 @@ export const listMyMaterial = (params) => {
 export const areaData = (params) => {
   return axios.request({
     url: '/area/listAreaRename',
+    data: params,
+    method: 'post'
+  })
+}
+
+export const detailProjectMaterialJoin = (params) => {
+  return axios.request({
+    url: '/process/detailProjectMaterialJoin',
     data: params,
     method: 'post'
   })

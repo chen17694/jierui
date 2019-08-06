@@ -275,7 +275,7 @@ export default {
           }
         },
         { title: '工时',
-          key: 'hour',
+          key: 'num',
           width: '100px',
           render: (h, params) => {
             return h('InputNumber', {
@@ -284,8 +284,8 @@ export default {
                 min: 1
               },
               on: {
-                'on-change': (hour) => {
-                  this.addRows[params.index].workingHours = hour
+                'on-change': (num) => {
+                  this.addRows[params.index].workingHours = num
                 }
               }
             })
