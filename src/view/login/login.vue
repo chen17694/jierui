@@ -33,6 +33,7 @@ export default {
         //     name: this.$config.homeName
         //   })
         // })
+        console.log(123123134234234)
         this.$router.push({
           name: this.$config.homeName
         })
