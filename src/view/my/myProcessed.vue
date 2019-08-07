@@ -169,9 +169,33 @@ export default {
             }
           })
           break
+        case ('6'):
+          this.$router.push({
+            name: 'dxmsxxgsq',
+            params: {
+              data: arguments[0]
+            }
+          })
+          break
+        case ('7'):
+          this.$router.push({
+            name: 'dxmztxgsq',
+            params: {
+              data: arguments[0]
+            }
+          })
+          break
         case ('8'):
           this.$router.push({
             name: 'dwzjrxm',
+            params: {
+              data: arguments[0]
+            }
+          })
+          break
+        case ('9'):
+          this.$router.push({
+            name: 'dryjrxmsq',
             params: {
               data: arguments[0]
             }

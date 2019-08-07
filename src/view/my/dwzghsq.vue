@@ -8,9 +8,9 @@
     <Card style="margin-bottom: 10px">
       <h3 style="color: #2d8cf0; margin-bottom: 20px">物资申请信息</h3>
       <ul style="list-style-type: none">
-        <li style="margin-bottom: 5px">项目名称：54564564654</li>
-        <li style="margin-bottom: 5px">任务名称：787f8w9e7f98</li>
-        <li style="margin-bottom: 5px">申请人员：啊啊啊</li>
+        <li style="margin-bottom: 5px">项目名称：{{detailData.projectName}}</li>
+        <li style="margin-bottom: 5px">任务名称：{{detailData.taskName}}</li>
+        <li style="margin-bottom: 5px">申请人员：{{detailData.applyName}}</li>
       </ul>
     </Card>
     <tables ref="tables" v-model="tableData" :columns="columns" :showPage="false"></tables>
@@ -20,7 +20,7 @@
     </div>
     <Modal
       v-model="editPanel"
-      title='物资申请审批'
+      title='物资归还审批'
       @on-ok="save"
     >
       <Form ref="editParams" :model="editParams">
@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { detailMaterialApplication, opt } from '@/api/data'
+import { detailMaterialReturnService, opt } from '@/api/data'
 import Tables from '_c/tables'
 import { getUserId } from '@/libs/util'
 export default {
@@ -47,6 +47,7 @@ export default {
   components: { Tables },
   data () {
     return {
+      detailData: {},
       editParams: {
         comment: '',
         opt: '1'
@@ -57,9 +58,10 @@ export default {
       columns: [
         { title: '物资类型', key: 'materialTypeName' },
         { title: '物资名称', key: 'materialName' },
-        { title: '剩余数量', key: 'surplusNum' },
-        { title: '申请数量', key: 'applyNum' },
-        { title: '归还日期', key: 'returnDate' }
+        { title: '已借数量', key: 'borrowedNum' },
+        { title: '归还数量', key: 'returnNum ' },
+        { title: '申请日期', key: 'applyTime' },
+        { title: '预计归还日期', key: 'returnDate' }
       ]
     }
   },
@@ -82,7 +84,7 @@ export default {
       })
     },
     getData () {
-      detailMaterialApplication({
+      detailMaterialReturnService({
         taskId: this.$route.params.data.taskId,
         userId: getUserId(),
         type: '1'
@@ -90,6 +92,7 @@ export default {
         console.log(res.data.data)
         this.tableData = res.data.data.materialList
         this.stepArr = res.data.data.list
+        this.detailData = res.data.data
       })
     }
   },

@@ -37,6 +37,7 @@
 
 <script>
 import Tables from '_c/tables'
+import { getUserId } from '@/libs/util'
 import { listUserRole, getUnitList, listUserRoleDistribution, insertUserRole, deleteUserRole } from '@/api/data'
 export default{
   name: 'role',
@@ -154,12 +155,12 @@ export default{
     if (this.$route.params.id) {
       this.getData()
       getUnitList({
-        'pageSize': 100,
-        'page': 1,
+        'pageSize': 0,
+        'page': 0,
         'name': '',
         'areaId': '',
         'type': '',
-        'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+        'userId': getUserId()
       }).then(res => {
         if (res.data.status === '200') {
           this.unitList = res.data.data.list

@@ -6,14 +6,19 @@
       </Steps>
     </Card>
     <Card style="margin-bottom: 10px">
-      <h3 style="color: #2d8cf0; margin-bottom: 20px">物资申请信息</h3>
+      <h3 style="color: #2d8cf0; margin-bottom: 20px">项目状态修改信息</h3>
       <ul style="list-style-type: none">
-        <li style="margin-bottom: 5px">项目名称：{{detailData.projectName}}</li>
-        <li style="margin-bottom: 5px">任务名称：{{detailData.taskName}}</li>
-        <li style="margin-bottom: 5px">申请人员：{{detailData.applyName}}</li>
+        <li style="margin-bottom: 5px">项目名称：{{detailData.days}}</li>
+        <li style="margin-bottom: 5px">当前状态：{{detailData.score}}</li>
+        <li style="margin-bottom: 5px">项目状态修改为：{{detailData.score}}</li>
+      </ul>
+      <h3 style="color: #2d8cf0; margin-bottom: 20px">申请信息</h3>
+      <ul style="list-style-type: none">
+        <li style="margin-bottom: 5px">申请人员：{{detailData.days}}</li>
+        <li style="margin-bottom: 5px">申请时间：{{detailData.score}}</li>
+        <li style="margin-bottom: 5px">申请原因：{{detailData.score}}</li>
       </ul>
     </Card>
-    <tables ref="tables" v-model="tableData" :columns="columns" :showPage="false"></tables>
     <div class="btns" style="margin-top: 30px">
       <Button type="primary" @click="shenpi">审批</Button>
       <Button>返回</Button>
@@ -39,29 +44,23 @@
 </template>
 
 <script>
-import { detailMaterialApplication, opt } from '@/api/data'
+import { detailProjectStateModify, opt } from '@/api/data'
 import Tables from '_c/tables'
 import { getUserId } from '@/libs/util'
 export default {
-  name: 'dwzsq',
+  name: 'drwlksq',
   components: { Tables },
   data () {
     return {
-      detailData: {},
       editParams: {
         comment: '',
-        opt: '1'
+        opt: '1',
+        needPartA: ''
       },
+      detailData: {},
       tableData: [],
       stepArr: [],
-      editPanel: false,
-      columns: [
-        { title: '物资类型', key: 'materialTypeName' },
-        { title: '物资名称', key: 'materialName' },
-        { title: '剩余数量', key: 'surplusNum' },
-        { title: '申请数量', key: 'applyNum' },
-        { title: '归还日期', key: 'returnDate' }
-      ]
+      editPanel: false
     }
   },
   methods: {
@@ -83,15 +82,14 @@ export default {
       })
     },
     getData () {
-      detailMaterialApplication({
+      detailProjectStateModify({
         taskId: this.$route.params.data.taskId,
         userId: getUserId(),
         type: '1'
       }).then((res) => {
         console.log(res.data.data)
-        this.tableData = res.data.data.materialList
-        this.stepArr = res.data.data.list
         this.detailData = res.data.data
+        this.stepArr = res.data.data.list
       })
     }
   },

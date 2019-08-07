@@ -49,9 +49,12 @@
           <tables ref="tables2" :total="this.total2" :columns="columns2" v-model="tableData2"/>
         </TabPane>
         <TabPane label="项目团队" name="name4">
-          <Select v-model="team" style="width:200px">
-            <Option value="1">1</Option>
-          </Select>
+          <div style="margin-bottom: 10px">
+            <div>
+              <Button type="primary" style="margin-right: 5px" @click="zdfxmjl">指定副项目经理</Button>
+              <Button type="primary" @click="joinModel = true">人员加入项目申请</Button>
+            </div>
+          </div>
           <tables ref="tables3" :total="this.total3" :columns="columns3" v-model="tableData3"/>
         </TabPane>
       </Tabs>
@@ -94,11 +97,64 @@
         <Button type="primary" size="large" @click="saveStatus">确定</Button>
       </div>
     </Modal>
+    <Modal
+      v-model="joinModel"
+      title="人员加入项目申请">
+      <Form ref="formItemJoin" :model="formItemJoin" :rules="ruleCustom2" :label-width="130">
+        <FormItem label="人员归属单位：">
+          <Row>
+            <Col span="11">
+              <Select v-model="formItemJoin.officeId" placeholder="请选择" label-in-value @on-change="joinChange">
+                <Option v-for="(item, key) in unitList" :key="key" :value="item.id">{{item.name}}</Option>
+              </Select>
+            </Col>
+          </Row>
+        </FormItem>
+        <FormItem label="申请人员：">
+          <Row>
+            <Col span="11">
+              {{userName}}
+            </Col>
+          </Row>
+        </FormItem>
+        <FormItem label="需求描述及原因：" prop="remark">
+          <Row>
+            <Col span="20">
+              <Input v-model="formItemJoin.remark" type="textarea" :autosize="{minRows: 3,maxRows: 5}" style="width: 100%"/>
+            </Col>
+          </Row>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="statusModel = false">取消</Button>
+        <Button type="primary" size="large" @click="saveJoin">确定</Button>
+      </div>
+    </Modal>
+    <Modal
+      v-model="allocatePanel"
+      width="600"
+      title="分配用户"
+      @on-ok="save"
+    >
+      <Select v-model="unit" style="width:200px; margin-bottom: 15px" @on-change="selectUnit">
+        <Option v-for="item in unitList" :value="item.id" :key="item.id">{{ item.name }}</Option>
+      </Select>
+      <Transfer
+        :data="allocateData"
+        :target-keys="targetKeys"
+        :render-format="allocateRender"
+        :list-style="listStyle"
+        @on-change="handleChange"
+        :filterable="true"
+        :filter-method="filterMethod"
+        :titles="transferTitles"
+        not-found-text=""></Transfer>
+    </Modal>
   </div>
 </template>
 
 <script>
-import { selectProjectDetail, listTask, listProjectMaterial, listProjectUser, projectFunction } from '@/api/data'
+import { selectProjectDetail, listTask, listProjectMaterial, listProjectUser, projectFunction, listProjectUserDistribution, getUnitList, addProjectManager, staffJoin } from '@/api/data'
 import { getUserId, getOffice } from '@/libs/util'
 import Tables from '_c/tables'
 export default {
@@ -106,6 +162,23 @@ export default {
   components: { Tables },
   data () {
     return {
+      formItemJoin: {
+        officeId: '',
+        officeName: '',
+        remark: ''
+      },
+      joinModel: false,
+      transferTitles: ['未分配', '已分配'],
+      allocatePanel: false,
+      allocateData: [],
+      targetKeys: [],
+      listStyle: {
+        width: '254px',
+        height: '300px'
+      },
+      unitList: [],
+      officeId: '',
+      unit: '',
       team: '',
       userName: getOffice().name,
       formItemStatus: {
@@ -113,6 +186,11 @@ export default {
       },
       ruleCustom: {
         content: [
+          { required: true, message: '请输入申请原因', trigger: 'blur' }
+        ]
+      },
+      ruleCustom2: {
+        remark: [
           { required: true, message: '请输入申请原因', trigger: 'blur' }
         ]
       },
@@ -195,6 +273,69 @@ export default {
     }
   },
   methods: {
+    zdfxmjl () {
+      this.allocatePanel = !this.allocatePanel
+    },
+    joinChange () {
+      console.log(arguments)
+      this.formItemJoin.officeId = arguments[0].value
+      this.formItemJoin.officeName = arguments[0].label
+    },
+    saveJoin () {
+      staffJoin({
+        projectId: this.detailData.id,
+        userId: getUserId(),
+        officeId: this.formItemJoin.officeId,
+        office: this.formItemJoin.officeName,
+        remark: this.formItemJoin.remark
+      }).then((res) => {
+        console.log(res)
+        this.$Message.info(res.data.msg)
+      })
+    },
+    save () {
+      addProjectManager({
+        ids: this.targetKeys,
+        officeId: this.officeId,
+        projectId: this.detailData.id,
+        userId: getUserId()
+      }).then((res) => {
+        this.$Message.info(res.data.msg)
+      })
+    },
+    selectUnit () {
+      this.officeId = arguments[0]
+      listProjectUserDistribution({
+        officeId: this.officeId,
+        projectId: this.detailData.id,
+        userId: getUserId()
+      }).then((res) => {
+        console.log(res)
+        if (res.data.status === '200') {
+          res.data.data.wait.forEach((item, index) => {
+            item.key = item.id
+          })
+          res.data.data.already.forEach((item, index) => {
+            item.key = item.id
+          })
+          this.allocateData = res.data.data.wait.concat(res.data.data.already)
+          this.targetKeys = this.getTargetKeys(res.data.data.already)
+        }
+      })
+    },
+    getTargetKeys (data) {
+      return data.map(item => item.key)
+    },
+    allocateRender (item) {
+      return item.text
+    },
+    handleChange (newTargetKeys) {
+      this.targetKeys = newTargetKeys
+      console.log(this.targetKeys)
+    },
+    filterMethod (data, query) {
+      return data.text.indexOf(query) > -1
+    },
     saveStatus () {
       this.$refs['formItemStatus'].validate((valid) => {
         if (valid) {
@@ -341,6 +482,18 @@ export default {
     this.getData1()
     this.getData2()
     this.getData3()
+    getUnitList({
+      'pageSize': 0,
+      'page': 0,
+      'name': '',
+      'areaId': '',
+      'type': '',
+      'userId': getUserId()
+    }).then(res => {
+      if (res.data.status === '200') {
+        this.unitList = res.data.data.list
+      }
+    })
   }
 }
 </script>

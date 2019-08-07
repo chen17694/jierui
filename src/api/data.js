@@ -155,7 +155,27 @@ export const listAreaByType = (params) => {
     method: 'post'
   })
 }
-
+export const listProjectUserDistribution = (params) => {
+  return axios.request({
+    url: '/project/listProjectUserDistribution',
+    data: params,
+    method: 'post'
+  })
+}
+export const staffJoin = (params) => {
+  return axios.request({
+    url: '/project/staffJoin',
+    data: params,
+    method: 'post'
+  })
+}
+export const addProjectManager = (params) => {
+  return axios.request({
+    url: '/project/addProjectManager',
+    data: params,
+    method: 'post'
+  })
+}
 export const listUserRoleDistribution = (params) => {
   return axios.request({
     url: '/role/listUserRoleDistribution',
@@ -271,6 +291,20 @@ export const detailTaskApproval = (params) => {
 export const detailMaterialReturnService = (params) => {
   return axios.request({
     url: '/process/detailMaterialReturnService',
+    data: params,
+    method: 'post'
+  })
+}
+export const detailProjectAttributeModify = (params) => {
+  return axios.request({
+    url: '/process/detailProjectAttributeModify',
+    data: params,
+    method: 'post'
+  })
+}
+export const detailProjectStateModify = (params) => {
+  return axios.request({
+    url: '/process/detailProjectStateModify',
     data: params,
     method: 'post'
   })

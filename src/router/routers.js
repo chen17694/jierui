@@ -200,10 +200,10 @@ export default [
             name: 'dwzghsq',
             meta: {
               icon: 'md-funnel',
-              title: '物资申请审批',
+              title: '物资归还审批',
               hideInMenu: true
             },
-            component: () => import('@/view/my/dwzsq.vue')
+            component: () => import('@/view/my/dwzghsq.vue')
           },
           {
             path: 'drwsq',
