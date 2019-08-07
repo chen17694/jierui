@@ -79,6 +79,26 @@ export default [
         component: () => import('@/view/my/projectDetail.vue')
       },
       {
+        path: 'map',
+        name: 'map',
+        meta: {
+          icon: 'md-funnel',
+          title: '地图定位',
+          hideInMenu: true
+        },
+        component: () => import('@/view/my/map.vue')
+      },
+      {
+        path: 'xmsxxg',
+        name: 'xmsxxg',
+        meta: {
+          icon: 'md-funnel',
+          title: '项目属性修改',
+          hideInMenu: false
+        },
+        component: () => import('@/view/my/xmsxxg.vue')
+      },
+      {
         path: 'myTask',
         name: 'myTask',
         meta: {
@@ -156,6 +176,16 @@ export default [
             component: () => import('@/view/my/myProcessed.vue')
           },
           {
+            path: 'dxmsq',
+            name: 'dxmsq',
+            meta: {
+              icon: 'md-funnel',
+              title: '项目审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/dxmsq.vue')
+          },
+          {
             path: 'dwzsq',
             name: 'dwzsq',
             meta: {
@@ -164,6 +194,36 @@ export default [
               hideInMenu: true
             },
             component: () => import('@/view/my/dwzsq.vue')
+          },
+          {
+            path: 'dwzghsq',
+            name: 'dwzghsq',
+            meta: {
+              icon: 'md-funnel',
+              title: '物资申请审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/dwzsq.vue')
+          },
+          {
+            path: 'drwsq',
+            name: 'drwsq',
+            meta: {
+              icon: 'md-funnel',
+              title: '任务审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/drwsq.vue')
+          },
+          {
+            path: 'drwlksq',
+            name: 'drwlksq',
+            meta: {
+              icon: 'md-funnel',
+              title: '任务路口审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/drwlksq.vue')
           },
           {
             path: 'dwzjrxm',

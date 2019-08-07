@@ -251,7 +251,7 @@ export default {
     toProjectDetail (id) {
       this.$router.push({
         name: 'projectDetail',
-        params: {
+        query: {
           projectId: id
         }
       })

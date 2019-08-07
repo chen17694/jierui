@@ -92,6 +92,13 @@ export const getRegionList = () => {
     method: 'post'
   })
 }
+export const projectAttributeModify = (params) => {
+  return axios.request({
+    url: '/project/projectAttributeModify',
+    data: params,
+    method: 'post'
+  })
+}
 export const insertOrUpdateOffice = (params) => {
   return axios.request({
     url: '/area/insertOrUpdateOffice',
@@ -254,6 +261,13 @@ export const opt = (params) => {
     method: 'post'
   })
 }
+export const detailTaskApproval = (params) => {
+  return axios.request({
+    url: '/process/detailTaskApproval',
+    data: params,
+    method: 'post'
+  })
+}
 export const detailMaterialReturnService = (params) => {
   return axios.request({
     url: '/process/detailMaterialReturnService',
@@ -348,6 +362,13 @@ export const listHistory = (params) => {
 export const listWait = (params) => {
   return axios.request({
     url: '/process/listWait',
+    data: params,
+    method: 'post'
+  })
+}
+export const detailTaskCrossingApproval = (params) => {
+  return axios.request({
+    url: '/process/detailTaskCrossingApproval',
     data: params,
     method: 'post'
   })

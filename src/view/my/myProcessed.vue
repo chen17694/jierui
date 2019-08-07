@@ -12,6 +12,7 @@
 <script>
 import Tables from '_c/tables'
 import { listHistory, listWait } from '@/api/data'
+import { getUserId } from '@/libs/util'
 export default {
   name: 'myAudit',
   components: { Tables },
@@ -21,7 +22,7 @@ export default {
       params: {
         pageSize: 10,
         page: 1,
-        id: '27275ab6e7644f05b9921193295e2c7b'
+        id: getUserId()
       },
       total: 0,
       tableData: [],
@@ -128,9 +129,41 @@ export default {
     onRowClick () {
       console.log(arguments[0])
       switch (arguments[0].type) {
+        case ('1'):
+          this.$router.push({
+            name: 'dxmsq',
+            params: {
+              data: arguments[0]
+            }
+          })
+          break
+        case ('2'):
+          this.$router.push({
+            name: 'drwsq',
+            params: {
+              data: arguments[0]
+            }
+          })
+          break
+        case ('3'):
+          this.$router.push({
+            name: 'drwlksq',
+            params: {
+              data: arguments[0]
+            }
+          })
+          break
         case ('4'):
           this.$router.push({
             name: 'dwzsq',
+            params: {
+              data: arguments[0]
+            }
+          })
+          break
+        case ('5'):
+          this.$router.push({
+            name: 'dwzghsq',
             params: {
               data: arguments[0]
             }

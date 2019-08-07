@@ -86,7 +86,7 @@
 
 <script>
 import { getUnitList, getUserList, addProject } from '@/api/data'
-import { getUserId } from '@/libs/util'
+import { getUserId, getOffice } from '@/libs/util'
 export default {
   name: 'addProjectForm',
   data () {
@@ -118,8 +118,8 @@ export default {
         firstPartyUserName: '',
         startTime: '',
         completionTime: '',
-        officeName: '啦啦啦',
-        officeId: 'ca452cb4392f41f28aab87ea9d884781',
+        officeName: getOffice().office,
+        officeId: getOffice().officeId,
         projectManagerId: '',
         projectManagerName: '',
         location: '',
@@ -285,7 +285,7 @@ export default {
     }
   },
   mounted () {
-    console.log(this.$route.params)
+    console.log(getOffice())
     this.getFirstPartyCompany()
     this.getProjectManager()
     this.addMarker()
