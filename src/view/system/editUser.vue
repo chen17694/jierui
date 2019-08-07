@@ -3,10 +3,10 @@
     <Card>
       <p class="pageHead">编辑用户</p>
       <Form ref="formItem" :model="formItem" :label-width="150" :rules="ruleValidate" >
-        <FormItem label="用户名" prop="userName">
+        <FormItem label="用户名" prop="loginName">
           <Row>
             <Col span="11">
-              {{formItem.userName}}
+              {{formItem.loginName}}
             </Col>
           </Row>
         </FormItem>
@@ -63,13 +63,11 @@
             <Radio label="0">女</Radio>
           </RadioGroup>
         </FormItem>
-        <FormItem label="归属单位" prop="unit">
+        <FormItem label="归属单位" prop="officeId">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.unit">
-                <Option value="沈阳稻田">沈阳稻田</Option>
-                <Option value="shanghai">London</Option>
-                <Option value="shenzhen">Sydney</Option>
+              <Select v-model="formItem.officeId" @on-change="selectUnit">
+                <Option v-for="item in unitList" :value="item.id" :key="item.id">{{item.name}}</Option>
               </Select>
             </Col>
             <Col span="11" style="padding-left: 10px">
@@ -99,25 +97,30 @@
         <FormItem label="角色" prop="role">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.role">
-                <Option value="经理">经理</Option>
-                <Option value="员工">员工</Option>
+              <Select v-model="formItem.roleId">
+                <Option v-for="item in roleList" :value="item.id" :key="item.id">{{item.name}}</Option>
               </Select>
             </Col>
           </Row>
         </FormItem>
         <FormItem label="是否允许登录APP">
-          <RadioGroup v-model="formItem.isApp">
+          <RadioGroup v-model="formItem.isLoginApp">
             <Radio label="1">是</Radio>
             <Radio label="0">否</Radio>
           </RadioGroup>
         </FormItem>
       </Form>
+      <div class="btns">
+        <Button type="primary" @click="save">保存</Button>
+        <Button @click="back">返回</Button>
+      </div>
     </Card>
   </div>
 </template>
 
 <script>
+import { insertOrUpdateUser, getUnitList, listRoleByOfficeId } from '@/api/data'
+import { getUserId } from '@/libs/util'
 export default {
   data () {
     const validatePass = (rule, value, callback) => {
@@ -180,19 +183,21 @@ export default {
     }
     return {
       formItem: {
-        userName: '',
+        loginName: '',
         phone: '',
         email: '',
         name: '',
         password: '',
         confirm: '',
         sex: '',
-        unit: '',
-        role: '',
+        officeId: '',
+        roleId: '',
         isApp: ''
       },
+      unitList: [],
+      roleList: [],
       ruleValidate: {
-        userName: [
+        loginName: [
           { required: true, validator: validateUserName, trigger: 'blur' }
         ],
         phone: [
@@ -220,16 +225,68 @@ export default {
     }
   },
   created () {
-    console.log(this.$route.params.row)
-    this.formItem = this.$route.params.row
+    getUnitList({
+      'pageSize': 0,
+      'page': 0,
+      'name': '',
+      'areaId': '',
+      'type': '',
+      'userId': getUserId()
+    }).then(res => {
+      if (res.data.status === '200') {
+        this.unitList = res.data.data.list
+        this.formItem = this.$route.params.row
+        this.selectUnit(this.formItem.officeId)
+      }
+    })
+  },
+  methods: {
+    back () {
+      this.$router.push({
+        name: 'userList'
+      })
+    },
+    save () {
+      let params = {
+        'loginName': this.formItem.userName || 'zhm',
+        'phone': this.formItem.phone || '',
+        'email': this.formItem.email || '',
+        'name': this.formItem.name || '',
+        'password': this.formItem.password || '',
+        'sex': this.formItem.sex || '',
+        'isLoginApp': this.formItem.isLoginApp || '',
+        'officeId': this.formItem.officeId || '',
+        'roleId': this.formItem.roleId || '',
+        'userId': this.formItem.id || ''
+      }
+      insertOrUpdateUser(params).then((res) => {
+        this.$Message.info(res.data.msg)
+      })
+    },
+    selectUnit () {
+      listRoleByOfficeId({
+        id: arguments[0]
+      }).then((res) => {
+        if (res.data.status === '200') {
+          this.roleList = res.data.data
+        }
+      })
+    }
   }
 }
 </script>
 
-<style scoped>
+<style scoped lang="less">
   .pageHead{
     font-size: 14px;
     font-weight: bold;
     margin-bottom: 20px;
+  }
+  .btns{
+    text-align: center;
+    margin-top: 50px;
+    .ivu-btn{
+      margin: 0 10px;
+    }
   }
 </style>

@@ -204,7 +204,6 @@ export default{
       })
     },
     onEdit () {
-      console.log(arguments[0].row)
       this.$router.push({
         name: 'editUser',
         params: {
