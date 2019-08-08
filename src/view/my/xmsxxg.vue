@@ -67,7 +67,7 @@
         <FormItem label="申请人员">
           <Row>
             <Col span="6">
-              <span>哈哈哈</span>
+              <span>{{getOffice().name}}</span>
             </Col>
           </Row>
         </FormItem>
@@ -89,7 +89,7 @@
 
 <script>
 import { getUserList, projectAttributeModify, selectProjectDetail } from '@/api/data'
-import { getUserId } from '@/libs/util'
+import { getUserId, getOffice } from '@/libs/util'
 export default {
   name: 'xmsxxg',
   data () {
@@ -231,6 +231,7 @@ export default {
     }
   },
   mounted () {
+    console.log(getOffice())
     this.getData()
     this.getUser()
     this.getProjectManager()
@@ -243,5 +244,14 @@ export default {
   .amap-demo{
     width: 100%;
     height: 300px;
+  }
+  .btns{
+    text-align: center;
+    .ivu-btn-primary{
+      margin-right: 10px;
+    }
+    .ivu-btn{
+      width: 80px;
+    }
   }
 </style>

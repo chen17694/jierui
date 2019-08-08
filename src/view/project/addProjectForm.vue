@@ -154,7 +154,7 @@ export default {
       markers: [],
       events: {
         init () {
-          var geocoder = new AMap.Geocoder({
+          let geocoder = new AMap.Geocoder({
             radius: 1000,
             extensions: 'all'
           })
