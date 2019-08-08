@@ -200,10 +200,30 @@ export default [
             name: 'dwzghsq',
             meta: {
               icon: 'md-funnel',
-              title: '物资申请审批',
+              title: '物资归还审批',
               hideInMenu: true
             },
-            component: () => import('@/view/my/dwzsq.vue')
+            component: () => import('@/view/my/dwzghsq.vue')
+          },
+          {
+            path: 'dxmsxxgsq',
+            name: 'dxmsxxgsq',
+            meta: {
+              icon: 'md-funnel',
+              title: '项目属性修改审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/dxmsxxgsq.vue')
+          },
+          {
+            path: 'dxmztxgsq',
+            name: 'dxmztxgsq',
+            meta: {
+              icon: 'md-funnel',
+              title: '项目状态修改审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/dxmztxgsq.vue')
           },
           {
             path: 'drwsq',

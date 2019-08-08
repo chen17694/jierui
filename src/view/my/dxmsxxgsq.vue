@@ -6,21 +6,39 @@
       </Steps>
     </Card>
     <Card style="margin-bottom: 10px">
-      <h3 style="color: #2d8cf0; margin-bottom: 20px">物资申请信息</h3>
+      <h3 style="color: #2d8cf0; margin-bottom: 20px">当前属性</h3>
       <ul style="list-style-type: none">
-        <li style="margin-bottom: 5px">项目名称：54564564654</li>
-        <li style="margin-bottom: 5px">任务名称：787f8w9e7f98</li>
-        <li style="margin-bottom: 5px">申请人员：啊啊啊</li>
+        <li style="margin-bottom: 5px">项目名称：{{detailData.days}}</li>
+        <li style="margin-bottom: 5px">甲方公司：{{detailData.score}}</li>
+        <li style="margin-bottom: 5px">甲方负责人：{{detailData.score}}</li>
+        <li style="margin-bottom: 5px">起止日期：{{detailData.score}}</li>
+        <li style="margin-bottom: 5px">主导单位：{{detailData.score}}</li>
+        <li style="margin-bottom: 5px">项目经理：{{detailData.score}}</li>
+        <li style="margin-bottom: 5px">项目状态：{{detailData.score}}</li>
+        <li style="margin-bottom: 5px">项目备注：{{detailData.score}}</li>
+        <li style="margin-bottom: 5px">项目位置：{{detailData.score}}</li>
+      </ul>
+      <h3 style="color: #2d8cf0; margin-bottom: 20px">变更属性</h3>
+      <ul style="list-style-type: none">
+        <li style="margin-bottom: 5px">甲方负责人修改为：{{detailData.projectName}}</li>
+        <li style="margin-bottom: 5px">项目修改日期修改为：{{detailData.taskName}}</li>
+        <li style="margin-bottom: 5px">项目备注修改为：{{detailData.alias}}</li>
+        <li style="margin-bottom: 5px">项目位置修改为：{{detailData.taskHoldersName}}</li>
+      </ul>
+      <h3 style="color: #2d8cf0; margin-bottom: 20px">申请信息</h3>
+      <ul style="list-style-type: none">
+        <li style="margin-bottom: 5px">申请人员：{{detailData.projectName}}</li>
+        <li style="margin-bottom: 5px">申请时间：{{detailData.taskName}}</li>
+        <li style="margin-bottom: 5px">申请原因：{{detailData.alias}}</li>
       </ul>
     </Card>
-    <tables ref="tables" v-model="tableData" :columns="columns" :showPage="false"></tables>
     <div class="btns" style="margin-top: 30px">
       <Button type="primary" @click="shenpi">审批</Button>
       <Button>返回</Button>
     </div>
     <Modal
       v-model="editPanel"
-      title='物资申请审批'
+      title='项目属性修改审批'
       @on-ok="save"
     >
       <Form ref="editParams" :model="editParams">
@@ -39,28 +57,23 @@
 </template>
 
 <script>
-import { detailMaterialApplication, opt } from '@/api/data'
+import { detailProjectAttributeModify, opt } from '@/api/data'
 import Tables from '_c/tables'
 import { getUserId } from '@/libs/util'
 export default {
-  name: 'dwzsq',
+  name: 'drwlksq',
   components: { Tables },
   data () {
     return {
       editParams: {
         comment: '',
-        opt: '1'
+        opt: '1',
+        needPartA: ''
       },
+      detailData: {},
       tableData: [],
       stepArr: [],
-      editPanel: false,
-      columns: [
-        { title: '物资类型', key: 'materialTypeName' },
-        { title: '物资名称', key: 'materialName' },
-        { title: '剩余数量', key: 'surplusNum' },
-        { title: '申请数量', key: 'applyNum' },
-        { title: '归还日期', key: 'returnDate' }
-      ]
+      editPanel: false
     }
   },
   methods: {
@@ -82,13 +95,13 @@ export default {
       })
     },
     getData () {
-      detailMaterialApplication({
+      detailProjectAttributeModify({
         taskId: this.$route.params.data.taskId,
         userId: getUserId(),
         type: '1'
       }).then((res) => {
         console.log(res.data.data)
-        this.tableData = res.data.data.materialList
+        this.detailData = res.data.data
         this.stepArr = res.data.data.list
       })
     }

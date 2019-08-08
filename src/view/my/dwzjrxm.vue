@@ -8,9 +8,10 @@
     <Card style="margin-bottom: 10px">
       <h3 style="color: #2d8cf0; margin-bottom: 20px">物资加入项目申请信息</h3>
       <ul style="list-style-type: none">
-        <li style="margin-bottom: 5px">项目名称：54564564654</li>
-        <li style="margin-bottom: 5px">任务名称：787f8w9e7f98</li>
-        <li style="margin-bottom: 5px">申请人员：啊啊啊</li>
+        <li style="margin-bottom: 5px">项目名称：{{detailData.projectName}}</li>
+        <li style="margin-bottom: 5px">申请人员：{{detailData.applyName}}</li>
+        <li style="margin-bottom: 5px">申请时间：{{detailData.createTime}}</li>
+        <li style="margin-bottom: 5px">需求描述及原因：{{detailData.applyReason}}</li>
       </ul>
     </Card>
     <div class="btns" style="margin-top: 30px">
@@ -55,6 +56,7 @@ export default {
         comment: '',
         opt: '1'
       },
+      detailData: {},
       stepArr: [],
       editPanel: false,
       add: false,
@@ -264,6 +266,7 @@ export default {
         console.log(res.data.data)
         this.stepArr = res.data.data.list
         this.projectId = res.data.data.projectId
+        this.detailData = res.data.data
       })
     }
   },

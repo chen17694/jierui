@@ -20,7 +20,7 @@
     </div>
     <Modal
       v-model="editPanel"
-      title='物资申请审批'
+      title='物资归还审批'
       @on-ok="save"
     >
       <Form ref="editParams" :model="editParams">
@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { detailMaterialApplication, opt } from '@/api/data'
+import { detailMaterialReturnService, opt } from '@/api/data'
 import Tables from '_c/tables'
 import { getUserId } from '@/libs/util'
 export default {
@@ -58,9 +58,10 @@ export default {
       columns: [
         { title: '物资类型', key: 'materialTypeName' },
         { title: '物资名称', key: 'materialName' },
-        { title: '剩余数量', key: 'surplusNum' },
-        { title: '申请数量', key: 'applyNum' },
-        { title: '归还日期', key: 'returnDate' }
+        { title: '已借数量', key: 'borrowedNum' },
+        { title: '归还数量', key: 'returnNum ' },
+        { title: '申请日期', key: 'applyTime' },
+        { title: '预计归还日期', key: 'returnDate' }
       ],
       projectMaterialJoinApproveForm: []
     }
@@ -71,10 +72,6 @@ export default {
     },
     save () {
       let arr = this.projectMaterialJoinApproveForm
-      arr.forEach((item) => {
-        delete item.initRowIndex
-      })
-      console.log(arr)
       let obj = {
         opt: this.editParams.opt,
         taskId: this.$route.params.data.taskId,
@@ -92,7 +89,7 @@ export default {
       })
     },
     getData () {
-      detailMaterialApplication({
+      detailMaterialReturnService({
         taskId: this.$route.params.data.taskId,
         userId: getUserId(),
         type: '1'

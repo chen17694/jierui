@@ -37,13 +37,15 @@
           </div>
           <Select v-model="onStatus" style="width:100px" @on-change="statusChange">
             <span :style="{ backgroundColor: avatar }" style="width: 15px; height: 15px; display: inline-block; border-radius: 50%; vertical-align: middle;" slot="prefix"></span>
-            <Option value="1" >未开始</Option>
-            <Option value="2" >进行中</Option>
-            <Option value="3" >审核中</Option>
-            <Option value="4" >已完成</Option>
-            <Option value="5" >已驳回</Option>
-            <Option value="6" >已撤销</Option>
-            <Option value="7" >已暂停</Option>
+            <Option value="1" >未领取</Option>
+            <Option value="2" >已拒绝</Option>
+            <Option value="3" >未开始</Option>
+            <Option value="4" >进行中</Option>
+            <Option value="5" >审核中</Option>
+            <Option value="6" >已完成</Option>
+            <Option value="7" >已驳回</Option>
+            <Option value="8" >已撤销</Option>
+            <Option value="9" >已暂停</Option>
           </Select>
         </div>
         <div v-for="(item, index) in projectList" :key="index" @click="positioning(item.lng, item.lat)" v-show="panelShow" style="position: relative; padding: 15px; padding-bottom: 10px; border-bottom: 1px solid #e6e6e6;">
