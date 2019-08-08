@@ -67,6 +67,7 @@
               <span v-for="(i, index) in item.taskCrossingButtonPermissionBeanList" :key="index" >
                 <Button v-if="i.permissionCode === '1'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">逾期催办</Button>
                 <Button v-if="i.permissionCode === '2'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">提交审核</Button>
+                <Button v-if="i.permissionCode === '3'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">删除任务路口</Button>
               </span>
             </div>
             <div>

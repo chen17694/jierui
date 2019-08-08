@@ -2,7 +2,7 @@
   <div>
     <Card style="margin-bottom: 10px">
       <Steps :current="1">
-        <Step :title="item.name" :content="item.userName + ' ' +item.action" v-for="(item, index) in stepArr" :key="index"></Step>
+        <Step :title="item.name" :content="item.userName ? item.userName : '' + ' ' +item.action" v-for="(item, index) in stepArr" :key="index"></Step>
       </Steps>
     </Card>
     <Card style="margin-bottom: 10px">

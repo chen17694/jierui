@@ -122,7 +122,34 @@ export default {
         { title: '任务负责人', key: 'userName' },
         { title: '起始日期', key: 'startTime' },
         { title: '截止日期', key: 'completionTime' },
-        { title: '路口状态', key: 'status' },
+        { title: '路口状态',
+          key: 'status',
+          render: (h, params) => {
+            let text = ''
+            if (params.row.status === '1') {
+              text = '未领取'
+            } else if (params.row.status === '2') {
+              text = '已拒绝'
+            } else if (params.row.status === '3') {
+              text = '未开始'
+            } else if (params.row.status === '3') {
+              text = '未开始'
+            } else if (params.row.status === '4') {
+              text = '进行中'
+            } else if (params.row.status === '5') {
+              text = '审核中'
+            } else if (params.row.status === '6') {
+              text = '已完成'
+            } else if (params.row.status === '7') {
+              text = '已驳回'
+            } else if (params.row.status === '8') {
+              text = '已撤销'
+            } else if (params.row.status === '9') {
+              text = '已暂停'
+            }
+            return h('div', { props: {} }, text)
+          }
+        },
         { title: '逾期天数', key: 'overdueDays' },
         { title: '甲方评分', key: 'firstPartyScoring' },
         {
