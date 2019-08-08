@@ -499,7 +499,20 @@ export const taskCrossingFunction = (params) => {
     method: 'post'
   })
 }
-
+export const projectMaterialJoin = (params) => {
+  return axios.request({
+    url: '/materia/projectMaterialJoin',
+    data: params,
+    method: 'post'
+  })
+}
+export const detailProjectApproval = (params) => {
+  return axios.request({
+    url: '/process/detailProjectApproval',
+    data: params,
+    method: 'post'
+  })
+}
 export const listOverdueMaterial = (params) => {
   return axios.request({
     url: '/overdue/listOverdueMaterial',

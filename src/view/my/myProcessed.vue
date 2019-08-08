@@ -130,6 +130,7 @@ export default {
       console.log(arguments[0])
       switch (arguments[0].type) {
         case ('1'):
+          // 待审批 项目审批
           this.$router.push({
             name: 'dxmsq',
             params: {
@@ -138,6 +139,7 @@ export default {
           })
           break
         case ('2'):
+          // 待审批 任务审批
           this.$router.push({
             name: 'drwsq',
             params: {
@@ -146,6 +148,7 @@ export default {
           })
           break
         case ('3'):
+          // 待审批 任务路口审批
           this.$router.push({
             name: 'drwlksq',
             params: {
@@ -154,6 +157,7 @@ export default {
           })
           break
         case ('4'):
+          // 待审批 物资申请审批
           this.$router.push({
             name: 'dwzsq',
             params: {
@@ -162,6 +166,7 @@ export default {
           })
           break
         case ('5'):
+          // 待审批 物资归还审批
           this.$router.push({
             name: 'dwzghsq',
             params: {
@@ -170,6 +175,7 @@ export default {
           })
           break
         case ('6'):
+          // 待审批 项目属性修改审批
           this.$router.push({
             name: 'dxmsxxgsq',
             params: {
@@ -178,6 +184,7 @@ export default {
           })
           break
         case ('7'):
+          // 待审批 项目状态修改审批
           this.$router.push({
             name: 'dxmztxgsq',
             params: {

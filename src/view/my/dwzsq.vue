@@ -61,7 +61,8 @@ export default {
         { title: '剩余数量', key: 'surplusNum' },
         { title: '申请数量', key: 'applyNum' },
         { title: '归还日期', key: 'returnDate' }
-      ]
+      ],
+      projectMaterialJoinApproveForm: []
     }
   },
   methods: {
@@ -69,12 +70,20 @@ export default {
       this.editPanel = true
     },
     save () {
+      let arr = this.projectMaterialJoinApproveForm
+      arr.forEach((item) => {
+        delete item.initRowIndex
+      })
+      console.log(arr)
       let obj = {
         opt: this.editParams.opt,
         taskId: this.$route.params.data.taskId,
         userId: getUserId(),
         comment: this.editParams.comment,
-        processType: this.$route.params.data.type
+        processType: this.$route.params.data.type,
+        projectMaterialJoinApproveForm: {
+          list: arr
+        }
       }
       console.log(obj)
       opt(obj).then((res) => {
@@ -89,7 +98,7 @@ export default {
         type: '1'
       }).then((res) => {
         console.log(res.data.data)
-        this.tableData = res.data.data.materialList
+        this.tableData = this.projectMaterialJoinApproveForm = res.data.data.materialList
         this.stepArr = res.data.data.list
         this.detailData = res.data.data
       })

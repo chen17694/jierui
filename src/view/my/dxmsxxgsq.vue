@@ -38,7 +38,7 @@
     </div>
     <Modal
       v-model="editPanel"
-      title='物资申请审批'
+      title='项目属性修改审批'
       @on-ok="save"
     >
       <Form ref="editParams" :model="editParams">

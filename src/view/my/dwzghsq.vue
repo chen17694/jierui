@@ -62,7 +62,8 @@ export default {
         { title: '归还数量', key: 'returnNum ' },
         { title: '申请日期', key: 'applyTime' },
         { title: '预计归还日期', key: 'returnDate' }
-      ]
+      ],
+      projectMaterialJoinApproveForm: []
     }
   },
   methods: {
@@ -70,12 +71,16 @@ export default {
       this.editPanel = true
     },
     save () {
+      let arr = this.projectMaterialJoinApproveForm
       let obj = {
         opt: this.editParams.opt,
         taskId: this.$route.params.data.taskId,
         userId: getUserId(),
         comment: this.editParams.comment,
-        processType: this.$route.params.data.type
+        processType: this.$route.params.data.type,
+        projectMaterialJoinApproveForm: {
+          list: arr
+        }
       }
       console.log(obj)
       opt(obj).then((res) => {
@@ -90,7 +95,7 @@ export default {
         type: '1'
       }).then((res) => {
         console.log(res.data.data)
-        this.tableData = res.data.data.materialList
+        this.tableData = this.projectMaterialJoinApproveForm = res.data.data.materialList
         this.stepArr = res.data.data.list
         this.detailData = res.data.data
       })

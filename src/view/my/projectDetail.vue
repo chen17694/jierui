@@ -46,6 +46,11 @@
           <tables ref="tables1" :total="this.total1" :columns="columns1" v-model="tableData1" :taskListBtnVisible="true" @on-edit="onEdit1"/>
         </TabPane>
         <TabPane label="项目物资" name="name3">
+          <div style="margin-bottom: 10px">
+            <div>
+              <Button type="primary" @click="materialModel = true">物资加入项目申请</Button>
+            </div>
+          </div>
           <tables ref="tables2" :total="this.total2" :columns="columns2" v-model="tableData2"/>
         </TabPane>
         <TabPane label="项目团队" name="name4">
@@ -95,6 +100,39 @@
       <div slot="footer">
         <Button type="text" size="large" @click="statusModel = false">取消</Button>
         <Button type="primary" size="large" @click="saveStatus">确定</Button>
+      </div>
+    </Modal>
+    <Modal
+      v-model="materialModel"
+      title="物资加入项目申请">
+      <Form ref="formItemMaterial" :model="formItemMaterial" :rules="ruleCustom3" :label-width="130">
+        <FormItem label="物资归属单位：">
+          <Row>
+            <Col span="11">
+              <Select v-model="formItemMaterial.materOfficeId" placeholder="请选择" label-in-value @on-change="materialChange">
+                <Option v-for="(item, key) in unitList" :key="key" :value="item.id">{{item.name}}</Option>
+              </Select>
+            </Col>
+          </Row>
+        </FormItem>
+        <FormItem label="申请人员：">
+          <Row>
+            <Col span="11">
+              {{userName}}
+            </Col>
+          </Row>
+        </FormItem>
+        <FormItem label="需求描述及原因：" prop="remark">
+          <Row>
+            <Col span="20">
+              <Input v-model="formItemMaterial.comment" type="textarea" :autosize="{minRows: 3,maxRows: 5}" style="width: 100%"/>
+            </Col>
+          </Row>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="statusModel = false">取消</Button>
+        <Button type="primary" size="large" @click="saveMaterial">确定</Button>
       </div>
     </Modal>
     <Modal
@@ -154,7 +192,7 @@
 </template>
 
 <script>
-import { selectProjectDetail, listTask, listProjectMaterial, listProjectUser, projectFunction, listProjectUserDistribution, getUnitList, addProjectManager, staffJoin } from '@/api/data'
+import { selectProjectDetail, listTask, listProjectMaterial, listProjectUser, projectFunction, listProjectUserDistribution, getUnitList, addProjectManager, staffJoin, projectMaterialJoin } from '@/api/data'
 import { getUserId, getOffice } from '@/libs/util'
 import Tables from '_c/tables'
 export default {
@@ -162,11 +200,17 @@ export default {
   components: { Tables },
   data () {
     return {
+      formItemMaterial: {
+        materOfficeName: '',
+        materOfficeId: '',
+        comment: ''
+      },
       formItemJoin: {
         officeId: '',
         officeName: '',
         remark: ''
       },
+      materialModel: false,
       joinModel: false,
       transferTitles: ['未分配', '已分配'],
       allocatePanel: false,
@@ -191,6 +235,11 @@ export default {
       },
       ruleCustom2: {
         remark: [
+          { required: true, message: '请输入申请原因', trigger: 'blur' }
+        ]
+      },
+      ruleCustom3: {
+        comment: [
           { required: true, message: '请输入申请原因', trigger: 'blur' }
         ]
       },
@@ -280,6 +329,23 @@ export default {
       console.log(arguments)
       this.formItemJoin.officeId = arguments[0].value
       this.formItemJoin.officeName = arguments[0].label
+    },
+    materialChange () {
+      console.log(arguments)
+      this.formItemMaterial.materOfficeId = arguments[0].value
+      this.formItemMaterial.materOfficeName = arguments[0].label
+    },
+    saveMaterial () {
+      projectMaterialJoin({
+        projectId: this.detailData.id,
+        materOfficeName: this.formItemMaterial.materOfficeName,
+        materOfficeId: this.formItemMaterial.materOfficeId,
+        userId: getUserId(),
+        comment: this.formItemMaterial.comment
+      }).then((res) => {
+        console.log(res)
+        this.$Message.info(res.data.msg)
+      })
     },
     saveJoin () {
       staffJoin({

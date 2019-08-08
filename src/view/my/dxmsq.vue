@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { detailTaskApproval, opt } from '@/api/data'
+import { detailProjectApproval, opt } from '@/api/data'
 import Tables from '_c/tables'
 import { getUserId } from '@/libs/util'
 export default {
@@ -89,7 +89,7 @@ export default {
       })
     },
     getData () {
-      detailTaskApproval({
+      detailProjectApproval({
         taskId: this.$route.params.data.taskId,
         userId: getUserId(),
         type: '1'
