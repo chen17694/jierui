@@ -128,7 +128,7 @@ export default {
                   },
                   on: {
                     click: () => {
-                      vm.$emit('on-delete', params)
+                      this.$emit('on-delete', params)
                     }
                   }
                 })

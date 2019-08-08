@@ -152,13 +152,15 @@ import tdTheme from './theme.json'
 import CountTo from '_c/count-to'
 import Tables from '_c/tables'
 import { getUserId } from '@/libs/util'
+import { ChartPie, ChartBar } from '_c/charts'
+import { on, off } from '@/libs/tools'
 import { taskCountStatisticsByTpye, taskCrossingAreaCount, taskCrossingStatistics, listCrossing } from '@/api/data'
 import { getLastMonthStartDate, getLastMonthEndDate, getMonthStartDate, getMonthEndDate, getQuarterStartDate, getQuarterEndDate, getLastQuarterStartDate, getLastQuarterEndDate, getCurrentYear, getLastYear } from '@/libs/mdate.js'
 
 echarts.registerTheme('tdTheme', tdTheme)
 export default {
   name: 'taskIntersectionStatistics',
-  components: { Tables, CountTo },
+  components: { Tables, CountTo, ChartPie, ChartBar },
   data () {
     return {
       Search: {
@@ -247,7 +249,7 @@ export default {
     Percentage (num1, num2) {
       // 计算百分比
       return (
-        Math.round((parseFloat(num1) / parseFloat(num2)) * 10000) / 100.0 + '%'
+        isNaN(Math.round((parseFloat(num1) / parseFloat(num2)) * 10000) / 100.0) ? '0%' : Math.round((parseFloat(num1) / parseFloat(num2)) * 10000) / 100.0 + '%'
       )
     },
     regionTypeSel (val) {
@@ -275,15 +277,13 @@ export default {
           {
             // 环形图中间添加文字
             type: 'text', // 通过不同top值可以设置上下显示
-            left: '20%',
+            left: '28%',
             top: '44%',
             style: {
               text:
                   '任务总数量' + '\n' + '\n' + this.oneData.taskCount || 0,
               textAlign: 'center',
               fill: 'black', // 文字的颜色
-              width: 30,
-              height: 30,
               fontSize: 16,
               fontFamily: 'Microsoft YaHei'
             }
@@ -291,13 +291,13 @@ export default {
         ],
         tooltip: {
           trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
+          formatter: '数量占比 <br/>{b} : {c} ({d}%)'
         },
         series: [
           {
             type: 'pie',
-            radius: ['70px', '100px'],
-            center: ['30%', '50%'],
+            radius: ['54%', '74%'],
+            center: ['40%', '50%'],
             label: {
               normal: {
                 show: false
@@ -340,6 +340,10 @@ export default {
       }
       this.dom1 = echarts.init(this.$refs.dom1, 'tdTheme')
       this.dom1.setOption(option)
+      on(window, 'resize', this.resizeP1)
+    },
+    resizeP1 () {
+      this.dom1.resize()
     },
     setBar1 () {
       let option = {
@@ -386,6 +390,10 @@ export default {
       }
       this.dom2 = echarts.init(this.$refs.dom2, 'tdTheme')
       this.dom2.setOption(option)
+      on(window, 'resize', this.resizeB1)
+    },
+    resizeB1 () {
+      this.dom2.resize()
     },
     setPie2 () {
       let option = {
@@ -402,7 +410,7 @@ export default {
           {
             // 环形图中间添加文字
             type: 'text', // 通过不同top值可以设置上下显示
-            left: '23%',
+            left: '34%',
             top: '52%',
             style: {
               text: this.Percentage(this.threeData.taskCrossingVerySatisfiedCount, this.threeData.taskCrossingScoringCount) || 0,
@@ -422,8 +430,8 @@ export default {
         series: [
           {
             type: 'pie',
-            radius: ['50px', '70px'],
-            center: ['30%', '54%'],
+            radius: ['45%', '65%'],
+            center: ['40%', '54%'],
             label: {
               normal: {
                 show: false
@@ -469,6 +477,10 @@ export default {
       }
       this.dom3 = echarts.init(this.$refs.dom3, 'tdTheme')
       this.dom3.setOption(option)
+      on(window, 'resize', this.resizeP2)
+    },
+    resizeP2 () {
+      this.dom3.resize()
     },
     renderData () {
       this.Search.userId = getUserId()
@@ -513,6 +525,11 @@ export default {
       this.Search.endTime = getCurrentYear().endTime
       this.renderData()
     }
+  },
+  beforeDestroy () {
+    off(window, 'resize', this.resizeP1)
+    off(window, 'resize', this.resizeB2)
+    off(window, 'resize', this.resizeP2)
   }
 }
 </script>
