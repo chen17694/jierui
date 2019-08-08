@@ -40,12 +40,12 @@
               </Col>
               <Col span="19">
                 <Select v-model="params.type" placeholder="请选择" label-in-value>
-                    <Option value="0">审核审批</Option>
-                    <Option value="1">提醒</Option>
-                    <Option value="1">催办</Option>
-                    <Option value="1">推送</Option>
-                    <Option value="1">任务路口被拒绝</Option>
-                    <Option value="1">新任务通知</Option>
+                    <Option value="1">审核审批</Option>
+                    <Option value="2">提醒</Option>
+                    <Option value="3">催办</Option>
+                    <Option value="4">推送</Option>
+                    <Option value="5">新任务通知</Option>
+                    <Option value="6">任务路口被拒绝</Option>
                 </Select>
               </Col>
             </Row>
@@ -125,7 +125,7 @@ export default {
         { title: '消息类型',
           key: 'type',
           render: (h, params) => {
-            let arr = ['', '审核审批', '提醒', '催办', '推送', '任务路口被拒绝', '新任务通知']
+            let arr = ['', '审核审批', '提醒', '催办', '推送', '新任务通知', '任务路口被拒绝']
             return h('div', {}, arr[params.row.type])
           }
         },

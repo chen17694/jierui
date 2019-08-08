@@ -379,7 +379,7 @@ export default {
     Percentage (num1, num2) {
       // 计算百分比
       return (
-        isNaN(Math.round((parseFloat(num1) / parseFloat(num2)) * 10000) / 100.0) ? '0%' : Math.round((parseFloat(num1) / parseFloat(num2)) * 10000) / 100.0 + '%'
+        isNaN(Math.round((parseFloat(num1) / parseFloat(num2)) * 10000) / 100.0) ? '0%' : Math.round((parseFloat(num1) / parseFloat(num2)) * 10000) / 100.0 === Infinity ? '100%' : Math.round((parseFloat(num1) / parseFloat(num2)) * 10000) / 100.0 + '%'
       )
     },
     selType (id, ind) {
@@ -441,8 +441,8 @@ export default {
               normal: {
                 color: function (params) {
                   let colorList = [
-                    '#975fe4',
-                    '#cccccc'
+                    '#cccccc',
+                    '#975fe4'
                   ]
                   return colorList[params.dataIndex]
                 }

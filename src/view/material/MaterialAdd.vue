@@ -16,7 +16,7 @@
           <Row>
               <Col span="20">
                 <!-- <Input v-model="formMaterial.amount" type="number" placeholder="请输入物资数量" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"></Input>  -->
-                <Input v-model="formMaterial.amount" type="number" placeholder="请输入物资数量"></Input>
+                <Input v-model="formMaterial.amount" type="number" @on-change="numChange" placeholder="请输入物资数量"></Input>
               </Col>
           </Row>
         </FormItem>
@@ -119,7 +119,7 @@ export default {
           { required: true, message: '请输入少于20字的物资名称/物资名称已重复', trigger: 'blur' }
         ],
         amount: [
-          { required: true, message: '请输入物资的数量', trigger: 'blur' }
+          { required: true, type: 'number', message: '请输入物资的数量', trigger: 'blur' }
         ],
         needReturnStatus: [
           { require: true, trigger: 'change' }
@@ -134,16 +134,19 @@ export default {
     }
   },
   created () {
-    if (this.$route.query.id) {
-      this.MaterialDetail(this.$route.query.id)
-    }
     this.MaterialCategory()
     this.ListOffice(() => {
       this.formMaterial.officeId = getOffice().officeId // 默认设置，当前用户所属单位信息
       this.formMaterial.officeName = getOffice().office
     })
+    if (this.$route.query.id) {
+      this.MaterialDetail(this.$route.query.id)
+    }
   },
   methods: {
+    numChange () {
+      this.formMaterial.amount = parseInt(this.formMaterial.amount.replace(/[^1-9]/g, ''))
+    },
     MaterialDetail (id) {
       materialDetail({ id: id }).then((res) => {
         if (res.data.status === '200') {

@@ -116,12 +116,14 @@ import tdTheme from './theme.json'
 import CountTo from '_c/count-to'
 import Tables from '_c/tables'
 import { userWorkingHours, getUserList } from '@/api/data'
+import { ChartPie, ChartBar } from '_c/charts'
+import { on, off } from '@/libs/tools'
 import { getLastMonthStartDate, getLastMonthEndDate, getMonthStartDate, getMonthEndDate, getQuarterStartDate, getQuarterEndDate, getLastQuarterStartDate, getLastQuarterEndDate, getCurrentYear, getLastYear } from '@/libs/mdate.js'
 
 echarts.registerTheme('tdTheme', tdTheme)
 export default {
   name: 'EmployeeWorkloadStatistics',
-  components: { Tables, CountTo },
+  components: { Tables, CountTo, ChartPie, ChartBar },
   data () {
     return {
       Search: {
@@ -230,7 +232,7 @@ export default {
           {
             // 环形图中间添加文字
             type: 'text', // 通过不同top值可以设置上下显示
-            left: '20%',
+            left: '30%',
             top: '44%',
             style: {
               text: '满意度' + '\n' + '\n' + this.Percentage(this.oneData.taskCrossingScoringCount - this.oneData.taskCrossingSatisfiedCount, this.oneData.taskCrossingScoringCount) || 0,
@@ -250,8 +252,8 @@ export default {
         series: [
           {
             type: 'pie',
-            radius: ['50px', '70px'],
-            center: ['30%', '54%'],
+            radius: ['55%', '75%'],
+            center: ['40%', '54%'],
             label: {
               normal: {
                 show: false
@@ -297,6 +299,10 @@ export default {
       }
       this.dom1 = echarts.init(this.$refs.dom1, 'tdTheme')
       this.dom1.setOption(option)
+      on(window, 'resize', this.resizeP1)
+    },
+    resizeP1 () {
+      this.dom1.resize()
     },
     lastMonthSlot () {
       this.Search.startTime = getLastMonthStartDate()
@@ -340,6 +346,9 @@ export default {
         this.setPie1()
       })
     }
+  },
+  beforeDestroy () {
+    off(window, 'resize', this.resizeP1)
   }
 }
 </script>

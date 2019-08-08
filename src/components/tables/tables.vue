@@ -74,7 +74,7 @@
         </div>
       </template>
     </Table>
-    <div style="margin: 10px;overflow: hidden" v-show="this.showPage">
+    <div style="margin: 10px;" v-show="this.showPage">
       <div style="float: right;">
         <Page :total="this.total" :current="1" @on-change="onChange" @on-page-size-change="onPageSizeChange" show-sizer show-elevator :page-size="PageSize"></Page>
       </div>

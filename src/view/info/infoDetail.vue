@@ -91,7 +91,7 @@
       </div>
     </Row>
     <div class="returnBtn">
-      <Button type="primary" style="width:100px" @click="lookDetail">查看详情</Button>
+      <Button type="primary" style="width:100px" @click="lookDetail(info)">查看详情</Button>
       <Button style="width:100px; margin-left: 20px;" @click="returnBack">返回</Button>
     </div>
   </div>
@@ -118,8 +118,22 @@ export default {
     returnBack () {
       this.$router.push('infoList')
     },
-    lookDetail () {
-      this.$route.push({ path: 'infoDetail', query: { id: this.$route.query.id } })
+    lookDetail (info) {
+      let type = info.type
+      if (type === 1) { // 审核审批
+
+      } else if (type === 2) { // 提醒
+
+      } else if (type === 3) { // 催办
+
+      } else if (type === 4) { // 推送
+
+      } else if (type === 5) { // 通知
+
+      } else if (type === 6) { // 任务拒绝
+
+      }
+      // this.$router.push({ path: './infoDetail', query: { id: this.$route.query.id } })
     },
     MessageDetail (id) {
       let _this = this
