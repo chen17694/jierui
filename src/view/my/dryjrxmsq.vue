@@ -8,10 +8,10 @@
     <Card style="margin-bottom: 10px">
       <h3 style="color: #2d8cf0; margin-bottom: 20px">人员加入项目申请信息</h3>
       <ul style="list-style-type: none">
-        <li style="margin-bottom: 5px">项目名称：{{detailData.days}}</li>
-        <li style="margin-bottom: 5px">申请人员：{{detailData.score}}</li>
-        <li style="margin-bottom: 5px">申请时间：{{detailData.score}}</li>
-        <li style="margin-bottom: 5px">需求描述及原因：{{detailData.days}}</li>
+        <li style="margin-bottom: 5px">项目名称：{{detailData.projectName}}</li>
+        <li style="margin-bottom: 5px">申请人员：{{detailData.applyName}}</li>
+        <li style="margin-bottom: 5px">申请时间：{{detailData.createTime}}</li>
+        <li style="margin-bottom: 5px">需求描述及原因：{{detailData.applyReason}}</li>
       </ul>
     </Card>
     <div class="btns" style="margin-top: 30px">
@@ -20,7 +20,7 @@
     </div>
     <Modal
       v-model="editPanel"
-      title='物资申请审批'
+      title='人员加入项目申请审批'
       @on-ok="save"
     >
       <Form ref="editParams" :model="editParams">
@@ -34,13 +34,15 @@
           <Input v-model="editParams.comment" :disabled="editParams.opt === '1'" type="textarea" style="width: 80%" :autosize="{minRows: 5,maxRows: 10}"></Input>
         </FormItem>
       </Form>
-      <tables ref="tables"  v-model="tableData" :columns="columns" @on-add="addRow" @on-remove="delRow" :showPage="false"></tables>
+      <div class="tableWrapper">
+        <tables ref="tables"  v-model="tableData" :columns="columns" @on-add="addRow" @on-remove="delRow" :showPage="false"></tables>
+      </div>
     </Modal>
   </div>
 </template>
 
 <script>
-import { detailProjectStateModify, opt, getUserList } from '@/api/data'
+import { detailProjectStaffJoin, opt, getUserList } from '@/api/data'
 import Tables from '_c/tables'
 import { getUserId, getOffice } from '@/libs/util'
 export default {
@@ -62,11 +64,11 @@ export default {
           render: (h, params) => {
             return h('Select', {
               props: {
-                value: this.addRows[params.index].projectId
+                value: this.addRows[params.index].id
               },
               on: {
                 'on-change': (id) => {
-                  this.addRows[params.index].projectId = id
+                  this.addRows[params.index].id = id
                 }
               }
             }, params.row.pname.map((item) => {
@@ -96,24 +98,33 @@ export default {
   },
   methods: {
     shenpi () {
+      this.tableData = [{
+        pname: this.addRows[0].userList
+      }]
       this.editPanel = true
     },
     save () {
+      let userIdList = []
+      this.addRows.forEach((item) => {
+        userIdList.push(item.id)
+      })
       let obj = {
         opt: this.editParams.opt,
         taskId: this.$route.params.data.taskId,
         userId: getUserId(),
         comment: this.editParams.comment,
-        processType: this.$route.params.data.type
+        processType: this.$route.params.data.type,
+        projectStaffJoinApproveForm: {
+          userIdList: userIdList
+        }
       }
-      console.log(obj)
       opt(obj).then((res) => {
         console.log(res)
         this.$Message.info(res.data.msg)
       })
     },
     getData () {
-      detailProjectStateModify({
+      detailProjectStaffJoin({
         taskId: this.$route.params.data.taskId,
         userId: getUserId(),
         type: '1'
@@ -136,11 +147,6 @@ export default {
       this.tableData.push({
         pname: this.addRows[this.rowIndex].userList
       })
-    },
-    addInit () {
-      this.tableData = [{
-        pname: this.addRows[0].userList
-      }]
     }
   },
   mounted: function () {
@@ -167,6 +173,11 @@ export default {
     }
     .ivu-btn{
       width: 80px;
+    }
+  }
+  .tableWrapper{
+    /deep/ .ivu-table-wrapper{
+      overflow: inherit;
     }
   }
 </style>

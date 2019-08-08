@@ -254,6 +254,16 @@ export default [
               hideInMenu: true
             },
             component: () => import('@/view/my/dwzjrxm.vue')
+          },
+          {
+            path: 'dryjrxmsq',
+            name: 'dryjrxmsq',
+            meta: {
+              icon: 'md-funnel',
+              title: '人员加入项目申请审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/dryjrxmsq.vue')
           }
         ]
       },

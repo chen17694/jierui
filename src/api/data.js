@@ -506,6 +506,14 @@ export const projectMaterialJoin = (params) => {
     method: 'post'
   })
 }
+export const detailProjectStaffJoin = (params) => {
+  return axios.request({
+    url: '/process/detailProjectStaffJoin',
+    data: params,
+    method: 'post'
+  })
+}
+
 export const detailProjectApproval = (params) => {
   return axios.request({
     url: '/process/detailProjectApproval',
