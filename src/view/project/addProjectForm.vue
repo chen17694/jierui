@@ -78,7 +78,7 @@
       </Form>
       <div class="btns">
         <Button type="primary" @click="this.save">保存</Button>
-        <Button>返回</Button>
+        <Button @click="back">返回</Button>
       </div>
     </Card>
   </div>
@@ -86,7 +86,7 @@
 
 <script>
 import { getUnitList, getUserList, addProject } from '@/api/data'
-import { getUserId } from '@/libs/util'
+import { getUserId, getOffice } from '@/libs/util'
 export default {
   name: 'addProjectForm',
   data () {
@@ -118,8 +118,8 @@ export default {
         firstPartyUserName: '',
         startTime: '',
         completionTime: '',
-        officeName: '啦啦啦',
-        officeId: 'ca452cb4392f41f28aab87ea9d884781',
+        officeName: getOffice().office,
+        officeId: getOffice().officeId,
         projectManagerId: '',
         projectManagerName: '',
         location: '',
@@ -154,7 +154,7 @@ export default {
       markers: [],
       events: {
         init () {
-          var geocoder = new AMap.Geocoder({
+          let geocoder = new AMap.Geocoder({
             radius: 1000,
             extensions: 'all'
           })
@@ -190,6 +190,11 @@ export default {
     }
   },
   methods: {
+    back () {
+      this.$router.push({
+        name: 'projectManagementList'
+      })
+    },
     reLocation () {
       this.$router.push({
         name: 'addProject'
@@ -285,7 +290,7 @@ export default {
     }
   },
   mounted () {
-    console.log(this.$route.params)
+    console.log(getOffice())
     this.getFirstPartyCompany()
     this.getProjectManager()
     this.addMarker()

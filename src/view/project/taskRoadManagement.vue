@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import { projectFunction, listProject, listTaskCrossing, listTask } from '@/api/data'
+import { taskCrossingFunction, listProject, listTaskCrossing, listTask } from '@/api/data'
 import { getUserId } from '@/libs/util'
 import Tables from '_c/tables'
 export default {
@@ -122,7 +122,34 @@ export default {
         { title: '任务负责人', key: 'userName' },
         { title: '起始日期', key: 'startTime' },
         { title: '截止日期', key: 'completionTime' },
-        { title: '路口状态', key: 'status' },
+        { title: '路口状态',
+          key: 'status',
+          render: (h, params) => {
+            let text = ''
+            if (params.row.status === '1') {
+              text = '未领取'
+            } else if (params.row.status === '2') {
+              text = '已拒绝'
+            } else if (params.row.status === '3') {
+              text = '未开始'
+            } else if (params.row.status === '3') {
+              text = '未开始'
+            } else if (params.row.status === '4') {
+              text = '进行中'
+            } else if (params.row.status === '5') {
+              text = '审核中'
+            } else if (params.row.status === '6') {
+              text = '已完成'
+            } else if (params.row.status === '7') {
+              text = '已驳回'
+            } else if (params.row.status === '8') {
+              text = '已撤销'
+            } else if (params.row.status === '9') {
+              text = '已暂停'
+            }
+            return h('div', { props: {} }, text)
+          }
+        },
         { title: '逾期天数', key: 'overdueDays' },
         { title: '甲方评分', key: 'firstPartyScoring' },
         {
@@ -212,60 +239,32 @@ export default {
       })
     },
     onEdit (params, row) {
-      if (params.permissionCode === '2' || params.permissionCode === '3') {
-        this.$Modal.confirm({
-          title: params.permissionCode === '2' ? '确定要' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该项目吗？' : '确定要申请' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该项目吗？',
-          onOk: () => {
-            projectFunction({
-              'projectId': row.id,
-              'userId': getUserId(),
-              'functionType': params.permissionCode,
-              'pauseStatus': row.pauseStatus === '0' ? '1' : '0'
-            }).then((res) => {
-              this.$Message.info(res.data.msg)
-              this.getData()
-            })
-          }
-        })
-      } else {
-        let str = ''
-        switch (params.permissionCode) {
-          case '1':
-            str = '确定要开始该项目吗？'
-            break
-          case '4':
-            str = '确定要撤销该项目吗？'
-            break
-          case '5':
-            str = '确定要申请撤销该项目吗？'
-            break
-          case '6':
-            str = '确定要催办该项目吗？'
-            break
-          case '7':
-            str = '确定要将该项目提交审核吗？'
-            break
-          case '8':
-            str = '确定要删除该项目吗？'
-            break
-          case '9':
-            str = '确定要为该项目创建新的任务吗？'
-            break
-        }
-        this.$Modal.confirm({
-          title: str,
-          onOk: () => {
-            projectFunction({
-              'projectId': row.id,
-              'userId': getUserId(),
-              'functionType': params.permissionCode
-            }).then((res) => {
-              this.$Message.info(res.data.msg)
-              this.getData()
-            })
-          }
-        })
+      console.log(arguments)
+      let str = ''
+      switch (params.permissionCode) {
+        case '1':
+          str = '确定要催办该任务路口吗？'
+          break
+        case '2':
+          str = '确定提交审核吗？'
+          break
+        case '3':
+          str = '确定删除该任务路口吗？'
+          break
       }
+      this.$Modal.confirm({
+        title: str,
+        onOk: () => {
+          taskCrossingFunction({
+            'taskCrossingId': row.id,
+            'userId': getUserId(),
+            'functionType': params.permissionCode
+          }).then((res) => {
+            this.$Message.info(res.data.msg)
+            this.getData()
+          })
+        }
+      })
     }
   },
   mounted () {

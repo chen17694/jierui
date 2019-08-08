@@ -6,21 +6,32 @@
       </Steps>
     </Card>
     <Card style="margin-bottom: 10px">
-      <h3 style="color: #2d8cf0; margin-bottom: 20px">物资申请信息</h3>
+      <h3 style="color: #2d8cf0; margin-bottom: 20px">任务路口状态信息</h3>
+      <ul style="list-style-type: none">
+        <li style="margin-bottom: 5px" v-if="detailData.status === '1'">任务状态：审核中</li>
+        <li style="margin-bottom: 5px" v-if="detailData.status === '2'">任务状态：已完成</li>
+        <li style="margin-bottom: 5px" v-if="detailData.status === '3'">任务状态：已驳回</li>
+        <li style="margin-bottom: 5px" v-if="detailData.status === '4'">任务状态：已撤销</li>
+        <li style="margin-bottom: 5px">逾期天数：{{detailData.days}}</li>
+        <li style="margin-bottom: 5px">甲方评分：{{detailData.score}}</li>
+      </ul>
+      <h3 style="color: #2d8cf0; margin-bottom: 20px">路口基本信息</h3>
       <ul style="list-style-type: none">
         <li style="margin-bottom: 5px">项目名称：{{detailData.projectName}}</li>
         <li style="margin-bottom: 5px">任务名称：{{detailData.taskName}}</li>
-        <li style="margin-bottom: 5px">申请人员：{{detailData.applyName}}</li>
+        <li style="margin-bottom: 5px">路口别名：{{detailData.alias}}</li>
+        <li style="margin-bottom: 5px">任务负责人：{{detailData.taskHoldersName}}</li>
+        <li style="margin-bottom: 5px">起止日期：{{detailData.startTime}} - {{detailData.endTime}}</li>
+        <li style="margin-bottom: 5px">路口位置：{{detailData.address}}</li>
       </ul>
     </Card>
-    <tables ref="tables" v-model="tableData" :columns="columns" :showPage="false"></tables>
     <div class="btns" style="margin-top: 30px">
       <Button type="primary" @click="shenpi">审批</Button>
       <Button>返回</Button>
     </div>
     <Modal
       v-model="editPanel"
-      title='物资申请审批'
+      title='任务路口审批'
       @on-ok="save"
     >
       <Form ref="editParams" :model="editParams">
@@ -33,36 +44,35 @@
         <FormItem label="拒绝原因:">
           <Input v-model="editParams.comment" :disabled="editParams.opt === '1'" type="textarea" style="width: 80%" :autosize="{minRows: 5,maxRows: 10}"></Input>
         </FormItem>
+        <FormItem label="甲方审批:" v-if="detailData.needForm === '1'">
+          <RadioGroup v-model="editParams.needPartA">
+            <Radio label="1">是</Radio>
+            <Radio label="0">否</Radio>
+          </RadioGroup>
+        </FormItem>
       </Form>
     </Modal>
   </div>
 </template>
 
 <script>
-import { detailMaterialApplication, opt } from '@/api/data'
+import { detailTaskCrossingApproval, opt } from '@/api/data'
 import Tables from '_c/tables'
 import { getUserId } from '@/libs/util'
 export default {
-  name: 'dwzsq',
+  name: 'drwlksq',
   components: { Tables },
   data () {
     return {
-      detailData: {},
       editParams: {
         comment: '',
-        opt: '1'
+        opt: '1',
+        needPartA: ''
       },
+      detailData: {},
       tableData: [],
       stepArr: [],
-      editPanel: false,
-      columns: [
-        { title: '物资类型', key: 'materialTypeName' },
-        { title: '物资名称', key: 'materialName' },
-        { title: '剩余数量', key: 'surplusNum' },
-        { title: '申请数量', key: 'applyNum' },
-        { title: '归还日期', key: 'returnDate' }
-      ],
-      projectMaterialJoinApproveForm: []
+      editPanel: false
     }
   },
   methods: {
@@ -70,19 +80,14 @@ export default {
       this.editPanel = true
     },
     save () {
-      let arr = this.projectMaterialJoinApproveForm
-      arr.forEach((item) => {
-        delete item.initRowIndex
-      })
-      console.log(arr)
       let obj = {
         opt: this.editParams.opt,
         taskId: this.$route.params.data.taskId,
         userId: getUserId(),
         comment: this.editParams.comment,
         processType: this.$route.params.data.type,
-        projectMaterialJoinApproveForm: {
-          list: arr
+        taskForm: {
+          needPartA: this.editParams.needPartA
         }
       }
       console.log(obj)
@@ -92,15 +97,14 @@ export default {
       })
     },
     getData () {
-      detailMaterialApplication({
+      detailTaskCrossingApproval({
         taskId: this.$route.params.data.taskId,
         userId: getUserId(),
         type: '1'
       }).then((res) => {
         console.log(res.data.data)
-        this.tableData = this.projectMaterialJoinApproveForm = res.data.data.materialList
-        this.stepArr = res.data.data.list
         this.detailData = res.data.data
+        this.stepArr = res.data.data.list
       })
     }
   },

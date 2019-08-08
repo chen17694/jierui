@@ -228,6 +228,11 @@ export default {
     }
   },
   methods: {
+    back () {
+      this.$router.push({
+        name: 'userList'
+      })
+    },
     save () {
       let params = {
         'loginName': this.formItem.userName,
@@ -242,16 +247,18 @@ export default {
         'roleId': this.formItem.roleId,
         'userId': getUserId()
       }
-      console.log(params)
-      insertOrUpdateUser(params).then((res) => {
-        this.$Message.info(res.data.msg)
+      this.$refs['formItem'].validate((valid) => {
+        if (valid) {
+          insertOrUpdateUser(params).then((res) => {
+            this.$Message.info(res.data.msg)
+          })
+        }
       })
     },
     selectUnit () {
       listRoleByOfficeId({
         id: arguments[0]
       }).then((res) => {
-        console.log(res)
         if (res.data.status === '200') {
           this.roleList = res.data.data
         }

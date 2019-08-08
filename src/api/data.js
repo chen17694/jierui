@@ -92,6 +92,13 @@ export const getRegionList = () => {
     method: 'post'
   })
 }
+export const projectAttributeModify = (params) => {
+  return axios.request({
+    url: '/project/projectAttributeModify',
+    data: params,
+    method: 'post'
+  })
+}
 export const insertOrUpdateOffice = (params) => {
   return axios.request({
     url: '/area/insertOrUpdateOffice',
@@ -148,7 +155,27 @@ export const listAreaByType = (params) => {
     method: 'post'
   })
 }
-
+export const listProjectUserDistribution = (params) => {
+  return axios.request({
+    url: '/project/listProjectUserDistribution',
+    data: params,
+    method: 'post'
+  })
+}
+export const staffJoin = (params) => {
+  return axios.request({
+    url: '/project/staffJoin',
+    data: params,
+    method: 'post'
+  })
+}
+export const addProjectManager = (params) => {
+  return axios.request({
+    url: '/project/addProjectManager',
+    data: params,
+    method: 'post'
+  })
+}
 export const listUserRoleDistribution = (params) => {
   return axios.request({
     url: '/role/listUserRoleDistribution',
@@ -254,9 +281,30 @@ export const opt = (params) => {
     method: 'post'
   })
 }
+export const detailTaskApproval = (params) => {
+  return axios.request({
+    url: '/process/detailTaskApproval',
+    data: params,
+    method: 'post'
+  })
+}
 export const detailMaterialReturnService = (params) => {
   return axios.request({
     url: '/process/detailMaterialReturnService',
+    data: params,
+    method: 'post'
+  })
+}
+export const detailProjectAttributeModify = (params) => {
+  return axios.request({
+    url: '/process/detailProjectAttributeModify',
+    data: params,
+    method: 'post'
+  })
+}
+export const detailProjectStateModify = (params) => {
+  return axios.request({
+    url: '/process/detailProjectStateModify',
     data: params,
     method: 'post'
   })
@@ -348,6 +396,13 @@ export const listHistory = (params) => {
 export const listWait = (params) => {
   return axios.request({
     url: '/process/listWait',
+    data: params,
+    method: 'post'
+  })
+}
+export const detailTaskCrossingApproval = (params) => {
+  return axios.request({
+    url: '/process/detailTaskCrossingApproval',
     data: params,
     method: 'post'
   })
@@ -444,7 +499,28 @@ export const taskCrossingFunction = (params) => {
     method: 'post'
   })
 }
+export const projectMaterialJoin = (params) => {
+  return axios.request({
+    url: '/materia/projectMaterialJoin',
+    data: params,
+    method: 'post'
+  })
+}
+export const detailProjectStaffJoin = (params) => {
+  return axios.request({
+    url: '/process/detailProjectStaffJoin',
+    data: params,
+    method: 'post'
+  })
+}
 
+export const detailProjectApproval = (params) => {
+  return axios.request({
+    url: '/process/detailProjectApproval',
+    data: params,
+    method: 'post'
+  })
+}
 export const listOverdueMaterial = (params) => {
   return axios.request({
     url: '/overdue/listOverdueMaterial',

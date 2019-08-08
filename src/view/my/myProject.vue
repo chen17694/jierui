@@ -239,6 +239,8 @@ export default {
         return '已驳回'
       } else if (this.detailData.status === '6') {
         return '已撤销'
+      } else if (this.detailData.status === '7') {
+        return '已暂停'
       }
     }
   },
@@ -251,7 +253,7 @@ export default {
     toProjectDetail (id) {
       this.$router.push({
         name: 'projectDetail',
-        params: {
+        query: {
           projectId: id
         }
       })
@@ -454,6 +456,9 @@ export default {
                 break
               case '6':
                 status = `<div><img src="${p_revoke}" style="width: 40px; height: 40px"></div>`
+                break
+              case '7':
+                status = `<div><img src="${p_pause}" style="width: 40px; height: 40px"></div>`
                 break
             }
           }

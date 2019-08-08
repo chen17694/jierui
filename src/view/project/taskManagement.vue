@@ -14,7 +14,7 @@
       <Col span="12">
         <div style="float: right">
           <Button type="warning" style="margin-right: 10px" @click="reminder">任务提醒</Button>
-          <Button type="success" @click="toAdd">新建任务</Button>
+          <Button type="success" @click="toAdd" v-if="creatTaskPermission === '0'">新建任务</Button>
         </div>
       </Col>
     </Row>
@@ -103,6 +103,8 @@ export default {
   components: { Tables },
   data () {
     return {
+      creatProjectTaskPermission: false,
+      creatTaskPermission: '0',
       params: {
         pageSize: 10,
         page: 1,
@@ -150,6 +152,8 @@ export default {
     getData () {
       listTask(this.params).then((res) => {
         console.log(res.data.data)
+        this.creatProjectTaskPermission = res.data.data.creatProjectTaskPermission
+        this.creatTaskPermission = res.data.data.creatTaskPermission
         this.tableData = res.data.data.taskDetailBeans
         this.total = Number(res.data.data.count)
       })

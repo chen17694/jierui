@@ -235,6 +235,13 @@ export default {
             })
           }
         })
+      } else if (params.permissionCode === '99') {
+        this.$router.push({
+          name: 'addTask',
+          query: {
+            projectId: row.id
+          }
+        })
       } else {
         let str = ''
         switch (params.permissionCode) {
@@ -255,9 +262,6 @@ export default {
             break
           case '8':
             str = '确定要删除该项目吗？'
-            break
-          case '99':
-            str = '确定要为该项目创建新的任务吗？'
             break
         }
         this.$Modal.confirm({

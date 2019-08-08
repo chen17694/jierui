@@ -4,8 +4,8 @@
       <el-amap ref="map" :center="center" vid="amapDemo" :amap-manager="amapManager" :zoom="zoom" class="amap-demo" :events="events"></el-amap>
       <Cascader :data="areaData" v-model="areaValue" change-on-select style="position: absolute; right: 20px; top: 20px; width: 200px;" @on-change="cascaderChange"></Cascader>
       <Card style="width:350px; position: absolute; left: 20px; top: 20px; border: 0 none">
-        <p slot="title">任务位置</p>
-        <p>在地图右键点击设置任务位置。</p>
+        <p slot="title">项目位置</p>
+        <p>在地图右键点击设置项目位置。</p>
       </Card>
     </div>
   </div>
@@ -39,7 +39,7 @@ export default {
           let o = amapManager.getMap()
           let icon1 = self.icon1
           self.menu = new AMap.ContextMenu()
-          self.menu.addItem('<img src="' + icon1 + '" style="width: 18px; margin-right: 5px"><span>设为任务位置</span>', function () {
+          self.menu.addItem('<img src="' + icon1 + '" style="width: 18px; margin-right: 5px"><span>设为项目位置</span>', function () {
             self.toAdd()
           }, 0)
           self.menu.addItem('<span style="padding-left: 25px">取消</span>', function () {
@@ -57,13 +57,11 @@ export default {
   methods: {
     toAdd () {
       this.$router.push({
-        name: 'addTaskForm',
+        name: this.$route.query.name,
         params: {
           lat: this.lat,
-          lng: this.lng
-        },
-        query: {
-          projectId: this.$route.query.projectId ? this.$route.query.projectId : ''
+          lng: this.lng,
+          data: this.$route.params.data
         }
       })
     },
