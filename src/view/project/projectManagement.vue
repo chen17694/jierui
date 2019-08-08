@@ -14,7 +14,7 @@
       <Col span="12">
         <div style="float: right">
           <Button type="warning" style="margin-right: 10px" @click="reminder">项目提醒</Button>
-          <Button type="success" @click="toAdd">新建项目</Button>
+          <Button type="success" @click="toAdd" v-if="creatProjectPermission === '0'">新建项目</Button>
         </div>
       </Col>
     </Row>
@@ -99,6 +99,7 @@ export default {
   components: { Tables },
   data () {
     return {
+      creatProjectPermission: '0',
       params: {
         pageSize: 10,
         page: 1,
@@ -169,6 +170,8 @@ export default {
     },
     getData () {
       listProject(this.params).then((res) => {
+        console.log(res)
+        this.creatProjectPermission = res.data.data.creatProjectPermission
         this.tableData = res.data.data.projectList
         this.total = Number(res.data.data.count)
       })

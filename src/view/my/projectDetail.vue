@@ -315,7 +315,20 @@ export default {
       columns3: [
         { title: '姓名', key: 'name' },
         { title: '所属单位', key: 'office' },
-        { title: '项目角色', key: 'role ' },
+        { title: '项目角色',
+          key: 'role',
+          render: (h, params) => {
+            let text = ''
+            if (params.row.role === '0') {
+              text = '项目经理'
+            } else if (params.row.role === '1') {
+              text = '项目副经理'
+            } else {
+              text = '任务负责人'
+            }
+            return h('div', { props: {} }, text)
+          }
+        },
         { title: '手机号码', key: 'phone' },
         { title: '邮箱', key: 'phone' }
       ]

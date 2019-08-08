@@ -351,6 +351,13 @@ export const listTaskCrossing = (params) => {
     method: 'post'
   })
 }
+export const listCrossingAndCount = (params) => {
+  return axios.request({
+    url: '/CrossingAPI/listCrossingAndCount',
+    data: params,
+    method: 'post'
+  })
+}
 export const listCrossing = (params) => {
   return axios.request({
     url: '/CrossingAPI/listCrossing',

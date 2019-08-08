@@ -2,6 +2,7 @@
   <div style="height: 100%">
     <div class="amap-page-container">
       <div style="position: absolute; z-index: 1; left: 20px; top: 20px; background-color: #ffffff; width: 300px">
+        <div style="font-size: 14px;font-weight: bold;padding: 0 10px 0 10px;border-bottom: 1px solid rgb(232, 232, 232);line-height: 40px;">路口数量：{{this.total}}</div>
         <div v-for="(item, index) in roadList" :key="index" @click="setCenter(item.lng, item.lat)" style="display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #e8e8e8; justify-content: space-between">
           <span style="margin-right: 10px; display: flex; align-items: center">
             <img src="../../assets/images/icon1.png" style="width: 13px; margin-right: 5px">
@@ -11,6 +12,20 @@
             <span style="margin-right: 10px; cursor: pointer" @click="toArray(item)">{{item.select ? '已选' : '选取'}}</span>
             <Button type="primary" size="small">详情</Button>
           </span>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 11px 10px 15px; border-bottom: 1px solid #e6e6e6;">
+          <div>{{params.page}}/{{maxPage}}页</div>
+          <div style="display: flex">
+            <Button style="margin-right: 4px" @click="firstPage">首页</Button>
+            <ul class="ivu-page">
+              <li title="上一页" @click="prevPage" class="ivu-page-prev"><a><i class="ivu-icon ivu-icon-ios-arrow-back"></i></a></li>
+              <li title="下一页" @click="nextPage" class="ivu-page-prev"><a><i class="ivu-icon ivu-icon-ios-arrow-forward"></i></a></li>
+            </ul>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 10px 15px; color: #2E8CEB;">
+          <span @click="allProject" style="cursor: pointer">所有项目</span>
+          <span @click="close" style="cursor: pointer">{{this.panelShow ? '收起' : '展开'}}</span>
         </div>
       </div>
       <div style="position: absolute; z-index: 1; right: 20px; top: 70px; background-color: #ffffff; width: 300px">
@@ -85,7 +100,7 @@
 
 <script>
 import { AMapManager, lazyAMapApiLoaderInstance } from 'vue-amap'
-import { listCrossing, areaData, addCrossing, listProject, listTask, addTaskCrossing } from '@/api/data'
+import { areaData, addCrossing, listProject, listTask, addTaskCrossing, listCrossingAndCount } from '@/api/data'
 import { getUserInfo, getUserId } from '@/libs/util'
 import road from '../../assets/images/road.png'
 import icon1 from '../../assets/images/icon1.png'
@@ -95,6 +110,17 @@ export default {
   data () {
     const self = this
     return {
+      panelShow: true,
+      maxPage: 0,
+      total: 0,
+      params: {
+        pageSize: 10,
+        page: 1,
+        alias: '',
+        provinceName: '',
+        cityName: '',
+        districtName: ''
+      },
       taskRoadPanel: false,
       formItem2: {
         businessProjectId: '',
@@ -163,6 +189,28 @@ export default {
     }
   },
   methods: {
+    firstPage () {
+      this.params.page = 1
+      this.getRoad()
+    },
+    prevPage () {
+      if (this.params.page !== 1) {
+        this.params.page--
+        this.getRoad()
+      }
+    },
+    nextPage () {
+      if (this.params.page < this.maxPage) {
+        this.params.page++
+        this.getRoad()
+      }
+    },
+    allProject () {
+
+    },
+    close () {
+
+    },
     dateChange () {
       console.log(arguments)
       this.formItem2.startTime = arguments[0][0]
@@ -299,16 +347,18 @@ export default {
       })
     },
     getRoad () {
-      listCrossing({
-        pageSize: 20,
-        page: 1,
-        alias: '',
-        provinceName: '',
-        cityName: '',
-        districtName: ''
-      }).then((res) => {
+      listCrossingAndCount(this.params).then((res) => {
         console.log(res)
-        let roadList = this.roadList = res.data.data
+        let roadList = this.roadList = res.data.data.list
+        this.total = res.data.data.count
+        if (this.total === '0') {
+          this.params.page = 0
+        } else {
+          if (this.page === 0) {
+            this.params.page = 1
+          }
+        }
+        this.maxPage = Math.ceil(this.total / 10)
         this.stateCheck(this.roadList, this.selectList)
         if (roadList.length > 0) {
           this.center = [roadList[0].lng || 116.397428, roadList[0].lat || 39.90923]

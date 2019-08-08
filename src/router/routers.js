@@ -94,7 +94,7 @@ export default [
         meta: {
           icon: 'md-funnel',
           title: '项目属性修改',
-          hideInMenu: false
+          hideInMenu: true
         },
         component: () => import('@/view/my/xmsxxg.vue')
       },

@@ -348,6 +348,7 @@ export default {
     },
     firstPage () {
       this.page = 1
+      this.getProject()
     },
     prevPage () {
       if (this.page !== 1) {
@@ -373,7 +374,7 @@ export default {
     },
     getProject () {
       let obj = {
-        pageSize: 2,
+        pageSize: 3,
         page: this.page,
         projectId: '',
         taskId: '',
@@ -393,9 +394,11 @@ export default {
         if (this.total === '0') {
           this.page = 0
         } else {
-          this.page = 1
+          if (this.page === 0) {
+            this.page = 1
+          }
         }
-        this.maxPage = Math.ceil(this.total / 20)
+        this.maxPage = Math.ceil(this.total / 3)
       })
     },
     getDetail (id) {
