@@ -31,8 +31,8 @@
       </ul>
     </Card>
     <div class="btns" style="margin-top: 30px">
-      <Button type="primary" @click="chexiao" v-if="detailData.status === '1'">撤销</Button>
-      <Button>返回</Button>
+      <Button type="primary" @click="chexiao" v-if="detailData.isCancel === '1'">撤销</Button>
+      <Button @click="back">返回</Button>
     </div>
   </div>
 </template>
@@ -57,6 +57,11 @@ export default {
     }
   },
   methods: {
+    back () {
+      this.$router.push({
+        name: 'projectOverdue'
+      })
+    },
     chexiao () {
       this.$Modal.confirm({
         title: '确定要撤销吗？',

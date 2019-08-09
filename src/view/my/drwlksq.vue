@@ -27,7 +27,7 @@
     </Card>
     <div class="btns" style="margin-top: 30px">
       <Button type="primary" @click="shenpi">审批</Button>
-      <Button>返回</Button>
+      <Button @click="back">返回</Button>
     </div>
     <Modal
       v-model="editPanel"
@@ -105,6 +105,11 @@ export default {
         console.log(res.data.data)
         this.detailData = res.data.data
         this.stepArr = res.data.data.list
+      })
+    },
+    back () {
+      this.$router.push({
+        name: 'projectOverdue'
       })
     }
   },

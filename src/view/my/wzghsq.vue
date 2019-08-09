@@ -18,8 +18,8 @@
     </Card>
     <tables ref="tables" v-model="tableData" :columns="columns" :showPage="false"></tables>
     <div class="btns" style="margin-top: 30px">
-      <Button type="primary" @click="chexiao" v-if="detailData.status === '1'">撤销</Button>
-      <Button>返回</Button>
+      <Button type="primary" @click="chexiao" v-if="detailData.isCancel === '1'">撤销</Button>
+      <Button @click="back">返回</Button>
     </div>
   </div>
 </template>
@@ -53,6 +53,11 @@ export default {
     }
   },
   methods: {
+    back () {
+      this.$router.push({
+        name: 'projectOverdue'
+      })
+    },
     chexiao () {
       this.$Modal.confirm({
         title: '确定要撤销吗？',
@@ -74,7 +79,7 @@ export default {
       detailMaterialReturnService({
         taskId: this.$route.params.data.taskId,
         userId: getUserId(),
-        type: '1'
+        type: '2'
       }).then((res) => {
         console.log(res.data.data)
         this.tableData = this.projectMaterialJoinApproveForm = res.data.data.materialList

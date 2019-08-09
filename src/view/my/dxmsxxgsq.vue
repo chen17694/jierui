@@ -8,33 +8,33 @@
     <Card style="margin-bottom: 10px">
       <h3 style="color: #2d8cf0; margin-bottom: 20px">当前属性</h3>
       <ul style="list-style-type: none">
-        <li style="margin-bottom: 5px">项目名称：{{detailData.days}}</li>
-        <li style="margin-bottom: 5px">甲方公司：{{detailData.score}}</li>
-        <li style="margin-bottom: 5px">甲方负责人：{{detailData.score}}</li>
-        <li style="margin-bottom: 5px">起止日期：{{detailData.score}}</li>
-        <li style="margin-bottom: 5px">主导单位：{{detailData.score}}</li>
-        <li style="margin-bottom: 5px">项目经理：{{detailData.score}}</li>
-        <li style="margin-bottom: 5px">项目状态：{{detailData.score}}</li>
-        <li style="margin-bottom: 5px">项目备注：{{detailData.score}}</li>
-        <li style="margin-bottom: 5px">项目位置：{{detailData.score}}</li>
+        <li style="margin-bottom: 5px">项目名称：{{detailData.projectName}}</li>
+        <li style="margin-bottom: 5px">甲方公司：{{detailData.partAOffice}}</li>
+        <li style="margin-bottom: 5px">甲方负责人：{{detailData.oldPartAName}}</li>
+        <li style="margin-bottom: 5px">起止日期：{{detailData.oldStartTime}} - {{detailData.oldEndTime}}</li>
+        <li style="margin-bottom: 5px">主导单位：{{detailData.officeName}}</li>
+        <li style="margin-bottom: 5px">项目经理：{{detailData.oldProjectManagerName}}</li>
+        <li style="margin-bottom: 5px">项目状态：{{detailData.status}}</li>
+        <li style="margin-bottom: 5px">项目备注：{{detailData.oldRemark}}</li>
+        <!--<li style="margin-bottom: 5px">项目位置：{{detailData.score}}</li>-->
       </ul>
       <h3 style="color: #2d8cf0; margin-bottom: 20px">变更属性</h3>
       <ul style="list-style-type: none">
-        <li style="margin-bottom: 5px">甲方负责人修改为：{{detailData.projectName}}</li>
-        <li style="margin-bottom: 5px">项目修改日期修改为：{{detailData.taskName}}</li>
-        <li style="margin-bottom: 5px">项目备注修改为：{{detailData.alias}}</li>
-        <li style="margin-bottom: 5px">项目位置修改为：{{detailData.taskHoldersName}}</li>
+        <li style="margin-bottom: 5px">甲方负责人修改为：{{detailData.newPartAName}}</li>
+        <li style="margin-bottom: 5px">项目修改日期修改为：{{detailData.newStartTime}} - {{detailData.newStartTime}}</li>
+        <li style="margin-bottom: 5px">项目备注修改为：{{detailData.newRemark}}</li>
+        <!--<li style="margin-bottom: 5px">项目位置修改为：{{detailData.taskHoldersName}}</li>-->
       </ul>
       <h3 style="color: #2d8cf0; margin-bottom: 20px">申请信息</h3>
       <ul style="list-style-type: none">
-        <li style="margin-bottom: 5px">申请人员：{{detailData.projectName}}</li>
-        <li style="margin-bottom: 5px">申请时间：{{detailData.taskName}}</li>
-        <li style="margin-bottom: 5px">申请原因：{{detailData.alias}}</li>
+        <li style="margin-bottom: 5px">申请人员：{{detailData.applyName}}</li>
+        <li style="margin-bottom: 5px">申请时间：{{detailData.createTime}}</li>
+        <li style="margin-bottom: 5px">申请原因：{{detailData.applyReason}}</li>
       </ul>
     </Card>
     <div class="btns" style="margin-top: 30px">
       <Button type="primary" @click="shenpi">审批</Button>
-      <Button>返回</Button>
+      <Button @click="back">返回</Button>
     </div>
     <Modal
       v-model="editPanel"
@@ -77,6 +77,11 @@ export default {
     }
   },
   methods: {
+    back () {
+      this.$router.push({
+        name: 'projectOverdue'
+      })
+    },
     shenpi () {
       this.editPanel = true
     },
