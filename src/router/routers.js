@@ -605,7 +605,7 @@ export default [
     path: '/statistics',
     name: 'statistics',
     meta: {
-      icon: 'md-menu',
+      icon: 'md-podium',
       title: '统计分析'
     },
     component: Main,
@@ -680,7 +680,7 @@ export default [
         path: 'MaterialList',
         name: 'MaterialList',
         meta: {
-          icon: 'md-funnel',
+          icon: 'md-menu',
           title: '物资列表',
           hideInMenu: false
         },
@@ -690,7 +690,7 @@ export default [
         path: 'MaterialAdd',
         name: 'MaterialAdd',
         meta: {
-          icon: 'md-funnel',
+          icon: 'md-add',
           title: '创建物资',
           hideInMenu: false
         },
@@ -712,7 +712,7 @@ export default [
     path: '/DailyReview',
     name: 'DailyReview',
     meta: {
-      icon: 'md-boat',
+      icon: 'ios-calendar',
       title: '日报审阅'
     },
     component: Main,
@@ -721,11 +721,21 @@ export default [
         path: 'dailyList',
         name: 'dailyList',
         meta: {
-          icon: 'md-funnel',
+          icon: 'md-menu',
           title: '日报列表',
           hideInMenu: false
         },
         component: () => import('@/view/daily/dailyList.vue')
+      },
+      {
+        path: '',
+        name: '',
+        meta: {
+          icon: '',
+          title: '',
+          hideInMenu: false
+        }
+        // component: () => import('@/view/daily/dailyList.vue')
       },
       {
         path: 'dailyDetail',
