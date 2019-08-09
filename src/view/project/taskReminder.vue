@@ -63,7 +63,7 @@ export default {
     },
     back () {
       this.$router.push({
-        name: 'projectManagementList'
+        name: 'taskManagementList'
       })
     }
   },

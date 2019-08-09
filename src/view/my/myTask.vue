@@ -26,11 +26,11 @@
       </div>
       <Card style="width:350px; position: absolute; left: 20px; top: 60px; border: 0 none">
         <div style="display: flex">
-          <input type="text" placeholder="Enter something..." class="ivu-input ivu-input-default" style="height: 50px; border: 0 none; border-radius: 0; font-size: 15px; color: #999999">
-          <img src="../../assets/images/search.png" style=" cursor: pointer">
+          <input type="text" v-model="taskName" class="ivu-input ivu-input-default" style="height: 50px; border: 0 none; border-radius: 0; font-size: 15px; color: #999999">
+          <img src="../../assets/images/search.png" style=" cursor: pointer" @click="searchProject">
         </div>
       </Card>
-      <div style="width:350px; position: absolute; left: 20px; top: 110px; background-color: #ffffff">
+      <div style="width:350px; position: absolute; left: 20px; top: 120px; background-color: #ffffff">
         <div v-if="tab === 'tab2'" style="padding: 10px">
           <Form :label-width="80">
             <FormItem label="项目选择：">
@@ -294,7 +294,8 @@ export default {
       total: 0,
       page: 1,
       maxPage: 1,
-      onType: '1'
+      onType: '1',
+      taskName: ''
     }
   },
   watch: {
@@ -425,6 +426,13 @@ export default {
     positioning (lng, lat) {
       this.center = [lng, lat]
     },
+    searchProject () {
+      this.markers = []
+      this.markerRefs = []
+      this.map.clearMarkers()
+      this.getTask()
+      this.getMapTask()
+    },
     onEdit (params, row) {
       if (params.permissionCode === '2') {
         this.$Modal.confirm({
@@ -482,7 +490,7 @@ export default {
         userId: getUserId(),
         businessProjectId: '',
         type: '',
-        name: '',
+        name: this.taskName,
         taskStatus: this.onStatus,
         firstPartyScoring: '',
         provinceName: '',
@@ -522,7 +530,7 @@ export default {
         userId: getUserId(),
         businessProjectId: '',
         type: '',
-        name: '',
+        name: this.taskName,
         taskStatus: this.onStatus,
         firstPartyScoring: '',
         provinceName: '',

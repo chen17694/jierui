@@ -37,7 +37,7 @@
       <Row>
         <Col span="24">
           <div class="btns">
-            <Button type="primary" @click="addSave">确定</Button>
+            <Button type="primary" :disabled="save" @click="addSave">确定</Button>
             <Button @click="clear">重置</Button>
           </div>
         </Col>
@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { listProject, listTask, listMaterial, materialApplication, materialCategory } from '@/api/data'
+import { listProject, listTask, listProjectMaterial, materialApplication, materialCategory } from '@/api/data'
 import { getUserId } from '@/libs/util'
 import Tables from '_c/tables'
 export default {
@@ -191,12 +191,21 @@ export default {
       tableData: []
     }
   },
+  computed: {
+    save () {
+      if (this.params.projectId && this.params.taskId) {
+        return false
+      }
+      return true
+    }
+  },
   methods: {
     addSave () {
       console.log(this.addRows)
       let materialList = []
       this.addRows.forEach((item) => {
         materialList.push({
+          projectMaterialId: item.id,
           materialTypeId: item.categoryId,
           materialTypeName: item.materialTypeName,
           materialId: item.materialId,
@@ -277,15 +286,21 @@ export default {
     changeCategory (id, index) {
       if (!id) return false
       this.addRows[index].materialId = ''
-      listMaterial({
+      listProjectMaterial({
         pageSize: 0,
         page: 0,
         name: '',
-        materialCategoryId: arguments[0],
-        officeId: ''
+        projectId: this.params.projectId,
+        materialCategoryId: id,
+        userId: getUserId()
       }).then((res) => {
-        this.addRows[index].materialList = res.data.data.businessMaterialBeanList
-        this.tableData[index].mname = this.addRows[index].materialList
+        console.log(res)
+        if (res.data.status === '200') {
+          this.addRows[index].materialList = res.data.data.businessProjectMaterialBeanList
+          this.tableData[index].mname = this.addRows[index].materialList
+        } else {
+          this.$Message.info('请选择项目')
+        }
       })
     },
     taskChange () {

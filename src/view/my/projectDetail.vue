@@ -4,7 +4,7 @@
       <div style="display: flex; justify-content: space-between">
         <h2>{{detailData.name}}</h2>
         <div>
-          <Button type="primary" style="margin-right: 10px" @click="sxxiugai">修改项目属性</Button>
+          <Button type="primary" style="margin-right: 10px" @click="sxxiugai" v-if="this.detailData.status !== '4'">修改项目属性</Button>
           <Button>返回</Button>
         </div>
       </div>
@@ -22,7 +22,7 @@
         <dd v-if="detailData.firstPartyScoring === '2'">甲方评分：满意</dd>
         <dd v-if="detailData.firstPartyScoring === '3'">甲方评分：不满意</dd>
       </dl>
-      <div class="btns">
+      <div class="btns" v-if="this.detailData.status !== '4'">
         <Button type="primary" v-for="(item, index) in detailData.projectButtonPermissionBeans" style="margin: 0 10px" :key="index" @click="statusChange(item.permissionCode)">{{item.name}}</Button>
       </div>
       <Tabs>
@@ -30,7 +30,7 @@
           <ul style="line-height: 40px">
             <li><span style="font-weight: bold">项目名称</span>：{{detailData.name}}</li>
             <li>
-              <span style="margin-right: 20px"><span style="font-weight: bold">甲方公司：</span>{{detailData.name}}</span>
+              <span style="margin-right: 20px"><span style="font-weight: bold">甲方公司：</span>{{detailData.firstPartyCompanyName}}</span>
               <span style="margin-right: 20px"><span style="font-weight: bold">甲方负责人：</span>{{detailData.firstPartyUserName}}</span>
               <span style="margin-right: 20px"><span style="font-weight: bold">起止日期：</span>{{detailData.startTime}} - {{detailData.endTime}}</span>
             </li>
@@ -46,7 +46,7 @@
           <tables ref="tables1" :total="this.total1" :columns="columns1" v-model="tableData1" :taskListBtnVisible="true" @on-edit="onEdit1"/>
         </TabPane>
         <TabPane label="项目物资" name="name3">
-          <div style="margin-bottom: 10px">
+          <div style="margin-bottom: 10px" v-if="this.detailData.status !== '4'">
             <div>
               <Button type="primary" @click="materialModel = true">物资加入项目申请</Button>
             </div>
@@ -54,7 +54,7 @@
           <tables ref="tables2" :total="this.total2" :columns="columns2" v-model="tableData2"/>
         </TabPane>
         <TabPane label="项目团队" name="name4">
-          <div style="margin-bottom: 10px">
+          <div style="margin-bottom: 10px" v-if="this.detailData.status !== '4'">
             <div>
               <Button type="primary" style="margin-right: 5px" @click="zdfxmjl">指定副项目经理</Button>
               <Button type="primary" @click="joinModel = true">人员加入项目申请</Button>

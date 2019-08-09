@@ -124,12 +124,61 @@ export default {
       columns: [
         { title: '项目名称', key: 'businessProjectName' },
         { title: '任务名称', key: 'name' },
-        { title: '任务类型', key: 'type' },
+        { title: '任务类型',
+          key: 'type',
+          render: (h, params) => {
+            let text = ''
+            if (params.row.type === '1') {
+              text = '调查任务'
+            } else if (params.row.type === '2') {
+              text = '优化任务'
+            } else {
+              text = '宣传任务'
+            }
+            return h('div', { props: {} }, text)
+          }
+        },
         { title: '任务负责人', key: 'taskHoldersName' },
         { title: '起始日期', key: 'startTime' },
         { title: '截止日期', key: 'completionTime' },
-        { title: '任务性质', key: 'nature' },
-        { title: '任务状态', key: 'taskStatus' },
+        { title: '任务性质',
+          key: 'nature',
+          render: (h, params) => {
+            let text = ''
+            if (params.row.type === '1') {
+              text = '单点优化'
+            } else if (params.row.type === '2') {
+              text = '线优化'
+            } else {
+              text = '区域优化'
+            }
+            return h('div', { props: {} }, text)
+          }
+        },
+        { title: '任务状态',
+          key: 'taskStatus',
+          render: (h, params) => {
+            let text = ''
+            if (params.row.type === '1') {
+              text = '未领取'
+            } else if (params.row.type === '2') {
+              text = '已拒绝'
+            } else if (params.row.type === '3') {
+              text = '未开始'
+            } else if (params.row.type === '4') {
+              text = '进行中'
+            } else if (params.row.type === '5') {
+              text = '审核中'
+            } else if (params.row.type === '6') {
+              text = '已完成'
+            } else if (params.row.type === '7') {
+              text = '已驳回'
+            } else if (params.row.type === '8') {
+              text = '已撤销'
+            }
+            return h('div', { props: {} }, text)
+          }
+        },
         { title: '逾期天数', key: 'overdueDays' },
         { title: '甲方评分', key: 'firstPartyScoring' },
         {

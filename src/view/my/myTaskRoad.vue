@@ -26,7 +26,7 @@
       </div>
       <Card style="width:350px; position: absolute; left: 20px; top: 60px; border: 0 none">
         <div style="display: flex">
-          <input type="text" v-model="projectName" class="ivu-input ivu-input-default" style="height: 50px; border: 0 none; border-radius: 0; font-size: 15px; color: #999999">
+          <input type="text" v-model="alias" class="ivu-input ivu-input-default" style="height: 50px; border: 0 none; border-radius: 0; font-size: 15px; color: #999999">
           <img src="../../assets/images/search.png" style=" cursor: pointer" @click="searchProject">
         </div>
       </Card>
@@ -161,6 +161,7 @@ export default {
   data () {
     let self = this
     return {
+      alias: '',
       trx1,
       trx2,
       trx3,
@@ -269,17 +270,23 @@ export default {
   computed: {
     pStatus () {
       if (this.detailData.status === '1') {
-        return '未开始'
+        return '未领取'
       } else if (this.detailData.status === '2') {
-        return '进行中'
+        return '已拒绝'
       } else if (this.detailData.status === '3') {
-        return '审核中'
+        return '未开始'
       } else if (this.detailData.status === '4') {
-        return '已完成'
+        return '进行中'
       } else if (this.detailData.status === '5') {
-        return '已驳回'
+        return '审核中'
       } else if (this.detailData.status === '6') {
+        return '已完成'
+      } else if (this.detailData.status === '7') {
+        return '已驳回'
+      } else if (this.detailData.status === '8') {
         return '已撤销'
+      } else if (this.detailData.status === '9') {
+        return '已暂停'
       }
     }
   },
@@ -379,7 +386,7 @@ export default {
         projectId: '',
         taskId: '',
         userId: getUserId(),
-        alias: '',
+        alias: this.alias,
         taskCrossingStatus: this.onStatus,
         timeStatus: '',
         startTime: '',
@@ -417,7 +424,7 @@ export default {
         projectId: '',
         taskId: '',
         userId: getUserId(),
-        alias: '',
+        alias: this.alias,
         taskCrossingStatus: this.onStatus,
         timeStatus: '',
         startTime: '',

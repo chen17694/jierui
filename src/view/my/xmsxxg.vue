@@ -125,8 +125,8 @@ export default {
   },
   methods: {
     projectManagerChange () {
-      this.formItem.projectManagerName = arguments[0]
-      this.formItem.projectManagerId = arguments[1]
+      this.formItem.projectManagerName = arguments[0].label
+      this.formItem.projectManagerId = arguments[0].value
     },
     partAChange () {
       console.log(arguments)
