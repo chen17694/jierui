@@ -128,7 +128,7 @@ export default {
     },
     onRowClick () {
       console.log(arguments[0])
-      if (tab === 'waiting') {
+      if (this.tab === 'waiting') {
         switch (arguments[0].type) {
           case ('1'):
             // 待审批 项目审批
@@ -213,7 +213,7 @@ export default {
       } else {
         switch (arguments[0].type) {
           case ('1'):
-            // 待审批 项目审批
+            // 我的审批 项目审批
             this.$router.push({
               name: 'xmsq',
               params: {
@@ -222,7 +222,7 @@ export default {
             })
             break
           case ('2'):
-            // 待审批 任务审批
+            // 我的审批 任务审批
             this.$router.push({
               name: 'rwsq',
               params: {
@@ -231,7 +231,7 @@ export default {
             })
             break
           case ('3'):
-            // 待审批 任务路口审批
+            // 我的审批 任务路口审批
             this.$router.push({
               name: 'rwlksq',
               params: {
@@ -240,7 +240,7 @@ export default {
             })
             break
           case ('4'):
-            // 待审批 物资申请审批
+            // 我的审批 物资申请审批
             this.$router.push({
               name: 'wzsq',
               params: {
@@ -249,7 +249,7 @@ export default {
             })
             break
           case ('5'):
-            // 待审批 物资归还审批
+            // 我的审批 物资归还审批
             this.$router.push({
               name: 'wzghsq',
               params: {
@@ -258,7 +258,7 @@ export default {
             })
             break
           case ('6'):
-            // 待审批 项目属性修改审批
+            // 我的审批 项目属性修改审批
             this.$router.push({
               name: 'xmsxxgsq',
               params: {
@@ -267,7 +267,7 @@ export default {
             })
             break
           case ('7'):
-            // 待审批 项目状态修改审批
+            // 我的审批 项目状态修改审批
             this.$router.push({
               name: 'xmztxgsq',
               params: {

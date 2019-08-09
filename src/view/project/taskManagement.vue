@@ -40,7 +40,7 @@
               </Col>
               <Col span="19">
                 <Select v-model="params.type">
-                  <Option value="1">调查任务</Option>
+                  <Option value="1">巡检任务</Option>
                   <Option value="2">优化任务</Option>
                   <Option value="3">宣传任务</Option>
                 </Select>
@@ -129,7 +129,7 @@ export default {
           render: (h, params) => {
             let text = ''
             if (params.row.type === '1') {
-              text = '调查任务'
+              text = '巡检任务'
             } else if (params.row.type === '2') {
               text = '优化任务'
             } else {

@@ -111,7 +111,7 @@
         <div style="padding: 15px; ">
           <div style="line-height: 24px"><span class="label">项目名称：</span><span>{{detailData.businessProjectName}}</span></div>
           <div style="line-height: 24px"><span class="label">任务名称：</span><span>{{detailData.businessTaskName}}</span></div>
-          <div style="line-height: 24px" v-if="detailData.type === '1'"><span class="label">任务类型：</span><span>调查任务</span></div>
+          <div style="line-height: 24px" v-if="detailData.type === '1'"><span class="label">任务类型：</span><span>巡检任务</span></div>
           <div style="line-height: 24px" v-if="detailData.type === '2'"><span class="label">任务类型：</span><span>优化任务</span></div>
           <div style="line-height: 24px" v-if="detailData.type === '3'"><span class="label">任务类型：</span><span>宣传任务</span></div>
           <div style="line-height: 24px"><span class="label">路口别名：</span><span>{{detailData.alias}}</span></div>
