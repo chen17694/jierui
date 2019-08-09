@@ -119,7 +119,7 @@
 </template>
 
 <script>
-import { insertOrUpdateUser, getUnitList, listRoleByOfficeId } from '@/api/data'
+import { insertOrUpdateUser, getUnitList, listRoleByOfficeId, uploadImgToAliOss } from '@/api/data'
 import { getUserId } from '@/libs/util'
 export default {
   data () {
@@ -239,6 +239,7 @@ export default {
         this.selectUnit(this.formItem.officeId)
       }
     })
+    uploadImgToAliOss()
   },
   methods: {
     back () {
@@ -259,8 +260,12 @@ export default {
         'roleId': this.formItem.roleId || '',
         'userId': this.formItem.id || ''
       }
-      insertOrUpdateUser(params).then((res) => {
-        this.$Message.info(res.data.msg)
+      this.$refs['formItem'].validate((valid) => {
+        if (valid) {
+          insertOrUpdateUser(params).then((res) => {
+            this.$Message.info(res.data.msg)
+          })
+        }
       })
     },
     selectUnit () {
