@@ -292,8 +292,8 @@
 <script>
 import Tables from '_c/tables'
 import echarts from 'echarts'
-// import { ChartPie, ChartBar } from '_c/charts'
-// import { on, off } from '@/libs/tools'
+import { ChartPie } from '_c/charts'
+import { on, off } from '@/libs/tools'
 import tdTheme from './theme.json'
 import { getUserId } from '@/libs/util'
 import {
@@ -309,7 +309,7 @@ import { getLastMonthStartDate, getLastMonthEndDate, getMonthStartDate, getMonth
 echarts.registerTheme('tdTheme', tdTheme)
 export default {
   name: 'projectStatistics',
-  components: { Tables },
+  components: { Tables, ChartPie },
   data () {
     return {
       oneSearch: {
@@ -339,6 +339,9 @@ export default {
       areaTaskData: {},
       finishProjectTaskData: {},
       dom: null,
+      dom2: null,
+      dom3: null,
+      dom4: null,
       activeName: '1',
       projectData: {},
       overdueData: {},
@@ -588,7 +591,7 @@ export default {
         series: [
           {
             type: 'pie',
-            radius: ['100px', '140px'],
+            radius: ['55%', '75%'],
             center: ['50%', '54%'],
             label: {
               normal: {
@@ -653,6 +656,10 @@ export default {
       }
       this.dom = echarts.init(this.$refs.dom, 'tdTheme')
       this.dom.setOption(option)
+      on(window, 'resize', this.resizeP1)
+    },
+    resizeP1 () {
+      this.dom.resize()
     },
     setPie2 () {
       let option = {
@@ -733,8 +740,12 @@ export default {
           }
         ]
       }
-      this.dom = echarts.init(this.$refs.dom2, 'tdTheme')
-      this.dom.setOption(option)
+      this.dom2 = echarts.init(this.$refs.dom2, 'tdTheme')
+      this.dom2.setOption(option)
+      on(window, 'resize', this.resizeP2)
+    },
+    resizeP2 () {
+      this.dom2.resize()
     },
     setPie3 () {
       let option = {
@@ -751,7 +762,7 @@ export default {
           {
             // 环形图中间添加文字
             type: 'text', // 通过不同top值可以设置上下显示
-            left: '34%',
+            left: '33%',
             top: '50%',
             style: {
               text:
@@ -764,8 +775,6 @@ export default {
                 ),
               textAlign: 'center',
               fill: 'black', // 文字的颜色
-              width: 30,
-              height: 30,
               fontSize: 16,
               fontFamily: 'Microsoft YaHei'
             }
@@ -778,7 +787,7 @@ export default {
         series: [
           {
             type: 'pie',
-            radius: ['90px', '130px'],
+            radius: ['50%', '70%'],
             center: ['42%', '54%'],
             label: {
               normal: {
@@ -822,8 +831,12 @@ export default {
           }
         ]
       }
-      this.dom = echarts.init(this.$refs.dom3, 'tdTheme')
-      this.dom.setOption(option)
+      this.dom3 = echarts.init(this.$refs.dom3, 'tdTheme')
+      this.dom3.setOption(option)
+      on(window, 'resize', this.resizeP3)
+    },
+    resizeP3 () {
+      this.dom3.resize()
     },
     setPie4 () {
       let option = {
@@ -902,8 +915,12 @@ export default {
           }
         ]
       }
-      this.dom = echarts.init(this.$refs.dom4, 'tdTheme')
-      this.dom.setOption(option)
+      this.dom4 = echarts.init(this.$refs.dom4, 'tdTheme')
+      this.dom4.setOption(option)
+      on(window, 'resize', this.resizeP4)
+    },
+    resizeP4 () {
+      this.dom4.resize()
     },
     setBar1 () {
       let option = {
@@ -1088,6 +1105,12 @@ export default {
         this.setPie3()
       })
     }
+  },
+  beforeDestroy () {
+    off(window, 'resize', this.resizeP1)
+    off(window, 'resize', this.resizeP2)
+    off(window, 'resize', this.resizeP3)
+    off(window, 'resize', this.resizeP4)
   }
 }
 </script>

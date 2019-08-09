@@ -15,8 +15,7 @@
         <FormItem label="物资数量" prop="amount">
           <Row>
               <Col span="20">
-                <!-- <Input v-model="formMaterial.amount" type="number" placeholder="请输入物资数量" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"></Input>  -->
-                <Input v-model="formMaterial.amount" type="number" @on-change="numChange" placeholder="请输入物资数量"></Input>
+                <InputNumber v-model="formMaterial.amount" :min="1"></InputNumber>
               </Col>
           </Row>
         </FormItem>
@@ -144,9 +143,6 @@ export default {
     }
   },
   methods: {
-    numChange () {
-      this.formMaterial.amount = parseInt(this.formMaterial.amount.replace(/[^1-9]/g, ''))
-    },
     MaterialDetail (id) {
       materialDetail({ id: id }).then((res) => {
         if (res.data.status === '200') {

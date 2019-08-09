@@ -251,13 +251,17 @@ export default {
     },
     // 筛选提交
     filterSubmit () {
-      this.filterPanel = false
-      this.getData()
+      if (this.params.userId) {
+        this.filterPanel = false
+        this.getData()
+      } else {
+        this.$Message.warning('请选择登记人员！')
+      }
     },
     // 筛选重置
     filterReset () {
-      this.params.officeId = ''
-      // this.params.userId = ''
+      this.params.projectId = ''
+      this.params.userId = ''
       this.params.taskId = ''
     },
     openFilter () {

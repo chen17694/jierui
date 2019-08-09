@@ -51,7 +51,8 @@
       </div>
       <div v-if="Type == '6'">
         <Col span="24">
-        <div class="infoItem">消息名称：{{info.projectName}}中的{{info.taskName}}{{info.days}}个任务路口被{{info.userName}}拒绝</div>
+        <!-- <div class="infoItem">消息名称：{{info.projectName}}中的{{info.taskName}}{{info.days}}个任务路口被{{info.userName}}拒绝</div> -->
+        <div class="infoItem">消息名称：{{info.title}}</div>
         </Col>
         <Col span="24">
         <div class="infoItem">项目名称：{{info.projectName}}</div>
@@ -127,11 +128,11 @@ export default {
       } else if (type === 3) { // 催办
 
       } else if (type === 4) { // 推送
-
-      } else if (type === 5) { // 通知
-
+        // this.$router.push({path: '/infoDetail', query: {id: info.resourceId}})
+      } else if (type === 5) { // 新项目通知
+        this.$router.push({ path: '/projectDetail', query: { projectId: info.resourceId } })
       } else if (type === 6) { // 任务拒绝
-
+        // this.$router.push({path: '/taskDetail', query: {taskId: info.resourceId}})
       }
       // this.$router.push({ path: './infoDetail', query: { id: this.$route.query.id } })
     },
