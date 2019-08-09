@@ -188,7 +188,7 @@ export default {
         pageSize: 5000
       }
       getUserList(params).then((res) => {
-        if (res.data.status === 200) {
+        if (res.data.status === '200') {
           _this.userList = res.data.data.list.map((item) => {
             return { value: item.id, label: item.name }
           })
@@ -205,6 +205,7 @@ export default {
         _this.tableLoading = false
         if (res.data.status === '200') {
           _this.tableData = res.data.data.list
+          _this.total = res.data.data.total
         }
       })
     },
@@ -256,12 +257,13 @@ export default {
     // 筛选重置
     filterReset () {
       this.params.officeId = ''
+      // this.params.userId = ''
+      this.params.taskId = ''
     },
     openFilter () {
       this.filterPanel = !this.filterPanel
     },
     pageChange (val) {
-      console.log(val)
       this.params.page = val
       this.getData()
     },

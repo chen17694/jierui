@@ -117,7 +117,7 @@ export default {
       center: [this.$route.params.lng, this.$route.params.lat],
       zoom: 14,
       formItem: {
-        businessProjectId: '',
+        businessProjectId: this.$route.query.projectId ? this.$route.query.projectId : '',
         businessProjectName: '',
         name: '',
         type: '',

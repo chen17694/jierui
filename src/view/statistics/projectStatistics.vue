@@ -34,7 +34,7 @@
           <Col span="14">
             <Row>
               <Col span="14">
-                <div ref="dom" class="charts chart-pie" style="height: 45vh; position:relative;"></div>
+                <div ref="dom" class="charts chart-pie" style="height: 400px; position:relative;"></div>
               </Col>
               <Col span="10">
                 <ul
@@ -119,7 +119,7 @@
                   </li>
                   <li style="display: flex; align-items: center; justify-content: center;">
                     <div class="dian" style="background-color: #3aa0ff"></div>
-                    <div class="status">满意&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                    <div class="status">满意&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
                     <div
                       class="proportion"
                     >{{projectData.projectSatisfiedCount == '0' ? '0%' : Percentage(projectData.projectNotStartStatusCount, projectData.projectCount)}}</div>
@@ -197,7 +197,7 @@
       </div>
     </Card>
     <Card style="margin-top: 20px">
-      <p slot="title" style="display:inline-block;">项目逾期统计</p>
+      <p slot="title" style="display:inline-block;">逾期项目统计</p>
       <div slot="extra" style>
         <Button type="text" @click="lastYearSlotTwo">去年</Button>
         <Button type="text" @click="nowYearSlotTwo">今年</Button>
@@ -292,6 +292,8 @@
 <script>
 import Tables from '_c/tables'
 import echarts from 'echarts'
+// import { ChartPie, ChartBar } from '_c/charts'
+// import { on, off } from '@/libs/tools'
 import tdTheme from './theme.json'
 import { getUserId } from '@/libs/util'
 import {
@@ -535,7 +537,7 @@ export default {
     Percentage (num1, num2) {
       // 计算百分比
       return (
-        Math.round((parseFloat(num1) / parseFloat(num2)) * 10000) / 100.0 + '%'
+        isNaN(Math.round((parseFloat(num1) / parseFloat(num2)) * 10000) / 100.0) ? '0%' : Math.round((parseFloat(num1) / parseFloat(num2)) * 10000) / 100.0 + '%'
       )
     },
     ProjectStatusCount (func) {
@@ -581,7 +583,7 @@ export default {
         ],
         tooltip: {
           trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
+          formatter: '状态 <br/>{b} : {c} ({d}%)'
         },
         series: [
           {
@@ -683,7 +685,7 @@ export default {
         ],
         tooltip: {
           trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
+          formatter: '满意度 <br/>{b} : {c} ({d}%)'
         },
         series: [
           {
@@ -771,7 +773,7 @@ export default {
         ],
         tooltip: {
           trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
+          formatter: '占比 <br/>{b} : {c} ({d}%)'
         },
         series: [
           {
@@ -851,7 +853,7 @@ export default {
         ],
         tooltip: {
           trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
+          formatter: '占比 <br/>{b} : {c} ({d}%)'
         },
         series: [
           {

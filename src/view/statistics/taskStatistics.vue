@@ -21,7 +21,7 @@
       </div>
       <Row>
         <Col span="10">
-          <div ref="dom1" class="charts chart-pie" style="height: 40vh; position:relative;"></div>
+          <div ref="dom1" class="charts chart-pie" style="min-height: 40vh; position:relative;"></div>
           <div class="dom1-bottom">
             <div class="bottom-item all">
               项目总数量：
@@ -76,7 +76,8 @@
         <!-- <Col span="24" style="padding: 20px 0;height:auto">
 
         </Col> -->
-        <div ref="dom2" class="charts chart-bar" style="min-height: 30vh;"></div>
+        <!-- <div ref="dom2" class="charts chart-bar" style="min-height: 30vh;"></div> -->
+        <ChartBar v-if="Object.keys(barData).length > 0" style="min-height: 30vh;" :value="barData" />
         <div style="overflow: hidden"></div>
       </Row>
     </Card>
@@ -297,6 +298,8 @@ import echarts from 'echarts'
 import tdTheme from './theme.json'
 import Tables from '_c/tables'
 import { getUserId } from '@/libs/util'
+import { ChartPie, ChartBar } from '_c/charts'
+import { on, off } from '@/libs/tools'
 import { getLastMonthStartDate, getLastMonthEndDate, getMonthStartDate, getMonthEndDate, getQuarterStartDate, getQuarterEndDate, getLastQuarterStartDate, getLastQuarterEndDate, getCurrentYear, getLastYear } from '@/libs/mdate.js'
 import {
   overdueTaskStatistics,
@@ -308,9 +311,10 @@ import {
 echarts.registerTheme('tdTheme', tdTheme)
 export default {
   name: 'taskStatistics',
-  components: { Tables },
+  components: { Tables, ChartBar, ChartPie },
   data () {
     return {
+      barData: {},
       oneSearch: {
         userId: '',
         startTime: '',
@@ -385,9 +389,7 @@ export default {
     this.OverdueTaskStatistics(() => {
       this.setPie1()
     })
-    this.AreaTaskCount(() => {
-      this.setBar1()
-    })
+    this.AreaTaskCount()
     this.TaskStatusAndTypeCount(() => {
       this.setPie3()
       this.setPie4()
@@ -414,12 +416,15 @@ export default {
     },
     AreaTaskCount (func) { // two 按地区任务统计
       let _this = this
+      _this.barData = {}
       areaTaskCount(_this.twoSearch).then((res) => {
         if (res.data.status === '200') {
           _this.TwoData = res.data.data
-          if (func && typeof func === 'function') {
-            func()
-          }
+          let d = res.data.data
+          d.map((ele) => {
+            _this.barData[ele.areaName] = ele.count
+          })
+          _this.barData = Object.assign({}, _this.barData)
         }
       })
     },
@@ -468,9 +473,7 @@ export default {
       })
     },
     TimeOkTwo () {
-      this.AreaTaskCount(() => {
-        this.setBar1()
-      })
+      this.AreaTaskCount()
     },
     TimeOkThree () {
       this.TaskStatusAndTypeCount(() => {
@@ -486,14 +489,12 @@ export default {
     Percentage (num1, num2) {
       // 计算百分比
       return (
-        Math.round((parseFloat(num1) / parseFloat(num2)) * 10000) / 100.0 + '%'
+        isNaN(Math.round((parseFloat(num1) / parseFloat(num2)) * 10000) / 100.0) ? '0%' : Math.round((parseFloat(num1) / parseFloat(num2)) * 10000) / 100.0 + '%'
       )
     },
     regionTypeSel (val) {
       this.oneSearch.type = val
-      this.AreaTaskCount(() => {
-        this.setBar1()
-      })
+      this.AreaTaskCount()
     },
     ListProject (func) {
       // 项目列表
@@ -553,8 +554,8 @@ export default {
           {
             // 环形图中间添加文字
             type: 'text', // 通过不同top值可以设置上下显示
-            left: '34%',
-            top: '50%',
+            left: '42%',
+            top: '46%',
             style: {
               text:
                 '逾期任务百分比' +
@@ -566,22 +567,20 @@ export default {
                 ),
               textAlign: 'center',
               fill: 'black', // 文字的颜色
-              width: 30,
-              height: 30,
-              fontSize: 16,
+              fontSize: 14,
               fontFamily: 'Microsoft YaHei'
             }
           }
         ],
         tooltip: {
           trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
+          formatter: '数量占比 <br/>{b} : {c} ({d}%)'
         },
         series: [
           {
             type: 'pie',
-            radius: ['90px', '130px'],
-            center: ['42%', '54%'],
+            radius: ['55%', '75%'],
+            center: ['50%', '50%'],
             label: {
               normal: {
                 show: false
@@ -625,6 +624,10 @@ export default {
       }
       this.dom = echarts.init(this.$refs.dom1, 'tdTheme')
       this.dom.setOption(option)
+      on(window, 'resize', this.resizeP1)
+    },
+    resizeP1 () {
+      this.dom.resize()
     },
     setBar1 () {
       let option = {
@@ -703,12 +706,12 @@ export default {
         ],
         tooltip: {
           trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
+          formatter: '状态占比 <br/>{b} : {c} ({d}%)'
         },
         series: [
           {
             type: 'pie',
-            radius: ['100px', '140px'],
+            radius: ['55%', '75%'],
             center: ['50%', '54%'],
             label: {
               normal: {
@@ -773,6 +776,10 @@ export default {
       }
       this.dom3 = echarts.init(this.$refs.dom3, 'tdTheme')
       this.dom3.setOption(option)
+      on(window, 'resize', this.resizeP3)
+    },
+    resizeP3 () {
+      this.dom3.resize()
     },
     setPie4 () {
       let option = {
@@ -805,7 +812,7 @@ export default {
         ],
         tooltip: {
           trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
+          formatter: '任务占比 <br/>{b} : {c} ({d}%)'
         },
         series: [
           {
@@ -854,6 +861,10 @@ export default {
       }
       this.dom4 = echarts.init(this.$refs.dom4, 'tdTheme')
       this.dom4.setOption(option)
+      on(window, 'resize', this.resizeP4)
+    },
+    resizeP4 () {
+      this.dom4.resize()
     },
     setPie5 () {
       let option = {
@@ -886,7 +897,7 @@ export default {
         ],
         tooltip: {
           trigger: 'item',
-          formatter: '{a} <br/>{b} : {c} ({d}%)'
+          formatter: '满意度 <br/>{b} : {c} ({d}%)'
         },
         series: [
           {
@@ -936,6 +947,9 @@ export default {
       this.dom5 = echarts.init(this.$refs.dom5, 'tdTheme')
       this.dom5.setOption(option)
     },
+    resizeP5 () {
+      this.dom5.resize()
+    },
     lastMonthSlot (ind) {
       if (ind === 1) {
         this.oneSearch.startTime = getLastMonthStartDate()
@@ -946,9 +960,7 @@ export default {
       } else if (ind === 2) {
         this.twoSearch.startTime = getLastMonthStartDate()
         this.twoSearch.endTime = getLastMonthEndDate()
-        this.AreaTaskCount(() => {
-          this.setBar1()
-        })
+        this.AreaTaskCount()
       } else if (ind === 3) {
         this.threeSearch.startTime = getLastMonthStartDate()
         this.threeSearch.endTime = getLastMonthEndDate()
@@ -980,9 +992,7 @@ export default {
       } else if (ind === 2) {
         this.twoSearch.startTime = getMonthStartDate()
         this.twoSearch.endTime = getMonthEndDate()
-        this.AreaTaskCount(() => {
-          this.setBar1()
-        })
+        this.AreaTaskCount()
       } else if (ind === 3) {
         this.threeSearch.startTime = getMonthStartDate()
         this.threeSearch.endTime = getMonthEndDate()
@@ -1008,9 +1018,7 @@ export default {
       } else if (ind === 2) {
         this.twoSearch.startTime = getLastQuarterStartDate()
         this.twoSearch.endTime = getLastQuarterEndDate()
-        this.AreaTaskCount(() => {
-          this.setBar1()
-        })
+        this.AreaTaskCount()
       } else if (ind === 3) {
         this.threeSearch.startTime = getLastQuarterStartDate()
         this.threeSearch.endTime = getLastQuarterEndDate()
@@ -1036,9 +1044,7 @@ export default {
       } else if (ind === 2) {
         this.twoSearch.startTime = getQuarterStartDate()
         this.twoSearch.endTime = getQuarterEndDate()
-        this.AreaTaskCount(() => {
-          this.setBar1()
-        })
+        this.AreaTaskCount()
       } else if (ind === 3) {
         this.threeSearch.startTime = getQuarterStartDate()
         this.threeSearch.endTime = getQuarterEndDate()
@@ -1064,9 +1070,7 @@ export default {
       } else if (ind === 2) {
         this.twoSearch.startTime = getLastYear().startTime
         this.twoSearch.endTime = getLastYear().endTime
-        this.AreaTaskCount(() => {
-          this.setBar1()
-        })
+        this.AreaTaskCount()
       } else if (ind === 3) {
         this.threeSearch.startTime = getLastYear().startTime
         this.threeSearch.endTime = getLastYear().endTime
@@ -1092,9 +1096,7 @@ export default {
       } else if (ind === 2) {
         this.twoSearch.startTime = getCurrentYear().startTime
         this.twoSearch.endTime = getCurrentYear().endTime
-        this.AreaTaskCount(() => {
-          this.setBar1()
-        })
+        this.AreaTaskCount()
       } else if (ind === 3) {
         this.threeSearch.startTime = getCurrentYear().startTime
         this.threeSearch.endTime = getCurrentYear().endTime
@@ -1110,6 +1112,10 @@ export default {
         })
       }
     }
+  },
+  beforeDestroy () {
+    off(window, 'resize', this.resizeP1)
+    off(window, 'resize', this.resizeP3)
   }
 }
 </script>
@@ -1193,6 +1199,7 @@ export default {
 .dom1-bottom {
   display: flex;
   padding: 10px 40px;
+  margin-left: 18%;
 }
 .bottom-item {
   flex: 1;

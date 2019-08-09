@@ -61,6 +61,9 @@ export default {
         params: {
           lat: this.lat,
           lng: this.lng
+        },
+        query: {
+          projectId: this.$route.query.projectId ? this.$route.query.projectId : ''
         }
       })
     },
