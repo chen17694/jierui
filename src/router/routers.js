@@ -79,6 +79,16 @@ export default [
         component: () => import('@/view/my/projectDetail.vue')
       },
       {
+        path: 'taskDetail',
+        name: 'taskDetail',
+        meta: {
+          icon: 'md-funnel',
+          title: '任务详情',
+          hideInMenu: true
+        },
+        component: () => import('@/view/my/taskDetail.vue')
+      },
+      {
         path: 'map',
         name: 'map',
         meta: {
@@ -87,6 +97,16 @@ export default [
           hideInMenu: true
         },
         component: () => import('@/view/my/map.vue')
+      },
+      {
+        path: 'map2',
+        name: 'map2',
+        meta: {
+          icon: 'md-funnel',
+          title: '地图定位',
+          hideInMenu: true
+        },
+        component: () => import('@/view/my/map2.vue')
       },
       {
         path: 'xmsxxg',
@@ -126,6 +146,15 @@ export default [
           title: '我的物资'
         },
         component: () => import('@/view/my/myMaterial.vue')
+      },
+      {
+        path: 'myMaterialDetail',
+        name: 'myMaterialDetail',
+        meta: {
+          icon: 'md-boat',
+          title: '我的物资详情'
+        },
+        component: () => import('@/view/my/myMaterialDetail.vue')
       },
       {
         path: 'applyMaterial',
@@ -542,6 +571,18 @@ export default [
               notCache: true
             },
             component: () => import('@/view/project/addTaskForm.vue')
+          },
+          {
+            path: 'editTaskForm',
+            name: 'editTaskForm',
+            meta: {
+              icon: 'md-funnel',
+              title: '修改任务属性',
+              hideInMenu: true,
+              needInBread: true,
+              notCache: true
+            },
+            component: () => import('@/view/project/editTaskForm.vue')
           },
           {
             path: 'taskReminder',

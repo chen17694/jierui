@@ -572,7 +572,13 @@ export const addProject = (params) => {
     method: 'post'
   })
 }
-
+export const taskMaterialDetail = (params) => {
+  return axios.request({
+    url: '/materia/taskMaterialDetail',
+    data: params,
+    method: 'post'
+  })
+}
 export const getStsToken = (params) => { // 获取oss Token
   return axios.request({
     url: '/oss/getStsToken',

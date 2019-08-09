@@ -63,7 +63,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tables" :total="this.total" v-model="tableData" :columns="columns" @on-back="onBack" @on-selection-change="onSelectionChange"></tables>
+    <tables ref="tables" @on-row-click="onRowClick" :total="this.total" v-model="tableData" :columns="columns" @on-back="onBack" @on-selection-change="onSelectionChange"></tables>
   </div>
 </template>
 
@@ -125,6 +125,14 @@ export default {
           materialId: item.materialId,
           amount: item.amount
         })
+      })
+    },
+    onRowClick () {
+      this.$router.push({
+        name: 'myMaterialDetail',
+        query: {
+          id: arguments[0].id
+        }
       })
     },
     getData () {
