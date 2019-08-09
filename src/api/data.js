@@ -1,5 +1,5 @@
 import axios from '@/libs/api.request'
-
+let OSS = require('ali-oss')
 export const getTableData = () => {
   return axios.request({
     url: 'get_table_data',
@@ -581,21 +581,27 @@ export const getStsToken = (params) => { // 获取oss Token
   })
 }
 
-export const uploadImgToAliOss = (file) => {
+export const uploadImgToAliOss = (e) => {
   getStsToken().then(res => {
-    if (res.status === '200') {
-      let client = new OSS({
-        region: res.data.loadpoint,
-        accessKeyId: res.data.accessKeyId,
-        accessKeySecret: res.data.accessKeySecret,
-        bucket: res.data.bucketName
-      })
-      client.multipartUpload('JrpsImg', file).then(function (result) {
-        console.log(result)
-      }).catch(function (err) {
-        console.log(err)
-      })
+    if (res.data.status === '200') {
+      upOss(e, res)
     }
+  })
+}
+
+const upOss = (e, res) => {
+  let client = new OSS({
+    region: res.data.data.endpoint,
+    accessKeyId: res.data.data.accessKeyId,
+    accessKeySecret: res.data.data.accessKeySecret,
+    stsToken: res.data.data.securityToken,
+    bucket: res.data.data.bucketName
+  })
+  console.log(client)
+  client.put(e.target.files[0].name, e.target.files[0]).then(result => {
+    console.log(result)
+  }).catch(err => {
+    console.log(err)
   })
 }
 // 物资管理
