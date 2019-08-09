@@ -532,6 +532,7 @@ export default {
       background-color: #fff;
       display: inline-block;
       width: 24%;
+      min-width: 200px;
       height: 170px;
       &:first-child{
         margin-left: 0.4%;

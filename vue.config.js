@@ -25,7 +25,7 @@ module.exports = {
   // https://www.foobar.com/my-app/
   // then change this to '/my-app/'
   devServer: {
-    host: '192.168.56.1',
+    host: 'localhost',
     port: '8888'
   },
   // baseUrl: BASE_URL,
