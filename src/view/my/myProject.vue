@@ -350,6 +350,7 @@ export default {
     },
     firstPage () {
       this.page = 1
+      this.getProject()
     },
     prevPage () {
       if (this.page !== 1) {
@@ -375,7 +376,7 @@ export default {
     },
     getProject () {
       listProject({
-        pageSize: 20,
+        pageSize: 3,
         page: this.page,
         userId: getUserId(),
         projectName: this.projectName,
@@ -392,12 +393,15 @@ export default {
       }).then((res) => {
         this.projectList = res.data.data.projectList
         this.total = res.data.data.count
+        console.log(this.total)
         if (this.total === '0') {
           this.page = 0
         } else {
-          this.page = 1
+          if (this.page === 0) {
+            this.page = 1
+          }
         }
-        this.maxPage = Math.ceil(this.total / 20)
+        this.maxPage = Math.ceil(this.total / 3)
       })
     },
     getProjectDetail (id) {

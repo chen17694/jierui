@@ -50,7 +50,7 @@ export default{
           render: (h, params) => {
             let text = ''
             if (params.row.taskType === '1') {
-              text = '调查任务'
+              text = '巡检任务'
             } else if (params.row.taskType === '2') {
               text = '优化任务'
             } else if (params.row.taskType === '3') {

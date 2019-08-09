@@ -26,7 +26,7 @@
           <Row>
             <Col span="11">
               <Select v-model="formItem.type" label-in-value>
-                <Option value="1">调查任务</Option>
+                <Option value="1">巡检任务</Option>
                 <Option value="2">优化任务</Option>
                 <Option value="3">宣传任务</Option>
               </Select>

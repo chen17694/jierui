@@ -206,7 +206,6 @@ export default {
       myName: 'chen',
       projectId: '',
       taskId: '',
-      workingHours: 0,
       reportDate: '',
       workingContent: '',
       taskList: [],
@@ -218,7 +217,7 @@ export default {
           projectList: [],
           projectId: '',
           taskId: '',
-          workingHours: 0,
+          workingHours: 1,
           reportDate: '',
           workingContent: ''
         }
@@ -522,7 +521,7 @@ export default {
         projectList: this.addRows[0].projectList,
         projectId: '',
         taskId: '',
-        workingHours: 0,
+        workingHours: 1,
         reportDate: '',
         workingContent: ''
       })

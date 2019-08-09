@@ -26,11 +26,11 @@
       </div>
       <Card style="width:350px; position: absolute; left: 20px; top: 60px; border: 0 none">
         <div style="display: flex">
-          <input type="text" placeholder="Enter something..." class="ivu-input ivu-input-default" style="height: 50px; border: 0 none; border-radius: 0; font-size: 15px; color: #999999">
-          <img src="../../assets/images/search.png" style=" cursor: pointer">
+          <input type="text" v-model="taskName" class="ivu-input ivu-input-default" style="height: 50px; border: 0 none; border-radius: 0; font-size: 15px; color: #999999">
+          <img src="../../assets/images/search.png" style=" cursor: pointer" @click="searchProject">
         </div>
       </Card>
-      <div style="width:350px; position: absolute; left: 20px; top: 110px; background-color: #ffffff">
+      <div style="width:350px; position: absolute; left: 20px; top: 120px; background-color: #ffffff">
         <div v-if="tab === 'tab2'" style="padding: 10px">
           <Form :label-width="80">
             <FormItem label="项目选择：">
@@ -146,7 +146,7 @@
                 </div>
                 <Select v-model="onType" style="width:110px" @on-change="typeChange">
                   <Avatar :src="avatar2" slot="prefix" size="small" />
-                  <Option value="1" >调查任务</Option>
+                  <Option value="1" >巡检任务</Option>
                   <Option value="2" >优化任务</Option>
                   <Option value="3" >宣传任务</Option>
                 </Select>
@@ -156,8 +156,8 @@
                   <Panel :hide-arrow="true">
                     <div style="display: flex;width: 100%;justify-content: space-between;margin-bottom: 10px">
                       <div style="padding-right: 10px">
-                        <span>{{item.businessProjectName}}</span>
-                        <div v-if="item.taskStatus === 1" style="font-size: 12px"><span style="margin-right: 5px">任务类型: 调查任务</span><span>路口数量: {{item.crossingList.length}}</span></div>
+                        <span>{{item.name}}</span>
+                        <div v-if="item.taskStatus === 1" style="font-size: 12px"><span style="margin-right: 5px">任务类型: 巡检任务</span><span>路口数量: {{item.crossingList.length}}</span></div>
                         <div v-if="item.taskStatus === 2" style="font-size: 12px"><span style="margin-right: 5px">任务类型: 优化任务</span><span>路口数量: {{item.crossingList.length}}</span></div>
                         <div v-if="item.taskStatus === 3" style="font-size: 12px"><span style="margin-right: 5px">任务类型: 宣传任务</span><span>路口数量: {{item.crossingList.length}}</span></div>
                       </div>
@@ -167,7 +167,9 @@
                       </div>
                     </div>
                     <div slot="content">
-                      4566asd4789a7s89d7as9d7
+                      <ul>
+                        <li v-for="(rItem, rIndex) in roadList[index]" :key="rIndex">{{rItem.alias}}</li>
+                      </ul>
                     </div>
                   </Panel>
                 </Collapse>
@@ -181,7 +183,7 @@
 </template>
 
 <script>
-import { listTask, areaData, listMapTask, selectTaskDetail, listMyNotAcceptedTask, listMapProject, acceptOrRefuseTask } from '@/api/data'
+import { listTask, areaData, listMapTask, selectTaskDetail, listMyNotAcceptedTask, listMapProject, acceptOrRefuseTask, listTaskCrossing } from '@/api/data'
 import { getUserId } from '@/libs/util'
 import tx1 from '../../assets/images/tx1.png'
 import tx2 from '../../assets/images/tx2.png'
@@ -255,6 +257,7 @@ export default {
       minClusterSize: 2,
       panelShow: true,
       zoom: 16,
+      roadList: [],
       amapManager,
       center: [],
       areaData: [],
@@ -291,7 +294,8 @@ export default {
       total: 0,
       page: 1,
       maxPage: 1,
-      onType: '1'
+      onType: '1',
+      taskName: ''
     }
   },
   watch: {
@@ -398,6 +402,7 @@ export default {
     },
     firstPage () {
       this.page = 1
+      this.getTask()
     },
     prevPage () {
       if (this.page !== 1) {
@@ -420,6 +425,13 @@ export default {
     },
     positioning (lng, lat) {
       this.center = [lng, lat]
+    },
+    searchProject () {
+      this.markers = []
+      this.markerRefs = []
+      this.map.clearMarkers()
+      this.getTask()
+      this.getMapTask()
     },
     onEdit (params, row) {
       if (params.permissionCode === '2') {
@@ -473,12 +485,12 @@ export default {
     },
     getTask () {
       listTask({
-        pageSize: 20,
+        pageSize: 3,
         page: this.page,
         userId: getUserId(),
         businessProjectId: '',
         type: '',
-        name: '',
+        name: this.taskName,
         taskStatus: this.onStatus,
         firstPartyScoring: '',
         provinceName: '',
@@ -495,9 +507,11 @@ export default {
         if (this.total === '0') {
           this.page = 0
         } else {
-          this.page = 1
+          if (this.page === 0) {
+            this.page = 1
+          }
         }
-        this.maxPage = Math.ceil(this.total / 20)
+        this.maxPage = Math.ceil(this.total / 3)
       })
     },
     getProjectDetail (id) {
@@ -516,7 +530,7 @@ export default {
         userId: getUserId(),
         businessProjectId: '',
         type: '',
-        name: '',
+        name: this.taskName,
         taskStatus: this.onStatus,
         firstPartyScoring: '',
         provinceName: '',
@@ -666,7 +680,7 @@ export default {
         'userId': getUserId()
       }).then((res) => {
         let taskList = this.taskListNew = res.data.data = res.data.data
-        this.total = res.data.data.length > 0 ? res.data.data.count : 0
+        this.total = res.data.data.length
         console.log(taskList)
         if (taskList.length > 0) {
           this.center = [taskList[0].lng || 116.397428, taskList[0].lat || 39.90923]
@@ -676,6 +690,26 @@ export default {
         console.log(this.center)
         let self = this
         taskList.forEach((item) => {
+          console.log(item)
+          listTaskCrossing({
+            pageSize: 0,
+            page: 0,
+            projectId: '',
+            taskId: item.id,
+            userId: getUserId(),
+            alias: '',
+            taskCrossingStatus: '',
+            timeStatus: '',
+            startTime: '',
+            endTime: '',
+            provinceName: '',
+            cityName: '',
+            districtName: ''
+          }).then((res) => {
+            console.log(res)
+            this.roadList.push(res.data.data.taskCrossingDetailBeanList)
+            console.log(this.roadList)
+          })
           let status = ''
           switch (item.type) {
             case '1' :

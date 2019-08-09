@@ -94,7 +94,7 @@ export default [
         meta: {
           icon: 'md-funnel',
           title: '项目属性修改',
-          hideInMenu: false
+          hideInMenu: true
         },
         component: () => import('@/view/my/xmsxxg.vue')
       },
@@ -264,6 +264,97 @@ export default [
               hideInMenu: true
             },
             component: () => import('@/view/my/dryjrxmsq.vue')
+          },
+          // -------------------------
+          {
+            path: 'xmsq',
+            name: 'xmsq',
+            meta: {
+              icon: 'md-funnel',
+              title: '我的项目审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/xmsq.vue')
+          },
+          {
+            path: 'wzsq',
+            name: 'wzsq',
+            meta: {
+              icon: 'md-funnel',
+              title: '我的物资审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/wzsq.vue')
+          },
+          {
+            path: 'wzghsq',
+            name: 'wzghsq',
+            meta: {
+              icon: 'md-funnel',
+              title: '我的物资归还审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/wzghsq.vue')
+          },
+          {
+            path: 'xmsxxgsq',
+            name: 'xmsxxgsq',
+            meta: {
+              icon: 'md-funnel',
+              title: '我的项目属性修改审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/xmsxxgsq.vue')
+          },
+          {
+            path: 'xmztxgsq',
+            name: 'xmztxgsq',
+            meta: {
+              icon: 'md-funnel',
+              title: '我的项目状态修改审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/xmztxgsq.vue')
+          },
+          {
+            path: 'rwsq',
+            name: 'rwsq',
+            meta: {
+              icon: 'md-funnel',
+              title: '我的任务审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/rwsq.vue')
+          },
+          {
+            path: 'rwlksq',
+            name: 'rwlksq',
+            meta: {
+              icon: 'md-funnel',
+              title: '我的任务路口审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/rwlksq.vue')
+          },
+          {
+            path: 'wzjrxm',
+            name: 'wzjrxm',
+            meta: {
+              icon: 'md-funnel',
+              title: '我的物资加入项目申请审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/dwzjrxm.vue')
+          },
+          {
+            path: 'ryjrxmsq',
+            name: 'ryjrxmsq',
+            meta: {
+              icon: 'md-funnel',
+              title: '我的人员加入项目申请审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/ryjrxmsq.vue')
           }
         ]
       },

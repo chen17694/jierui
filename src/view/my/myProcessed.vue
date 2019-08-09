@@ -128,86 +128,170 @@ export default {
     },
     onRowClick () {
       console.log(arguments[0])
-      switch (arguments[0].type) {
-        case ('1'):
-          // 待审批 项目审批
-          this.$router.push({
-            name: 'dxmsq',
-            params: {
-              data: arguments[0]
-            }
-          })
-          break
-        case ('2'):
-          // 待审批 任务审批
-          this.$router.push({
-            name: 'drwsq',
-            params: {
-              data: arguments[0]
-            }
-          })
-          break
-        case ('3'):
-          // 待审批 任务路口审批
-          this.$router.push({
-            name: 'drwlksq',
-            params: {
-              data: arguments[0]
-            }
-          })
-          break
-        case ('4'):
-          // 待审批 物资申请审批
-          this.$router.push({
-            name: 'dwzsq',
-            params: {
-              data: arguments[0]
-            }
-          })
-          break
-        case ('5'):
-          // 待审批 物资归还审批
-          this.$router.push({
-            name: 'dwzghsq',
-            params: {
-              data: arguments[0]
-            }
-          })
-          break
-        case ('6'):
-          // 待审批 项目属性修改审批
-          this.$router.push({
-            name: 'dxmsxxgsq',
-            params: {
-              data: arguments[0]
-            }
-          })
-          break
-        case ('7'):
-          // 待审批 项目状态修改审批
-          this.$router.push({
-            name: 'dxmztxgsq',
-            params: {
-              data: arguments[0]
-            }
-          })
-          break
-        case ('8'):
-          this.$router.push({
-            name: 'dwzjrxm',
-            params: {
-              data: arguments[0]
-            }
-          })
-          break
-        case ('9'):
-          this.$router.push({
-            name: 'dryjrxmsq',
-            params: {
-              data: arguments[0]
-            }
-          })
-          break
+      if (this.tab === 'waiting') {
+        switch (arguments[0].type) {
+          case ('1'):
+            // 待审批 项目审批
+            this.$router.push({
+              name: 'dxmsq',
+              params: {
+                data: arguments[0]
+              }
+            })
+            break
+          case ('2'):
+            // 待审批 任务审批
+            this.$router.push({
+              name: 'drwsq',
+              params: {
+                data: arguments[0]
+              }
+            })
+            break
+          case ('3'):
+            // 待审批 任务路口审批
+            this.$router.push({
+              name: 'drwlksq',
+              params: {
+                data: arguments[0]
+              }
+            })
+            break
+          case ('4'):
+            // 待审批 物资申请审批
+            this.$router.push({
+              name: 'dwzsq',
+              params: {
+                data: arguments[0]
+              }
+            })
+            break
+          case ('5'):
+            // 待审批 物资归还审批
+            this.$router.push({
+              name: 'dwzghsq',
+              params: {
+                data: arguments[0]
+              }
+            })
+            break
+          case ('6'):
+            // 待审批 项目属性修改审批
+            this.$router.push({
+              name: 'dxmsxxgsq',
+              params: {
+                data: arguments[0]
+              }
+            })
+            break
+          case ('7'):
+            // 待审批 项目状态修改审批
+            this.$router.push({
+              name: 'dxmztxgsq',
+              params: {
+                data: arguments[0]
+              }
+            })
+            break
+          case ('8'):
+            this.$router.push({
+              name: 'dwzjrxm',
+              params: {
+                data: arguments[0]
+              }
+            })
+            break
+          case ('9'):
+            this.$router.push({
+              name: 'dryjrxmsq',
+              params: {
+                data: arguments[0]
+              }
+            })
+            break
+        }
+      } else {
+        switch (arguments[0].type) {
+          case ('1'):
+            // 我的审批 项目审批
+            this.$router.push({
+              name: 'xmsq',
+              params: {
+                data: arguments[0]
+              }
+            })
+            break
+          case ('2'):
+            // 我的审批 任务审批
+            this.$router.push({
+              name: 'rwsq',
+              params: {
+                data: arguments[0]
+              }
+            })
+            break
+          case ('3'):
+            // 我的审批 任务路口审批
+            this.$router.push({
+              name: 'rwlksq',
+              params: {
+                data: arguments[0]
+              }
+            })
+            break
+          case ('4'):
+            // 我的审批 物资申请审批
+            this.$router.push({
+              name: 'wzsq',
+              params: {
+                data: arguments[0]
+              }
+            })
+            break
+          case ('5'):
+            // 我的审批 物资归还审批
+            this.$router.push({
+              name: 'wzghsq',
+              params: {
+                data: arguments[0]
+              }
+            })
+            break
+          case ('6'):
+            // 我的审批 项目属性修改审批
+            this.$router.push({
+              name: 'xmsxxgsq',
+              params: {
+                data: arguments[0]
+              }
+            })
+            break
+          case ('7'):
+            // 我的审批 项目状态修改审批
+            this.$router.push({
+              name: 'xmztxgsq',
+              params: {
+                data: arguments[0]
+              }
+            })
+            break
+          case ('8'):
+            this.$router.push({
+              name: 'wzjrxm',
+              params: {
+                data: arguments[0]
+              }
+            })
+            break
+          case ('9'):
+            this.$router.push({
+              name: 'ryjrxmsq',
+              params: {
+                data: arguments[0]
+              }
+            })
+            break
+        }
       }
     },
     getData () {

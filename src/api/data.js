@@ -351,6 +351,13 @@ export const listTaskCrossing = (params) => {
     method: 'post'
   })
 }
+export const listCrossingAndCount = (params) => {
+  return axios.request({
+    url: '/CrossingAPI/listCrossingAndCount',
+    data: params,
+    method: 'post'
+  })
+}
 export const listCrossing = (params) => {
   return axios.request({
     url: '/CrossingAPI/listCrossing',
@@ -563,6 +570,32 @@ export const addProject = (params) => {
     url: '/project/addProject',
     data: params,
     method: 'post'
+  })
+}
+
+export const getStsToken = (params) => { // 获取oss Token
+  return axios.request({
+    url: '/oss/getStsToken',
+    data: params,
+    method: 'post'
+  })
+}
+
+export const uploadImgToAliOss = (file) => {
+  getStsToken().then(res => {
+    if (res.status === '200') {
+      let client = new OSS({
+        region: res.data.loadpoint,
+        accessKeyId: res.data.accessKeyId,
+        accessKeySecret: res.data.accessKeySecret,
+        bucket: res.data.bucketName
+      })
+      client.multipartUpload('JrpsImg', file).then(function (result) {
+        console.log(result)
+      }).catch(function (err) {
+        console.log(err)
+      })
+    }
   })
 }
 // 物资管理

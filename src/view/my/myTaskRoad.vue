@@ -26,7 +26,7 @@
       </div>
       <Card style="width:350px; position: absolute; left: 20px; top: 60px; border: 0 none">
         <div style="display: flex">
-          <input type="text" v-model="projectName" class="ivu-input ivu-input-default" style="height: 50px; border: 0 none; border-radius: 0; font-size: 15px; color: #999999">
+          <input type="text" v-model="alias" class="ivu-input ivu-input-default" style="height: 50px; border: 0 none; border-radius: 0; font-size: 15px; color: #999999">
           <img src="../../assets/images/search.png" style=" cursor: pointer" @click="searchProject">
         </div>
       </Card>
@@ -111,7 +111,7 @@
         <div style="padding: 15px; ">
           <div style="line-height: 24px"><span class="label">项目名称：</span><span>{{detailData.businessProjectName}}</span></div>
           <div style="line-height: 24px"><span class="label">任务名称：</span><span>{{detailData.businessTaskName}}</span></div>
-          <div style="line-height: 24px" v-if="detailData.type === '1'"><span class="label">任务类型：</span><span>调查任务</span></div>
+          <div style="line-height: 24px" v-if="detailData.type === '1'"><span class="label">任务类型：</span><span>巡检任务</span></div>
           <div style="line-height: 24px" v-if="detailData.type === '2'"><span class="label">任务类型：</span><span>优化任务</span></div>
           <div style="line-height: 24px" v-if="detailData.type === '3'"><span class="label">任务类型：</span><span>宣传任务</span></div>
           <div style="line-height: 24px"><span class="label">路口别名：</span><span>{{detailData.alias}}</span></div>
@@ -161,6 +161,7 @@ export default {
   data () {
     let self = this
     return {
+      alias: '',
       trx1,
       trx2,
       trx3,
@@ -269,17 +270,23 @@ export default {
   computed: {
     pStatus () {
       if (this.detailData.status === '1') {
-        return '未开始'
+        return '未领取'
       } else if (this.detailData.status === '2') {
-        return '进行中'
+        return '已拒绝'
       } else if (this.detailData.status === '3') {
-        return '审核中'
+        return '未开始'
       } else if (this.detailData.status === '4') {
-        return '已完成'
+        return '进行中'
       } else if (this.detailData.status === '5') {
-        return '已驳回'
+        return '审核中'
       } else if (this.detailData.status === '6') {
+        return '已完成'
+      } else if (this.detailData.status === '7') {
+        return '已驳回'
+      } else if (this.detailData.status === '8') {
         return '已撤销'
+      } else if (this.detailData.status === '9') {
+        return '已暂停'
       }
     }
   },
@@ -348,6 +355,7 @@ export default {
     },
     firstPage () {
       this.page = 1
+      this.getProject()
     },
     prevPage () {
       if (this.page !== 1) {
@@ -373,12 +381,12 @@ export default {
     },
     getProject () {
       let obj = {
-        pageSize: 2,
+        pageSize: 3,
         page: this.page,
         projectId: '',
         taskId: '',
         userId: getUserId(),
-        alias: '',
+        alias: this.alias,
         taskCrossingStatus: this.onStatus,
         timeStatus: '',
         startTime: '',
@@ -393,9 +401,11 @@ export default {
         if (this.total === '0') {
           this.page = 0
         } else {
-          this.page = 1
+          if (this.page === 0) {
+            this.page = 1
+          }
         }
-        this.maxPage = Math.ceil(this.total / 20)
+        this.maxPage = Math.ceil(this.total / 3)
       })
     },
     getDetail (id) {
@@ -414,7 +424,7 @@ export default {
         projectId: '',
         taskId: '',
         userId: getUserId(),
-        alias: '',
+        alias: this.alias,
         taskCrossingStatus: this.onStatus,
         timeStatus: '',
         startTime: '',

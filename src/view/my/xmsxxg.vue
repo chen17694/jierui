@@ -67,7 +67,7 @@
         <FormItem label="申请人员">
           <Row>
             <Col span="6">
-              <span>{{getOffice().name}}</span>
+              <span>{{sqry}}</span>
             </Col>
           </Row>
         </FormItem>
@@ -95,6 +95,7 @@ export default {
   data () {
     let self = this
     return {
+      sqry: getOffice().name,
       markers: [],
       center: [this.$route.query.lng, this.$route.query.lat],
       zoom: 14,
@@ -124,8 +125,8 @@ export default {
   },
   methods: {
     projectManagerChange () {
-      this.formItem.projectManagerName = arguments[0]
-      this.formItem.projectManagerId = arguments[1]
+      this.formItem.projectManagerName = arguments[0].label
+      this.formItem.projectManagerId = arguments[0].value
     },
     partAChange () {
       console.log(arguments)

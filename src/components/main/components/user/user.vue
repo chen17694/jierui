@@ -4,6 +4,7 @@
       <Badge :dot="!!messageUnreadCount">
         <Avatar :src="userAvatar"/>
       </Badge>
+      <span style="margin: 0 10px">{{userName}}</span>
       <Icon :size="18" type="md-arrow-dropdown"></Icon>
       <DropdownMenu slot="list" @on-click="handleClick" >
         <DropdownItem name="message">
@@ -18,8 +19,14 @@
 <script>
 import './user.less'
 import { mapActions } from 'vuex'
+import { getOffice } from '@/libs/util'
 export default {
   name: 'User',
+  data () {
+    return {
+      userName: getOffice().name
+    }
+  },
   props: {
     userAvatar: {
       type: String,
@@ -54,6 +61,9 @@ export default {
           break
       }
     }
+  },
+  mounted () {
+    console.log(getOffice())
   }
 }
 </script>
