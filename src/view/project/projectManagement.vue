@@ -86,7 +86,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tables" :total="this.total" :columns="columns" v-model="tableData" :projectListBtnVisible="true" @on-edit="onEdit"/>
+    <tables ref="tables" :total="this.total" :columns="columns" v-model="tableData" :projectListBtnVisible="true" @on-edit="onEdit" :on-change="pageChange" :on-page-sizeChange="pageSizeChange"/>
   </div>
 </template>
 
@@ -167,6 +167,14 @@ export default {
       this.$router.push({
         name: 'projectReminder'
       })
+    },
+    pageChange (page) {
+      this.params.page = page
+      this.getData()
+    },
+    pageSizeChange (size) {
+      this.params.pageSize = size
+      this.getData()
     },
     getData () {
       listProject(this.params).then((res) => {

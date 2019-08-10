@@ -63,7 +63,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tables" @on-row-click="onRowClick" :total="this.total" v-model="tableData" :columns="columns" @on-back="onBack" @on-selection-change="onSelectionChange"></tables>
+    <tables ref="tables" @on-row-click="onRowClick" :on-change="pageChange" :on-page-size-change="pageSizeChange" :total="this.total" v-model="tableData" :columns="columns" @on-back="onBack" @on-selection-change="onSelectionChange"></tables>
   </div>
 </template>
 
@@ -117,6 +117,14 @@ export default {
     },
     openFilter () {
       this.filter = !this.filter
+    },
+    pageChange (page) {
+      this.params.page = page
+      this.getData()
+    },
+    pageSizeChange (size) {
+      this.params.pageSize = size
+      this.getData()
     },
     onSelectionChange (row) {
       this.rowId = []

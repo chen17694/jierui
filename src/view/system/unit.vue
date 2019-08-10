@@ -79,7 +79,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tables" :total="this.total" :on-change="this.pageChange" :on-page-size-change="this.PageSizeChange" v-model="tableData" :columns="columns" @on-edit="onEdit" @on-selection-change="onSelectionChange"></tables>
+    <tables ref="tables" :total="this.total" :on-change="pageChange" :on-page-size-change="pageSizeChange" v-model="tableData" :columns="columns" @on-edit="onEdit" @on-selection-change="onSelectionChange"></tables>
     <Modal
       v-model="editPanel"
       @on-cancel="closeEdit"
@@ -342,7 +342,7 @@ export default{
       this.listParams.page = page
       this.getData()
     },
-    PageSizeChange (size) {
+    pageSizeChange (size) {
       this.listParams.pageSize = size
       this.getData()
     },

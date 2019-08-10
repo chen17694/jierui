@@ -86,7 +86,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tables" search-place="top" :total="this.total" :on-change="this.pageChange" :on-page-size-change="this.PageSizeChange" v-model="tableData" :columns="columns" @on-edit="onEdit" @on-select="onSelect" @on-selection-change="onSelectionChange"></tables>
+    <tables ref="tables" search-place="top" :total="this.total" :on-change="pageChange" :on-page-size-change="pageSizeChange" v-model="tableData" :columns="columns" @on-edit="onEdit" @on-select="onSelect" @on-selection-change="onSelectionChange"></tables>
   </div>
 </template>
 
@@ -162,7 +162,7 @@ export default{
       this.params.page = page
       this.getData()
     },
-    PageSizeChange (size) {
+    pageSizeChange (size) {
       this.params.pageSize = size
       this.getData()
     },

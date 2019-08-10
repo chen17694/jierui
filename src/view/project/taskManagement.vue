@@ -90,7 +90,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tables" :total="this.total" :columns="columns" v-model="tableData" :taskListBtnVisible="true" @on-edit="onEdit"/>
+    <tables ref="tables" :total="this.total" :columns="columns" v-model="tableData" :taskListBtnVisible="true" @on-edit="onEdit" :on-change="pageChange" :on-page-sizeChange="pageSizeChange"/>
   </div>
 </template>
 
@@ -197,6 +197,14 @@ export default {
       this.$router.push({
         name: 'taskReminder'
       })
+    },
+    pageChange (page) {
+      this.params.page = page
+      this.getData()
+    },
+    pageSizeChange (size) {
+      this.params.pageSize = size
+      this.getData()
     },
     getData () {
       listTask(this.params).then((res) => {

@@ -72,7 +72,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tableMaterial" :total="total" v-model="tableData" :columns="columns" :onChange="pageChange" :onPageSizeChange="pageSizeChange" @on-select="onSelect" @on-select-all="onSelect"></tables>
+    <tables ref="tableMaterial" :total="total" v-model="tableData" :columns="columns" :on-change="pageChange" :on-page-size-change="pageSizeChange" @on-select="onSelect" @on-select-all="onSelect"></tables>
   </div>
 </template>
 

@@ -382,6 +382,12 @@ export default {
         reason: ''
       }).then((res) => {
         this.$Message.info(res.data.msg)
+        this.markers = []
+        this.markerRefs = []
+        this.map.clearMarkers()
+        this.getMapTaskNew()
+        this.getMapTask()
+        this.getTask()
       })
     },
     changeProject () {

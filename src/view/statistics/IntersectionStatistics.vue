@@ -30,6 +30,8 @@
               v-model="tableData"
               :columns="columns"
               :showPage="false"
+              :on-change="pageChange"
+              :on-page-size-change="pageSizeChange"
             ></tables>
           </Col>
         </Row>
@@ -77,6 +79,14 @@ export default {
     this.getData()
   },
   methods: {
+    pageChange (page) {
+      this.Search.page = page
+      this.getData()
+    },
+    pageSizeChange (size) {
+      this.Search.pageSize = size
+      this.getData()
+    },
     getData () {
       let _this = this
       _this.tableData = []
