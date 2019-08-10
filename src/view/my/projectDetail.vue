@@ -5,7 +5,7 @@
         <h2>{{detailData.name}}</h2>
         <div>
           <Button type="primary" style="margin-right: 10px" @click="sxxiugai" v-if="this.detailData.status !== '4'">修改项目属性</Button>
-          <Button>返回</Button>
+          <Button @click="back">返回</Button>
         </div>
       </div>
       <dl style="margin-top: 30px">
@@ -43,7 +43,7 @@
           </ul>
         </TabPane>
         <TabPane label="任务" name="name2">
-          <tables ref="tables1" :total="this.total1" :columns="columns1" v-model="tableData1" :taskListBtnVisible="true" @on-edit="onEdit1"/>
+          <tables ref="tables1" :total="this.total1" :columns="columns1" v-model="tableData1" :taskListBtnVisible="true" @on-edit="onEdit1" :on-change="pageChange1" :on-page-size-change="pageSizeChange1"/>
         </TabPane>
         <TabPane label="项目物资" name="name3">
           <div style="margin-bottom: 10px" v-if="this.detailData.status !== '4'">
@@ -51,7 +51,7 @@
               <Button type="primary" @click="materialModel = true">物资加入项目申请</Button>
             </div>
           </div>
-          <tables ref="tables2" :total="this.total2" :columns="columns2" v-model="tableData2"/>
+          <tables ref="tables2" :total="this.total2" :columns="columns2" v-model="tableData2" :on-change="pageChange2" :on-page-size-change="pageSizeChange2"/>
         </TabPane>
         <TabPane label="项目团队" name="name4">
           <div style="margin-bottom: 10px" v-if="this.detailData.status !== '4'">
@@ -60,7 +60,7 @@
               <Button type="primary" @click="joinModel = true">人员加入项目申请</Button>
             </div>
           </div>
-          <tables ref="tables3" :total="this.total3" :columns="columns3" v-model="tableData3"/>
+          <tables ref="tables3" :total="this.total3" :columns="columns3" v-model="tableData3" :on-change="pageChange3" :on-page-size-change="pageSizeChange3"/>
         </TabPane>
       </Tabs>
     </Card>
@@ -164,7 +164,7 @@
         </FormItem>
       </Form>
       <div slot="footer">
-        <Button type="text" size="large" @click="statusModel = false">取消</Button>
+        <Button type="text" size="large" @click="closeJoinModel">取消</Button>
         <Button type="primary" size="large" @click="saveJoin">确定</Button>
       </div>
     </Modal>
@@ -292,12 +292,64 @@ export default {
       columns1: [
         { title: '项目名称', key: 'businessProjectName' },
         { title: '任务名称', key: 'name' },
-        { title: '任务类型', key: 'type' },
+        { title: '任务类型',
+          key: 'type',
+          render: (h, params) => {
+            let text = ''
+            if (params.row.type === '1') {
+              text = '巡检任务'
+            } else if (params.row.type === '2') {
+              text = '优化任务'
+            } else {
+              text = '宣传任务'
+            }
+            return h('div', { props: {} }, text)
+          }
+        },
         { title: '任务负责人', key: 'taskHoldersName' },
         { title: '起始日期', key: 'startTime' },
         { title: '截止日期', key: 'completionTime' },
-        { title: '任务性质', key: 'nature' },
-        { title: '任务状态', key: 'taskStatus' },
+        { title: '任务性质',
+          key: 'nature',
+          render: (h, params) => {
+            let text = ''
+            if (params.row.nature === '1') {
+              text = '单点优化'
+            } else if (params.row.nature === '2') {
+              text = '线优化'
+            } else {
+              text = '区域优化'
+            }
+            return h('div', { props: {} }, text)
+          }
+        },
+        { title: '任务状态',
+          key: 'taskStatus',
+          render: (h, params) => {
+            let text = ''
+            console.log(params.row.taskStatus)
+            if (params.row.taskStatus === '1') {
+              text = '未领取'
+            } else if (params.row.taskStatus === '2') {
+              text = '已拒绝'
+            } else if (params.row.taskStatus === '3') {
+              text = '未开始'
+            } else if (params.row.taskStatus === '4') {
+              text = '进行中'
+            } else if (params.row.taskStatus === '5') {
+              text = '审核中'
+            } else if (params.row.taskStatus === '6') {
+              text = '已完成'
+            } else if (params.row.taskStatus === '7') {
+              text = '已驳回'
+            } else if (params.row.taskStatus === '8') {
+              text = '已撤销'
+            } else if (params.row.taskStatus === '9') {
+              text = '已暂停'
+            }
+            return h('div', { props: {} }, text)
+          }
+        },
         { title: '逾期天数', key: 'overdueDays' },
         { title: '甲方评分', key: 'firstPartyScoring' },
         {
@@ -330,13 +382,46 @@ export default {
           }
         },
         { title: '手机号码', key: 'phone' },
-        { title: '邮箱', key: 'phone' }
+        { title: '邮箱', key: 'email' }
       ]
     }
   },
   methods: {
+    pageSizeChange1 (val) {
+      console.log(val)
+      this.params1.pageSize = val
+      this.getData()
+    },
+    pageChange1 (val) {
+      console.log(val)
+      this.params1.page = val
+      this.getData()
+    },
+    pageSizeChange2 (val) {
+      console.log(val)
+      this.params2.pageSize = val
+      this.getData()
+    },
+    pageChange2 (val) {
+      console.log(val)
+      this.params2.page = val
+      this.getData()
+    },
+    pageSizeChange3 (val) {
+      console.log(val)
+      this.params3.pageSize = val
+      this.getData()
+    },
+    pageChange3 (val) {
+      console.log(val)
+      this.params3.page = val
+      this.getData()
+    },
     zdfxmjl () {
       this.allocatePanel = !this.allocatePanel
+    },
+    back () {
+      this.$router.back(-1)
     },
     joinChange () {
       console.log(arguments)
@@ -360,6 +445,9 @@ export default {
         this.$Message.info(res.data.msg)
       })
     },
+    closeJoinModel () {
+      this.joinModel = false
+    },
     saveJoin () {
       staffJoin({
         projectId: this.detailData.id,
@@ -370,6 +458,7 @@ export default {
       }).then((res) => {
         console.log(res)
         this.$Message.info(res.data.msg)
+        this.joinModel = false
       })
     },
     save () {

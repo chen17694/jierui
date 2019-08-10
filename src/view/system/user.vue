@@ -86,7 +86,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tables" search-place="top" :total="this.total" :on-change="this.pageChange" :on-page-size-change="this.PageSizeChange" v-model="tableData" :columns="columns" @on-edit="onEdit" @on-select="onSelect" @on-selection-change="onSelectionChange"></tables>
+    <tables ref="tables" search-place="top" :total="this.total" :on-change="pageChange" :on-page-size-change="pageSizeChange" v-model="tableData" :columns="columns" @on-edit="onEdit" @on-select="onSelect" @on-selection-change="onSelectionChange"></tables>
   </div>
 </template>
 
@@ -162,7 +162,7 @@ export default{
       this.params.page = page
       this.getData()
     },
-    PageSizeChange (size) {
+    pageSizeChange (size) {
       this.params.pageSize = size
       this.getData()
     },
@@ -170,7 +170,6 @@ export default{
       listRoleByOfficeId({
         id: arguments[0]
       }).then((res) => {
-        console.log(res)
         if (res.data.status === '200') {
           this.roleList = res.data.data
         }
@@ -221,7 +220,6 @@ export default{
       row.forEach((item) => {
         this.rowId.push(item.id)
       })
-      console.log(this.rowId)
     },
     // 全选
     onSelectionChange (row) {
@@ -229,7 +227,6 @@ export default{
       row.forEach((item) => {
         this.rowId.push(item.id)
       })
-      console.log(this.rowId)
     },
     // 搜索
     onSearch (val) {
@@ -252,7 +249,6 @@ export default{
         if (res.data.status === '200') {
           this.tableData = res.data.data.list
           this.total = res.data.data.total
-          console.log(this.total)
         }
       })
     }

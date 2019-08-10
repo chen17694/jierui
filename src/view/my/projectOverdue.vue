@@ -2,7 +2,7 @@
   <div>
     <Input search @on-search="handleSearch" placeholder="输入关键字搜索" type="text" enter-button="搜索" style="width: 300px" />
     <p style="font-weight: bold; font-size: 15px; margin: 15px 0">项目逾期数量:{{this.total}}</p>
-    <tables ref="tables" :total="this.total" v-model="tableData" :columns="columns" @on-urge="urge"></tables>
+    <tables ref="tables" :total="this.total" v-model="tableData" :columns="columns" @on-urge="urge" :on-change="pageChange" :on-page-size-change="pageSizeChange"></tables>
   </div>
 </template>
 
@@ -53,6 +53,16 @@ export default{
       }).then((res) => {
         this.$Message.info(res.data.msg)
       })
+    },
+    pageSizeChange (val) {
+      console.log(val)
+      this.params.pageSize = val
+      this.getData()
+    },
+    pageChange (val) {
+      console.log(val)
+      this.params.page = val
+      this.getData()
     },
     getData () {
       listOverdueProject(this.params).then((res) => {

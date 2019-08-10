@@ -88,7 +88,7 @@
                     </span>
                   </div>
                   <div>
-                    <button typeof="button" style="border: 1px solid #2E8CEB; width: 58px; height: 41px; background-color: #ffffff; border-radius: 3px; color: #2E8CEB; cursor: pointer">详情</button>
+                    <button typeof="button" @click="toTaskDetail(item.id)" style="border: 1px solid #2E8CEB; width: 58px; height: 41px; background-color: #ffffff; border-radius: 3px; color: #2E8CEB; cursor: pointer">详情</button>
                   </div>
                 </div>
               </div>
@@ -366,6 +366,14 @@ export default {
     }
   },
   methods: {
+    toTaskDetail (id) {
+      this.$router.push({
+        name: 'taskDetail',
+        query: {
+          taskId: id
+        }
+      })
+    },
     handleTask (item, type) {
       acceptOrRefuseTask({
         taskId: item.id,
@@ -374,6 +382,12 @@ export default {
         reason: ''
       }).then((res) => {
         this.$Message.info(res.data.msg)
+        this.markers = []
+        this.markerRefs = []
+        this.map.clearMarkers()
+        this.getMapTaskNew()
+        this.getMapTask()
+        this.getTask()
       })
     },
     changeProject () {

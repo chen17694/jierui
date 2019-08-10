@@ -63,14 +63,14 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tableMaterial" :total="total" v-model="tableData" :columns="columns" :onChange="pageChange" :onPageSizeChange="pageSizeChange" @on-select="onSelect"></tables>
+    <tables ref="tableMaterial" :total="total" v-model="tableData" :columns="columns" :on-change="pageChange" :on-page-size-change="pageSizeChange" @on-select="onSelect"></tables>
   </div>
 </template>
 
 <script>
 import Tables from '_c/tables'
 import { deleteMaterial, materialList, materialCategory, listOffice } from '@/api/data'
-import { getUserId } from '@/libs/util'
+import { getUserId, getOffice } from '@/libs/util'
 export default {
   name: 'MaterialList',
   components: { Tables },
@@ -89,7 +89,7 @@ export default {
         name: '',
         id: '',
         materialCategoryId: '',
-        officeId: ''
+        officeId: getOffice().officeId
       },
       columns: [
         {

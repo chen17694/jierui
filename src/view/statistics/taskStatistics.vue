@@ -284,8 +284,8 @@
               v-model="tableData"
               :columns="columns"
               :page-size="fourSearch.pageSize"
-              :onChange="pageChange"
-              :onPageSizeChange="pageSizeChange"
+              :on-change="pageChange"
+              :on-page-size-change="pageSizeChange"
             ></tables>
           </Col>
         </Row>

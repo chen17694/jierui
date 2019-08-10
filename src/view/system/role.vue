@@ -1,10 +1,10 @@
 <template>
   <Tabs v-model="tab" :animated="false">
     <TabPane label="系统角色" name="system">
-      <tables :total="this.total" :on-change="this.pageChange" :on-page-size-change="this.PageSizeChange" v-model="tableData" :columns="columns1" @on-edit="editRole" @on-roles="toRoleUserList"  @on-selection-change="onSelectionChange"></tables>
+      <tables :total="this.total" :on-change="pageChange" :on-page-size-change="pageSizeChange" v-model="tableData" :columns="columns1" @on-edit="editRole" @on-roles="toRoleUserList"  @on-selection-change="onSelectionChange"></tables>
     </TabPane>
     <TabPane label="项目角色" name="project">
-      <tables :total="this.total" :on-change="this.pageChange" :on-page-size-change="this.PageSizeChange" v-model="tableData" :columns="columns2"></tables>
+      <tables :total="this.total" :on-change="pageChange" :on-page-size-change="pageSizeChange" v-model="tableData" :columns="columns2"></tables>
     </TabPane>
     <div class="handle" slot="extra" v-show="tab==='system'">
       <Dropdown @on-click="dropdownClick" style="margin-right: 10px">
@@ -71,7 +71,7 @@ export default{
       this.params.page = page
       this.getData()
     },
-    PageSizeChange (size) {
+    pageSizeChange (size) {
       this.params.pageSize = size
       this.getData()
     },

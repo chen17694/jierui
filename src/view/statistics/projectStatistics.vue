@@ -148,8 +148,8 @@
               v-model="tableData"
               :columns="columns"
               :page-size="oneSearch.pageSize"
-              :onChange="pageChange"
-              :onPageSizeChange="pageSizeChange"
+              :on-change="pageChange"
+              :on-page-sizeChange="pageSizeChange"
             ></tables>
           </Col>
           <Col span="2">&nbsp;</Col>

@@ -74,7 +74,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tableDaily" :loading="tableLoading" :total="total" v-model="tableData" :columns="columns" :onChange="pageChange" :onPageSizeChange="pageSizeChange" @on-select="onSelect"></tables>
+    <tables ref="tableDaily" :loading="tableLoading" :total="total" v-model="tableData" :columns="columns" :on-change="pageChange" :on-page-size-change="pageSizeChange" @on-select="onSelect"></tables>
   </div>
 </template>
 

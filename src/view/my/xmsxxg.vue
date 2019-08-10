@@ -81,7 +81,7 @@
       </Form>
       <div class="btns">
         <Button type="primary" @click="save">提交</Button>
-        <Button>返回</Button>
+        <Button @click="back">返回</Button>
       </div>
     </Card>
   </div>
@@ -124,6 +124,9 @@ export default {
     }
   },
   methods: {
+    back () {
+      this.$router.go(-1)
+    },
     projectManagerChange () {
       this.formItem.projectManagerName = arguments[0].label
       this.formItem.projectManagerId = arguments[0].value
@@ -223,10 +226,8 @@ export default {
       this.$router.push({
         name: 'map',
         query: {
-          name: 'xmsxxg'
-        },
-        params: {
-          data: this.detailData
+          name: 'xmsxxg',
+          projectId: this.$route.query.projectId
         }
       })
     }

@@ -74,7 +74,8 @@ export default {
           applyNum: '',
           returnDate: '',
           materialName: '',
-          materialTypeName: ''
+          materialTypeName: '',
+          projectMaterialId: ''
         }
       ],
       columns: [
@@ -117,17 +118,19 @@ export default {
             console.log(params)
             return h('Select', {
               props: {
-                value: materialId
+                value: this.addRows[params.index].projectMaterialId
               },
               on: {
                 'on-change': (id) => {
-                  this.addRows[params.index].materialId = id
+                  this.addRows[params.index].projectMaterialId = id
                   this.addRows[params.index].materialList.forEach((item) => {
                     if (item.id === id) {
                       this.addRows[params.index].surplusNum = item.surplusAmount
                       this.addRows[params.index].materialName = item.name
+                      this.addRows[params.index].materialId = item.materialId
                     }
                   })
+                  console.log(this.addRows)
                 }
               }
             }, params.row.mname.map((item) => {
@@ -203,9 +206,10 @@ export default {
     addSave () {
       console.log(this.addRows)
       let materialList = []
+      console.log(this.addRows)
       this.addRows.forEach((item) => {
         materialList.push({
-          projectMaterialId: item.id,
+          projectMaterialId: item.projectMaterialId,
           materialTypeId: item.categoryId,
           materialTypeName: item.materialTypeName,
           materialId: item.materialId,
@@ -226,10 +230,33 @@ export default {
       console.log(obj)
       materialApplication(obj).then((res) => {
         this.$Message.info(res.data.msg)
+      }).catch((err) => {
+        console.log(err)
       })
     },
     clear () {
-
+      this.rowIndex = 0
+      this.addRows = [
+        {
+          categoryId: '',
+          categoryList: [],
+          materialList: [],
+          materialId: '',
+          surplusNum: 0,
+          applyNum: '',
+          returnDate: '',
+          materialName: '',
+          materialTypeName: '',
+          projectMaterialId: ''
+        }
+      ]
+      this.tableData = [{
+        cname: this.addRows[0].categoryList,
+        mname: this.addRows[0].materialList
+      }]
+      this.params.projectId = ''
+      this.taskList = []
+      this.params.taskId = ''
     },
     delRow () {
       console.log(arguments[0])
@@ -250,7 +277,8 @@ export default {
         applyNum: '',
         returnDate: '',
         materialName: '',
-        materialTypeName: ''
+        materialTypeName: '',
+        projectMaterialId: ''
       })
       this.tableData.push({
         cname: this.addRows[this.rowIndex].categoryList,
@@ -304,17 +332,17 @@ export default {
       })
     },
     taskChange () {
-      this.params.taskName = arguments[0].label
+      this.params.taskName = arguments[0] ? arguments[0].label : ''
     },
     projectChange () {
       console.log(arguments)
-      this.params.projectName = arguments[0].label
+      this.params.projectName = arguments[0] ? arguments[0].label : ''
       this.taskList = []
       this.params.taskId = ''
       listTask({
         pageSize: 0,
         page: 0,
-        businessProjectId: arguments[0].value,
+        businessProjectId: arguments[0] ? arguments[0].value : '',
         type: '',
         name: '',
         taskStatus: '',
