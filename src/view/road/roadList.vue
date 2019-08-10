@@ -22,7 +22,7 @@
         </div>
       </Col>
     </Row>
-    <tables ref="tables" :total="this.total" :on-change="this.pageChange" :on-page-size-change="this.PageSizeChange" v-model="tableData" :columns="columns"></tables>
+    <tables ref="tables" :total="this.total" :on-change="pageChange" :on-page-size-change="pageSizeChange" v-model="tableData" :columns="columns"></tables>
   </div>
 </template>
 
@@ -86,7 +86,7 @@ export default {
       this.listParams.page = page
       this.getData()
     },
-    PageSizeChange (size) {
+    pageSizeChange (size) {
       this.listParams.pageSize = size
       this.getData()
     },

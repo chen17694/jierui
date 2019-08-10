@@ -44,8 +44,8 @@
               v-model="tableData1"
               :columns="columns1"
               :showPage="true"
-              :onChange="pageChange1"
-              :onPageSizeChange="pageSizeChange1"
+              :on-change="pageChange1"
+              :on-page-size-change="pageSizeChange1"
             ></tables>
           </Col>
         </Row>
@@ -93,8 +93,8 @@
               v-model="tableData2"
               :columns="columns2"
               :showPage="true"
-              :onChange="pageChange2"
-              :onPageSizeChange="pageSizeChange2"
+              :on-change="pageChange2"
+              :on-page-size-change="pageSizeChange2"
             ></tables>
           </Col>
         </Row>
@@ -109,8 +109,8 @@
               v-model="tableData3"
               :columns="columns3"
               :showPage="true"
-              :onChange="pageChange3"
-              :onPageSizeChange="pageSizeChange3"
+              :on-change="pageChange3"
+              :on-page-size-change="pageSizeChange3"
             ></tables>
           </Col>
         </Row>

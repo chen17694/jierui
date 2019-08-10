@@ -58,10 +58,10 @@ export default {
     toAdd () {
       this.$router.push({
         name: this.$route.query.name,
-        params: {
+        query: {
           lat: this.lat,
           lng: this.lng,
-          data: this.$route.params.data
+          projectId: this.$route.query.projectId
         }
       })
     },

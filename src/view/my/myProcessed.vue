@@ -1,10 +1,10 @@
 <template>
   <Tabs v-model="tab" :animated="false">
     <TabPane label="我的审核审批进度" name="myAudit">
-      <tables :total="this.total"  v-model="tableData" @on-row-click="onRowClick" :columns="columns1" :on-change="this.pageChange" :on-page-size-change="this.PageSizeChange"></tables>
+      <tables :total="this.total"  v-model="tableData" @on-row-click="onRowClick" :columns="columns1" :on-change="pageChange" :on-page-size-change="pageSizeChange"></tables>
     </TabPane>
     <TabPane label="待我审批" name="waiting">
-      <tables :total="this.total" v-model="tableData" @on-row-click="onRowClick" :columns="columns2" :on-change="this.pageChange" :on-page-size-change="this.PageSizeChange"></tables>
+      <tables :total="this.total" v-model="tableData" @on-row-click="onRowClick" :columns="columns2" :on-change="pageChange" :on-page-size-change="pageSizeChange"></tables>
     </TabPane>
   </Tabs>
 </template>
@@ -122,7 +122,7 @@ export default {
       this.params.page = page
       this.getData()
     },
-    PageSizeChange (size) {
+    pageSizeChange (size) {
       this.params.pageSize = size
       this.getData()
     },

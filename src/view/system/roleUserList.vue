@@ -11,7 +11,7 @@
         </div>
       </Col>
     </Row>
-    <tables ref="tables" :total="this.total" v-model="tableData" :columns="columns" @on-delete="onDelete"></tables>
+    <tables ref="tables" :total="this.total" v-model="tableData" :on-change="pageChange" :on-page-size-change="pageSizeChange" :columns="columns" @on-delete="onDelete"></tables>
     <Modal
       v-model="allocatePanel"
       width="600"
@@ -84,6 +84,14 @@ export default{
       this.$router.push({
         name: 'roleList'
       })
+    },
+    pageChange (page) {
+      this.params.page = page
+      this.getData()
+    },
+    pageSizeChange (size) {
+      this.params.pageSize = size
+      this.getData()
     },
     onDelete () {
       this.$Modal.confirm({

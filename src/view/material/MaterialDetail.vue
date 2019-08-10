@@ -39,7 +39,7 @@
       </Col>
     </Row>
     <div class="alreadyLend">已借出物资</div>
-    <tables ref="tableLend" :total="total" v-model="tableData" :columns="columns" :onChange="pageChange" :onPageSizeChange="pageSizeChange"></tables>
+    <tables ref="tableLend" :total="total" v-model="tableData" :columns="columns" :on-change="pageChange" :on-page-sizeChange="pageSizeChange"></tables>
 
   </div>
 </template>
