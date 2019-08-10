@@ -47,7 +47,7 @@
             </Col>
           </Row>
         </FormItem>
-        <FormItem label="任务性质" prop="nature">
+        <FormItem  v-if="formItem.type === '2'" label="任务性质" prop="nature">
           <Row>
             <Col span="11">
               <Select v-model="formItem.nature" label-in-value>

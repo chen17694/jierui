@@ -1,8 +1,8 @@
 <template>
   <div>
     <Card style="margin-bottom: 10px">
-      <Steps :current="1">
-        <Step :title="item.name" :content="item.userName ? item.userName : '' + ' ' +item.action" v-for="(item, index) in stepArr" :key="index"></Step>
+      <Steps :current="stepArr.length - 1 ">
+        <Step :title="item.name" :content="item.userName ? item.userName + ' ' + item.action : '' + ' ' + item.action" v-for="(item, index) in stepArr" :key="index"></Step>
       </Steps>
     </Card>
     <Card style="margin-bottom: 10px">

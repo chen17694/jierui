@@ -152,7 +152,8 @@ export default [
         name: 'myMaterialDetail',
         meta: {
           icon: 'md-boat',
-          title: '我的物资详情'
+          title: '我的物资详情',
+          hideInMenu: true
         },
         component: () => import('@/view/my/myMaterialDetail.vue')
       },

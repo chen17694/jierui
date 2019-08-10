@@ -5,7 +5,7 @@
         <h2>{{detailData.name}}</h2>
         <div>
           <Button type="primary" style="margin-right: 10px" @click="sxxiugai" v-if="this.detailData.status !== '4'">修改任务属性</Button>
-          <Button>返回</Button>
+          <Button @click="back">返回</Button>
         </div>
       </div>
       <dl style="margin-top: 30px">
@@ -186,6 +186,9 @@ export default {
           lng: this.detailData.lng
         }
       })
+    },
+    back () {
+      this.$router.back(-1)
     },
     pageChange (page) {
       this.params.page = page

@@ -49,7 +49,7 @@
             </Col>
           </Row>
         </FormItem>
-        <FormItem label="任务性质" prop="nature">
+        <FormItem v-if="formItem.type === '2'" label="任务性质" prop="nature">
           <Row>
             <Col span="11">
               <Select v-model="formItem.nature" label-in-value>
@@ -276,6 +276,18 @@ export default {
     }).then((res) => {
       this.businessProject = res.data.data.projectList
     })
+    if (this.$route.query.projectId) {
+      listProjectUser({
+        pageSize: 0,
+        page: 0,
+        id: this.$route.query.projectId,
+        userId: getUserId(),
+        officeId: ''
+      }).then((res) => {
+        console.log(res)
+        this.taskHold = res.data.data.list
+      })
+    }
   }
 }
 </script>
