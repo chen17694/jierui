@@ -269,6 +269,9 @@ export default {
         if (valid) {
           insertOrUpdateUser(params).then((res) => {
             this.$Message.info(res.data.msg)
+            this.$router.push({
+              name: 'userList'
+            })
           })
         }
       })
