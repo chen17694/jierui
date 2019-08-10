@@ -590,15 +590,22 @@ export const uploadImgToAliOss = (e) => {
 }
 
 const upOss = (e, res) => {
+  // let client = new OSS({
+  //   region: res.data.data.loadpoint,
+  //   accessKeyId: res.data.data.accessKeyId,
+  //   accessKeySecret: res.data.data.accessKeySecret,
+  //   stsToken: res.data.data.securityToken,
+  //   bucket: res.data.data.bucketName
+  // })
   let client = new OSS({
-    region: res.data.data.endpoint,
+    region: 'oss-cn-beijing',
+    // endpoint: res.data.data.endpoint,
     accessKeyId: res.data.data.accessKeyId,
     accessKeySecret: res.data.data.accessKeySecret,
-    stsToken: res.data.data.securityToken,
     bucket: res.data.data.bucketName
   })
   console.log(client)
-  client.put(e.target.files[0].name, e.target.files[0]).then(result => {
+  client.put('111', e.target.files[0]).then(result => {
     console.log(result)
   }).catch(err => {
     console.log(err)
