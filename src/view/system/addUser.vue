@@ -60,6 +60,18 @@
             </Col>
           </Row>
         </FormItem>
+         <FormItem label="头像">
+          <div style="display: flex;align-items: center;">
+            <Avatar style="margin-right: 15px" v-if="!formItem.photo" icon="ios-person" size="large" />
+            <Avatar style="margin-right: 15px" v-if="formItem.photo" :src="formItem.photo" size="large" />
+            <div class="ivu-upload ivu-upload-drag" style="display: inline-block; width: 58px;position: relative;">
+              <input type="file" @change="uploadPhoto($event)">
+              <div style="width: 58px;height:58px;line-height: 58px;">
+                <Icon type="ios-camera" size="20"></Icon>
+              </div>
+            </div>
+          </div>
+        </FormItem>
         <FormItem label="性别">
           <RadioGroup v-model="formItem.sex">
             <Radio label="1">男</Radio>
@@ -122,7 +134,7 @@
 </template>
 
 <script>
-import { insertOrUpdateUser, getUnitList, listRoleByOfficeId } from '@/api/data'
+import { insertOrUpdateUser, getUnitList, listRoleByOfficeId, uploadImgToAliOss } from '@/api/data'
 import { getUserId } from '@/libs/util'
 export default {
   data () {
@@ -188,6 +200,7 @@ export default {
       roleList: [],
       formItem: {
         userName: '',
+        photo: '',
         phone: '',
         email: '',
         name: '',
@@ -228,6 +241,11 @@ export default {
     }
   },
   methods: {
+    uploadPhoto (e) {
+      uploadImgToAliOss(e).then(res => {
+        this.formItem.photo = res
+      })
+    },
     back () {
       this.$router.push({
         name: 'userList'
@@ -237,7 +255,7 @@ export default {
       let params = {
         'loginName': this.formItem.userName,
         'phone': this.formItem.phone,
-        'photo': '',
+        'photo': this.formItem.photo,
         'email': this.formItem.email,
         'name': this.formItem.name,
         'password': this.formItem.password,
@@ -283,6 +301,21 @@ export default {
 </script>
 
 <style scoped  lang="less">
+.ivu-upload input[type="file"] {
+  display: block;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 58px;
+  width: 100%;
+}
+.ivu-avatar-large {
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  border-radius: 50%;
+}
 .pageHead{
   font-size: 14px;
   font-weight: bold;

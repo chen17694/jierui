@@ -588,33 +588,31 @@ export const getStsToken = (params) => { // 获取oss Token
 }
 
 export const uploadImgToAliOss = (e) => {
-  getStsToken().then(res => {
-    if (res.data.status === '200') {
-      upOss(e, res)
-    }
+  return new Promise((resolve, reject) => {
+    getStsToken().then(res => {
+      if (res.data.status === '200') {
+        upOss(e, res).then(ress => {
+          resolve(ress)
+        })
+      }
+    })
   })
 }
 
 const upOss = (e, res) => {
-  // let client = new OSS({
-  //   region: res.data.data.loadpoint,
-  //   accessKeyId: res.data.data.accessKeyId,
-  //   accessKeySecret: res.data.data.accessKeySecret,
-  //   stsToken: res.data.data.securityToken,
-  //   bucket: res.data.data.bucketName
-  // })
   let client = new OSS({
-    region: 'oss-cn-beijing',
-    // endpoint: res.data.data.endpoint,
+    endpoint: res.data.data.endpoint,
     accessKeyId: res.data.data.accessKeyId,
+    stsToken: res.data.data.securityToken,
     accessKeySecret: res.data.data.accessKeySecret,
     bucket: res.data.data.bucketName
   })
-  console.log(client)
-  client.put('111', e.target.files[0]).then(result => {
-    console.log(result)
-  }).catch(err => {
-    console.log(err)
+  return new Promise((resolve, reject) => {
+    client.multipartUpload(e.target.files[0].name, e.target.files[0]).then(result => {
+      resolve(result.res.requestUrls[0])
+    }).catch(err => {
+      console.log(err)
+    })
   })
 }
 // 物资管理

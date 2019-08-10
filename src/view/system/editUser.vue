@@ -59,7 +59,7 @@
         </FormItem>
         <FormItem label="头像">
           <div style="display: flex;align-items: center;">
-            <Avatar style="margin-right: 15px" icon="ios-person" size="large" />
+            <Avatar style="margin-right: 15px" v-if="!formItem.photo" icon="ios-person" size="large" />
             <Avatar style="margin-right: 15px" v-if="formItem.photo" :src="formItem.photo" size="large" />
             <div class="ivu-upload ivu-upload-drag" style="display: inline-block; width: 58px;position: relative;">
               <input type="file" @change="uploadPhoto($event)">
@@ -255,8 +255,9 @@ export default {
   },
   methods: {
     uploadPhoto (e) {
-      console.log(e)
-      uploadImgToAliOss(e)
+      uploadImgToAliOss(e).then(res => {
+        this.formItem.photo = res
+      })
     },
     back () {
       this.$router.push({
@@ -267,6 +268,7 @@ export default {
       let params = {
         'loginName': this.formItem.userName || 'zhm',
         'phone': this.formItem.phone || '',
+        'photo': this.formItem.photo || '',
         'email': this.formItem.email || '',
         'name': this.formItem.name || '',
         'password': this.formItem.password || '',
