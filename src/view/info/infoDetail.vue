@@ -6,7 +6,8 @@
       </Col>
       <div v-if="Type == '1' || Type == '2'">
         <Col span="24">
-        <div class="infoItem">消息名称：{{info.projectName}}{{info.days ? '还有' + days + '天将逾期' : '已逾期'}}</div>
+        <div class="infoItem">消息名称：{{info.title}}</div>
+        <!-- <div class="infoItem">消息名称：{{info.projectName}}{{info.days ? '还有' + days + '天将逾期' : '已逾期'}}</div> -->
         </Col>
         <Col span="24">
         <div class="infoItem">提醒时间：{{info.createDate}}</div>
@@ -51,7 +52,8 @@
       </div>
       <div v-if="Type == '6'">
         <Col span="24">
-        <div class="infoItem">消息名称：{{info.projectName}}中的{{info.taskName}}{{info.days}}个任务路口被{{info.userName}}拒绝</div>
+        <!-- <div class="infoItem">消息名称：{{info.projectName}}中的{{info.taskName}}{{info.days}}个任务路口被{{info.userName}}拒绝</div> -->
+        <div class="infoItem">消息名称：{{info.title}}</div>
         </Col>
         <Col span="24">
         <div class="infoItem">项目名称：{{info.projectName}}</div>
@@ -74,7 +76,8 @@
       </div>
       <div v-if="Type == '5'">
         <Col span="24">
-        <div class="infoItem">消息名称：您接到一个新项目{{info.title}}</div>
+        <div class="infoItem">消息名称：{{info.title}}</div>
+        <!-- <div class="infoItem">消息名称：您接到一个新项目{{info.title}}</div> -->
         </Col>
         <Col span="24">
         <div class="infoItem">发送时间：{{info.createDate}}</div>
@@ -126,14 +129,13 @@ export default {
 
       } else if (type === 3) { // 催办
 
-      } else if (type === 4) { // 推送
-
-      } else if (type === 5) { // 通知
-
+      } else if (type === 4) { // 推送 消息
+        // this.$router.push({path: '/infoDetail', query: {id: info.resourceId}})
+      } else if (type === 5) { // 新项目通知
+        this.$router.push({ path: '/projectDetail', query: { projectId: info.resourceId } })
       } else if (type === 6) { // 任务拒绝
-
+        // this.$router.push({path: '/taskDetail', query: {taskId: info.resourceId}})
       }
-      // this.$router.push({ path: './infoDetail', query: { id: this.$route.query.id } })
     },
     MessageDetail (id) {
       let _this = this

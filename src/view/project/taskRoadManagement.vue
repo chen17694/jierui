@@ -87,7 +87,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tables" :total="this.total" :columns="columns" v-model="tableData" :taskRoadListBtnVisible="true" @on-edit="onEdit"/>
+    <tables ref="tables" :total="this.total" :on-change="this.pageChange" :on-page-size-change="this.PageSizeChange" :columns="columns" v-model="tableData" :taskRoadListBtnVisible="true" @on-edit="onEdit"/>
   </div>
 </template>
 
@@ -165,6 +165,14 @@ export default {
     }
   },
   methods: {
+    pageChange (page) {
+      this.params.page = page
+      this.getData()
+    },
+    PageSizeChange (size) {
+      this.params.pageSize = size
+      this.getData()
+    },
     reminder () {
       this.$router.push({
         name: 'taskRoadReminder'

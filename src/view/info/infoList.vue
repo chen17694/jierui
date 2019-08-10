@@ -114,18 +114,13 @@ export default {
         },
         { title: '消息名称',
           render: (h, params) => {
-            // let title = [
-            //   '',
-            //   con + '(根据审核审批类型' + params.row.createDate + ')' + '被' + getOffice().role + '同意/拒绝',
-
-            // ]
             return h('div', {}, params.row.content)
           }
         },
         { title: '消息类型',
           key: 'type',
           render: (h, params) => {
-            let arr = ['', '审核审批', '提醒', '催办', '推送', '新任务通知', '任务路口被拒绝']
+            let arr = ['', '审核审批', '提醒', '催办', '推送', '通知', '任务路口被拒绝']
             return h('div', {}, arr[params.row.type])
           }
         },

@@ -1,14 +1,12 @@
 <template>
   <div>
     <Card>
-      <p class="pageHead">新建任务</p>
+      <p class="pageHead">修改任务属性</p>
       <Form ref="formItem" :model="formItem" :label-width="150" :rules="ruleValidate" >
         <FormItem label="项目" prop="businessProjectId">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.businessProjectId" label-in-value @on-change="businessProjectOnChange">
-                <Option v-for="(item, index) in businessProject" :value="item.id " :key="index">{{item.name}}</Option>
-              </Select>
+              <span>{{this.formItem.businessProjectName}}</span>
             </Col>
           </Row>
         </FormItem>
@@ -49,7 +47,7 @@
             </Col>
           </Row>
         </FormItem>
-        <FormItem v-if="formItem.type === '2'" label="任务性质" prop="nature">
+        <FormItem  v-if="formItem.type === '2'" label="任务性质" prop="nature">
           <Row>
             <Col span="11">
               <Select v-model="formItem.nature" label-in-value>
@@ -63,7 +61,6 @@
         <FormItem label="任务位置">
           <Row>
             <Col span="11">
-              {{formItem.location}}
               <Button type="primary" @click="reLocation" v-if="formItem.lat && formItem.lng" style="margin-left: 10px">重新定位</Button>
               <Button type="primary" @click="reLocation" v-else>重新定位</Button>
             </Col>
@@ -91,7 +88,7 @@
 </template>
 
 <script>
-import { listProject, addTask, listProjectUser } from '@/api/data'
+import { addTask, listProjectUser, selectTaskDetail } from '@/api/data'
 import { getUserId } from '@/libs/util'
 export default {
   name: 'addTaskForm',
@@ -114,10 +111,11 @@ export default {
       }
     }
     return {
+      detailData: {},
       center: [this.$route.params.lng, this.$route.params.lat],
       zoom: 14,
       formItem: {
-        businessProjectId: this.$route.query.projectId ? this.$route.query.projectId : '',
+        businessProjectId: '',
         businessProjectName: '',
         name: '',
         type: '',
@@ -165,6 +163,8 @@ export default {
             radius: 1000,
             extensions: 'all'
           })
+          console.log(self.formItem.lat)
+          console.log(self.formItem.lng)
           geocoder.getAddress([self.formItem.lng, self.formItem.lat], function (status, result) {
             if (status === 'complete' && result.info === 'OK') {
               console.log(result)
@@ -200,12 +200,12 @@ export default {
     taskHoldersOnChange () {
       this.formItem.taskHoldersName = arguments[0].label
     },
-    businessProjectOnChange () {
-      this.formItem.businessProjectName = arguments[0].label
+    businessProjectOnChange (label, value) {
+      this.formItem.businessProjectName = label
       listProjectUser({
         pageSize: 0,
         page: 0,
-        id: arguments[0].value,
+        id: value,
         userId: getUserId(),
         officeId: ''
       }).then((res) => {
@@ -219,7 +219,11 @@ export default {
     },
     reLocation () {
       this.$router.push({
-        name: 'addTask'
+        name: 'map2',
+        query: {
+          name: 'editTaskForm',
+          taskId: this.$route.query.taskId
+        }
       })
     },
     addMarker () {
@@ -232,6 +236,7 @@ export default {
       this.$refs['formItem'].validate((valid) => {
         if (valid) {
           addTask({
+            'id': this.$route.query.taskId,
             'name': this.formItem.name,
             'businessProjectId': this.formItem.businessProjectId,
             'businessProjectName': this.formItem.businessProjectName,
@@ -258,36 +263,35 @@ export default {
   },
   mounted () {
     this.addMarker()
-    listProject({
-      pageSize: 0,
-      page: 0,
-      userId: getUserId(),
-      projectName: '',
-      firstPartyCompanyId: '',
-      projectManagerId: '',
-      status: '',
-      firstPartyScoring: '',
-      provinceName: '',
-      cityName: '',
-      districtName: '',
-      timeStatus: '',
-      startTime: '',
-      endTime: ''
+    console.log(this.$route.query.taskId)
+    selectTaskDetail({
+      taskId: this.$route.query.taskId,
+      userId: getUserId()
     }).then((res) => {
-      this.businessProject = res.data.data.projectList
-    })
-    if (this.$route.query.projectId) {
+      console.log(res)
+      this.detailData = res.data.data
+      this.formItem.businessProjectId = this.detailData.businessProjectId
+      this.formItem.businessProjectName = this.detailData.businessProjectName
       listProjectUser({
         pageSize: 0,
         page: 0,
-        id: this.$route.query.projectId,
+        id: this.formItem.businessProjectId,
         userId: getUserId(),
         officeId: ''
       }).then((res) => {
         console.log(res)
         this.taskHold = res.data.data.list
+        this.formItem.taskHoldersId = this.detailData.taskHoldersId
+        this.formItem.taskHoldersName = this.detailData.taskHoldersName
       })
-    }
+      this.formItem.name = this.detailData.name
+      this.formItem.type = this.detailData.type
+      this.formItem.dates = [this.detailData.startTime, this.detailData.endTime]
+      this.formItem.nature = this.detailData.nature
+      this.formItem.remarks = this.detailData.remarks
+      this.formItem.location = this.detailData.provinceName + this.detailData.cityName + this.detailData.districtName + this.detailData.specificAddress
+      console.log(this.formItem)
+    })
   }
 }
 </script>

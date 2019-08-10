@@ -70,7 +70,7 @@
 <script>
 import Tables from '_c/tables'
 import { deleteMaterial, materialList, materialCategory, listOffice } from '@/api/data'
-import { getUserId } from '@/libs/util'
+import { getUserId, getOffice } from '@/libs/util'
 export default {
   name: 'MaterialList',
   components: { Tables },
@@ -89,7 +89,7 @@ export default {
         name: '',
         id: '',
         materialCategoryId: '',
-        officeId: ''
+        officeId: getOffice().officeId
       },
       columns: [
         {

@@ -1,8 +1,8 @@
 <template>
   <div>
     <Card style="margin-bottom: 10px">
-      <Steps :current="1">
-        <Step :title="item.name" :content="item.userName ? item.userName : '' + ' ' +item.action" v-for="(item, index) in stepArr" :key="index"></Step>
+      <Steps :current="stepArr.length - 1 ">
+        <Step :title="item.name" :content="item.userName ? item.userName + ' ' + item.action : '' + ' ' + item.action" v-for="(item, index) in stepArr" :key="index"></Step>
       </Steps>
     </Card>
     <Card style="margin-bottom: 10px">
@@ -16,7 +16,7 @@
     <tables ref="tables" v-model="tableData" :columns="columns" :showPage="false"></tables>
     <div class="btns" style="margin-top: 30px">
       <Button type="primary" @click="shenpi">审批</Button>
-      <Button>返回</Button>
+      <Button @click="back">返回</Button>
     </div>
     <Modal
       v-model="editPanel"
@@ -66,6 +66,11 @@ export default {
     }
   },
   methods: {
+    back () {
+      this.$router.push({
+        name: 'projectOverdue'
+      })
+    },
     shenpi () {
       this.editPanel = true
     },

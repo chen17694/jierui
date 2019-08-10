@@ -1,8 +1,8 @@
 <template>
   <div>
     <Card style="margin-bottom: 10px">
-      <Steps :current="1">
-        <Step :title="item.name" :content="item.userName ? item.userName : '' + ' ' +item.action" v-for="(item, index) in stepArr" :key="index"></Step>
+      <Steps :current="stepArr.length - 1 ">
+        <Step :title="item.name" :content="item.userName ? item.userName + ' ' + item.action : '' + ' ' + item.action" v-for="(item, index) in stepArr" :key="index"></Step>
       </Steps>
     </Card>
     <Card style="margin-bottom: 10px">
@@ -19,7 +19,7 @@
       <ul style="list-style-type: none">
         <li style="margin-bottom: 5px">项目名称：{{detailData.projectName}}</li>
         <li style="margin-bottom: 5px">任务名称：{{detailData.taskName}}</li>
-        <li style="margin-bottom: 5px" v-if="detailData.type === '1'">任务类型：调查任务</li>
+        <li style="margin-bottom: 5px" v-if="detailData.type === '1'">任务类型：巡检任务</li>
         <li style="margin-bottom: 5px" v-if="detailData.type === '2'">任务类型：优化任务</li>
         <li style="margin-bottom: 5px" v-if="detailData.type === '3'">任务类型：宣传任务</li>
         <li style="margin-bottom: 5px">任务负责人：{{detailData.taskHoldersName}}</li>
@@ -33,7 +33,7 @@
     </Card>
     <div class="btns" style="margin-top: 30px">
       <Button type="primary" @click="shenpi">审批</Button>
-      <Button>返回</Button>
+      <Button @click="back">返回</Button>
     </div>
     <Modal
       v-model="editPanel"
@@ -66,7 +66,7 @@ import { detailTaskApproval, opt } from '@/api/data'
 import Tables from '_c/tables'
 import { getUserId } from '@/libs/util'
 export default {
-  name: 'drwlksq',
+  name: 'drwsq',
   components: { Tables },
   data () {
     return {
@@ -82,6 +82,11 @@ export default {
     }
   },
   methods: {
+    back () {
+      this.$router.push({
+        name: 'projectOverdue'
+      })
+    },
     shenpi () {
       this.editPanel = true
     },

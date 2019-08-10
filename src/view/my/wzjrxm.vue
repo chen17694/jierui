@@ -6,6 +6,9 @@
       </Steps>
     </Card>
     <Card style="margin-bottom: 10px">
+      <div v-if="detailData.status === '3'" style="margin-bottom: 10px">
+        拒绝原因：{{detailData.rejectReason}}
+      </div>
       <h3 style="color: #2d8cf0; margin-bottom: 20px">物资加入项目申请信息</h3>
       <ul style="list-style-type: none">
         <li style="margin-bottom: 5px">项目名称：{{detailData.projectName}}</li>
@@ -15,30 +18,9 @@
       </ul>
     </Card>
     <div class="btns" style="margin-top: 30px">
-      <Button type="primary" @click="shenpi">审批</Button>
+      <Button type="primary" @click="chexiao" v-if="detailData.isCancel === '1'">撤销</Button>
       <Button @click="back">返回</Button>
     </div>
-    <Modal
-      v-model="editPanel"
-      title='物资申请审批'
-      @on-ok="save"
-      width="1200px"
-    >
-      <Form ref="editParams" :model="editParams">
-        <FormItem label="审批结果:">
-          <RadioGroup v-model="editParams.opt">
-            <Radio label="1">同意</Radio>
-            <Radio label="2">拒绝</Radio>
-          </RadioGroup>
-        </FormItem>
-        <FormItem label="拒绝原因:">
-          <Input v-model="editParams.comment" :disabled="editParams.opt === '1'" type="textarea" style="width: 80%" :autosize="{minRows: 5,maxRows: 10}"></Input>
-        </FormItem>
-      </Form>
-      <div class="tableWrapper">
-        <tables ref="tables"  v-model="tableData" :columns="columns" @on-add="addRow" @on-remove="delRow" :showPage="false"></tables>
-      </div>
-    </Modal>
   </div>
 </template>
 
@@ -47,7 +29,7 @@ import { detailProjectMaterialJoin, materialCategory, materialList, opt } from '
 import { getUserId } from '@/libs/util'
 import Tables from '_c/tables'
 export default {
-  name: 'dwzjrxm',
+  name: 'wzjrxm',
   components: { Tables },
   data () {
     return {
@@ -178,15 +160,15 @@ export default {
     }
   },
   methods: {
+    back () {
+      this.$router.push({
+        name: 'projectOverdue'
+      })
+    },
     getMaterialCategory () {
       materialCategory().then((res) => {
         console.log(res)
         this.addRows[this.rowIndex].materialCategoryList = res.data.data
-      })
-    },
-    back () {
-      this.$router.push({
-        name: 'projectOverdue'
       })
     },
     getMaterialList (id, index) {
@@ -226,39 +208,21 @@ export default {
         tname: this.addRows[this.rowIndex].materialList
       })
     },
-    shenpi () {
-      this.tableData = [{
-        pname: this.addRows[0].materialCategoryList,
-        tname: this.addRows[0].materialList
-      }]
-      this.editPanel = true
-    },
-    save () {
-      let projectMaterialJoinApproveForm = []
-      this.addRows.forEach((item) => {
-        projectMaterialJoinApproveForm.push({
-          materialTypeId: item.materialCategoryId,
-          materialTypeName: item.materialCategoryName,
-          materialId: item.materialId,
-          materialName: item.materialName,
-          returnDate: item.returnDate,
-          applyNum: item.applyNum
-        })
-      })
-      let obj = {
-        opt: this.editParams.opt,
-        taskId: this.$route.params.data.taskId,
-        userId: getUserId(),
-        comment: this.editParams.comment,
-        processType: this.$route.params.data.type,
-        projectMaterialJoinApproveForm: {
-          list: projectMaterialJoinApproveForm
+    chexiao () {
+      this.$Modal.confirm({
+        title: '确定要撤销吗？',
+        onOk: () => {
+          let obj = {
+            opt: '3',
+            taskId: this.$route.params.data.taskId,
+            userId: getUserId(),
+            processType: this.$route.params.data.type
+          }
+          opt(obj).then((res) => {
+            console.log(res)
+            this.$Message.info(res.data.msg)
+          })
         }
-      }
-      console.log(obj)
-      opt(obj).then((res) => {
-        console.log(res)
-        this.$Message.info(res.data.msg)
       })
     },
     getData () {
@@ -266,7 +230,7 @@ export default {
       detailProjectMaterialJoin({
         taskId: this.$route.params.data.taskId,
         userId: getUserId(),
-        type: '1'
+        type: '2'
       }).then((res) => {
         console.log(res.data.data)
         this.stepArr = res.data.data.list

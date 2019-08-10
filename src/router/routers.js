@@ -79,6 +79,16 @@ export default [
         component: () => import('@/view/my/projectDetail.vue')
       },
       {
+        path: 'taskDetail',
+        name: 'taskDetail',
+        meta: {
+          icon: 'md-funnel',
+          title: '任务详情',
+          hideInMenu: true
+        },
+        component: () => import('@/view/my/taskDetail.vue')
+      },
+      {
         path: 'map',
         name: 'map',
         meta: {
@@ -87,6 +97,16 @@ export default [
           hideInMenu: true
         },
         component: () => import('@/view/my/map.vue')
+      },
+      {
+        path: 'map2',
+        name: 'map2',
+        meta: {
+          icon: 'md-funnel',
+          title: '地图定位',
+          hideInMenu: true
+        },
+        component: () => import('@/view/my/map2.vue')
       },
       {
         path: 'xmsxxg',
@@ -126,6 +146,16 @@ export default [
           title: '我的物资'
         },
         component: () => import('@/view/my/myMaterial.vue')
+      },
+      {
+        path: 'myMaterialDetail',
+        name: 'myMaterialDetail',
+        meta: {
+          icon: 'md-boat',
+          title: '我的物资详情',
+          hideInMenu: true
+        },
+        component: () => import('@/view/my/myMaterialDetail.vue')
       },
       {
         path: 'applyMaterial',
@@ -264,6 +294,97 @@ export default [
               hideInMenu: true
             },
             component: () => import('@/view/my/dryjrxmsq.vue')
+          },
+          // -------------------------
+          {
+            path: 'xmsq',
+            name: 'xmsq',
+            meta: {
+              icon: 'md-funnel',
+              title: '我的项目审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/xmsq.vue')
+          },
+          {
+            path: 'wzsq',
+            name: 'wzsq',
+            meta: {
+              icon: 'md-funnel',
+              title: '我的物资审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/wzsq.vue')
+          },
+          {
+            path: 'wzghsq',
+            name: 'wzghsq',
+            meta: {
+              icon: 'md-funnel',
+              title: '我的物资归还审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/wzghsq.vue')
+          },
+          {
+            path: 'xmsxxgsq',
+            name: 'xmsxxgsq',
+            meta: {
+              icon: 'md-funnel',
+              title: '我的项目属性修改审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/xmsxxgsq.vue')
+          },
+          {
+            path: 'xmztxgsq',
+            name: 'xmztxgsq',
+            meta: {
+              icon: 'md-funnel',
+              title: '我的项目状态修改审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/xmztxgsq.vue')
+          },
+          {
+            path: 'rwsq',
+            name: 'rwsq',
+            meta: {
+              icon: 'md-funnel',
+              title: '我的任务审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/rwsq.vue')
+          },
+          {
+            path: 'rwlksq',
+            name: 'rwlksq',
+            meta: {
+              icon: 'md-funnel',
+              title: '我的任务路口审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/rwlksq.vue')
+          },
+          {
+            path: 'wzjrxm',
+            name: 'wzjrxm',
+            meta: {
+              icon: 'md-funnel',
+              title: '我的物资加入项目申请审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/dwzjrxm.vue')
+          },
+          {
+            path: 'ryjrxmsq',
+            name: 'ryjrxmsq',
+            meta: {
+              icon: 'md-funnel',
+              title: '我的人员加入项目申请审批',
+              hideInMenu: true
+            },
+            component: () => import('@/view/my/ryjrxmsq.vue')
           }
         ]
       },
@@ -453,6 +574,18 @@ export default [
             component: () => import('@/view/project/addTaskForm.vue')
           },
           {
+            path: 'editTaskForm',
+            name: 'editTaskForm',
+            meta: {
+              icon: 'md-funnel',
+              title: '修改任务属性',
+              hideInMenu: true,
+              needInBread: true,
+              notCache: true
+            },
+            component: () => import('@/view/project/editTaskForm.vue')
+          },
+          {
             path: 'taskReminder',
             name: 'taskReminder',
             meta: {
@@ -514,7 +647,7 @@ export default [
     path: '/statistics',
     name: 'statistics',
     meta: {
-      icon: 'md-menu',
+      icon: 'md-podium',
       title: '统计分析'
     },
     component: Main,
@@ -589,7 +722,7 @@ export default [
         path: 'MaterialList',
         name: 'MaterialList',
         meta: {
-          icon: 'md-funnel',
+          icon: 'md-menu',
           title: '物资列表',
           hideInMenu: false
         },
@@ -599,7 +732,7 @@ export default [
         path: 'MaterialAdd',
         name: 'MaterialAdd',
         meta: {
-          icon: 'md-funnel',
+          icon: 'md-add',
           title: '创建物资',
           hideInMenu: false
         },
@@ -621,7 +754,7 @@ export default [
     path: '/DailyReview',
     name: 'DailyReview',
     meta: {
-      icon: 'md-boat',
+      icon: 'ios-calendar',
       title: '日报审阅'
     },
     component: Main,
@@ -630,11 +763,21 @@ export default [
         path: 'dailyList',
         name: 'dailyList',
         meta: {
-          icon: 'md-funnel',
+          icon: 'md-menu',
           title: '日报列表',
           hideInMenu: false
         },
         component: () => import('@/view/daily/dailyList.vue')
+      },
+      {
+        path: '',
+        name: '',
+        meta: {
+          icon: '',
+          title: '',
+          hideInMenu: false
+        }
+        // component: () => import('@/view/daily/dailyList.vue')
       },
       {
         path: 'dailyDetail',

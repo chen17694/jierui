@@ -88,7 +88,7 @@
                     </span>
                   </div>
                   <div>
-                    <button typeof="button" style="border: 1px solid #2E8CEB; width: 58px; height: 41px; background-color: #ffffff; border-radius: 3px; color: #2E8CEB; cursor: pointer">详情</button>
+                    <button typeof="button" @click="toTaskDetail(item.id)" style="border: 1px solid #2E8CEB; width: 58px; height: 41px; background-color: #ffffff; border-radius: 3px; color: #2E8CEB; cursor: pointer">详情</button>
                   </div>
                 </div>
               </div>
@@ -146,7 +146,7 @@
                 </div>
                 <Select v-model="onType" style="width:110px" @on-change="typeChange">
                   <Avatar :src="avatar2" slot="prefix" size="small" />
-                  <Option value="1" >调查任务</Option>
+                  <Option value="1" >巡检任务</Option>
                   <Option value="2" >优化任务</Option>
                   <Option value="3" >宣传任务</Option>
                 </Select>
@@ -157,7 +157,7 @@
                     <div style="display: flex;width: 100%;justify-content: space-between;margin-bottom: 10px">
                       <div style="padding-right: 10px">
                         <span>{{item.name}}</span>
-                        <div v-if="item.taskStatus === 1" style="font-size: 12px"><span style="margin-right: 5px">任务类型: 调查任务</span><span>路口数量: {{item.crossingList.length}}</span></div>
+                        <div v-if="item.taskStatus === 1" style="font-size: 12px"><span style="margin-right: 5px">任务类型: 巡检任务</span><span>路口数量: {{item.crossingList.length}}</span></div>
                         <div v-if="item.taskStatus === 2" style="font-size: 12px"><span style="margin-right: 5px">任务类型: 优化任务</span><span>路口数量: {{item.crossingList.length}}</span></div>
                         <div v-if="item.taskStatus === 3" style="font-size: 12px"><span style="margin-right: 5px">任务类型: 宣传任务</span><span>路口数量: {{item.crossingList.length}}</span></div>
                       </div>
@@ -366,6 +366,14 @@ export default {
     }
   },
   methods: {
+    toTaskDetail (id) {
+      this.$router.push({
+        name: 'taskDetail',
+        query: {
+          taskId: id
+        }
+      })
+    },
     handleTask (item, type) {
       acceptOrRefuseTask({
         taskId: item.id,
