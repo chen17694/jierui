@@ -62,7 +62,16 @@
         <div class="infoItem">任务名称：{{info.taskName}}</div>
         </Col>
         <Col span="8">
-        <div class="infoItem">任务路口列表：未知的字段</div>
+        <div class="infoItem">
+          <Row style="align-items:center">
+            <Col span="8" style="line-height: 30px;">任务路口列表：</Col>
+            <Col span="16">
+              <Select placeholder="查看任务路口列表">
+                <Option v-for="(item, key) in crossList" :key="key" :value="item.value">{{item.label}}</Option>
+              </Select>
+            </Col>
+          </Row>
+        </div>
         </Col>
         <Col span="24">
         <div class="infoItem">拒绝人员：{{info.userName}}</div>
@@ -102,14 +111,16 @@
 
 <script>
 import Tables from '_c/tables'
-import { messageDetail } from '@/api/data'
+import { messageDetail, listTaskCrossing } from '@/api/data'
+import { getUserId } from '@/libs/util'
 export default {
   name: 'infoDetail',
   components: { Tables },
   data () {
     return {
       info: {},
-      Type: ''
+      Type: '',
+      crossList: []
     }
   },
   computed: {
@@ -143,6 +154,44 @@ export default {
         if (res.data.status === '200') {
           _this.info = res.data.data
           _this.Type = res.data.data.type
+          if (res.data.data.type === '6') {
+            // 获取任务路口列表
+            _this.ListTaskCrossing()
+          }
+        }
+      })
+    },
+    ListTaskCrossing () {
+      let obj = {
+        pageSize: 5000,
+        page: 0,
+        projectId: '',
+        taskId: this.info.resourceId,
+        userId: getUserId(),
+        alias: '',
+        taskCrossingStatus: 1,
+        timeStatus: '',
+        startTime: '',
+        endTime: '',
+        provinceName: '',
+        cityName: '',
+        districtName: ''
+      }
+      let _this = this
+      listTaskCrossing(obj).then((res) => {
+        let arr = res.data.data.taskCrossingDetailBeanList
+        if (arr.length > 0) {
+          _this.crossList = arr.map(ele => {
+            return { value: ele.id, label: ele.alias }
+          })
+          // // 去重
+          // _this.crossList = _this.crossList.reduce((cur, next) => {
+          //   obj[next.id] ? '' : obj[next.id] = true && cur.push(next)
+          //   // console.log(obj[next.id] ? '' : obj[next.id] = true && cur.push(next))
+          //   return cur
+          // }, [])
+        } else {
+          _this.crossList = []
         }
       })
     }
