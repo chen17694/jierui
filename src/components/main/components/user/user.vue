@@ -2,9 +2,9 @@
   <div class="user-avatar-dropdown">
     <Dropdown :transfer="true" @on-click="handleClick">
       <Badge :dot="!!messageUnreadCount">
-        <Avatar :src="userAvatar"/>
+        <Avatar :src="userAvatar || userInfo.photo"/>
       </Badge>
-      <span style="margin: 0 10px">{{userName}}</span>
+      <span style="margin: 0 10px">{{userInfo.name}}</span>
       <Icon :size="18" type="md-arrow-dropdown"></Icon>
       <DropdownMenu slot="list" @on-click="handleClick" >
         <DropdownItem name="message">
@@ -24,7 +24,7 @@ export default {
   name: 'User',
   data () {
     return {
-      userName: getOffice().name
+      userInfo: getOffice()
     }
   },
   props: {
