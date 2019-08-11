@@ -63,6 +63,22 @@
           </div>
           <tables ref="tables3" :total="this.total3" :columns="columns3" v-model="tableData3" :on-change="pageChange3" :on-page-size-change="pageSizeChange3"/>
         </TabPane>
+        <TabPane label="附件" name="name5">
+          <ul style="list-style-type: none; display: flex">
+            <li v-for="(item ,index) in annexBeans" @click="download(item)" :key="index" style="cursor: pointer;">
+              <div style=" width: 80px; height: 80px; margin-right: 10px; color: #ffffff; background-color: #2d8cf0; display: flex; align-items: center; justify-content: center;">
+                <img src="../../assets/images/file.png" style="width: 40px;">
+              </div>
+              <p style="word-wrap: break-word; width: 80px; text-align: center">{{item.annexName}}</p>
+            </li>
+          </ul>
+          <div v-if="addPermission === '0'">
+            <div style="text-align: center">
+              <input type="file" @change="uploadFile($event)" style=" position: absolute; width: 80px; opacity: 0;">
+              <Button type="primary">上传附件</Button>
+            </div>
+          </div>
+        </TabPane>
       </Tabs>
     </Card>
     <Modal
@@ -193,7 +209,7 @@
 </template>
 
 <script>
-import { selectProjectDetail, listTask, listProjectMaterial, listProjectUser, projectFunction, listProjectUserDistribution, getUnitList, addProjectManager, staffJoin, projectMaterialJoin } from '@/api/data'
+import { listProjectAnnex, selectProjectDetail, listTask, listProjectMaterial, listProjectUser, projectFunction, listProjectUserDistribution, getUnitList, addProjectManager, staffJoin, projectMaterialJoin, uploadImgToAliOss, addProjectAnnex } from '@/api/data'
 import { getUserId, getOffice } from '@/libs/util'
 import Tables from '_c/tables'
 export default {
@@ -201,6 +217,8 @@ export default {
   components: { Tables },
   data () {
     return {
+      annexBeans: [],
+      addPermission: '0',
       formItemMaterial: {
         materOfficeName: '',
         materOfficeId: '',
@@ -388,6 +406,33 @@ export default {
     }
   },
   methods: {
+    download (item) {
+      window.open(item.annexUrl)
+    },
+    uploadFile (e) {
+      uploadImgToAliOss(e).then(res => {
+        console.log(res)
+        let name = res.split('/')
+        this.file = res
+        addProjectAnnex({
+          userId: getUserId(),
+          annexUrl: this.file,
+          annexName: name[name.length - 1].split('.')[0],
+          id: this.$route.query.projectId
+        }).then((res) => {
+          console.log(res)
+          this.$Message.info(res.data.msg)
+          listProjectAnnex({
+            userId: getUserId(),
+            projectId: this.$route.query.projectId
+          }).then((res) => {
+            console.log(res)
+            this.annexBeans = res.data.data.annexBeans
+            this.addPermission = res.data.data.addPermission
+          })
+        })
+      })
+    },
     pageSizeChange1 (val) {
       console.log(val)
       this.params1.pageSize = val
@@ -663,6 +708,14 @@ export default {
       if (res.data.status === '200') {
         this.unitList = res.data.data.list
       }
+    })
+    listProjectAnnex({
+      userId: getUserId(),
+      projectId: this.$route.query.projectId
+    }).then((res) => {
+      console.log(res)
+      this.annexBeans = res.data.data.annexBeans
+      this.addPermission = res.data.data.addPermission
     })
   }
 }

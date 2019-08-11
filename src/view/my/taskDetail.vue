@@ -48,6 +48,22 @@
         <TabPane label="任务路口" name="name2">
           <tables ref="tables" :total="this.total" :on-change="pageChange" :on-page-size-change="pageSizeChange" :columns="columns" v-model="tableData" :taskRoadListBtnVisible="true" @on-edit="onEdit"/>
         </TabPane>
+        <TabPane label="附件" name="name3">
+          <ul style="list-style-type: none; display: flex">
+            <li v-for="(item ,index) in annexBeans" @click="download(item)" :key="index" style="cursor: pointer;">
+              <div style=" width: 80px; height: 80px; margin-right: 10px; color: #ffffff; background-color: #2d8cf0; display: flex; align-items: center; justify-content: center;">
+                <img src="../../assets/images/file.png" style="width: 40px;">
+              </div>
+              <p style="word-wrap: break-word; width: 80px; text-align: center">{{item.annexName}}</p>
+            </li>
+          </ul>
+          <div v-if="addPermission === '0'">
+            <div style="text-align: center">
+              <input type="file" @change="uploadFile($event)" style=" position: absolute; width: 80px; opacity: 0;">
+              <Button type="primary">上传附件</Button>
+            </div>
+          </div>
+        </TabPane>
       </Tabs>
     </Card>
     <Modal
@@ -92,7 +108,7 @@
 </template>
 
 <script>
-import { selectTaskDetail, taskFunction, taskCrossingFunction, listTaskCrossing } from '@/api/data'
+import { selectTaskDetail, taskFunction, taskCrossingFunction, listTaskCrossing, listTaskAnnex, uploadImgToAliOss, addTaskAnnex } from '@/api/data'
 import Tables from '_c/tables'
 import { getUserId, getOffice } from '@/libs/util'
 export default {
@@ -100,6 +116,8 @@ export default {
   components: { Tables },
   data () {
     return {
+      annexBeans: [],
+      addPermission: '0',
       params: {
         pageSize: 10,
         page: 1,
@@ -175,6 +193,33 @@ export default {
     }
   },
   methods: {
+    download (item) {
+      window.open(item.annexUrl)
+    },
+    uploadFile (e) {
+      uploadImgToAliOss(e).then(res => {
+        console.log(res)
+        let name = res.split('/')
+        this.file = res
+        addTaskAnnex({
+          userId: getUserId(),
+          annexUrl: this.file,
+          annexName: name[name.length - 1].split('.')[0],
+          id: this.$route.query.taskId
+        }).then((res) => {
+          console.log(res)
+          this.$Message.info(res.data.msg)
+          listTaskAnnex({
+            taskId: this.$route.query.taskId,
+            userId: getUserId()
+          }).then((res) => {
+            console.log(res)
+            this.annexBeans = res.data.data.annexBeans
+            this.addPermission = res.data.data.addPermission
+          })
+        })
+      })
+    },
     sxxiugai () {
       console.log(this.detailData)
       this.$router.push({
@@ -296,6 +341,14 @@ export default {
       console.log(res.data.data)
       this.tableData = res.data.data.taskCrossingDetailBeanList
       this.total = Number(res.data.data.count)
+    })
+    listTaskAnnex({
+      taskId: this.$route.query.taskId,
+      userId: getUserId()
+    }).then((res) => {
+      console.log(res)
+      this.annexBeans = res.data.data.annexBeans
+      this.addPermission = res.data.data.addPermission
     })
   }
 }

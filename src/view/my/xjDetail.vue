@@ -190,6 +190,14 @@ export default {
         }).then((res) => {
           console.log(res)
           this.$Message.info(res.data.msg)
+          listTaskCrossingAnnex({
+            taskCrossingId: this.$route.query.taskCrossingId,
+            userId: getUserId()
+          }).then((res) => {
+            console.log(res)
+            this.addPermission = res.data.data.addPermission
+            this.annexBeans = res.data.data.annexBeans
+          })
         })
       })
     },

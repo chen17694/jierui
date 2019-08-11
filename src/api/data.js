@@ -594,6 +594,42 @@ export const listTaskCrossingAnnex = (params) => {
     method: 'post'
   })
 }
+export const listTaskAnnex = (params) => {
+  return axios.request({
+    url: '/task/listTaskAnnex',
+    data: params,
+    method: 'post'
+  })
+}
+export const taskAnnexBeanListByProjectId = (params) => {
+  return axios.request({
+    url: '/project/taskAnnexBeanListByProjectId',
+    data: params,
+    method: 'post'
+  })
+}
+export const addProjectAnnex = (params) => {
+  return axios.request({
+    url: '/project/addProjectAnnex',
+    data: params,
+    method: 'post'
+  })
+}
+export const listProjectAnnex = (params) => {
+  return axios.request({
+    url: '/project/listProjectAnnex',
+    data: params,
+    method: 'post'
+  })
+}
+
+export const addTaskAnnex = (params) => {
+  return axios.request({
+    url: '/task/addTaskAnnex',
+    data: params,
+    method: 'post'
+  })
+}
 export const addTaskCrossingAnnex = (params) => {
   return axios.request({
     url: '/taskCrossingRelation/addTaskCrossingAnnex',
