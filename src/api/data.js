@@ -631,7 +631,8 @@ const upOss = (e, res) => {
   })
   return new Promise((resolve, reject) => {
     client.multipartUpload(e.target.files[0].name, e.target.files[0]).then(result => {
-      resolve(result.res.requestUrls[0])
+      let src = result.res.requestUrls[0].split('?')
+      resolve(src[0])
     }).catch(err => {
       console.log(err)
     })

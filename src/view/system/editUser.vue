@@ -3,7 +3,7 @@
     <Card>
       <p class="pageHead">编辑用户</p>
       <Form ref="formItem" :model="formItem" :label-width="150" :rules="ruleValidate" >
-        <FormItem label="用户名" prop="loginName">
+        <FormItem label="用户名">
           <Row>
             <Col span="11">
               {{formItem.loginName}}
@@ -282,6 +282,9 @@ export default {
         if (valid) {
           insertOrUpdateUser(params).then((res) => {
             this.$Message.info(res.data.msg)
+            this.$router.push({
+              name: 'userList'
+            })
           })
         }
       })
