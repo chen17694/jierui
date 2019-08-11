@@ -1,0 +1,282 @@
+<template>
+  <div>
+    <Card>
+      <div style="display: flex; justify-content: space-between">
+        <h2>{{detailData.alias}}</h2>
+        <div>
+          <Button type="primary" style="margin-right: 10px" @click="toHistory">查看历史版本</Button>
+          <Button @click="back">返回</Button>
+        </div>
+      </div>
+      <dl style="margin: 30px 0">
+        <dt style="font-size: 16px; font-weight: bold; margin-bottom: 10px">任务路口状态信息</dt>
+        <dd v-if="detailData.status === '1'">任务路口状态：未领取</dd>
+        <dd v-if="detailData.status === '2'">任务路口状态：已拒绝</dd>
+        <dd v-if="detailData.status === '3'">任务路口状态：未开始</dd>
+        <dd v-if="detailData.status === '4'">任务路口状态：进行中</dd>
+        <dd v-if="detailData.status === '5'">任务路口状态：审核中</dd>
+        <dd v-if="detailData.status === '6'">任务路口状态：已完成</dd>
+        <dd v-if="detailData.status === '7'">任务路口状态：已驳回</dd>
+        <dd v-if="detailData.status === '8'">任务路口状态：已撤销</dd>
+        <dd v-if="detailData.status === '9'">任务路口状态：已暂停</dd>
+        <dd>逾期天数：{{detailData.overdueDays}}</dd>
+        <dd v-if="detailData.firstPartyScoring === '1'">甲方评分：非常满意</dd>
+        <dd v-if="detailData.firstPartyScoring === '2'">甲方评分：满意</dd>
+        <dd v-if="detailData.firstPartyScoring === '3'">甲方评分：不满意</dd>
+      </dl>
+      <div class="btns" v-if="this.detailData.status !== '6'">
+        <Button type="primary" v-for="(item, index) in detailData.taskCrossingButtonPermissionBeanList" style="margin: 0 10px" :key="index">{{item.name}}</Button>
+      </div>
+      <Tabs>
+        <TabPane label="基本信息" name="name1">
+          <ul style="line-height: 40px">
+            <li><span style="font-weight: bold">项目名称</span>：{{detailData.businessProjectName}}</li>
+            <li><span style="font-weight: bold">任务名称：</span>{{detailData.businessTaskName}}</li>
+            <li>
+              <span style="margin-right: 20px" v-if="detailData.type === '1'"><span style="font-weight: bold">任务类型：</span>巡检任务</span>
+              <span style="margin-right: 20px" v-if="detailData.type === '2'"><span style="font-weight: bold">任务类型：</span>优化任务</span>
+              <span style="margin-right: 20px" v-if="detailData.type === '3'"><span style="font-weight: bold">任务类型：</span>宣传任务</span>
+              <span style="margin-right: 20px"><span style="font-weight: bold">任务负责人：</span>{{detailData.userName}}</span>
+              <span style="margin-right: 20px" v-if="detailData.status === '6' || detailData.status ==='8'"><span style="font-weight: bold">起止日期：</span>{{detailData.startTime}} - {{detailData.endTime}}</span>
+              <span style="margin-right: 20px" v-if="detailData.status !== '6' && detailData.status !=='8'"><span style="font-weight: bold">起止日期：</span>{{detailData.startTime}} - {{detailData.completionTime}}</span>
+            </li>
+            <li><span style="font-weight: bold">路口别名：</span>单点优化</li>
+            <li><span style="font-weight: bold">路口位置：</span>{{detailData.provinceName}}{{detailData.cityName}}{{detailData.districtName}}{{detailData.specificAddress}}</li>
+          </ul>
+          <div>
+            <img src="../../assets/images/default_pic.png" v-if="!photo" style="margin: 15px 15px 0 0">
+            <Avatar style="margin: 15px 15px 0 0" v-if="photo" :src="photo" size="large" />
+            <div class="ivu-upload ivu-upload-drag" style="display: inline-block; width: 58px;position: relative;">
+              <input type="file" @change="uploadPhoto($event)">
+              <div style="width: 58px;height:58px;line-height: 58px;">
+                <Icon type="ios-camera" size="20"></Icon>
+              </div>
+            </div>
+          </div>
+        </TabPane>
+        <TabPane label="巡检记录" name="name2" v-if="detailData.type === '1'">
+            <ul style="line-height: 40px">
+              <li><span style="font-weight: bold">巡检人员</span>：{{detailData.businessTaskCrossingInspectBean.inspectUserName}}</li>
+              <li><span style="font-weight: bold">巡检时间</span>：{{detailData.businessTaskCrossingInspectBean.inspectTime}}</li>
+              <li v-if="detailData.businessTaskCrossingInspectBean.status === '0'"><span style="font-weight: bold">巡检结果</span>：正常</li>
+              <li v-if="detailData.businessTaskCrossingInspectBean.status === '1'"><span style="font-weight: bold">巡检结果</span>：异常</li>
+              <li>
+                <span style="font-weight: bold">异常分类</span>：
+                <CheckboxGroup v-model="ycfl" style="display: inline-block">
+                  <Checkbox :disabled="true" label="1">信号机异常</Checkbox>
+                  <Checkbox :disabled="true"  label="2">信号灯异常</Checkbox>
+                  <Checkbox :disabled="true"  label="3">检测器异常</Checkbox>
+                  <Checkbox :disabled="true"  label="4">其它设备异常</Checkbox>
+                  <Checkbox :disabled="true"  label="5">电力异常</Checkbox>
+                  <Checkbox :disabled="true"  label="6">线缆异常</Checkbox>
+                  <Checkbox :disabled="true"  label="7">方案异常</Checkbox>
+                </CheckboxGroup>
+              </li>
+              <li><span style="font-weight: bold">异常描述</span>：{{detailData.businessTaskCrossingInspectBean.exceptionDescription}}</li>
+            </ul>
+          <div class="btns2">
+            <Button type="primary" @click="edit(detailData)">编辑</Button>
+          </div>
+        </TabPane>
+      </Tabs>
+    </Card>
+    <Modal
+      v-model="editModel"
+      title="任务状态修改申请">
+      <Form ref="formItemStatus" :model="formItemStatus" :rules="ruleCustom" :label-width="130">
+        <FormItem label="巡检结果：">
+          <Row>
+            <Col span="11">
+              <RadioGroup v-model="formItemStatus.status" @on-change="statusChange">
+                <Radio label="0">正常</Radio>
+                <Radio label="1">异常</Radio>
+              </RadioGroup>
+            </Col>
+          </Row>
+        </FormItem>
+        <FormItem label="异常分类：">
+          <Row>
+            <Col span="11">
+              <CheckboxGroup v-model="formItemStatus.exceptionType">
+                <Checkbox label="1" :disabled="exceptionTypeDisabled">信号机异常</Checkbox>
+                <Checkbox label="2" :disabled="exceptionTypeDisabled">信号灯异常</Checkbox>
+                <Checkbox label="3" :disabled="exceptionTypeDisabled">检测器异常</Checkbox>
+                <Checkbox label="4" :disabled="exceptionTypeDisabled">其它设备异常</Checkbox>
+                <Checkbox label="5" :disabled="exceptionTypeDisabled">电力异常</Checkbox>
+                <Checkbox label="6" :disabled="exceptionTypeDisabled">线缆异常</Checkbox>
+                <Checkbox label="7" :disabled="exceptionTypeDisabled">方案异常</Checkbox>
+              </CheckboxGroup>
+            </Col>
+          </Row>
+        </FormItem>
+        <FormItem label="异常描述：">
+          <Row>
+            <Col span="20">
+              <Input v-model="formItemStatus.exceptionDescription" :disabled="exceptionDescriptionDisabled" type="textarea" :autosize="{minRows: 3,maxRows: 5}" style="width: 100%"/>
+            </Col>
+          </Row>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="statusModel = false">取消</Button>
+        <Button type="primary" size="large" @click="saveStatus">确定</Button>
+      </div>
+    </Modal>
+  </div>
+</template>
+
+<script>
+import { selectTaskCrossingDetailBean, uploadTaskCrossingInspect, uploadImgToAliOss, uploadChannelizationMap } from '@/api/data'
+import { getUserId } from '@/libs/util'
+export default {
+  name: 'xjDetail',
+  data () {
+    return {
+      photo: '',
+      detailData: {},
+      ycfl: '',
+      editModel: false,
+      formItemStatus: {
+        status: '',
+        exceptionType: [],
+        exceptionDescription: ''
+      },
+      ruleCustom: {},
+      exceptionTypeDisabled: true,
+      exceptionDescriptionDisabled: true
+    }
+  },
+  methods: {
+    uploadPhoto (e) {
+      uploadImgToAliOss(e).then(res => {
+        this.photo = res
+        uploadChannelizationMap({
+          id: this.$route.query.taskCrossingId,
+          channelizationMapUrl: this.photo
+        }).then((res) => {
+          console.log(res)
+          this.$Message.info(res.data.msg)
+        })
+      })
+    },
+    toHistory () {
+      this.$router.push({
+        name: 'roadHistory',
+        query: {
+          crossingCode: this.detailData.crossingCode
+        }
+      })
+    },
+    getData () {
+      selectTaskCrossingDetailBean({
+        taskCrossingId: this.$route.query.taskCrossingId,
+        userId: getUserId()
+      }).then((res) => {
+        console.log(res)
+        this.detailData = res.data.data
+        this.ycfl = res.data.data.businessTaskCrossingInspectBean.exceptionType.split(',')
+        if (res.data.data.businessTaskCrossingInspectBean.status === '0') {
+          this.exceptionTypeDisabled = true
+          this.exceptionDescriptionDisabled = true
+        } else {
+          this.exceptionTypeDisabled = false
+          this.exceptionDescriptionDisabled = false
+        }
+        console.log(this.ycfl)
+      })
+    },
+    back () {
+      this.$router.back(-1)
+    },
+    statusChange () {
+      console.log(arguments)
+      if (arguments[0] === '0') {
+        this.formItemStatus = {
+          status: '0',
+          exceptionType: [],
+          exceptionDescription: ''
+        }
+        this.exceptionTypeDisabled = true
+        this.exceptionDescriptionDisabled = true
+      } else {
+        this.formItemStatus = {
+          status: '1',
+          exceptionType: [],
+          exceptionDescription: ''
+        }
+        this.exceptionTypeDisabled = false
+        this.exceptionDescriptionDisabled = false
+      }
+    },
+    saveStatus () {
+      console.log(this.formItemStatus)
+      uploadTaskCrossingInspect({
+        businessTaskCrossingId: this.$route.query.taskCrossingId,
+        status: this.formItemStatus.status,
+        exceptionType: this.formItemStatus.exceptionType.join(','),
+        exceptionDescription: this.formItemStatus.exceptionDescription
+      }).then((res) => {
+        console.log(res)
+        this.$Message.info(res.data.msg)
+      })
+    },
+    edit (data) {
+      this.editModel = true
+      this.formItemStatus = {
+        status: data.businessTaskCrossingInspectBean.status,
+        exceptionType: data.businessTaskCrossingInspectBean.exceptionType.split(','),
+        exceptionDescription: data.businessTaskCrossingInspectBean.exceptionDescription
+      }
+    }
+  },
+  mounted () {
+    this.getData()
+  }
+}
+</script>
+
+<style scoped lang="less">
+  dd{
+    display: inline-block;
+    margin-right: 20px;
+  }
+  .btns{
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    background-color: rgba(45, 140, 240, 0.2);
+    border: 1px solid #2d8cf0;
+    padding: 10px 0;
+  }
+  .ivu-form-item{
+    margin-bottom: 0;
+    /deep/ .ivu-form-item-error-tip{
+      position: static;
+    }
+  }
+  .btns2{
+    margin-top: 6px;
+    text-align: center;
+    .ivu-btn-primary{
+      margin-right: 10px;
+    }
+    .ivu-btn{
+      width: 80px;
+    }
+  }
+  .ivu-upload input[type="file"] {
+    display: block;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 58px;
+    width: 100%;
+  }
+  .ivu-avatar-large {
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    border-radius: 50%;
+  }
+</style>

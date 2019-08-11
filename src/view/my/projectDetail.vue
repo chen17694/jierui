@@ -32,7 +32,8 @@
             <li>
               <span style="margin-right: 20px"><span style="font-weight: bold">甲方公司：</span>{{detailData.firstPartyCompanyName}}</span>
               <span style="margin-right: 20px"><span style="font-weight: bold">甲方负责人：</span>{{detailData.firstPartyUserName}}</span>
-              <span style="margin-right: 20px"><span style="font-weight: bold">起止日期：</span>{{detailData.startTime}} - {{detailData.endTime}}</span>
+              <span style="margin-right: 20px" v-if="detailData.status==='4' || detailData.status==='6'"><span style="font-weight: bold">起止日期：</span>{{detailData.startTime}} - {{detailData.endTime}}</span>
+              <span style="margin-right: 20px" v-if="detailData.status!=='4'&& detailData.status!=='6'"><span style="font-weight: bold">起止日期：</span>{{detailData.startTime}} - {{detailData.completionTime}}</span>
             </li>
             <li>
               <span style="margin-right: 20px"><span style="font-weight: bold">主导单位：</span>{{detailData.officeName}}</span>
@@ -131,7 +132,7 @@
         </FormItem>
       </Form>
       <div slot="footer">
-        <Button type="text" size="large" @click="statusModel = false">取消</Button>
+        <Button type="text" size="large" @click="materialModel = false">取消</Button>
         <Button type="primary" size="large" @click="saveMaterial">确定</Button>
       </div>
     </Modal>
@@ -360,7 +361,7 @@ export default {
       columns2: [
         { title: '物资名称', key: 'name' },
         { title: '物资单位', key: 'officeName' },
-        { title: '物资数量', key: 'amount ' },
+        { title: '物资数量', key: 'amount' },
         { title: '已借数量', key: 'lendAmount' },
         { title: '剩余数量', key: 'surplusAmount' }
       ],
@@ -443,6 +444,7 @@ export default {
       }).then((res) => {
         console.log(res)
         this.$Message.info(res.data.msg)
+        this.materialModel = false
       })
     },
     closeJoinModel () {

@@ -506,6 +506,14 @@ export const taskCrossingFunction = (params) => {
     method: 'post'
   })
 }
+export const listCrossingByCode = (params) => {
+  return axios.request({
+    url: '/CrossingAPI/listCrossingByCode',
+    data: params,
+    method: 'post'
+  })
+}
+
 export const projectMaterialJoin = (params) => {
   return axios.request({
     url: '/materia/projectMaterialJoin',
@@ -572,9 +580,23 @@ export const addProject = (params) => {
     method: 'post'
   })
 }
+export const uploadChannelizationMap = (params) => {
+  return axios.request({
+    url: '/taskCrossingRelation/uploadChannelizationMap',
+    data: params,
+    method: 'post'
+  })
+}
 export const taskMaterialDetail = (params) => {
   return axios.request({
     url: '/materia/taskMaterialDetail',
+    data: params,
+    method: 'post'
+  })
+}
+export const uploadTaskCrossingInspect = (params) => {
+  return axios.request({
+    url: '/taskCrossingRelation/uploadTaskCrossingInspect',
     data: params,
     method: 'post'
   })

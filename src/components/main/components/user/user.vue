@@ -24,14 +24,11 @@ export default {
   name: 'User',
   data () {
     return {
-      userName: getOffice().name
+      userName: getOffice().name,
+      userAvatar: getOffice().photo
     }
   },
   props: {
-    userAvatar: {
-      type: String,
-      default: ''
-    },
     messageUnreadCount: {
       type: Number,
       default: 0

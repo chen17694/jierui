@@ -42,11 +42,11 @@ export default [
         name: 'home',
         meta: {
           hideInMenu: true,
-          title: '首页',
+          title: '我的项目',
           notCache: true,
           icon: 'md-home'
         },
-        component: () => import('@/view/single-page/home')
+        component: () => import('@/view/my/myProject.vue')
       }
     ]
   },
@@ -87,6 +87,46 @@ export default [
           hideInMenu: true
         },
         component: () => import('@/view/my/taskDetail.vue')
+      },
+      {
+        path: 'xjDetail',
+        name: 'xjDetail',
+        meta: {
+          icon: 'md-funnel',
+          title: '任务路口详情',
+          hideInMenu: true
+        },
+        component: () => import('@/view/my/xjDetail.vue')
+      },
+      {
+        path: 'yhDetail',
+        name: 'yhDetail',
+        meta: {
+          icon: 'md-funnel',
+          title: '任务路口详情',
+          hideInMenu: true
+        },
+        component: () => import('@/view/my/yhDetail.vue')
+      },
+      {
+        path: 'xcDetail',
+        name: 'xcDetail',
+        meta: {
+          icon: 'md-funnel',
+          title: '任务路口详情',
+          hideInMenu: true
+        },
+        component: () => import('@/view/my/xcDetail.vue')
+      },
+      {
+        path: 'roadHistory',
+        name: 'roadHistory',
+        meta: {
+          icon: 'md-funnel',
+          title: '任务路口历史版本信息',
+          hideInMenu: true
+        },
+        component: () => import('@/view/my/roadHistory.vue')
       },
       {
         path: 'map',

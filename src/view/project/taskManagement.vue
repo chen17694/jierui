@@ -159,22 +159,24 @@ export default {
           key: 'taskStatus',
           render: (h, params) => {
             let text = ''
-            if (params.row.type === '1') {
+            if (params.row.taskStatus === '1') {
               text = '未领取'
-            } else if (params.row.type === '2') {
+            } else if (params.row.taskStatus === '2') {
               text = '已拒绝'
-            } else if (params.row.type === '3') {
+            } else if (params.row.taskStatus === '3') {
               text = '未开始'
-            } else if (params.row.type === '4') {
+            } else if (params.row.taskStatus === '4') {
               text = '进行中'
-            } else if (params.row.type === '5') {
+            } else if (params.row.taskStatus === '5') {
               text = '审核中'
-            } else if (params.row.type === '6') {
+            } else if (params.row.taskStatus === '6') {
               text = '已完成'
-            } else if (params.row.type === '7') {
+            } else if (params.row.taskStatus === '7') {
               text = '已驳回'
-            } else if (params.row.type === '8') {
+            } else if (params.row.taskStatus === '8') {
               text = '已撤销'
+            } else if (params.row.taskStatus === '9') {
+              text = '已暂停'
             }
             return h('div', { props: {} }, text)
           }

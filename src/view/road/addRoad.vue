@@ -219,9 +219,9 @@ export default {
         userId: getUserId(),
         userName: this.formItem1.userName,
         alias: this.formItem1.alias,
-        provinceName: this.formItem1.area,
-        cityName: this.formItem1.area,
-        districtName: this.formItem1.area,
+        provinceName: this.formItem1.area[0],
+        cityName: this.formItem1.area[1],
+        districtName: this.formItem1.area[2],
         specificAddress: this.formItem1.specificAddress,
         lng: this.lng,
         lat: this.lat
@@ -236,7 +236,9 @@ export default {
       let value = arguments[1].slice(1, arguments[1].length).map((item) => {
         return item.label
       })
-      this.formItem1.area = value.join()
+      console.log(arguments)
+      console.log(value)
+      this.formItem1.area = value
     },
     addRoad () {
       this.roadPanel = true

@@ -71,7 +71,7 @@
               </span>
             </div>
             <div>
-              <button typeof="button" @click="getDetail(item.id)" style="border: 1px solid #2E8CEB; width: 58px; height: 41px; background-color: #ffffff; border-radius: 3px; color: #2E8CEB; cursor: pointer">详情</button>
+              <button typeof="button" @click="toTaskDetail(item.id, item.type)" style="border: 1px solid #2E8CEB; width: 58px; height: 41px; background-color: #ffffff; border-radius: 3px; color: #2E8CEB; cursor: pointer">详情</button>
             </div>
           </div>
         </div>
@@ -125,7 +125,7 @@
 </template>
 
 <script>
-import { areaData, projectFunction, listTaskCrossing, listMapTaskCrossing, selectTaskCrossingDetailBean } from '@/api/data'
+import { areaData, taskCrossingFunction, listTaskCrossing, listMapTaskCrossing, selectTaskCrossingDetailBean } from '@/api/data'
 import { getUserId } from '@/libs/util'
 import trx1 from '../../assets/images/trx1.png'
 import trx2 from '../../assets/images/trx2.png'
@@ -314,7 +314,7 @@ export default {
       this.$Modal.confirm({
         title: str,
         onOk: () => {
-          projectFunction({
+          taskCrossingFunction({
             'taskCrossingId': row.id,
             'userId': getUserId(),
             'functionType': params.permissionCode
@@ -407,6 +407,30 @@ export default {
         }
         this.maxPage = Math.ceil(this.total / 3)
       })
+    },
+    toTaskDetail (id, type) {
+      if (type === '1') {
+        this.$router.push({
+          name: 'xjDetail',
+          query: {
+            taskCrossingId: id
+          }
+        })
+      } else if (type === '2') {
+        this.$router.push({
+          name: 'yhDetail',
+          query: {
+            taskCrossingId: id
+          }
+        })
+      } else if (type === '3') {
+        this.$router.push({
+          name: 'xcDetail',
+          query: {
+            taskCrossingId: id
+          }
+        })
+      }
     },
     getDetail (id) {
       selectTaskCrossingDetailBean({
