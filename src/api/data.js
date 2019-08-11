@@ -587,6 +587,21 @@ export const uploadChannelizationMap = (params) => {
     method: 'post'
   })
 }
+export const listTaskCrossingAnnex = (params) => {
+  return axios.request({
+    url: '/taskCrossingRelation/listTaskCrossingAnnex',
+    data: params,
+    method: 'post'
+  })
+}
+export const addTaskCrossingAnnex = (params) => {
+  return axios.request({
+    url: '/taskCrossingRelation/addTaskCrossingAnnex',
+    data: params,
+    method: 'post'
+  })
+}
+
 export const taskMaterialDetail = (params) => {
   return axios.request({
     url: '/materia/taskMaterialDetail',

@@ -86,7 +86,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tables" :total="this.total"  @on-row-click="onRowClick" :columns="columns" v-model="tableData" :projectListBtnVisible="true" @on-edit="onEdit" :on-change="pageChange" :on-page-sizeChange="pageSizeChange"/>
+    <tables ref="tables" :total="this.total" @on-row-click="onRowClick" :columns="columns" v-model="tableData" :projectListBtnVisible="true" @on-edit="onEdit" :on-change="pageChange" :on-page-sizeChange="pageSizeChange"/>
   </div>
 </template>
 
@@ -163,6 +163,14 @@ export default {
     }
   },
   methods: {
+    onRowClick () {
+      this.$router.push({
+        name: 'projectDetail',
+        query: {
+          projectId: arguments[0].id
+        }
+      })
+    },
     reminder () {
       this.$router.push({
         name: 'projectReminder'

@@ -43,15 +43,30 @@
             <li><span style="font-weight: bold">路口别名：</span>单点优化</li>
             <li><span style="font-weight: bold">路口位置：</span>{{detailData.provinceName}}{{detailData.cityName}}{{detailData.districtName}}{{detailData.specificAddress}}</li>
           </ul>
-          <div>
+          <div style="margin: 30px 0">
+            <p style="font-weight: bold; margin-bottom: 10px">渠化图</p>
             <img src="../../assets/images/default_pic.png" v-if="!photo" style="margin: 15px 15px 0 0">
-            <Avatar style="margin: 15px 15px 0 0" v-if="photo" :src="photo" size="large" />
-            <div class="ivu-upload ivu-upload-drag" style="display: inline-block; width: 58px;position: relative;">
+            <img :src="photo" v-if="photo" style="margin: 15px 15px 0 0">
+            <div class="ivu-upload ivu-upload-drag" style="display: inline-block; width: 58px;position: relative;" v-if="detailData.updateChannelizationMap === '0'">
               <input type="file" @change="uploadPhoto($event)">
               <div style="width: 58px;height:58px;line-height: 58px;">
                 <Icon type="ios-camera" size="20"></Icon>
               </div>
             </div>
+          </div>
+          <div style="margin: 30px 0">
+            <p style="font-weight: bold; margin-bottom: 10px; position: relative">附件
+              <span style="position: absolute; opacity: 0; right: 0;"><input type="file" @change="uploadFile($event)" v-if="addPermission === '0'"></span>
+              <Button type="primary" style="float: right" v-if="addPermission === '0'">上传附件</Button>
+            </p>
+            <ul style="list-style-type: none">
+              <li v-for="(item ,index) in annexBeans" @click="download(item)" :key="index" style="float: left;cursor: pointer;">
+                <div style=" width: 80px; height: 80px; margin-right: 10px; color: #ffffff; background-color: #2d8cf0; display: flex; align-items: center; justify-content: center;">
+                  <img src="../../assets/images/file.png" style="width: 40px;">
+                </div>
+                <p style="word-wrap: break-word; width: 80px; text-align: center">{{item.annexName}}</p>
+              </li>
+            </ul>
           </div>
         </TabPane>
         <TabPane label="巡检记录" name="name2" v-if="detailData.type === '1'">
@@ -126,13 +141,16 @@
 </template>
 
 <script>
-import { selectTaskCrossingDetailBean, uploadTaskCrossingInspect, uploadImgToAliOss, uploadChannelizationMap } from '@/api/data'
+import { selectTaskCrossingDetailBean, uploadTaskCrossingInspect, uploadImgToAliOss, uploadChannelizationMap, addTaskCrossingAnnex, listTaskCrossingAnnex } from '@/api/data'
 import { getUserId } from '@/libs/util'
 export default {
   name: 'xjDetail',
   data () {
     return {
+      addPermission: '0',
+      annexBeans: [],
       photo: '',
+      file: '',
       detailData: {},
       ycfl: '',
       editModel: false,
@@ -159,6 +177,22 @@ export default {
         })
       })
     },
+    uploadFile (e) {
+      uploadImgToAliOss(e).then(res => {
+        console.log(res)
+        let name = res.split('/')
+        this.file = res
+        addTaskCrossingAnnex({
+          userId: getUserId(),
+          annexUrl: this.file,
+          annexName: name[name.length - 1].split('.')[0],
+          id: this.$route.query.taskCrossingId
+        }).then((res) => {
+          console.log(res)
+          this.$Message.info(res.data.msg)
+        })
+      })
+    },
     toHistory () {
       this.$router.push({
         name: 'roadHistory',
@@ -175,6 +209,7 @@ export default {
         console.log(res)
         this.detailData = res.data.data
         this.ycfl = res.data.data.businessTaskCrossingInspectBean.exceptionType.split(',')
+        this.photo = res.data.data.channelizationMapUrl
         if (res.data.data.businessTaskCrossingInspectBean.status === '0') {
           this.exceptionTypeDisabled = true
           this.exceptionDescriptionDisabled = true
@@ -208,6 +243,9 @@ export default {
         this.exceptionDescriptionDisabled = false
       }
     },
+    download (item) {
+      window.open(item.annexUrl)
+    },
     saveStatus () {
       console.log(this.formItemStatus)
       uploadTaskCrossingInspect({
@@ -231,6 +269,14 @@ export default {
   },
   mounted () {
     this.getData()
+    listTaskCrossingAnnex({
+      taskCrossingId: this.$route.query.taskCrossingId,
+      userId: getUserId()
+    }).then((res) => {
+      console.log(res)
+      this.addPermission = res.data.data.addPermission
+      this.annexBeans = res.data.data.annexBeans
+    })
   }
 }
 </script>

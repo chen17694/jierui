@@ -34,12 +34,15 @@
 
 <script>
 import { listCrossingByCode } from '@/api/data'
+import { getUserId } from '@/libs/util'
 export default {
   name: 'roadHistory',
   data () {
     return {
       banbenList: [],
-      detailData: {}
+      detailData: {},
+      annexBeans: [],
+      photo: ''
     }
   },
   methods: {
@@ -51,7 +54,7 @@ export default {
     listCrossingByCode({
       startTime: '',
       endTime: '',
-      userId: '',
+      userId: getUserId(),
       crossingCode: this.$route.query.crossingCode
     }).then((res) => {
       console.log(res)
