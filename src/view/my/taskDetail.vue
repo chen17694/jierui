@@ -4,7 +4,7 @@
       <div style="display: flex; justify-content: space-between">
         <h2>{{detailData.name}}</h2>
         <div>
-          <Button type="primary" style="margin-right: 10px" @click="sxxiugai" v-if="this.detailData.status !== '4'">修改任务属性</Button>
+          <Button type="primary" style="margin-right: 10px" @click="sxxiugai" v-if="this.detailData.updateTsakPermission === '0'">修改任务属性</Button>
           <Button @click="back">返回</Button>
         </div>
       </div>

@@ -63,7 +63,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tables" @on-row-click="onRowClick" :on-change="pageChange" :on-page-size-change="pageSizeChange" :total="this.total" v-model="tableData" :columns="columns" @on-back="onBack" @on-selection-change="onSelectionChange"></tables>
+    <tables ref="tables" @on-row-dblclick="onRowClick" :on-change="pageChange" :on-page-size-change="pageSizeChange" :total="this.total" v-model="tableData" :columns="columns" @on-back="onBack" @on-selection-change="onSelectionChange"></tables>
   </div>
 </template>
 
@@ -95,11 +95,11 @@ export default {
           align: 'center'
         },
         { title: '物资名称', key: 'name' },
-        { title: '物资总数', key: 'amount' },
-        { title: '剩余数量', key: 'surplusAmount' },
-        { title: '出借数量', key: 'lendAmount' },
-        { title: '所属单位', key: 'officeName' },
-        { title: '物资类型', key: 'materialCategoryName' },
+        { title: '项目名称', key: 'projectNane' },
+        { title: '任务名称', key: 'taskName' },
+        { title: '物资数量', key: 'amount' },
+        { title: '归还日期', key: 'completionTime' },
+        { title: '剩余天数', key: 'remainderDays' },
         {
           title: '操作',
           key: 'handle',

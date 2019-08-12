@@ -1,10 +1,10 @@
 <template>
   <Tabs v-model="tab" :animated="false">
     <TabPane label="我的审核审批进度" name="myAudit">
-      <tables :total="this.total"  v-model="tableData" @on-row-click="onRowClick" :columns="columns1" :on-change="pageChange" :on-page-size-change="pageSizeChange"></tables>
+      <tables :total="this.total"  v-model="tableData" @on-row-dblclick="onRowClick" :columns="columns1" :on-change="pageChange" :on-page-size-change="pageSizeChange"></tables>
     </TabPane>
     <TabPane label="待我审批" name="waiting">
-      <tables :total="this.total" v-model="tableData" @on-row-click="onRowClick" :columns="columns2" :on-change="pageChange" :on-page-size-change="pageSizeChange"></tables>
+      <tables :total="this.total" v-model="tableData" @on-row-dblclick="onRowClick" :columns="columns2" :on-change="pageChange" :on-page-size-change="pageSizeChange"></tables>
     </TabPane>
   </Tabs>
 </template>

@@ -84,7 +84,7 @@
       </Form>
       <div class="btns">
         <Button type="primary" @click="this.save">保存</Button>
-        <Button>返回</Button>
+        <Button @click="back">返回</Button>
       </div>
     </Card>
   </div>
@@ -197,6 +197,9 @@ export default {
     }
   },
   methods: {
+    back () {
+      this.$router.go(-10)
+    },
     taskHoldersOnChange () {
       this.formItem.taskHoldersName = arguments[0].label
     },

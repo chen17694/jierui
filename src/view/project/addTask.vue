@@ -56,16 +56,26 @@ export default {
   },
   methods: {
     toAdd () {
-      this.$router.push({
-        name: 'addTaskForm',
-        params: {
-          lat: this.lat,
-          lng: this.lng
-        },
-        query: {
-          projectId: this.$route.query.projectId ? this.$route.query.projectId : ''
-        }
-      })
+      if (this.$route.query.projectId) {
+        this.$router.push({
+          name: 'addTaskForm',
+          params: {
+            lat: this.lat,
+            lng: this.lng
+          },
+          query: {
+            projectId: this.$route.query.projectId
+          }
+        })
+      } else {
+        this.$router.push({
+          name: 'addTaskForm',
+          params: {
+            lat: this.lat,
+            lng: this.lng
+          }
+        })
+      }
     },
     close () {
       this.menu.close()

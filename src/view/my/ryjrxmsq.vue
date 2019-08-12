@@ -82,7 +82,7 @@ export default {
   methods: {
     back () {
       this.$router.push({
-        name: 'projectOverdue'
+        name: 'myApproval'
       })
     },
     chexiao () {

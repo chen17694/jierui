@@ -83,7 +83,7 @@
                       <Button v-if="i.permissionCode === '2' && item.pauseStatus === '0'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">暂停任务</Button>
                       <Button v-if="i.permissionCode === '3'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">撤销任务</Button>
                       <Button v-if="i.permissionCode === '4'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">催办任务</Button>
-                      <Button v-if="i.permissionCode === '5'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">新增任务路口</Button>
+                      <Button v-if="i.permissionCode === '5'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">提交审核</Button>
                       <Button v-if="i.permissionCode === '6'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">删除任务</Button>
                     </span>
                   </div>

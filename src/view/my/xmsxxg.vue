@@ -187,6 +187,7 @@ export default {
           position: this.detailData.provinceName + this.detailData.cityName + this.detailData.districtName + this.detailData.specificAddress
         }
         console.log(this)
+        this.getUser()
       })
     },
     deteChange () {
@@ -195,6 +196,7 @@ export default {
       this.formItem.endTime = arguments[0][1]
     },
     getUser () {
+      console.log(this.detailData)
       getUserList({
         'pageSize': 0,
         'page': 0,
@@ -235,7 +237,6 @@ export default {
   mounted () {
     console.log(getOffice())
     this.getData()
-    this.getUser()
     this.getProjectManager()
     this.addMarker()
   }

@@ -10,7 +10,7 @@
           </span>
           <span @click.stop>
             <span style="margin-right: 10px; cursor: pointer" @click="toArray(item)">{{item.select ? '已选' : '选取'}}</span>
-            <Button type="primary" size="small">详情</Button>
+            <Button type="primary" @click="toDetail(item)" size="small">详情</Button>
           </span>
         </div>
         <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 11px 10px 15px; border-bottom: 1px solid #e6e6e6;">
@@ -37,7 +37,7 @@
           </span>
           <span>
             <span style="margin-right: 10px; cursor: pointer" @click="deleteArray(index)">移除</span>
-            <Button type="primary" size="small">详情</Button>
+            <Button type="primary" @click="toDetail(item)" size="small">详情</Button>
           </span>
         </div>
         <Button type="primary" style="width: 90%; margin: 10px auto; display: block" @click="taskRoadPanel = true">新增已选任务路口</Button>
@@ -198,6 +198,14 @@ export default {
         this.params.page--
         this.getRoad()
       }
+    },
+    toDetail (item) {
+      this.$router.push({
+        name: 'roadHistory',
+        query: {
+          crossingCode: item.crossingCode
+        }
+      })
     },
     nextPage () {
       if (this.params.page < this.maxPage) {

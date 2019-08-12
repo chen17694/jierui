@@ -4,7 +4,7 @@
       <div style="display: flex; justify-content: space-between">
         <h2>{{detailData.name}}</h2>
         <div>
-          <Button type="primary" style="margin-right: 10px" @click="sxxiugai" v-if="this.detailData.status !== '4'">修改项目属性</Button>
+          <Button type="primary" style="margin-right: 10px" @click="sxxiugai" v-if="this.detailData.updateProjectPermission === '0' || this.detailData.applyUpdateProjectPermission === '0'">修改项目属性</Button>
           <Button @click="back">返回</Button>
         </div>
       </div>
@@ -55,10 +55,10 @@
           <tables ref="tables2" :total="this.total2" :columns="columns2" v-model="tableData2" :on-change="pageChange2" :on-page-size-change="pageSizeChange2"/>
         </TabPane>
         <TabPane label="项目团队" name="name4">
-          <div style="margin-bottom: 10px" v-if="this.detailData.status !== '4'">
-            <div>
-              <Button type="primary" style="margin-right: 5px" @click="zdfxmjl">指定副项目经理</Button>
-              <Button type="primary" @click="joinModel = true">人员加入项目申请</Button>
+          <div style="margin-bottom: 10px; display: flex;" v-if="this.detailData.status !== '4'">
+            <div v-for="(item, index) in tableData3Btns" :key="index">
+              <Button type="primary" style="margin-right: 5px" @click="zdfxmjl" v-if="index === 0">{{item.name}}</Button>
+              <Button type="primary" @click="joinModel = true" v-if="index === 1">{{item.name}}</Button>
             </div>
           </div>
           <tables ref="tables3" :total="this.total3" :columns="columns3" v-model="tableData3" :on-change="pageChange3" :on-page-size-change="pageSizeChange3"/>
@@ -188,7 +188,7 @@
     <Modal
       v-model="allocatePanel"
       width="600"
-      title="分配用户"
+      title="指定副项目经理"
       @on-ok="save"
     >
       <Select v-model="unit" style="width:200px; margin-bottom: 15px" @on-change="selectUnit">
@@ -269,6 +269,7 @@ export default {
       tableData1: [],
       tableData2: [],
       tableData3: [],
+      tableData3Btns: [],
       total: 0,
       total1: 0,
       total2: 0,
@@ -636,6 +637,7 @@ export default {
     getData3 () {
       listProjectUser(this.params3).then((res) => {
         this.tableData3 = res.data.data.list
+        this.tableData3Btns = res.data.data.projectButtonPermissionBeans
         this.total3 = Number(res.data.data.total)
         console.log(this.tableData3)
       })

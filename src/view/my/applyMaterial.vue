@@ -250,6 +250,11 @@ export default {
           projectMaterialId: ''
         }
       ]
+      materialCategory().then((res) => {
+        console.log(res)
+        this.addRows[this.rowIndex].categoryList = res.data.data
+        this.addInit()
+      })
       this.tableData = [{
         cname: this.addRows[0].categoryList,
         mname: this.addRows[0].materialList

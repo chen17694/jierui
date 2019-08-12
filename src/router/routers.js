@@ -236,8 +236,8 @@ export default [
         component: parentView,
         children: [
           {
-            path: 'projectOverdue',
-            name: 'projectOverdue',
+            path: 'myApproval',
+            name: 'myApproval',
             meta: {
               icon: 'md-funnel',
               title: '我的审核审批',
@@ -414,7 +414,7 @@ export default [
               title: '我的物资加入项目申请审批',
               hideInMenu: true
             },
-            component: () => import('@/view/my/dwzjrxm.vue')
+            component: () => import('@/view/my/wzjrxm.vue')
           },
           {
             path: 'ryjrxmsq',
@@ -609,7 +609,7 @@ export default [
               title: '新建任务',
               hideInMenu: true,
               needInBread: true,
-              notCache: true
+              keepAlive: true
             },
             component: () => import('@/view/project/addTaskForm.vue')
           },

@@ -149,7 +149,7 @@
               :columns="columns"
               :page-size="oneSearch.pageSize"
               :on-change="pageChange"
-              :on-page-sizeChange="pageSizeChange"
+              :on-page-size-change="pageSizeChange"
             ></tables>
           </Col>
           <Col span="2">&nbsp;</Col>

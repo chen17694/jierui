@@ -87,7 +87,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tables" :total="this.total" @on-row-click="onRowClick" :on-change="pageChange" :on-page-size-change="pageSizeChange" :columns="columns" v-model="tableData" :taskRoadListBtnVisible="true" @on-edit="onEdit"/>
+    <tables ref="tables" :total="this.total" @on-row-dblclick="onRowClick" :on-change="pageChange" :on-page-size-change="pageSizeChange" :columns="columns" v-model="tableData" :taskRoadListBtnVisible="true" @on-edit="onEdit"/>
   </div>
 </template>
 

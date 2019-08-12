@@ -186,7 +186,7 @@ export default {
     },
     back () {
       this.$router.push({
-        name: 'projectOverdue'
+        name: 'myApproval'
       })
     },
     getMaterialList (id, index) {
