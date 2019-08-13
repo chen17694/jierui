@@ -543,7 +543,27 @@ export const listOverdueMaterial = (params) => {
     method: 'post'
   })
 }
-
+export const deleteProjectAnnex = (params) => {
+  return axios.request({
+    url: '/project/deleteProjectAnnex',
+    data: params,
+    method: 'post'
+  })
+}
+export const deleteTasktAnnex = (params) => {
+  return axios.request({
+    url: '/task/deleteTasktAnnex',
+    data: params,
+    method: 'post'
+  })
+}
+export const deleteTaskCrossingAnnex = (params) => {
+  return axios.request({
+    url: '/taskCrossingRelation/deleteTaskCrossingAnnex',
+    data: params,
+    method: 'post'
+  })
+}
 export const deleteUser = (params) => {
   return axios.request({
     url: '/user/deleteUser',

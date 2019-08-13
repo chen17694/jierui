@@ -46,8 +46,8 @@
           <div style="margin: 30px 0">
             <p style="font-weight: bold; margin-bottom: 10px">渠化图</p>
             <img src="../../assets/images/default_pic.png" v-if="!photo" style="margin: 15px 15px 0 0">
-            <img :src="photo" v-if="photo" style="margin: 15px 15px 0 0">
-            <div class="ivu-upload ivu-upload-drag" style="display: inline-block; width: 58px;position: relative;" v-if="detailData.updateChannelizationMap === '0'">
+            <img :src="photo" v-if="photo" style="margin: 15px 15px 0 0; cursor:zoom-in;" @click="download(photo)">
+            <div class="ivu-upload ivu-upload-drag" style="display: inline-block; width: 58px;position: relative;">
               <input type="file" @change="uploadPhoto($event)">
               <div style="width: 58px;height:58px;line-height: 58px;">
                 <Icon type="ios-camera" size="20"></Icon>
@@ -59,22 +59,25 @@
               <span style="position: absolute; opacity: 0; right: 0;"><input type="file" @change="uploadFile($event)" v-if="addPermission === '0'"></span>
               <Button type="primary" style="float: right" v-if="addPermission === '0'">上传附件</Button>
             </p>
-            <ul style="list-style-type: none">
-              <li v-for="(item ,index) in annexBeans" @click="download(item)" :key="index" style="float: left;cursor: pointer;">
-                <div style=" width: 80px; height: 80px; margin-right: 10px; color: #ffffff; background-color: #2d8cf0; display: flex; align-items: center; justify-content: center;">
-                  <img src="../../assets/images/file.png" style="width: 40px;">
+            <ul style="list-style-type: none; display: flex">
+              <li v-for="(item ,index) in annexBeans" @click="download(item)" :key="index" style="cursor: pointer;border: 1px solid #dcdee2;border-radius: 5px; padding-top: 10px; width: 120px; margin-right: 10px">
+                <div style="background-color: #ffffff; display: flex; align-items: center; justify-content: center;">
+                  <img src="../../assets/images/file.png" style="width: 60px;">
                 </div>
-                <p style="word-wrap: break-word; width: 80px; text-align: center">{{item.annexName}}</p>
+                <p style="word-wrap: break-word; text-align: center; margin-bottom: 5px; padding: 0 5px;">{{item.annexName}}</p>
+                <div style="text-align: center" @click.stop>
+                  <img src="../../assets/images/delete.png" style="width: 20px;" @click="deleteFile(item.id)">
+                </div>
               </li>
             </ul>
           </div>
         </TabPane>
-        <TabPane label="巡检记录" name="name2" v-if="detailData.type === '1'">
+        <TabPane label="巡检记录" name="name2" v-if="detailData.businessTaskCrossingInspectBean">
             <ul style="line-height: 40px">
-              <li><span style="font-weight: bold">巡检人员</span>：{{detailData.businessTaskCrossingInspectBean.inspectUserName}}</li>
-              <li><span style="font-weight: bold">巡检时间</span>：{{detailData.businessTaskCrossingInspectBean.inspectTime}}</li>
-              <li v-if="detailData.businessTaskCrossingInspectBean.status === '0'"><span style="font-weight: bold">巡检结果</span>：正常</li>
-              <li v-if="detailData.businessTaskCrossingInspectBean.status === '1'"><span style="font-weight: bold">巡检结果</span>：异常</li>
+              <li><span style="font-weight: bold">巡检人员</span>：{{detailData.businessTaskCrossingInspectBean ? detailData.businessTaskCrossingInspectBean.inspectUserName : ''}}</li>
+              <li><span style="font-weight: bold">巡检时间</span>：{{detailData.businessTaskCrossingInspectBean? detailData.businessTaskCrossingInspectBean.inspectTime : ''}}</li>
+              <li v-if="detailData.businessTaskCrossingInspectBean && detailData.businessTaskCrossingInspectBean.status === '0'"><span style="font-weight: bold">巡检结果</span>：正常</li>
+              <li v-if="detailData.businessTaskCrossingInspectBean && detailData.businessTaskCrossingInspectBean.status === '1'"><span style="font-weight: bold">巡检结果</span>：异常</li>
               <li>
                 <span style="font-weight: bold">异常分类</span>：
                 <CheckboxGroup v-model="ycfl" style="display: inline-block">
@@ -87,7 +90,7 @@
                   <Checkbox :disabled="true"  label="7">方案异常</Checkbox>
                 </CheckboxGroup>
               </li>
-              <li><span style="font-weight: bold">异常描述</span>：{{detailData.businessTaskCrossingInspectBean.exceptionDescription}}</li>
+              <li><span style="font-weight: bold">异常描述</span>：{{detailData.businessTaskCrossingInspectBean ? detailData.businessTaskCrossingInspectBean.exceptionDescription : ''}}</li>
             </ul>
           <div class="btns2">
             <Button type="primary" @click="edit(detailData)">编辑</Button>
@@ -141,7 +144,7 @@
 </template>
 
 <script>
-import { selectTaskCrossingDetailBean, uploadTaskCrossingInspect, uploadImgToAliOss, uploadChannelizationMap, addTaskCrossingAnnex, listTaskCrossingAnnex } from '@/api/data'
+import { selectTaskCrossingDetailBean, uploadTaskCrossingInspect, uploadImgToAliOss, uploadChannelizationMap, addTaskCrossingAnnex, listTaskCrossingAnnex, deleteTaskCrossingAnnex } from '@/api/data'
 import { getUserId } from '@/libs/util'
 export default {
   name: 'xjDetail',
@@ -165,6 +168,27 @@ export default {
     }
   },
   methods: {
+    deleteFile (id) {
+      this.$Modal.confirm({
+        title: '是否执行删除操作',
+        content: '<p>删除后不能找回，还要继续吗</p>',
+        onOk: () => {
+          deleteTaskCrossingAnnex({
+            id: id,
+            userId: getUserId()
+          }).then((res) => {
+            listTaskCrossingAnnex({
+              taskCrossingId: this.$route.query.taskCrossingId,
+              userId: getUserId()
+            }).then((res) => {
+              console.log(res)
+              this.addPermission = res.data.data.addPermission
+              this.annexBeans = res.data.data.annexBeans
+            })
+          })
+        }
+      })
+    },
     uploadPhoto (e) {
       uploadImgToAliOss(e).then(res => {
         this.photo = res
@@ -185,7 +209,7 @@ export default {
         addTaskCrossingAnnex({
           userId: getUserId(),
           annexUrl: this.file,
-          annexName: name[name.length - 1].split('.')[0],
+          annexName: name[name.length - 1],
           id: this.$route.query.taskCrossingId
         }).then((res) => {
           console.log(res)
@@ -216,14 +240,16 @@ export default {
       }).then((res) => {
         console.log(res)
         this.detailData = res.data.data
-        this.ycfl = res.data.data.businessTaskCrossingInspectBean.exceptionType.split(',')
+        this.ycfl = res.data.data.businessTaskCrossingInspectBean && res.data.data.businessTaskCrossingInspectBean.exceptionType.split(',')
         this.photo = res.data.data.channelizationMapUrl
-        if (res.data.data.businessTaskCrossingInspectBean.status === '0') {
-          this.exceptionTypeDisabled = true
-          this.exceptionDescriptionDisabled = true
-        } else {
-          this.exceptionTypeDisabled = false
-          this.exceptionDescriptionDisabled = false
+        if (res.data.data.businessTaskCrossingInspectBean) {
+          if (res.data.data.businessTaskCrossingInspectBean.status === '0') {
+            this.exceptionTypeDisabled = true
+            this.exceptionDescriptionDisabled = true
+          } else {
+            this.exceptionTypeDisabled = false
+            this.exceptionDescriptionDisabled = false
+          }
         }
         console.log(this.ycfl)
       })
@@ -269,9 +295,9 @@ export default {
     edit (data) {
       this.editModel = true
       this.formItemStatus = {
-        status: data.businessTaskCrossingInspectBean.status,
-        exceptionType: data.businessTaskCrossingInspectBean.exceptionType.split(','),
-        exceptionDescription: data.businessTaskCrossingInspectBean.exceptionDescription
+        status: data.businessTaskCrossingInspectBean && data.businessTaskCrossingInspectBean.status,
+        exceptionType: data.businessTaskCrossingInspectBean && data.businessTaskCrossingInspectBean.exceptionType.split(','),
+        exceptionDescription: data.businessTaskCrossingInspectBean && data.businessTaskCrossingInspectBean.exceptionDescription
       }
     }
   },

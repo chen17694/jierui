@@ -65,11 +65,14 @@
         </TabPane>
         <TabPane label="附件" name="name5">
           <ul style="list-style-type: none; display: flex">
-            <li v-for="(item ,index) in annexBeans" @click="download(item)" :key="index" style="cursor: pointer;">
-              <div style=" width: 80px; height: 80px; margin-right: 10px; color: #ffffff; background-color: #2d8cf0; display: flex; align-items: center; justify-content: center;">
-                <img src="../../assets/images/file.png" style="width: 40px;">
+            <li v-for="(item ,index) in annexBeans" @click="download(item)" :key="index" style="cursor: pointer;border: 1px solid #dcdee2;border-radius: 5px; padding-top: 10px; width: 120px; margin-right: 10px">
+              <div style="background-color: #ffffff; display: flex; align-items: center; justify-content: center;">
+                <img src="../../assets/images/file.png" style="width: 60px;">
               </div>
-              <p style="word-wrap: break-word; width: 80px; text-align: center">{{item.annexName}}</p>
+              <p style="word-wrap: break-word; text-align: center; margin-bottom: 5px; padding: 0 5px;">{{item.annexName}}</p>
+              <div style="text-align: center" @click.stop>
+                <img src="../../assets/images/delete.png" style="width: 20px;" @click="deleteFile(item.id)">
+              </div>
             </li>
           </ul>
           <div v-if="addPermission === '0'">
@@ -209,7 +212,7 @@
 </template>
 
 <script>
-import { listProjectAnnex, selectProjectDetail, listTask, listProjectMaterial, listProjectUser, projectFunction, listProjectUserDistribution, getUnitList, addProjectManager, staffJoin, projectMaterialJoin, uploadImgToAliOss, addProjectAnnex } from '@/api/data'
+import { listProjectAnnex, deleteProjectAnnex, selectProjectDetail, listTask, listProjectMaterial, listProjectUser, projectFunction, listProjectUserDistribution, getUnitList, addProjectManager, staffJoin, projectMaterialJoin, uploadImgToAliOss, addProjectAnnex } from '@/api/data'
 import { getUserId, getOffice } from '@/libs/util'
 import Tables from '_c/tables'
 export default {
@@ -407,6 +410,27 @@ export default {
     }
   },
   methods: {
+    deleteFile (id) {
+      this.$Modal.confirm({
+        title: '是否执行删除操作',
+        content: '<p>删除后不能找回，还要继续吗</p>',
+        onOk: () => {
+          deleteProjectAnnex({
+            id: id,
+            userId: getUserId()
+          }).then((res) => {
+            listProjectAnnex({
+              userId: getUserId(),
+              projectId: this.$route.query.projectId
+            }).then((res) => {
+              console.log(res)
+              this.annexBeans = res.data.data.annexBeans
+              this.addPermission = res.data.data.addPermission
+            })
+          })
+        }
+      })
+    },
     download (item) {
       window.open(item.annexUrl)
     },
@@ -414,11 +438,12 @@ export default {
       uploadImgToAliOss(e).then(res => {
         console.log(res)
         let name = res.split('/')
+        console.log(name)
         this.file = res
         addProjectAnnex({
           userId: getUserId(),
           annexUrl: this.file,
-          annexName: name[name.length - 1].split('.')[0],
+          annexName: name[name.length - 1],
           id: this.$route.query.projectId
         }).then((res) => {
           console.log(res)

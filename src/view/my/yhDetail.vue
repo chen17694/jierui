@@ -46,8 +46,8 @@
           <div style="margin: 30px 0">
             <p style="font-weight: bold; margin-bottom: 10px">渠化图</p>
             <img src="../../assets/images/default_pic.png" v-if="!photo" style="margin: 15px 15px 0 0">
-            <img :src="photo" v-if="photo" style="margin: 15px 15px 0 0">
-            <div class="ivu-upload ivu-upload-drag" style="display: inline-block; width: 58px;position: relative;" v-if="detailData.updateChannelizationMap === '0'">
+            <img :src="photo" v-if="photo" style="margin: 15px 15px 0 0; cursor:zoom-in;" @click="download(photo)">
+            <div class="ivu-upload ivu-upload-drag" style="display: inline-block; width: 58px;position: relative;">
               <input type="file" @change="uploadPhoto($event)">
               <div style="width: 58px;height:58px;line-height: 58px;">
                 <Icon type="ios-camera" size="20"></Icon>
@@ -59,12 +59,15 @@
               <span style="position: absolute; opacity: 0; right: 0;"><input type="file" @change="uploadFile($event)" v-if="addPermission === '0'"></span>
               <Button type="primary" style="float: right" v-if="addPermission === '0'">上传附件</Button>
             </p>
-            <ul style="list-style-type: none">
-              <li v-for="(item ,index) in annexBeans" @click="download(item)" :key="index" style="float: left;cursor: pointer;">
-                <div style=" width: 80px; height: 80px; margin-right: 10px; color: #ffffff; background-color: #2d8cf0; display: flex; align-items: center; justify-content: center;">
-                  <img src="../../assets/images/file.png" style="width: 40px;">
+            <ul style="list-style-type: none; display: flex">
+              <li v-for="(item ,index) in annexBeans" @click="download(item.annexUrl)" :key="index" style="cursor: pointer;border: 1px solid #dcdee2;border-radius: 5px; padding-top: 10px; width: 120px; margin-right: 10px">
+                <div style="background-color: #ffffff; display: flex; align-items: center; justify-content: center;">
+                  <img src="../../assets/images/file.png" style="width: 60px;">
                 </div>
-                <p style="word-wrap: break-word; width: 80px; text-align: center">{{item.annexName}}</p>
+                <p style="word-wrap: break-word; text-align: center; margin-bottom: 5px; padding: 0 5px;">{{item.annexName}}</p>
+                <div style="text-align: center" @click.stop>
+                  <img src="../../assets/images/delete.png" style="width: 20px;" @click="deleteFile(item.id)">
+                </div>
               </li>
             </ul>
           </div>
@@ -75,7 +78,7 @@
 </template>
 
 <script>
-import { selectTaskCrossingDetailBean, uploadTaskCrossingInspect, uploadImgToAliOss, addTaskCrossingAnnex, uploadChannelizationMap, listTaskCrossingAnnex } from '@/api/data'
+import { selectTaskCrossingDetailBean, uploadTaskCrossingInspect, uploadImgToAliOss, addTaskCrossingAnnex, uploadChannelizationMap, listTaskCrossingAnnex, deleteTaskCrossingAnnex } from '@/api/data'
 import { getUserId } from '@/libs/util'
 export default {
   name: 'xjDetail',
@@ -99,8 +102,29 @@ export default {
     }
   },
   methods: {
-    download (item) {
-      window.open(item.annexUrl)
+    deleteFile (id) {
+      this.$Modal.confirm({
+        title: '是否执行删除操作',
+        content: '<p>删除后不能找回，还要继续吗</p>',
+        onOk: () => {
+          deleteTaskCrossingAnnex({
+            id: id,
+            userId: getUserId()
+          }).then((res) => {
+            listTaskCrossingAnnex({
+              taskCrossingId: this.$route.query.taskCrossingId,
+              userId: getUserId()
+            }).then((res) => {
+              console.log(res)
+              this.addPermission = res.data.data.addPermission
+              this.annexBeans = res.data.data.annexBeans
+            })
+          })
+        }
+      })
+    },
+    download (annexUrl) {
+      window.open(annexUrl)
     },
     uploadPhoto (e) {
       uploadImgToAliOss(e).then(res => {
@@ -122,7 +146,7 @@ export default {
         addTaskCrossingAnnex({
           userId: getUserId(),
           annexUrl: this.file,
-          annexName: name[name.length - 1].split('.')[0],
+          annexName: name[name.length - 1],
           id: this.$route.query.taskCrossingId
         }).then((res) => {
           console.log(res)
