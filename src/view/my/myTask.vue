@@ -50,7 +50,7 @@
                 </div>
                 <Select v-model="onStatus" style="width:100px" @on-change="statusChange">
                   <span :style="{ backgroundColor: avatar }" style="width: 15px; height: 15px; display: inline-block; border-radius: 50%; vertical-align: middle;" slot="prefix"></span>
-                  <Option value="1" >未领取</Option>
+                  <!--<Option value="1" >未领取</Option>-->
                   <Option value="2" >已拒绝</Option>
                   <Option value="3" >未开始</Option>
                   <Option value="4" >进行中</Option>
@@ -251,7 +251,7 @@ export default {
       ty9,
       avatar: '#FF5000',
       avatar2: tx1,
-      onStatus: '1',
+      onStatus: '2',
       isDetail: false,
       detailData: {},
       minClusterSize: 2,

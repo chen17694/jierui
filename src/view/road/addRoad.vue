@@ -9,7 +9,7 @@
           </span>
           <span @click.stop>
             <!--<span style="margin-right: 10px; cursor: pointer" @click="toArray(item)">{{item.select ? '已选' : '选取'}}</span>-->
-            <Button type="primary" size="small">详情</Button>
+            <Button type="primary" size="small" @click="toDetail(item.crossingCode)">详情</Button>
           </span>
         </div>
       </div>
@@ -163,6 +163,14 @@ export default {
     }
   },
   methods: {
+    toDetail (crossingCode) {
+      this.$router.push({
+        name: 'roadHistory',
+        query: {
+          crossingCode: crossingCode
+        }
+      })
+    },
     dateChange () {
       console.log(arguments)
       this.formItem2.startTime = arguments[0][0]

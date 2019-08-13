@@ -21,6 +21,9 @@
         <dd v-if="detailData.firstPartyScoring === '1'">甲方评分：非常满意</dd>
         <dd v-if="detailData.firstPartyScoring === '2'">甲方评分：满意</dd>
         <dd v-if="detailData.firstPartyScoring === '3'">甲方评分：不满意</dd>
+        <dd v-if="detailData.firstPartyScoring === '3'">
+          不满意原因：{{detailData.dissatisfiedReason}}
+        </dd>
       </dl>
       <div class="btns" v-if="this.detailData.status !== '4'">
         <Button type="primary" v-for="(item, index) in detailData.projectButtonPermissionBeans" style="margin: 0 10px" :key="index" @click="statusChange(item.permissionCode)">{{item.name}}</Button>
