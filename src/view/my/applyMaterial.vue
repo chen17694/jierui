@@ -230,6 +230,7 @@ export default {
       console.log(obj)
       materialApplication(obj).then((res) => {
         this.$Message.info(res.data.msg)
+        this.$router.go(-1)
       }).catch((err) => {
         console.log(err)
       })

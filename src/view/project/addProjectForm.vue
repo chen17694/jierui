@@ -77,7 +77,7 @@
         </FormItem>
       </Form>
       <div class="btns">
-        <Button type="primary" @click="this.save">保存</Button>
+        <Button type="primary" @click="save">保存</Button>
         <Button @click="back">返回</Button>
       </div>
     </Card>
@@ -228,6 +228,7 @@ export default {
             'userId': getUserId()
           }).then((res) => {
             this.$Message.info(res.data.msg)
+            this.$router.go(-1)
           })
         }
       })

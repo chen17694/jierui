@@ -85,6 +85,7 @@ export default {
         if (valid) {
           insertOrUpdateRole(params).then((res) => {
             this.$Message.info(res.data.msg)
+            this.$router.go(-1)
           })
         }
       })

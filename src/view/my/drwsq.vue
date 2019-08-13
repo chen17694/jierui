@@ -105,6 +105,7 @@ export default {
       opt(obj).then((res) => {
         console.log(res)
         this.$Message.info(res.data.msg)
+        this.$router.go(-1)
       })
     },
     getData () {
