@@ -4,7 +4,7 @@
       <Badge :dot="!!messageUnreadCount">
         <Avatar :src="userAvatar || userInfo.photo"/>
       </Badge>
-      <span style="margin: 0 10px">{{userInfo.name}}</span>
+      <span style="margin: 0 10px" @click="info">{{userInfo.name}}</span>
       <Icon :size="18" type="md-arrow-dropdown"></Icon>
       <DropdownMenu slot="list" @on-click="handleClick" >
         <DropdownItem name="message">
@@ -49,6 +49,11 @@ export default {
     message () {
       this.$router.push({
         name: 'infoList'
+      })
+    },
+    info () {
+      this.$router.push({
+        name: 'userInfo'
       })
     },
     handleClick (name) {

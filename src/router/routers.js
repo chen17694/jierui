@@ -69,6 +69,15 @@ export default [
         component: () => import('@/view/my/myProject.vue')
       },
       {
+        path: 'userInfo',
+        name: 'userInfo',
+        meta: {
+          icon: 'md-funnel',
+          title: '我的信息'
+        },
+        component: () => import('@/view/my/userInfo.vue')
+      },
+      {
         path: 'projectDetail',
         name: 'projectDetail',
         meta: {

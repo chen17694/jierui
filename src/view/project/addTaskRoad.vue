@@ -100,7 +100,7 @@
 
 <script>
 import { AMapManager, lazyAMapApiLoaderInstance } from 'vue-amap'
-import { areaData, addCrossing, listProject, listTask, addTaskCrossing, listCrossingAndCount } from '@/api/data'
+import { areaData, addCrossing, listProject, listTaskSimple, addTaskCrossing, listCrossingAndCount } from '@/api/data'
 import { getUserInfo, getUserId } from '@/libs/util'
 import road from '../../assets/images/road.png'
 import icon1 from '../../assets/images/icon1.png'
@@ -250,24 +250,16 @@ export default {
     projectChange () {
       this.taskList = []
       this.formItem2.businessTaskId = ''
-      listTask({
+      listTaskSimple({
         pageSize: 0,
         page: 0,
-        businessProjectId: this.formItem2.businessProjectId,
-        type: '',
-        name: '',
-        taskStatus: '',
-        firstPartyScoring: '',
         userId: getUserId(),
-        timeStatus: '',
-        startTime: '',
-        endTime: '',
-        provinceName: '',
-        cityName: '',
-        districtName: ''
+        projectId: this.formItem2.businessProjectId,
+        taskName: '',
+        type: '1'
       }).then((res) => {
         console.log(res)
-        this.taskList = res.data.data.taskDetailBeans
+        this.taskList = res.data.data
       })
     },
     saveRoad () {

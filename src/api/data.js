@@ -580,6 +580,13 @@ export const addProject = (params) => {
     method: 'post'
   })
 }
+export const listTaskSimple = (params) => {
+  return axios.request({
+    url: '/task/listTaskSimple',
+    data: params,
+    method: 'post'
+  })
+}
 export const uploadChannelizationMap = (params) => {
   return axios.request({
     url: '/taskCrossingRelation/uploadChannelizationMap',

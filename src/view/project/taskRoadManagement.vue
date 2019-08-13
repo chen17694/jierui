@@ -14,7 +14,7 @@
       <Col span="12">
         <div style="float: right">
           <Button type="warning" style="margin-right: 10px" @click="reminder">任务路口提醒</Button>
-          <Button type="success" @click="toAdd">新建任务路口</Button>
+          <Button type="success" @click="toAdd" v-if="creatTaskCrossingPermission === '0' || creatThisTaskCrossingPermission === '0'">新建任务路口</Button>
         </div>
       </Col>
     </Row>
@@ -100,6 +100,8 @@ export default {
   components: { Tables },
   data () {
     return {
+      creatTaskCrossingPermission: '0',
+      creatThisTaskCrossingPermission: '0',
       params: {
         pageSize: 10,
         page: 1,
@@ -209,6 +211,8 @@ export default {
       listTaskCrossing(this.params).then((res) => {
         console.log(res.data.data)
         this.tableData = res.data.data.taskCrossingDetailBeanList
+        this.creatThisTaskCrossingPermission = res.data.data.creatThisTaskCrossingPermission
+        this.creatTaskCrossingPermission = res.data.data.creatTaskCrossingPermission
         this.total = Number(res.data.data.count)
       })
     },
