@@ -617,8 +617,7 @@ export default [
               icon: 'md-funnel',
               title: '新建任务',
               hideInMenu: true,
-              needInBread: true,
-              keepAlive: true
+              needInBread: true
             },
             component: () => import('@/view/project/addTaskForm.vue')
           },

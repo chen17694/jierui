@@ -68,6 +68,33 @@ export default{
     }
   },
   methods: {
+    onRowClick  () {
+      console.log(arguments)
+      let type = arguments[0].type
+      let id = arguments[0].id
+      if (type === '1') {
+        this.$router.push({
+          name: 'xjDetail',
+          query: {
+            taskCrossingId: id
+          }
+        })
+      } else if (type === '2') {
+        this.$router.push({
+          name: 'yhDetail',
+          query: {
+            taskCrossingId: id
+          }
+        })
+      } else if (type === '3') {
+        this.$router.push({
+          name: 'xcDetail',
+          query: {
+            taskCrossingId: id
+          }
+        })
+      }
+    },
     pageChange (page) {
       this.params.page = page
       this.getData()
