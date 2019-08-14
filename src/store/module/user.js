@@ -6,7 +6,8 @@ import {
   removeReaded,
   restoreTrash
 } from '@/api/user'
-import { setToken, getToken, setUserId, setUserInfo, setOffice } from '@/libs/util'
+import { setToken, getToken, setUserId, setUserInfo, setOffice, getUserId } from '@/libs/util'
+import { listMessage } from '@/api/data'
 
 export default {
   state: {
@@ -139,12 +140,20 @@ export default {
     //   })
     // },
     // 此方法用来获取未读消息条数，接口只返回数值，不返回消息列表
-    // getUnreadMessageCount ({ state, commit }) {
-    //   getUnreadCount().then(res => {
-    //     const { data } = res
-    //     commit('setMessageCount', data)
-    //   })
-    // },
+    getUnreadMessageCount ({ state, commit }) {
+      listMessage({
+        pageSize: 0,
+        page: 0,
+        id: getUserId(),
+        name: '',
+        type: '',
+        status: '0'
+      }).then(res => {
+        const data = res.data.data.total
+        console.log(res)
+        commit('setMessageCount', data)
+      })
+    },
     // 获取消息列表，其中包含未读、已读、回收站三个列表
     getMessageList ({ state, commit }) {
       return new Promise((resolve, reject) => {

@@ -27,9 +27,6 @@
           不满意原因：{{detailData.dissatisfiedReason}}
         </dd>
       </dl>
-      <div class="btns" v-if="this.detailData.status !== '6'">
-        <Button type="primary" v-for="(item, index) in detailData.taskCrossingButtonPermissionBeanList" style="margin: 0 10px" :key="index">{{item.name}}</Button>
-      </div>
       <Tabs>
         <TabPane label="基本信息" name="name1">
           <ul style="line-height: 40px">

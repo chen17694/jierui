@@ -16,6 +16,7 @@
         <dd v-if="detailData.status === '4'">项目状态：已完成</dd>
         <dd v-if="detailData.status === '5'">项目状态：已驳回</dd>
         <dd v-if="detailData.status === '6'">项目状态：已撤销</dd>
+        <dd v-if="detailData.pauseStatus === '1'">项目状态：已暂停</dd>
         <dd>逾期天数：{{detailData.overdueDays}}</dd>
         <dd>项目进度：{{detailData.progress}}%</dd>
         <dd v-if="detailData.firstPartyScoring === '1'">甲方评分：非常满意</dd>
@@ -590,6 +591,7 @@ export default {
             'pauseStatus': this.detailData.pauseStatus === '0' ? '1' : '0'
           }).then((res) => {
             this.$Message.info(res.data.msg)
+            this.init()
           })
         } else {
           return false
@@ -719,34 +721,36 @@ export default {
           }
         })
       }
+    },
+    init () {
+      this.getData()
+      this.getData1()
+      this.getData2()
+      this.getData3()
+      getUnitList({
+        'pageSize': 0,
+        'page': 0,
+        'name': '',
+        'areaId': '',
+        'type': '',
+        'userId': getUserId()
+      }).then(res => {
+        if (res.data.status === '200') {
+          this.unitList = res.data.data.list
+        }
+      })
+      listProjectAnnex({
+        userId: getUserId(),
+        projectId: this.$route.query.projectId
+      }).then((res) => {
+        console.log(res)
+        this.annexBeans = res.data.data.annexBeans
+        this.addPermission = res.data.data.addPermission
+      })
     }
   },
   mounted () {
-    console.log(getOffice())
-    this.getData()
-    this.getData1()
-    this.getData2()
-    this.getData3()
-    getUnitList({
-      'pageSize': 0,
-      'page': 0,
-      'name': '',
-      'areaId': '',
-      'type': '',
-      'userId': getUserId()
-    }).then(res => {
-      if (res.data.status === '200') {
-        this.unitList = res.data.data.list
-      }
-    })
-    listProjectAnnex({
-      userId: getUserId(),
-      projectId: this.$route.query.projectId
-    }).then((res) => {
-      console.log(res)
-      this.annexBeans = res.data.data.annexBeans
-      this.addPermission = res.data.data.addPermission
-    })
+    this.init()
   }
 }
 </script>

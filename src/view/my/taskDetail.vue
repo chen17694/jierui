@@ -10,12 +10,15 @@
       </div>
       <dl style="margin-top: 30px">
         <dt style="font-size: 16px; font-weight: bold; margin-bottom: 10px">任务状态信息</dt>
-        <dd v-if="detailData.taskStatus === '1'">项目状态：未开始</dd>
-        <dd v-if="detailData.taskStatus === '2'">项目状态：进行中</dd>
-        <dd v-if="detailData.taskStatus === '3'">项目状态：审核中</dd>
-        <dd v-if="detailData.taskStatus === '4'">项目状态：已完成</dd>
-        <dd v-if="detailData.taskStatus === '5'">项目状态：已驳回</dd>
-        <dd v-if="detailData.taskStatus === '6'">项目状态：已撤销</dd>
+        <dd v-if="detailData.taskStatus === '1'">任务状态：未领取</dd>
+        <dd v-if="detailData.taskStatus === '2'">任务状态：已拒绝</dd>
+        <dd v-if="detailData.taskStatus === '3'">任务状态：未开始</dd>
+        <dd v-if="detailData.taskStatus === '4'">任务状态：进行中</dd>
+        <dd v-if="detailData.taskStatus === '5'">任务状态：审核中</dd>
+        <dd v-if="detailData.taskStatus === '6'">任务状态：已完成</dd>
+        <dd v-if="detailData.taskStatus === '7'">任务状态：已驳回</dd>
+        <dd v-if="detailData.taskStatus === '8'">任务状态：已撤销</dd>
+        <dd v-if="detailData.pauseStatus === '1'">任务状态：已暂停</dd>
         <dd>逾期天数：{{detailData.overdueDays}}</dd>
         <dd>项目进度：{{detailData.progress}}%</dd>
         <dd v-if="detailData.firstPartyScoring === '1'">甲方评分：非常满意</dd>

@@ -27,9 +27,6 @@
           不满意原因：{{detailData.dissatisfiedReason}}
         </dd>
       </dl>
-      <div class="btns" v-if="this.detailData.status !== '6'">
-        <Button type="primary" v-for="(item, index) in detailData.taskCrossingButtonPermissionBeanList" style="margin: 0 10px" :key="index">{{item.name}}</Button>
-      </div>
       <Tabs>
         <TabPane label="基本信息" name="name1">
           <ul style="line-height: 40px">
@@ -81,7 +78,7 @@
 </template>
 
 <script>
-import { selectTaskCrossingDetailBean, uploadTaskCrossingInspect, uploadImgToAliOss, addTaskCrossingAnnex, uploadChannelizationMap, listTaskCrossingAnnex, deleteTaskCrossingAnnex } from '@/api/data'
+import { selectTaskCrossingDetailBean, uploadImgToAliOss, addTaskCrossingAnnex, uploadChannelizationMap, listTaskCrossingAnnex, deleteTaskCrossingAnnex } from '@/api/data'
 import { getUserId } from '@/libs/util'
 export default {
   name: 'xjDetail',
@@ -91,17 +88,7 @@ export default {
       annexBeans: [],
       photo: '',
       file: '',
-      detailData: {},
-      ycfl: '',
-      editModel: false,
-      formItemStatus: {
-        status: '',
-        exceptionType: [],
-        exceptionDescription: ''
-      },
-      ruleCustom: {},
-      exceptionTypeDisabled: true,
-      exceptionDescriptionDisabled: true
+      detailData: {}
     }
   },
   methods: {
@@ -185,38 +172,6 @@ export default {
     },
     back () {
       this.$router.back(-1)
-    },
-    statusChange () {
-      console.log(arguments)
-      if (arguments[0] === '0') {
-        this.formItemStatus = {
-          status: '0',
-          exceptionType: [],
-          exceptionDescription: ''
-        }
-        this.exceptionTypeDisabled = true
-        this.exceptionDescriptionDisabled = true
-      } else {
-        this.formItemStatus = {
-          status: '1',
-          exceptionType: [],
-          exceptionDescription: ''
-        }
-        this.exceptionTypeDisabled = false
-        this.exceptionDescriptionDisabled = false
-      }
-    },
-    saveStatus () {
-      console.log(this.formItemStatus)
-      uploadTaskCrossingInspect({
-        businessTaskCrossingId: this.$route.query.taskCrossingId,
-        status: this.formItemStatus.status,
-        exceptionType: this.formItemStatus.exceptionType.join(','),
-        exceptionDescription: this.formItemStatus.exceptionDescription
-      }).then((res) => {
-        console.log(res)
-        this.$Message.info(res.data.msg)
-      })
     }
   },
   mounted () {
