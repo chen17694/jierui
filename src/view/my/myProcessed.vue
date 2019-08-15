@@ -318,6 +318,8 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="less">
+  .ivu-tabs{
+    overflow: initial;
+  }
 </style>

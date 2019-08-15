@@ -267,7 +267,7 @@ export default {
     onEdit (params, row) {
       if (params.permissionCode === '2') {
         this.$Modal.confirm({
-          title: params.permissionCode === '2' ? '确定要' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该任务吗？' : '确定要申请' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该任务吗？',
+          title: '确定要' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该任务吗？',
           onOk: () => {
             taskFunction({
               'taskId': row.id,
@@ -279,6 +279,10 @@ export default {
               this.getData()
             })
           }
+        })
+      } else if (params.permissionCode === '99') {
+        this.$router.push({
+          name: 'addTaskRoad'
         })
       } else {
         let str = ''

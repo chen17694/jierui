@@ -148,6 +148,7 @@ export default{
 
 <style scoped  lang="less">
   .ivu-tabs{
+    overflow: initial;
     /deep/ .ivu-tabs-bar{
       border: 0 none;
     }

@@ -75,44 +75,6 @@
         </TabPane>
       </Tabs>
     </Card>
-    <Modal
-      v-model="statusModel"
-      title="任务状态修改申请">
-      <Form ref="formItemStatus" :model="formItemStatus" :rules="ruleCustom" :label-width="130">
-        <FormItem label="项目名称：">
-          <Row>
-            <Col span="11">
-              {{detailData.name}}
-            </Col>
-          </Row>
-        </FormItem>
-        <FormItem label="项目状态修改为：">
-          <Row>
-            <Col span="11">
-              {{this.status}}
-            </Col>
-          </Row>
-        </FormItem>
-        <FormItem label="申请人员：">
-          <Row>
-            <Col span="11">
-              {{userName}}
-            </Col>
-          </Row>
-        </FormItem>
-        <FormItem label="申请原因：" prop="content">
-          <Row>
-            <Col span="20">
-              <Input v-model="formItemStatus.content" type="textarea" :autosize="{minRows: 3,maxRows: 5}" style="width: 100%"/>
-            </Col>
-          </Row>
-        </FormItem>
-      </Form>
-      <div slot="footer">
-        <Button type="text" size="large" @click="statusModel = false">取消</Button>
-        <Button type="primary" size="large" @click="saveStatus">确定</Button>
-      </div>
-    </Modal>
   </div>
 </template>
 
@@ -187,18 +149,7 @@ export default {
         }
       ],
       userName: getOffice().name,
-      detailData: {},
-      statusModel: false,
-      permissionCode: '',
-      status: '',
-      formItemStatus: {
-        content: ''
-      },
-      ruleCustom: {
-        content: [
-          { required: true, message: '请输入申请原因', trigger: 'blur' }
-        ]
-      }
+      detailData: {}
     }
   },
   methods: {
@@ -311,75 +262,84 @@ export default {
         this.detailData = res.data.data
       })
     },
-    saveStatus () {
-      this.$refs['formItemStatus'].validate((valid) => {
-        if (valid) {
-          taskFunction({
-            'taskId': this.detailData.id,
-            'userId': getUserId(),
-            'functionType': this.permissionCode,
-            'pauseStatus': this.detailData.pauseStatus === '0' ? '1' : '0'
-          }).then((res) => {
-            this.$Message.info(res.data.msg)
-          })
-        } else {
-          return false
-        }
-      })
-    },
     statusChange (permissionCode) {
-      let txt = ''
-      switch (permissionCode) {
-        case '1':
-          txt = '开始项目'
-          break
-        case '2':
-          txt = '暂停/开始项目'
-          break
-        case '3':
-          txt = '申请暂停/开始项目'
-          break
-        case '4':
-          txt = '撤销项目'
-          break
-        case '5':
-          txt = '申请撤销项目'
-          break
-        case '6':
-          txt = '逾期催办'
-          break
-        case '7':
-          txt = '提交审核'
-          break
-        case '8':
-          txt = '删除项目'
-          break
-        case '99':
-          this.$router.push({
-            name: 'addTask'
-          })
-          break
+      if (permissionCode === '99') {
+        this.$router.push({
+          name: 'addTaskRoad'
+        })
+      } else {
+        let str = ''
+        switch (permissionCode) {
+          case '1':
+            str = '确定要下达任务吗？'
+            break
+          case '2':
+            str = '确定要' + (this.detailData.pauseStatus === '0' ? '暂停' : '开始') + '该项目吗？'
+            break
+          case '3':
+            str = '确定要撤销任务吗？'
+            break
+          case '4':
+            str = '确定要催办该任务吗？'
+            break
+          case '5':
+            str = '确定要提交审核吗？'
+            break
+          case '6':
+            str = '确定要删除该任务吗？'
+            break
+        }
+        this.$Modal.confirm({
+          title: str,
+          onOk: () => {
+            let obj = {}
+            if (permissionCode === '2') {
+              obj = {
+                'taskId': this.detailData.id,
+                'userId': getUserId(),
+                'functionType': permissionCode,
+                'pauseStatus': this.detailData.pauseStatus === '0' ? '1' : '0'
+              }
+            } else {
+              obj = {
+                'taskId': this.detailData.id,
+                'userId': getUserId(),
+                'functionType': permissionCode
+              }
+            }
+            taskFunction(obj).then((res) => {
+              this.$Message.info(res.data.msg)
+              if (permissionCode === '6') {
+                this.$router.push({
+                  name: 'taskManagementList'
+                })
+              } else {
+                this.init()
+              }
+            })
+          }
+        })
       }
-      this.status = txt
-      this.permissionCode = permissionCode
-      this.statusModel = true
+    },
+    init () {
+      this.getData()
+      listTaskCrossing(this.params).then((res) => {
+        console.log(res.data.data)
+        this.tableData = res.data.data.taskCrossingDetailBeanList
+        this.total = Number(res.data.data.count)
+      })
+      listTaskAnnex({
+        taskId: this.$route.query.taskId,
+        userId: getUserId()
+      }).then((res) => {
+        console.log(res)
+        this.annexBeans = res.data.data.annexBeans
+        this.addPermission = res.data.data.addPermission
+      })
     }
   },
   mounted () {
-    this.getData()
-    listTaskCrossing(this.params).then((res) => {
-      console.log(res.data.data)
-      this.tableData = res.data.data.taskCrossingDetailBeanList
-      this.total = Number(res.data.data.count)
-    })
-    listTaskAnnex({
-      taskId: this.$route.query.taskId,
-      userId: getUserId()
-    }).then((res) => {
-      console.log(res)
-      this.annexBeans = res.data.data.annexBeans
-      this.addPermission = res.data.data.addPermission
-    })
+    this.init()
   }
 }
 </script>
@@ -402,5 +362,8 @@ export default {
     /deep/ .ivu-form-item-error-tip{
       position: static;
     }
+  }
+  .ivu-tabs{
+    overflow: initial;
   }
 </style>

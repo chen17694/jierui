@@ -61,6 +61,7 @@
             <img src="../../assets/images/t4.png" v-if="item.permissionCode === '4'" title="催办任务" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
             <img src="../../assets/images/t5.png" v-if="item.permissionCode === '5'" title="提交审核" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
             <img src="../../assets/images/t6.png" v-if="item.permissionCode === '6'" title="删除任务" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
+            <img src="../../assets/images/p9.png" v-if="item.permissionCode === '99'" title="新增任务路口" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
           </div>
         </div>
       </template>

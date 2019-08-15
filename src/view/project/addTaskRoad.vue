@@ -79,7 +79,7 @@
       title="新增任务路口"
       @on-ok="saveTaskRoad"
     >
-      <Form ref="formItem1" :model="formItem1" :label-width="70" label-position="left" :rules="ruleValidate" >
+      <Form ref="formItem2" :model="formItem2" :label-width="70" label-position="left" :rules="ruleValidate" >
         <FormItem label="项目">
           <Select v-model="formItem2.businessProjectId" @on-change="projectChange">
             <Option v-for="(item, index) in projectList" :value="item.id" :key="index">{{item.name}}</Option>

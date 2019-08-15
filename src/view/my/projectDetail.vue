@@ -216,7 +216,7 @@
 </template>
 
 <script>
-import { listProjectAnnex, deleteProjectAnnex, selectProjectDetail, listTask, listProjectMaterial, listProjectUser, projectFunction, listProjectUserDistribution, getUnitList, addProjectManager, staffJoin, projectMaterialJoin, uploadImgToAliOss, addProjectAnnex } from '@/api/data'
+import { listProjectAnnex, deleteProjectAnnex, taskFunction, selectProjectDetail, listTask, listProjectMaterial, listProjectUser, projectFunction, listProjectUserDistribution, getUnitList, addProjectManager, staffJoin, projectMaterialJoin, uploadImgToAliOss, addProjectAnnex } from '@/api/data'
 import { getUserId, getOffice } from '@/libs/util'
 import Tables from '_c/tables'
 export default {
@@ -584,12 +584,22 @@ export default {
     saveStatus () {
       this.$refs['formItemStatus'].validate((valid) => {
         if (valid) {
-          projectFunction({
-            'projectId': this.detailData.id,
-            'userId': getUserId(),
-            'functionType': this.permissionCode,
-            'pauseStatus': this.detailData.pauseStatus === '0' ? '1' : '0'
-          }).then((res) => {
+          let obj = {}
+          if (this.permissionCode === '3') {
+            obj = {
+              'projectId': this.detailData.id,
+              'userId': getUserId(),
+              'functionType': this.permissionCode,
+              'pauseStatus': this.detailData.pauseStatus === '0' ? '1' : '0'
+            }
+          } else {
+            obj = {
+              'projectId': this.detailData.id,
+              'userId': getUserId(),
+              'functionType': this.permissionCode
+            }
+          }
+          projectFunction(obj).then((res) => {
             this.$Message.info(res.data.msg)
             this.init()
           })
@@ -599,41 +609,71 @@ export default {
       })
     },
     statusChange (permissionCode) {
-      let txt = ''
-      switch (permissionCode) {
-        case '1':
-          txt = '开始项目'
-          break
-        case '2':
-          txt = '暂停/开始项目'
-          break
-        case '3':
-          txt = '申请暂停/开始项目'
-          break
-        case '4':
-          txt = '撤销项目'
-          break
-        case '5':
-          txt = '申请撤销项目'
-          break
-        case '6':
-          txt = '逾期催办'
-          break
-        case '7':
-          txt = '提交审核'
-          break
-        case '8':
-          txt = '删除项目'
-          break
-        case '99':
-          this.$router.push({
-            name: 'addTask'
-          })
-          break
+      if (permissionCode === '3') {
+        this.status = '申请暂停/开始项目'
+        this.permissionCode = permissionCode
+        this.statusModel = true
+      } else if (permissionCode === '5') {
+        this.status = '申请撤销项目'
+        this.permissionCode = permissionCode
+        this.statusModel = true
+      } else if (permissionCode === '99') {
+        this.$router.push({
+          name: 'addTask'
+        })
+      } else {
+        let obj = {}
+        let str = ''
+        switch (permissionCode) {
+          case '1':
+            str = '确定要开始该项目吗？'
+            break
+          case '2':
+            str = '确定要' + (this.detailData.pauseStatus === '0' ? '暂停' : '开始') + '该项目吗？'
+            break
+          case '4':
+            str = '确定要撤销该项目吗？'
+            break
+          case '6':
+            str = '确定要催办该项目吗？'
+            break
+          case '7':
+            str = '确定要将该项目提交审核吗？'
+            break
+          case '8':
+            str = '确定要删除该项目吗？'
+            break
+        }
+        if (permissionCode === '2') {
+          obj = {
+            'projectId': this.detailData.id,
+            'userId': getUserId(),
+            'functionType': permissionCode,
+            'pauseStatus': this.detailData.pauseStatus === '0' ? '1' : '0'
+          }
+        } else {
+          obj = {
+            'projectId': this.detailData.id,
+            'userId': getUserId(),
+            'functionType': permissionCode
+          }
+        }
+        this.$Modal.confirm({
+          title: str,
+          onOk: () => {
+            projectFunction(obj).then((res) => {
+              this.$Message.info(res.data.msg)
+              if (permissionCode === '8') {
+                this.$router.push({
+                  name: 'projectManagementList'
+                })
+              } else {
+                this.init()
+              }
+            })
+          }
+        })
       }
-      this.status = txt
-      this.permissionCode = permissionCode
-      this.statusModel = true
     },
     sxxiugai () {
       console.log(this.detailData)
@@ -773,5 +813,8 @@ export default {
     /deep/ .ivu-form-item-error-tip{
       position: static;
     }
+  }
+  .ivu-tabs{
+    overflow: initial;
   }
 </style>

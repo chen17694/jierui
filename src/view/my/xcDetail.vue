@@ -27,6 +27,9 @@
           不满意原因：{{detailData.dissatisfiedReason}}
         </dd>
       </dl>
+      <div class="btns" v-if="this.detailData.status !== '6'">
+        <Button type="primary" v-for="(item, index) in detailData.taskCrossingButtonPermissionBeanList"  @click="statusChange(item.permissionCode)" style="margin: 0 10px" :key="index">{{item.name}}</Button>
+      </div>
       <Tabs>
         <TabPane label="基本信息" name="name1">
           <ul style="line-height: 40px">
@@ -78,7 +81,7 @@
 </template>
 
 <script>
-import { selectTaskCrossingDetailBean, uploadImgToAliOss, addTaskCrossingAnnex, uploadChannelizationMap, listTaskCrossingAnnex, deleteTaskCrossingAnnex } from '@/api/data'
+import { selectTaskCrossingDetailBean, uploadImgToAliOss, addTaskCrossingAnnex, uploadChannelizationMap, listTaskCrossingAnnex, deleteTaskCrossingAnnex, taskCrossingFunction } from '@/api/data'
 import { getUserId } from '@/libs/util'
 export default {
   name: 'xjDetail',
@@ -172,18 +175,54 @@ export default {
     },
     back () {
       this.$router.back(-1)
+    },
+    statusChange (permissionCode) {
+      let str = ''
+      switch (permissionCode) {
+        case '1':
+          str = '确定要催办该任务路口吗？'
+          break
+        case '2':
+          str = '确定要提交审核吗？'
+          break
+        case '3':
+          str = '确定要删除任务路口吗？'
+          break
+      }
+      this.$Modal.confirm({
+        title: str,
+        onOk: () => {
+          taskCrossingFunction({
+            'taskCrossingId': this.$route.query.taskCrossingId,
+            'userId': getUserId(),
+            'functionType': permissionCode
+          }).then((res) => {
+            this.$Message.info(res.data.msg)
+            if (permissionCode === '3') {
+              this.$router.push({
+                name: 'taskRoadManagementList'
+              })
+            } else {
+              this.init()
+            }
+          })
+        }
+      })
+    },
+    init () {
+      this.getData()
+      listTaskCrossingAnnex({
+        taskCrossingId: this.$route.query.taskCrossingId,
+        userId: getUserId()
+      }).then((res) => {
+        console.log(res)
+        this.addPermission = res.data.data.addPermission
+        this.annexBeans = res.data.data.annexBeans
+      })
     }
   },
   mounted () {
-    this.getData()
-    listTaskCrossingAnnex({
-      taskCrossingId: this.$route.query.taskCrossingId,
-      userId: getUserId()
-    }).then((res) => {
-      console.log(res)
-      this.addPermission = res.data.data.addPermission
-      this.annexBeans = res.data.data.annexBeans
-    })
+    this.init()
   }
 }
 </script>
