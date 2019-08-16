@@ -82,10 +82,10 @@ export default {
       console.log(arr)
       let obj = {
         opt: this.editParams.opt,
-        taskId: this.$route.params.data.taskId,
+        taskId: this.$route.query.taskId,
         userId: getUserId(),
         comment: this.editParams.comment,
-        processType: this.$route.params.data.type,
+        processType: this.$route.query.type,
         projectMaterialJoinApproveForm: {
           list: arr
         }
@@ -99,7 +99,7 @@ export default {
     },
     getData () {
       detailMaterialApplication({
-        taskId: this.$route.params.data.taskId,
+        taskId: this.$route.query.taskId,
         userId: getUserId(),
         type: '1'
       }).then((res) => {

@@ -13,7 +13,7 @@
       </Col>
       <Col span="12">
         <div style="float: right">
-          <Button type="warning" style="margin-right: 10px" @click="reminder" v-if="tableData[0].branchBusinessManager === '0'">项目提醒</Button>
+          <Button type="warning" style="margin-right: 10px" @click="reminder" v-if="branchBusinessManager === '0'">项目提醒</Button>
           <Button type="success" @click="toAdd" v-if="creatProjectPermission === '0'">新建项目</Button>
         </div>
       </Col>
@@ -99,6 +99,7 @@ export default {
   components: { Tables },
   data () {
     return {
+      branchBusinessManager: '1',
       creatProjectPermission: '0',
       params: {
         pageSize: 10,
@@ -189,6 +190,8 @@ export default {
         console.log(res)
         this.creatProjectPermission = res.data.data.creatProjectPermission
         this.tableData = res.data.data.projectList
+        console.log(res.data.data.projectList)
+        this.branchBusinessManager = res.data.data.projectList[0].branchBusinessManager
         this.total = Number(res.data.data.count)
       })
     },

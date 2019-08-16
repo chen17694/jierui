@@ -78,10 +78,10 @@ export default {
     save () {
       let obj = {
         opt: this.editParams.opt,
-        taskId: this.$route.params.data.taskId,
+        taskId: this.$route.query.taskId,
         userId: getUserId(),
         comment: this.editParams.comment,
-        processType: this.$route.params.data.type
+        processType: this.$route.query.type
       }
       console.log(obj)
       opt(obj).then((res) => {
@@ -92,7 +92,7 @@ export default {
     },
     getData () {
       detailProjectStateModify({
-        taskId: this.$route.params.data.taskId,
+        taskId: this.$route.query.taskId,
         userId: getUserId(),
         type: '1'
       }).then((res) => {

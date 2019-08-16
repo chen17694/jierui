@@ -110,7 +110,8 @@ export default {
             console.log(this.addRows[params.index])
             return h('InputNumber', {
               props: {
-                value: this.addRows[params.index].applyNum
+                value: this.addRows[params.index].applyNum,
+                min: 1
               },
               on: {
                 'on-change': (applyNum) => {

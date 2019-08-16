@@ -89,7 +89,9 @@ export default {
               this.$Message.info(res.data.msg)
               this.$refs['formItem'].resetFields()
               this.menu = []
-              this.$router.go(-1)
+              this.$router.push({
+                name: 'roleList'
+              })
             } else {
               this.$Message.info(res.data.msg)
             }

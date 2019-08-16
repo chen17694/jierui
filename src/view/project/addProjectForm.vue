@@ -206,6 +206,9 @@ export default {
     save () {
       this.$refs['formItem'].validate((valid) => {
         if (valid) {
+          this.$router.push({
+            name: 'projectManagementList'
+          })
           addProject({
             'name': this.formItem.name,
             'firstPartyCompanyId': this.formItem.firstPartyCompanyId,
@@ -228,7 +231,6 @@ export default {
             'userId': getUserId()
           }).then((res) => {
             this.$Message.info(res.data.msg)
-            this.$router.go(-1)
           })
         }
       })

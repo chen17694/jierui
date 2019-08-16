@@ -24,7 +24,7 @@
         <Button style="margin-right: 10px"  @click="onAdd(scope)">
           <Icon type="md-add"  size="14"/>
         </Button>
-        <Button @click="onEdit(scope)">
+        <Button @click="onEdit(scope)" v-if="renderType(scope) !== '国家'">
           <Icon type="md-settings" size="14"/>
         </Button>
       </template>
@@ -213,6 +213,7 @@ export default {
     getData () {
       getRegionList().then(res => {
         if (res.data.status === '200') {
+          console.log(res)
           this.tableData = res.data.data
         }
       })

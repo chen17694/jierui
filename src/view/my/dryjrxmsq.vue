@@ -10,6 +10,7 @@
       <ul style="list-style-type: none">
         <li style="margin-bottom: 5px">项目名称：{{detailData.projectName}}</li>
         <li style="margin-bottom: 5px">申请人员：{{detailData.applyName}}</li>
+        <li style="margin-bottom: 5px">归属单位：{{detailData.office}}</li>
         <li style="margin-bottom: 5px">申请时间：{{detailData.createTime}}</li>
         <li style="margin-bottom: 5px">需求描述及原因：{{detailData.applyReason}}</li>
       </ul>
@@ -34,7 +35,7 @@
           <Input v-model="editParams.comment" :disabled="editParams.opt === '1'" type="textarea" style="width: 80%" :autosize="{minRows: 5,maxRows: 10}"></Input>
         </FormItem>
       </Form>
-      <div class="tableWrapper">
+      <div class="tableWrapper" v-if="detailData.needForm === '1'">
         <tables ref="tables"  v-model="tableData" :columns="columns" @on-add="addRow" @on-remove="delRow" :showPage="false"></tables>
       </div>
     </Modal>
@@ -44,7 +45,7 @@
 <script>
 import { detailProjectStaffJoin, opt, getUserList } from '@/api/data'
 import Tables from '_c/tables'
-import { getUserId, getOffice } from '@/libs/util'
+import { getUserId } from '@/libs/util'
 export default {
   name: 'dryjrxmsq',
   components: { Tables },
@@ -103,6 +104,13 @@ export default {
       })
     },
     shenpi () {
+      if (this.addRows.length === 0) {
+        this.addRows = [
+          {
+            userList: []
+          }
+        ]
+      }
       this.tableData = [{
         pname: this.addRows[0].userList
       }]
@@ -110,17 +118,28 @@ export default {
     },
     save () {
       let userIdList = []
-      this.addRows.forEach((item) => {
-        userIdList.push(item.id)
-      })
-      let obj = {
-        opt: this.editParams.opt,
-        taskId: this.$route.params.data.taskId,
-        userId: getUserId(),
-        comment: this.editParams.comment,
-        processType: this.$route.params.data.type,
-        projectStaffJoinApproveForm: {
-          userIdList: userIdList
+      let obj = {}
+      if (this.detailData.needForm === '1') {
+        this.addRows.forEach((item) => {
+          userIdList.push(item.id)
+        })
+        obj = {
+          opt: this.editParams.opt,
+          taskId: this.$route.query.taskId,
+          userId: getUserId(),
+          comment: this.editParams.comment,
+          processType: this.$route.query.type,
+          projectStaffJoinApproveForm: {
+            userIdList: userIdList
+          }
+        }
+      } else {
+        obj = {
+          opt: this.editParams.opt,
+          taskId: this.$route.query.taskId,
+          userId: getUserId(),
+          comment: this.editParams.comment,
+          processType: this.$route.query.type
         }
       }
       opt(obj).then((res) => {
@@ -131,7 +150,7 @@ export default {
     },
     getData () {
       detailProjectStaffJoin({
-        taskId: this.$route.params.data.taskId,
+        taskId: this.$route.query.taskId,
         userId: getUserId(),
         type: '1'
       }).then((res) => {
@@ -161,7 +180,7 @@ export default {
       'pageSize': 0,
       'page': 0,
       'name': '',
-      'office': getOffice().officeId,
+      'office': '',
       'role': '',
       'isLoginApp': ''
     }).then((res) => {

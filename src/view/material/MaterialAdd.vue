@@ -106,7 +106,7 @@ export default {
         id: '',
         name: '',
         approvalStatus: null,
-        amount: '',
+        amount: 0,
         materialCategoryName: '',
         materialCategoryId: '',
         officeId: '',
@@ -114,14 +114,18 @@ export default {
         needReturnStatus: ''
       },
       ruleValidate: {
+        needReturnStatus: [
+          { required: true, message: '请选择是否需要归还', trigger: 'blur' }
+        ],
+        approvalStatus: [
+          { required: true, message: '请选择是否需要单位负责人审批', trigger: 'blur' }
+        ],
+        materialCategoryName: [{ required: true, message: '请选择物资类别', trigger: 'blur' }],
         name: [
           { required: true, message: '请输入少于20字的物资名称/物资名称已重复', trigger: 'blur' }
         ],
         amount: [
           { required: true, type: 'number', message: '请输入物资的数量', trigger: 'blur' }
-        ],
-        needReturnStatus: [
-          { require: true, trigger: 'change' }
         ],
         officeId: [
           { required: true, message: '请选择物资所属单位', trigger: 'change' }
@@ -150,7 +154,7 @@ export default {
           console.log(gdata.amount)
           this.formMaterial.id = gdata.id
           this.formMaterial.name = gdata.name
-          this.formMaterial.amount = gdata.amount
+          this.formMaterial.amount = Number(gdata.amount)
           this.formMaterial.approvalStatus = gdata.approvalStatus
           this.formMaterial.materialCategoryName = gdata.materialCategoryName
           this.formMaterial.materialCategoryId = gdata.materialCategoryId
@@ -205,8 +209,6 @@ export default {
           } else {
             this.AddMaterial()
           }
-        } else {
-          this.$Message.info('请检查填写信息！')
         }
       })
     },

@@ -156,7 +156,7 @@ export default {
             return h('InputNumber', {
               props: {
                 value: Number(this.addRows[params.index].applyNum),
-                min: 0,
+                min: 1,
                 max: Number(this.addRows[params.index].surplusNum)
               },
               on: {

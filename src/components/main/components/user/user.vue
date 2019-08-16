@@ -1,18 +1,49 @@
 <template>
   <div class="user-avatar-dropdown">
-    <Dropdown :transfer="true" @on-click="handleClick">
-      <Badge :dot="!!messageUnreadCount">
-        <Avatar :src="userAvatar || userInfo.photo"/>
-      </Badge>
-      <span style="margin: 0 10px" @click="info">{{userInfo.name}}</span>
+    <Badge :dot="!!messageUnreadCount">
+      <Icon type="ios-mail-outline" @click="message" style="font-size: 40px; margin: 0 10px"/>
+    </Badge>
+    <Dropdown :transfer="true" @on-click="handleClick" placement="bottom-end">
+      <Avatar :src="userAvatar || userInfo.photo"/>
+      <span style="margin: 0 10px">{{userInfo.name}}</span>
       <Icon :size="18" type="md-arrow-dropdown"></Icon>
       <DropdownMenu slot="list" @on-click="handleClick" >
         <DropdownItem name="message">
-          消息中心<Badge style="margin-left: 10px" :count="messageUnreadCount"></Badge>
+          <div style="width: 200px">
+            <ul style="list-style-type: none; line-height: 30px">
+              <li>
+                <span style="font-weight: bold">单位：</span>
+                <span>{{userInfo.office}}</span>
+              </li>
+              <li>
+                <span style="font-weight: bold">角色：</span>
+                <span>{{userInfo.role}}</span>
+              </li>
+              <li>
+                <span style="font-weight: bold">手机：</span>
+                <span>{{userInfo.phone}}</span>
+              </li>
+              <li>
+                <span style="font-weight: bold">邮箱：</span>
+                <span>{{userInfo.email}}</span>
+              </li>
+            </ul>
+            <ul style="list-style-type: none">
+              <li @click="openSetHead">修改头像</li>
+            </ul>
+          </div>
         </DropdownItem>
-        <DropdownItem name="logout">退出登录</DropdownItem>
       </DropdownMenu>
     </Dropdown>
+    <span @click="logout" style="margin-left: 10px">退出</span>
+    <Modal
+      v-model="head"
+      title="Common Modal dialog box title"
+      @on-ok="setHead">
+      <p>Content of dialog</p>
+      <p>Content of dialog</p>
+      <p>Content of dialog</p>
+    </Modal>
   </div>
 </template>
 
@@ -24,6 +55,7 @@ export default {
   name: 'User',
   data () {
     return {
+      head: false,
       userName: getOffice().name,
       userAvatar: getOffice().photo,
       userInfo: getOffice()
@@ -39,6 +71,12 @@ export default {
     ...mapActions([
       'handleLogOut'
     ]),
+    openSetHead () {
+
+    },
+    setHead () {
+
+    },
     logout () {
       this.handleLogOut().then(() => {
         this.$router.push({
@@ -58,8 +96,6 @@ export default {
     },
     handleClick (name) {
       switch (name) {
-        case 'logout': this.logout()
-          break
         case 'message': this.message()
           break
       }
@@ -70,3 +106,12 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="less">
+  .ivu-badge{
+    /deep/ .ivu-badge-dot{
+    top: 20px;
+    right: 8px;
+    }
+  }
+</style>

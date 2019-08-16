@@ -96,17 +96,13 @@
           <img src="../../assets/images/icon1.png" style="width: 22px;">
         </div>
         <div style="padding: 15px; border-bottom: 1px solid rgb(230, 230, 230); position: relative">
-          <div style="position: absolute; right: 15px; top: 5px; text-align: right;">
-            <p :style="{ 'font-size': '30px', color: ( detailData.progress === '100' ? '#15C41B' : '#FB861B' ) }">{{detailData.progress ? detailData.progress : 0}}%</p>
-            <p>项目进度</p>
-          </div>
-          <div style="line-height: 24px"><span class="label">项目状态：</span><span>{{pStatus}}</span></div>
+          <div style="line-height: 24px"><span class="label">路口状态：</span><span>{{pStatus}}</span></div>
           <div style="line-height: 24px"><span class="label">项目角色：</span><span>{{detailData.userTopRoleName}}</span></div>
           <div style="line-height: 24px"><span class="label">逾期天数：</span><span>{{detailData.overdueDays}}</span></div>
           <div style="line-height: 24px"><span class="label">甲方评分：</span><span>{{detailData.firstPartyScoring}}</span></div>
         </div>
         <div style=" padding: 5px 15px; border-bottom: 1px solid rgb(230, 230, 230);">
-          项目基本信息
+          任务路口基本信息
         </div>
         <div style="padding: 15px; ">
           <div style="line-height: 24px"><span class="label">项目名称：</span><span>{{detailData.businessProjectName}}</span></div>

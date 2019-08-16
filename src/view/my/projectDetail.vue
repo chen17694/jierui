@@ -31,7 +31,7 @@
       </div>
       <Tabs>
         <TabPane label="基本信息" name="name1">
-          <ul style="line-height: 40px">
+          <ul style="line-height: 40px; list-style-type: none">
             <li><span style="font-weight: bold">项目名称</span>：{{detailData.name}}</li>
             <li>
               <span style="margin-right: 20px"><span style="font-weight: bold">甲方公司：</span>{{detailData.firstPartyCompanyName}}</span>
@@ -85,6 +85,16 @@
               <Button type="primary">上传附件</Button>
             </div>
           </div>
+        </TabPane>
+        <TabPane label="不满意路口" name="name6">
+          <Collapse>
+            <Panel :name="String(index)" v-for="(item, index) in dissatisfiedTaskCrossingTaskBeanList" :key="index">
+              {{item.name}}
+              <div slot="content" v-for="(i, x) in item.dissatisfiedTaskCrossingBeans" :key="x">
+                <p style="font-weight: bold">{{i.alias}}</p>
+              </div>
+            </Panel>
+          </Collapse>
         </TabPane>
       </Tabs>
     </Card>
@@ -216,7 +226,7 @@
 </template>
 
 <script>
-import { listProjectAnnex, deleteProjectAnnex, taskFunction, selectProjectDetail, listTask, listProjectMaterial, listProjectUser, projectFunction, listProjectUserDistribution, getUnitList, addProjectManager, staffJoin, projectMaterialJoin, uploadImgToAliOss, addProjectAnnex } from '@/api/data'
+import { listProjectAnnex, selectResponseDissatisfiedTaskCrossingBean, deleteProjectAnnex, taskFunction, selectProjectDetail, listTask, listProjectMaterial, listProjectUser, projectFunction, listProjectUserDistribution, getUnitList, addProjectManager, staffJoin, projectMaterialJoin, uploadImgToAliOss, addProjectAnnex } from '@/api/data'
 import { getUserId, getOffice } from '@/libs/util'
 import Tables from '_c/tables'
 export default {
@@ -224,6 +234,7 @@ export default {
   components: { Tables },
   data () {
     return {
+      dissatisfiedTaskCrossingTaskBeanList: [],
       annexBeans: [],
       addPermission: '0',
       formItemMaterial: {
@@ -786,6 +797,13 @@ export default {
         console.log(res)
         this.annexBeans = res.data.data.annexBeans
         this.addPermission = res.data.data.addPermission
+      })
+      selectResponseDissatisfiedTaskCrossingBean({
+        projectId: this.$route.query.projectId,
+        userId: getUserId()
+      }).then((res) => {
+        console.log(res)
+        this.dissatisfiedTaskCrossingTaskBeanList = res.data.data.dissatisfiedTaskCrossingTaskBeanList
       })
     }
   },

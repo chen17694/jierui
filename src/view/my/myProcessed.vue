@@ -134,8 +134,9 @@ export default {
             // 待审批 项目审批
             this.$router.push({
               name: 'dxmsq',
-              params: {
-                data: arguments[0]
+              query: {
+                type: arguments[0].type,
+                taskId: arguments[0].taskId
               }
             })
             break
@@ -143,8 +144,9 @@ export default {
             // 待审批 任务审批
             this.$router.push({
               name: 'drwsq',
-              params: {
-                data: arguments[0]
+              query: {
+                type: arguments[0].type,
+                taskId: arguments[0].taskId
               }
             })
             break
@@ -152,8 +154,9 @@ export default {
             // 待审批 任务路口审批
             this.$router.push({
               name: 'drwlksq',
-              params: {
-                data: arguments[0]
+              query: {
+                type: arguments[0].type,
+                taskId: arguments[0].taskId
               }
             })
             break
@@ -161,8 +164,9 @@ export default {
             // 待审批 物资申请审批
             this.$router.push({
               name: 'dwzsq',
-              params: {
-                data: arguments[0]
+              query: {
+                type: arguments[0].type,
+                taskId: arguments[0].taskId
               }
             })
             break
@@ -170,8 +174,9 @@ export default {
             // 待审批 物资归还审批
             this.$router.push({
               name: 'dwzghsq',
-              params: {
-                data: arguments[0]
+              query: {
+                type: arguments[0].type,
+                taskId: arguments[0].taskId
               }
             })
             break
@@ -179,8 +184,9 @@ export default {
             // 待审批 项目属性修改审批
             this.$router.push({
               name: 'dxmsxxgsq',
-              params: {
-                data: arguments[0]
+              query: {
+                type: arguments[0].type,
+                taskId: arguments[0].taskId
               }
             })
             break
@@ -188,24 +194,27 @@ export default {
             // 待审批 项目状态修改审批
             this.$router.push({
               name: 'dxmztxgsq',
-              params: {
-                data: arguments[0]
+              query: {
+                type: arguments[0].type,
+                taskId: arguments[0].taskId
               }
             })
             break
           case ('8'):
             this.$router.push({
               name: 'dwzjrxm',
-              params: {
-                data: arguments[0]
+              query: {
+                type: arguments[0].type,
+                taskId: arguments[0].taskId
               }
             })
             break
           case ('9'):
             this.$router.push({
               name: 'dryjrxmsq',
-              params: {
-                data: arguments[0]
+              query: {
+                type: arguments[0].type,
+                taskId: arguments[0].taskId
               }
             })
             break

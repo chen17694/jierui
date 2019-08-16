@@ -664,6 +664,13 @@ export const addTaskCrossingAnnex = (params) => {
     method: 'post'
   })
 }
+export const selectResponseDissatisfiedTaskCrossingBean = (params) => {
+  return axios.request({
+    url: '/taskCrossingRelation/selectResponseDissatisfiedTaskCrossingBean',
+    data: params,
+    method: 'post'
+  })
+}
 
 export const taskMaterialDetail = (params) => {
   return axios.request({
