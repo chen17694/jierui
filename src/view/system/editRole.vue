@@ -85,7 +85,11 @@ export default {
         if (valid) {
           insertOrUpdateRole(params).then((res) => {
             this.$Message.info(res.data.msg)
-            this.$router.go(-1)
+            if (res.data.status === '200') {
+              this.$router.push({
+                name: 'roleList'
+              })
+            }
           })
         }
       })

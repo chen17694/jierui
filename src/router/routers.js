@@ -73,7 +73,8 @@ export default [
         name: 'userInfo',
         meta: {
           icon: 'md-funnel',
-          title: '我的信息'
+          title: '我的信息',
+          hideInMenu: true
         },
         component: () => import('@/view/my/userInfo.vue')
       },

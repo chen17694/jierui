@@ -270,9 +270,11 @@ export default {
         if (valid) {
           insertOrUpdateUser(params).then((res) => {
             this.$Message.info(res.data.msg)
-            this.$router.push({
-              name: 'userList'
-            })
+            if (res.data.status === '200') {
+              this.$router.push({
+                name: 'userList'
+              })
+            }
           })
         }
       })

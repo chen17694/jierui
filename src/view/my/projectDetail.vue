@@ -22,14 +22,14 @@
         <dd v-if="detailData.firstPartyScoring === '1'">甲方评分：非常满意</dd>
         <dd v-if="detailData.firstPartyScoring === '2'">甲方评分：满意</dd>
         <dd v-if="detailData.firstPartyScoring === '3'">甲方评分：不满意</dd>
-        <dd v-if="detailData.firstPartyScoring === '3'">
+        <dd v-if="detailData.firstPartyScoring === '3'" style="display: block;margin-top: 20px;color: red;">
           不满意原因：{{detailData.dissatisfiedReason}}
         </dd>
       </dl>
       <div class="btns" v-if="this.detailData.status !== '4'">
         <Button type="primary" v-for="(item, index) in detailData.projectButtonPermissionBeans" style="margin: 0 10px" :key="index" @click="statusChange(item.permissionCode)">{{item.name}}</Button>
       </div>
-      <Tabs>
+      <Tabs style="margin-top: 20px">
         <TabPane label="基本信息" name="name1">
           <ul style="line-height: 40px; list-style-type: none">
             <li><span style="font-weight: bold">项目名称</span>：{{detailData.name}}</li>
@@ -51,7 +51,7 @@
           <tables ref="tables1" :total="this.total1" :columns="columns1" v-model="tableData1" :taskListBtnVisible="true" @on-edit="onEdit1" :on-change="pageChange1" :on-page-size-change="pageSizeChange1"/>
         </TabPane>
         <TabPane label="项目物资" name="name3">
-          <div style="margin-bottom: 10px" v-if="this.detailData.status !== '4'">
+          <div style="margin-bottom: 10px" v-if="this.detailData.status !== '4' && this.detailData.projectManager === '0'">
             <div>
               <Button type="primary" @click="materialModel = true">物资加入项目申请</Button>
             </div>
@@ -450,15 +450,16 @@ export default {
       window.open(item.annexUrl)
     },
     uploadFile (e) {
+      console.log(e)
       uploadImgToAliOss(e).then(res => {
         console.log(res)
-        let name = res.split('/')
+        let name = res[1]
         console.log(name)
-        this.file = res
+        this.file = res[0]
         addProjectAnnex({
           userId: getUserId(),
           annexUrl: this.file,
-          annexName: name[name.length - 1],
+          annexName: name,
           id: this.$route.query.projectId
         }).then((res) => {
           console.log(res)
@@ -601,18 +602,21 @@ export default {
               'projectId': this.detailData.id,
               'userId': getUserId(),
               'functionType': this.permissionCode,
-              'pauseStatus': this.detailData.pauseStatus === '0' ? '1' : '0'
+              'pauseStatus': this.detailData.pauseStatus === '0' ? '1' : '0',
+              'reason': this.formItemStatus.content
             }
           } else {
             obj = {
               'projectId': this.detailData.id,
               'userId': getUserId(),
-              'functionType': this.permissionCode
+              'functionType': this.permissionCode,
+              'reason': this.formItemStatus.content
             }
           }
           projectFunction(obj).then((res) => {
             this.$Message.info(res.data.msg)
             this.init()
+            this.statusModel = false
           })
         } else {
           return false
@@ -819,7 +823,7 @@ export default {
     margin-right: 20px;
   }
   .btns{
-    margin: 20px 0;
+    margin: 20px 0 0 0;
     display: flex;
     justify-content: center;
     background-color: rgba(45, 140, 240, 0.2);

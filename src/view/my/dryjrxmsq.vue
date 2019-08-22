@@ -143,9 +143,12 @@ export default {
         }
       }
       opt(obj).then((res) => {
-        console.log(res)
+        if (res.data.status === '200') {
+          this.$router.push({
+            name: 'myApproval'
+          })
+        }
         this.$Message.info(res.data.msg)
-        this.$router.go(-1)
       })
     },
     getData () {

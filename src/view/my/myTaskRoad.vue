@@ -351,17 +351,29 @@ export default {
     },
     firstPage () {
       this.page = 1
+      this.markers = []
+      this.markerRefs = []
+      this.map.clearMarkers()
+      this.getMapProject()
       this.getProject()
     },
     prevPage () {
       if (this.page !== 1) {
         this.page--
+        this.markers = []
+        this.markerRefs = []
+        this.map.clearMarkers()
+        this.getMapProject()
         this.getProject()
       }
     },
     nextPage () {
       if (this.page < this.maxPage) {
         this.page++
+        this.markers = []
+        this.markerRefs = []
+        this.map.clearMarkers()
+        this.getMapProject()
         this.getProject()
       }
     },
@@ -629,8 +641,8 @@ export default {
     this.getAreaData()
     lazyAMapApiLoaderInstance.load().then(() => {
       this.getMapProject()
+      this.getProject()
     })
-    this.getProject()
   }
 }
 </script>

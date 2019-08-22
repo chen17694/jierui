@@ -206,9 +206,6 @@ export default {
     save () {
       this.$refs['formItem'].validate((valid) => {
         if (valid) {
-          this.$router.push({
-            name: 'projectManagementList'
-          })
           addProject({
             'name': this.formItem.name,
             'firstPartyCompanyId': this.formItem.firstPartyCompanyId,
@@ -230,7 +227,13 @@ export default {
             'specificAddress': this.formItem.specificAddress,
             'userId': getUserId()
           }).then((res) => {
+            console.log(res)
             this.$Message.info(res.data.msg)
+            if (res.data.status === '200') {
+              this.$router.push({
+                name: 'projectManagementList'
+              })
+            }
           })
         }
       })

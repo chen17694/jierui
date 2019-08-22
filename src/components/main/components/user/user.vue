@@ -3,11 +3,11 @@
     <Badge :dot="!!messageUnreadCount">
       <Icon type="ios-mail-outline" @click="message" style="font-size: 40px; margin: 0 10px"/>
     </Badge>
-    <Dropdown :transfer="true" @on-click="handleClick" placement="bottom-end">
+    <Dropdown :transfer="true" placement="bottom-end">
       <Avatar :src="userAvatar || userInfo.photo"/>
       <span style="margin: 0 10px">{{userInfo.name}}</span>
       <Icon :size="18" type="md-arrow-dropdown"></Icon>
-      <DropdownMenu slot="list" @on-click="handleClick" >
+      <DropdownMenu slot="list">
         <DropdownItem name="message">
           <div style="width: 200px">
             <ul style="list-style-type: none; line-height: 30px">

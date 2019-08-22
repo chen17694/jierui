@@ -22,7 +22,7 @@
         </div>
       </Col>
     </Row>
-    <tables ref="tables"  on-row-dblclick="onRowClick" :total="this.total" :on-change="pageChange" :on-page-size-change="pageSizeChange" v-model="tableData" :columns="columns"></tables>
+    <tables ref="tables" @on-row-dblclick="onRowClick" :total="this.total" :on-change="pageChange" :on-page-size-change="pageSizeChange" v-model="tableData" :columns="columns"></tables>
   </div>
 </template>
 
@@ -56,12 +56,14 @@ export default {
   },
   methods: {
     onRowClick () {
-      this.$router.push({
-        name: 'roadHistory',
-        query: {
-          crossingCode: arguments[0].crossingCode
-        }
-      })
+      console.log(arguments)
+      // this.$router.push({
+      //   name: 'roadHistory',
+      //   query: {
+      //     crossingCode: this.detailData.crossingCode,
+      //     taskCrossingId: this.$route.query.taskCrossingId
+      //   }
+      // })
     },
     onAdd () {
       this.$router.push({

@@ -56,10 +56,10 @@ export default {
       stepArr: [],
       editPanel: false,
       columns: [
-        { title: '物资类型', key: 'materialTypeName' },
+        { title: '物资类型', key: 'typeName' },
         { title: '物资名称', key: 'materialName' },
         { title: '已借数量', key: 'borrowedNum' },
-        { title: '归还数量', key: 'returnNum ' },
+        { title: '归还数量', key: 'returnNum' },
         { title: '申请日期', key: 'applyTime' },
         { title: '预计归还日期', key: 'returnDate' }
       ],
@@ -89,9 +89,12 @@ export default {
       }
       console.log(obj)
       opt(obj).then((res) => {
-        console.log(res)
+        if (res.data.status === '200') {
+          this.$router.push({
+            name: 'myApproval'
+          })
+        }
         this.$Message.info(res.data.msg)
-        this.$router.go(-1)
       })
     },
     getData () {

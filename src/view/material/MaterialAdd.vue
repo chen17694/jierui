@@ -172,6 +172,7 @@ export default {
         if (res.data.status === '200') {
           _this.$Message.info(res.data.msg)
           _this.categoryModal = false
+          _this.MaterialCategory()
         } else {
           _this.$Message.info(res.data.msg)
         }

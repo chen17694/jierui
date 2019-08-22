@@ -23,14 +23,14 @@
         <dd v-if="detailData.firstPartyScoring === '1'">甲方评分：非常满意</dd>
         <dd v-if="detailData.firstPartyScoring === '2'">甲方评分：满意</dd>
         <dd v-if="detailData.firstPartyScoring === '3'">甲方评分：不满意</dd>
-        <dd v-if="detailData.firstPartyScoring === '3'">
+        <dd v-if="detailData.firstPartyScoring === '3'" style="display: block;margin-top: 20px;color: red;">
           不满意原因：{{detailData.dissatisfiedReason}}
         </dd>
       </dl>
       <div class="btns" v-if="this.detailData.status !== '6'">
         <Button type="primary" v-for="(item, index) in detailData.taskCrossingButtonPermissionBeanList"  @click="statusChange(item.permissionCode)" style="margin: 0 10px" :key="index">{{item.name}}</Button>
       </div>
-      <Tabs>
+      <Tabs style="margin-top: 20px">
         <TabPane label="基本信息" name="name1">
           <ul style="line-height: 40px">
             <li><span style="font-weight: bold">项目名称</span>：{{detailData.businessProjectName}}</li>
@@ -194,7 +194,7 @@ export default {
     },
     uploadPhoto (e) {
       uploadImgToAliOss(e).then(res => {
-        this.photo = res
+        this.photo = res[0]
         uploadChannelizationMap({
           id: this.$route.query.taskCrossingId,
           channelizationMapUrl: this.photo
@@ -207,12 +207,12 @@ export default {
     uploadFile (e) {
       uploadImgToAliOss(e).then(res => {
         console.log(res)
-        let name = res.split('/')
-        this.file = res
+        let name = res[1]
+        this.file = res[0]
         addTaskCrossingAnnex({
           userId: getUserId(),
           annexUrl: this.file,
-          annexName: name[name.length - 1],
+          annexName: name,
           id: this.$route.query.taskCrossingId
         }).then((res) => {
           console.log(res)
@@ -232,7 +232,8 @@ export default {
       this.$router.push({
         name: 'roadHistory',
         query: {
-          crossingCode: this.detailData.crossingCode
+          crossingCode: this.detailData.crossingCode,
+          taskCrossingId: this.$route.query.taskCrossingId
         }
       })
     },
@@ -361,7 +362,7 @@ export default {
     margin-right: 20px;
   }
   .btns{
-    margin: 20px 0;
+    margin: 20px 0 0 0;
     display: flex;
     justify-content: center;
     background-color: rgba(45, 140, 240, 0.2);

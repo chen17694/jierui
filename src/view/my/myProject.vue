@@ -66,7 +66,8 @@
                 <Button v-if="i.permissionCode === '1'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">开始项目</Button>
                 <Button v-if="i.permissionCode === '2' && item.pauseStatus === '1'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">开始项目</Button>
                 <Button v-if="i.permissionCode === '2' && item.pauseStatus === '0'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">暂停项目</Button>
-                <Button v-if="i.permissionCode === '3'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">申请暂停项目</Button>
+                <Button v-if="i.permissionCode === '3' && item.pauseStatus === '1'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">申请开始项目</Button>
+                <Button v-if="i.permissionCode === '3' && item.pauseStatus === '0'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">申请暂停项目</Button>
                 <Button v-if="i.permissionCode === '4'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">撤销项目</Button>
                 <Button v-if="i.permissionCode === '5'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">申请撤销项目</Button>
                 <Button v-if="i.permissionCode === '6'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">逾期催办项目</Button>
@@ -126,12 +127,50 @@
       </Card>
       <Button type="primary" v-show="isDetail" @click="toList" style="position: absolute; top: 680px; left: 20px;">返回列表</Button>
     </div>
+    <Modal
+      v-model="statusModel"
+      title="项目状态修改申请">
+      <Form ref="formItemStatus" :model="formItemStatus" :rules="ruleCustom" :label-width="130">
+        <FormItem label="项目名称：">
+          <Row>
+            <Col span="11">
+              {{pName}}
+            </Col>
+          </Row>
+        </FormItem>
+        <FormItem label="项目状态修改为：">
+          <Row>
+            <Col span="11">
+              {{this.status}}
+            </Col>
+          </Row>
+        </FormItem>
+        <FormItem label="申请人员：">
+          <Row>
+            <Col span="11">
+              {{userName}}
+            </Col>
+          </Row>
+        </FormItem>
+        <FormItem label="申请原因：" prop="content">
+          <Row>
+            <Col span="20">
+              <Input v-model="formItemStatus.content" type="textarea" :autosize="{minRows: 3,maxRows: 5}" style="width: 100%"/>
+            </Col>
+          </Row>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="statusModel = false">取消</Button>
+        <Button type="primary" size="large" @click="saveStatus">确定</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 
 <script>
 import { listProject, areaData, listMapProject, selectProjectDetail, projectFunction } from '@/api/data'
-import { getUserId } from '@/libs/util'
+import { getUserId, getOffice } from '@/libs/util'
 import p_pause from '../../assets/images/p_pause.png'
 import p_noStarted from '../../assets/images/p_noStarted.png'
 import p_start from '../../assets/images/p_start.png'
@@ -195,7 +234,22 @@ export default {
       total: 0,
       page: 1,
       maxPage: 1,
-      projectName: ''
+      projectName: '',
+      statusModel: false,
+      status: '',
+      permissionCode: '',
+      projectId: '',
+      pauseStatus: '',
+      pName: '',
+      userName: getOffice().name,
+      formItemStatus: {
+        content: ''
+      },
+      ruleCustom: {
+        content: [
+          { required: true, message: '请输入申请原因', trigger: 'blur' }
+        ]
+      }
     }
   },
   watch: {
@@ -258,39 +312,65 @@ export default {
         }
       })
     },
-    onEdit (params, row) {
-      console.log(params)
-      console.log(row)
-      if (params.permissionCode === '2' || params.permissionCode === '3') {
-        this.$Modal.confirm({
-          title: params.permissionCode === '2' ? '确定要' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该项目吗？' : '确定要申请' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该项目吗？',
-          onOk: () => {
-            projectFunction({
-              'projectId': row.id,
+    saveStatus () {
+      this.$refs['formItemStatus'].validate((valid) => {
+        if (valid) {
+          let obj = {}
+          if (this.permissionCode === '3') {
+            obj = {
+              'projectId': this.projectId,
               'userId': getUserId(),
-              'functionType': params.permissionCode,
-              'pauseStatus': row.pauseStatus === '0' ? '1' : '0'
-            }).then((res) => {
-              this.$Message.info(res.data.msg)
-              this.markers = []
-              this.markerRefs = []
-              this.map.clearMarkers()
-              this.getMapProject()
-              this.getProject()
-            })
+              'functionType': this.permissionCode,
+              'pauseStatus': this.pauseStatus === '0' ? '1' : '0',
+              'reason': this.formItemStatus.content
+            }
+          } else {
+            obj = {
+              'projectId': this.projectId,
+              'userId': getUserId(),
+              'functionType': this.permissionCode,
+              'reason': this.formItemStatus.content
+            }
           }
+          projectFunction(obj).then((res) => {
+            this.$Message.info(res.data.msg)
+            this.getData()
+            this.statusModel = false
+          })
+        } else {
+          return false
+        }
+      })
+    },
+    onEdit (params, row) {
+      let permissionCode = params.permissionCode
+      this.projectId = row.id
+      this.pauseStatus = row.pauseStatus
+      this.pName = row.name
+      if (permissionCode === '3') {
+        this.status = '申请暂停/开始项目'
+        this.permissionCode = permissionCode
+        this.statusModel = true
+      } else if (permissionCode === '5') {
+        this.status = '申请撤销项目'
+        this.permissionCode = permissionCode
+        this.statusModel = true
+      } else if (permissionCode === '99') {
+        this.$router.push({
+          name: 'addTask'
         })
       } else {
+        let obj = {}
         let str = ''
-        switch (params.permissionCode) {
+        switch (permissionCode) {
           case '1':
             str = '确定要开始该项目吗？'
             break
+          case '2':
+            str = '确定要' + (this.pauseStatus === '0' ? '暂停' : '开始') + '该项目吗？'
+            break
           case '4':
             str = '确定要撤销该项目吗？'
-            break
-          case '5':
-            str = '确定要申请撤销该项目吗？'
             break
           case '6':
             str = '确定要催办该项目吗？'
@@ -301,28 +381,95 @@ export default {
           case '8':
             str = '确定要删除该项目吗？'
             break
-          case '99':
-            str = '确定要为该项目创建新的任务吗？'
-            break
+        }
+        if (permissionCode === '2') {
+          obj = {
+            'projectId': row.id,
+            'userId': getUserId(),
+            'functionType': permissionCode,
+            'pauseStatus': row.pauseStatus === '0' ? '1' : '0'
+          }
+        } else {
+          obj = {
+            'projectId': row.id,
+            'userId': getUserId(),
+            'functionType': permissionCode
+          }
         }
         this.$Modal.confirm({
           title: str,
           onOk: () => {
-            projectFunction({
-              'projectId': row.id,
-              'userId': getUserId(),
-              'functionType': params.permissionCode
-            }).then((res) => {
+            projectFunction(obj).then((res) => {
               this.$Message.info(res.data.msg)
-              this.markers = []
-              this.markerRefs = []
-              this.map.clearMarkers()
-              this.getMapProject()
-              this.getProject()
+              this.getData()
             })
           }
         })
       }
+      // console.log(params)
+      // console.log(row)
+      // if (params.permissionCode === '2' || params.permissionCode === '3') {
+      //   this.$Modal.confirm({
+      //     title: params.permissionCode === '2' ? '确定要' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该项目吗？' : '确定要申请' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该项目吗？',
+      //     onOk: () => {
+      //       projectFunction({
+      //         'projectId': row.id,
+      //         'userId': getUserId(),
+      //         'functionType': params.permissionCode,
+      //         'pauseStatus': row.pauseStatus === '0' ? '1' : '0'
+      //       }).then((res) => {
+      //         this.$Message.info(res.data.msg)
+      //         this.markers = []
+      //         this.markerRefs = []
+      //         this.map.clearMarkers()
+      //         this.getMapProject()
+      //         this.getProject()
+      //       })
+      //     }
+      //   })
+      // } else {
+      //   let str = ''
+      //   switch (params.permissionCode) {
+      //     case '1':
+      //       str = '确定要开始该项目吗？'
+      //       break
+      //     case '4':
+      //       str = '确定要撤销该项目吗？'
+      //       break
+      //     case '5':
+      //       str = '确定要申请撤销该项目吗？'
+      //       break
+      //     case '6':
+      //       str = '确定要催办该项目吗？'
+      //       break
+      //     case '7':
+      //       str = '确定要将该项目提交审核吗？'
+      //       break
+      //     case '8':
+      //       str = '确定要删除该项目吗？'
+      //       break
+      //     case '99':
+      //       str = '确定要为该项目创建新的任务吗？'
+      //       break
+      //   }
+      //   this.$Modal.confirm({
+      //     title: str,
+      //     onOk: () => {
+      //       projectFunction({
+      //         'projectId': row.id,
+      //         'userId': getUserId(),
+      //         'functionType': params.permissionCode
+      //       }).then((res) => {
+      //         this.$Message.info(res.data.msg)
+      //         this.markers = []
+      //         this.markerRefs = []
+      //         this.map.clearMarkers()
+      //         this.getMapProject()
+      //         this.getProject()
+      //       })
+      //     }
+      //   })
+      // }
     },
     searchProject () {
       this.markers = []
@@ -350,17 +497,29 @@ export default {
     },
     firstPage () {
       this.page = 1
+      this.markers = []
+      this.markerRefs = []
+      this.map.clearMarkers()
+      this.getMapProject()
       this.getProject()
     },
     prevPage () {
       if (this.page !== 1) {
         this.page--
+        this.markers = []
+        this.markerRefs = []
+        this.map.clearMarkers()
+        this.getMapProject()
         this.getProject()
       }
     },
     nextPage () {
       if (this.page < this.maxPage) {
         this.page++
+        this.markers = []
+        this.markerRefs = []
+        this.map.clearMarkers()
+        this.getMapProject()
         this.getProject()
       }
     },
@@ -535,8 +694,8 @@ export default {
     this.getAreaData()
     lazyAMapApiLoaderInstance.load().then(() => {
       this.getMapProject()
+      this.getProject()
     })
-    this.getProject()
   }
 }
 </script>

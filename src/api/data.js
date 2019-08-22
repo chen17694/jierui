@@ -707,6 +707,7 @@ export const uploadImgToAliOss = (e) => {
 }
 
 const upOss = (e, res) => {
+  console.log(e)
   let client = new OSS({
     endpoint: res.data.data.endpoint,
     accessKeyId: res.data.data.accessKeyId,
@@ -715,9 +716,12 @@ const upOss = (e, res) => {
     bucket: res.data.data.bucketName
   })
   return new Promise((resolve, reject) => {
+    console.log(e.target.files)
     client.multipartUpload(e.target.files[0].name, e.target.files[0]).then(result => {
+      console.log(result)
       let src = result.res.requestUrls[0].split('?')
-      resolve(src[0])
+      let arr = [src[0], result.name]
+      resolve(arr)
     }).catch(err => {
       console.log(err)
     })

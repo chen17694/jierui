@@ -192,11 +192,17 @@ export default {
   methods: {
     firstPage () {
       this.params.page = 1
+      this.markers = []
+      this.markerRefs = []
+      this.map.clearMarkers()
       this.getRoad()
     },
     prevPage () {
       if (this.params.page !== 1) {
         this.params.page--
+        this.markers = []
+        this.markerRefs = []
+        this.map.clearMarkers()
         this.getRoad()
       }
     },
@@ -211,6 +217,9 @@ export default {
     nextPage () {
       if (this.params.page < this.maxPage) {
         this.params.page++
+        this.markers = []
+        this.markerRefs = []
+        this.map.clearMarkers()
         this.getRoad()
       }
     },
@@ -287,6 +296,9 @@ export default {
       console.log(params)
       addCrossing(params).then((res) => {
         this.$Message.info(res.data.msg)
+        this.markers = []
+        this.markerRefs = []
+        this.map.clearMarkers()
         this.getRoad()
       })
     },

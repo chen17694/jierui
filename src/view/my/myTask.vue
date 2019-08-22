@@ -62,7 +62,7 @@
                 </Select>
               </div>
               <div v-for="(item, index) in taskList" :key="index" @click="positioning(item.lng, item.lat)" v-show="panelShow" style="position: relative; padding: 15px; border-bottom: 1px solid #e6e6e6;">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
                   <div style="font-size: 16px; display: flex; align-items: center;">
                     <img src="../../assets/images/icon1.png" style="width: 18px; margin-right: 5px">{{item.name}}
                   </div>
@@ -152,23 +152,23 @@
                 </Select>
               </div>
               <div v-for="(item, index) in taskListNew" :key="index" @click="positioning(item.lng, item.lat)" v-show="panelShow" style="position: relative; padding: 15px; border-bottom: 1px solid #e6e6e6;">
-                <Collapse simple accordion>
-                  <Panel :hide-arrow="true">
+                <Collapse simple accordion value="1">
+                  <Panel :hide-arrow="true" name="1">
                     <div style="display: flex;width: 100%;justify-content: space-between;margin-bottom: 10px">
-                      <div style="padding-right: 10px">
-                        <span>{{item.name}}</span>
-                        <div v-if="item.taskStatus === 1" style="font-size: 12px"><span style="margin-right: 5px">任务类型: 巡检任务</span><span>路口数量: {{item.crossingList.length}}</span></div>
-                        <div v-if="item.taskStatus === 2" style="font-size: 12px"><span style="margin-right: 5px">任务类型: 优化任务</span><span>路口数量: {{item.crossingList.length}}</span></div>
-                        <div v-if="item.taskStatus === 3" style="font-size: 12px"><span style="margin-right: 5px">任务类型: 宣传任务</span><span>路口数量: {{item.crossingList.length}}</span></div>
+                      <div style="padding-right: 10px; line-height: 24px">
+                        <div>任务名称: {{item.name}}</div>
+                        <div v-if="item.taskStatus === 1" style="font-size: 12px"><p style="margin-right: 5px">任务类型: 巡检任务</p><p>路口数量: {{item.crossingList.length}}</p></div>
+                        <div v-if="item.taskStatus === 2" style="font-size: 12px"><p style="margin-right: 5px">任务类型: 优化任务</p><p>路口数量: {{item.crossingList.length}}</p></div>
+                        <div v-if="item.taskStatus === 3" style="font-size: 12px"><p style="margin-right: 5px">任务类型: 宣传任务</p><p>路口数量: {{item.crossingList.length}}</p></div>
                       </div>
                       <div style="text-align: right">
                         <Button type="success" @click="handleTask(item, '1')" style="margin-bottom: 10px; display: block">接受</Button>
                         <Button type="error" @click="handleTask(item, '2')">拒绝</Button>
                       </div>
                     </div>
-                    <div slot="content">
-                      <ul>
-                        <li v-for="(rItem, rIndex) in roadList[index]" :key="rIndex">{{rItem.alias}}</li>
+                    <div slot="content" style="padding: 0">
+                      <ul style="list-style-type: none; line-height: 30px">
+                        <li v-for="(rItem, rIndex) in item.crossingList" :key="rIndex" style="border-bottom: 1px solid #e6e6e6; font-size: 12px">任务路口: {{rItem.alias}}</li>
                       </ul>
                     </div>
                   </Panel>
@@ -183,7 +183,7 @@
 </template>
 
 <script>
-import { listTask, areaData, listMapTask, selectTaskDetail, listMyNotAcceptedTask, listMapProject, acceptOrRefuseTask, listTaskCrossing } from '@/api/data'
+import { listTask, areaData, listMapTask, selectTaskDetail, listMyNotAcceptedTask, listMapProject, acceptOrRefuseTask, taskFunction } from '@/api/data'
 import { getUserId } from '@/libs/util'
 import tx1 from '../../assets/images/tx1.png'
 import tx2 from '../../assets/images/tx2.png'
@@ -257,7 +257,6 @@ export default {
       minClusterSize: 2,
       panelShow: true,
       zoom: 16,
-      roadList: [],
       amapManager,
       center: [],
       areaData: [],
@@ -385,9 +384,7 @@ export default {
         this.markers = []
         this.markerRefs = []
         this.map.clearMarkers()
-        this.getMapTaskNew()
-        this.getMapTask()
-        this.getTask()
+        this.tab = 'tab1'
       })
     },
     changeProject () {
@@ -416,17 +413,29 @@ export default {
     },
     firstPage () {
       this.page = 1
+      this.markers = []
+      this.markerRefs = []
+      this.map.clearMarkers()
+      this.getMapTask()
       this.getTask()
     },
     prevPage () {
       if (this.page !== 1) {
         this.page--
+        this.markers = []
+        this.markerRefs = []
+        this.map.clearMarkers()
+        this.getMapTask()
         this.getTask()
       }
     },
     nextPage () {
       if (this.page < this.maxPage) {
         this.page++
+        this.markers = []
+        this.markerRefs = []
+        this.map.clearMarkers()
+        this.getMapTask()
         this.getTask()
       }
     },
@@ -459,7 +468,11 @@ export default {
               'pauseStatus': row.pauseStatus === '0' ? '1' : '0'
             }).then((res) => {
               this.$Message.info(res.data.msg)
-              this.getData()
+              this.markers = []
+              this.markerRefs = []
+              this.map.clearMarkers()
+              this.getMapTask()
+              this.getTask()
             })
           }
         })
@@ -491,7 +504,11 @@ export default {
               'functionType': params.permissionCode
             }).then((res) => {
               this.$Message.info(res.data.msg)
-              this.getData()
+              this.markers = []
+              this.markerRefs = []
+              this.map.clearMarkers()
+              this.getMapTask()
+              this.getTask()
             })
           }
         })
@@ -705,25 +722,6 @@ export default {
         let self = this
         taskList.forEach((item) => {
           console.log(item)
-          listTaskCrossing({
-            pageSize: 0,
-            page: 0,
-            projectId: '',
-            taskId: item.id,
-            userId: getUserId(),
-            alias: '',
-            taskCrossingStatus: '',
-            timeStatus: '',
-            startTime: '',
-            endTime: '',
-            provinceName: '',
-            cityName: '',
-            districtName: ''
-          }).then((res) => {
-            console.log(res)
-            this.roadList.push(res.data.data.taskCrossingDetailBeanList)
-            console.log(this.roadList)
-          })
           let status = ''
           switch (item.type) {
             case '1' :
@@ -862,5 +860,13 @@ export default {
   }
   .ivu-form-item{
     margin-bottom: 0;
+  }
+  .ivu-collapse-item-active{
+    /deep/ .ivu-collapse-content-box{
+      padding: 0;
+    }
+    /deep/ .ivu-collapse-content{
+      padding: 0;
+    }
   }
 </style>

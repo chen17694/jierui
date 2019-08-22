@@ -64,7 +64,7 @@ export default {
     },
     chexiao () {
       this.$Modal.confirm({
-        title: '确定要撤销吗？',
+        title: '确定要撤销申请吗？',
         onOk: () => {
           let obj = {
             opt: '3',
@@ -73,9 +73,12 @@ export default {
             processType: this.$route.params.data.type
           }
           opt(obj).then((res) => {
-            console.log(res)
+            if (res.data.status === '200') {
+              this.$router.push({
+                name: 'myApproval'
+              })
+            }
             this.$Message.info(res.data.msg)
-            this.$router.go(-1)
           })
         }
       })

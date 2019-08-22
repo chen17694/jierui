@@ -68,6 +68,7 @@ export default {
       this.menu.close()
     },
     cascaderChange () {
+      console.log(arguments)
       let value = arguments[1].slice(1, arguments[1].length).map((item) => {
         return item.label
       })

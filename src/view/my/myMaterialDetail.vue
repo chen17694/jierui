@@ -59,6 +59,11 @@ export default {
         ]
       }).then((res) => {
         this.$Message.info(res.data.msg)
+        if (res.data.status === '200') {
+          this.$router.push({
+            name: 'myMaterial'
+          })
+        }
       })
     },
     back () {

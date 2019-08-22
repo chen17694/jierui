@@ -63,7 +63,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tableMaterial" :total="total" v-model="tableData" :columns="columns" :on-change="pageChange" :on-page-size-change="pageSizeChange" @on-select="onSelect"></tables>
+    <tables ref="tableMaterial" :total="total" @on-row-dblclick="onRowClick" v-model="tableData" :columns="columns" :on-change="pageChange" :on-page-size-change="pageSizeChange" @on-select="onSelect"></tables>
   </div>
 </template>
 
@@ -210,6 +210,14 @@ export default {
     this.ListOffice()
   },
   methods: {
+    onRowClick () {
+      this.$router.push({
+        name: 'MaterialDetail',
+        query: {
+          taskId: arguments[0].id
+        }
+      })
+    },
     cancelAll () {
       console.log('取消全选')
     },

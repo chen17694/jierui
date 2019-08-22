@@ -87,12 +87,50 @@
       </Card>
     </div>
     <tables ref="tables" :total="this.total" @on-row-dblclick="onRowClick" :columns="columns" v-model="tableData" :projectListBtnVisible="true" @on-edit="onEdit" :on-change="pageChange" :on-page-size-change="pageSizeChange"/>
+    <Modal
+      v-model="statusModel"
+      title="项目状态修改申请">
+      <Form ref="formItemStatus" :model="formItemStatus" :rules="ruleCustom" :label-width="130">
+        <FormItem label="项目名称：">
+          <Row>
+            <Col span="11">
+              {{projectName}}
+            </Col>
+          </Row>
+        </FormItem>
+        <FormItem label="项目状态修改为：">
+          <Row>
+            <Col span="11">
+              {{this.status}}
+            </Col>
+          </Row>
+        </FormItem>
+        <FormItem label="申请人员：">
+          <Row>
+            <Col span="11">
+              {{userName}}
+            </Col>
+          </Row>
+        </FormItem>
+        <FormItem label="申请原因：" prop="content">
+          <Row>
+            <Col span="20">
+              <Input v-model="formItemStatus.content" type="textarea" :autosize="{minRows: 3,maxRows: 5}" style="width: 100%"/>
+            </Col>
+          </Row>
+        </FormItem>
+      </Form>
+      <div slot="footer">
+        <Button type="text" size="large" @click="statusModel = false">取消</Button>
+        <Button type="primary" size="large" @click="saveStatus">确定</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 
 <script>
 import { listProject, projectFunction, getUnitList, getUserList } from '@/api/data'
-import { getUserId, getUserInfo } from '@/libs/util'
+import { getUserId, getUserInfo, getOffice } from '@/libs/util'
 import Tables from '_c/tables'
 export default {
   name: 'projectManagement',
@@ -160,7 +198,22 @@ export default {
       total: 0,
       filter: false,
       firstPartyCompany: [],
-      projectManager: []
+      projectManager: [],
+      statusModel: false,
+      status: '',
+      permissionCode: '',
+      projectId: '',
+      pauseStatus: '',
+      projectName: '',
+      userName: getOffice().name,
+      formItemStatus: {
+        content: ''
+      },
+      ruleCustom: {
+        content: [
+          { required: true, message: '请输入申请原因', trigger: 'blur' }
+        ]
+      }
     }
   },
   methods: {
@@ -241,40 +294,65 @@ export default {
         name: 'addProject'
       })
     },
-    onEdit (params, row) {
-      if (params.permissionCode === '2' || params.permissionCode === '3') {
-        this.$Modal.confirm({
-          title: params.permissionCode === '2' ? '确定要' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该项目吗？' : '确定要申请' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该项目吗？',
-          onOk: () => {
-            projectFunction({
-              'projectId': row.id,
+    saveStatus () {
+      this.$refs['formItemStatus'].validate((valid) => {
+        if (valid) {
+          let obj = {}
+          if (this.permissionCode === '3') {
+            obj = {
+              'projectId': this.projectId,
               'userId': getUserId(),
-              'functionType': params.permissionCode,
-              'pauseStatus': row.pauseStatus === '0' ? '1' : '0'
-            }).then((res) => {
-              this.$Message.info(res.data.msg)
-              this.getData()
-            })
+              'functionType': this.permissionCode,
+              'pauseStatus': this.pauseStatus === '0' ? '1' : '0',
+              'reason': this.formItemStatus.content
+            }
+          } else {
+            obj = {
+              'projectId': this.projectId,
+              'userId': getUserId(),
+              'functionType': this.permissionCode,
+              'reason': this.formItemStatus.content
+            }
           }
-        })
-      } else if (params.permissionCode === '99') {
+          projectFunction(obj).then((res) => {
+            this.$Message.info(res.data.msg)
+            this.getData()
+            this.statusModel = false
+          })
+        } else {
+          return false
+        }
+      })
+    },
+    onEdit (params, row) {
+      let permissionCode = params.permissionCode
+      this.projectId = row.id
+      this.pauseStatus = row.pauseStatus
+      this.projectName = row.name
+      if (permissionCode === '3') {
+        this.status = '申请暂停/开始项目'
+        this.permissionCode = permissionCode
+        this.statusModel = true
+      } else if (permissionCode === '5') {
+        this.status = '申请撤销项目'
+        this.permissionCode = permissionCode
+        this.statusModel = true
+      } else if (permissionCode === '99') {
         this.$router.push({
-          name: 'addTask',
-          query: {
-            projectId: row.id
-          }
+          name: 'addTask'
         })
       } else {
+        let obj = {}
         let str = ''
-        switch (params.permissionCode) {
+        switch (permissionCode) {
           case '1':
             str = '确定要开始该项目吗？'
             break
+          case '2':
+            str = '确定要' + (this.pauseStatus === '0' ? '暂停' : '开始') + '该项目吗？'
+            break
           case '4':
             str = '确定要撤销该项目吗？'
-            break
-          case '5':
-            str = '确定要申请撤销该项目吗？'
             break
           case '6':
             str = '确定要催办该项目吗？'
@@ -286,20 +364,88 @@ export default {
             str = '确定要删除该项目吗？'
             break
         }
+        if (permissionCode === '2') {
+          obj = {
+            'projectId': row.id,
+            'userId': getUserId(),
+            'functionType': permissionCode,
+            'pauseStatus': row.pauseStatus === '0' ? '1' : '0'
+          }
+        } else {
+          obj = {
+            'projectId': row.id,
+            'userId': getUserId(),
+            'functionType': permissionCode
+          }
+        }
         this.$Modal.confirm({
           title: str,
           onOk: () => {
-            projectFunction({
-              'projectId': row.id,
-              'userId': getUserId(),
-              'functionType': params.permissionCode
-            }).then((res) => {
+            projectFunction(obj).then((res) => {
               this.$Message.info(res.data.msg)
               this.getData()
             })
           }
         })
       }
+      // if (params.permissionCode === '2' || params.permissionCode === '3') {
+      //   this.$Modal.confirm({
+      //     title: params.permissionCode === '2' ? '确定要' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该项目吗？' : '确定要申请' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该项目吗？',
+      //     onOk: () => {
+      //       projectFunction({
+      //         'projectId': row.id,
+      //         'userId': getUserId(),
+      //         'functionType': params.permissionCode,
+      //         'pauseStatus': row.pauseStatus === '0' ? '1' : '0'
+      //       }).then((res) => {
+      //         this.$Message.info(res.data.msg)
+      //         this.getData()
+      //       })
+      //     }
+      //   })
+      // } else if (params.permissionCode === '99') {
+      //   this.$router.push({
+      //     name: 'addTask',
+      //     query: {
+      //       projectId: row.id
+      //     }
+      //   })
+      // } else {
+      //   let str = ''
+      //   switch (params.permissionCode) {
+      //     case '1':
+      //       str = '确定要开始该项目吗？'
+      //       break
+      //     case '4':
+      //       str = '确定要撤销该项目吗？'
+      //       break
+      //     case '5':
+      //       str = '确定要申请撤销该项目吗？'
+      //       break
+      //     case '6':
+      //       str = '确定要催办该项目吗？'
+      //       break
+      //     case '7':
+      //       str = '确定要将该项目提交审核吗？'
+      //       break
+      //     case '8':
+      //       str = '确定要删除该项目吗？'
+      //       break
+      //   }
+      //   this.$Modal.confirm({
+      //     title: str,
+      //     onOk: () => {
+      //       projectFunction({
+      //         'projectId': row.id,
+      //         'userId': getUserId(),
+      //         'functionType': params.permissionCode
+      //       }).then((res) => {
+      //         this.$Message.info(res.data.msg)
+      //         this.getData()
+      //       })
+      //     }
+      //   })
+      // }
     }
   },
   mounted () {

@@ -234,9 +234,6 @@ export default {
     save () {
       this.$refs['formItem'].validate((valid) => {
         if (valid) {
-          this.$router.push({
-            name: 'taskManagementList'
-          })
           addTask({
             'name': this.formItem.name,
             'businessProjectId': this.formItem.businessProjectId,
@@ -257,6 +254,11 @@ export default {
             'userId': getUserId()
           }).then((res) => {
             this.$Message.info(res.data.msg)
+            if (res.data.status === '200') {
+              this.$router.push({
+                name: 'taskManagementList'
+              })
+            }
           })
         }
       })

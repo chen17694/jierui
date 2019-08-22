@@ -71,7 +71,7 @@ export default {
           materialList: [],
           materialId: '',
           surplusNum: 0,
-          applyNum: '',
+          applyNum: 0,
           returnDate: '',
           materialName: '',
           materialTypeName: '',
@@ -227,12 +227,13 @@ export default {
         userId: getUserId(),
         materialList: materialList
       }
-      console.log(obj)
       materialApplication(obj).then((res) => {
+        if (res.data.status === '200') {
+          this.$router.push({
+            name: 'myMaterial'
+          })
+        }
         this.$Message.info(res.data.msg)
-        this.$router.go(-1)
-      }).catch((err) => {
-        console.log(err)
       })
     },
     clear () {
@@ -244,7 +245,7 @@ export default {
           materialList: [],
           materialId: '',
           surplusNum: 0,
-          applyNum: '',
+          applyNum: 0,
           returnDate: '',
           materialName: '',
           materialTypeName: '',
@@ -280,7 +281,7 @@ export default {
         materialList: [],
         materialId: '',
         surplusNum: 0,
-        applyNum: '',
+        applyNum: 0,
         returnDate: '',
         materialName: '',
         materialTypeName: '',
@@ -339,6 +340,7 @@ export default {
     },
     taskChange () {
       this.params.taskName = arguments[0] ? arguments[0].label : ''
+      this.addInit()
     },
     projectChange () {
       console.log(arguments)
@@ -370,7 +372,6 @@ export default {
     materialCategory().then((res) => {
       console.log(res)
       this.addRows[this.rowIndex].categoryList = res.data.data
-      this.addInit()
     })
   }
 }
