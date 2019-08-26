@@ -6,7 +6,7 @@ import {
   removeReaded,
   restoreTrash
 } from '@/api/user'
-import { setToken, getToken, setUserId, setUserInfo, setOffice, getUserId } from '@/libs/util'
+import { setToken, getToken, setUserId, setUserInfo, setOffice, getUserId, setAutoLogin } from '@/libs/util'
 import { listMessage } from '@/api/data'
 
 export default {
@@ -50,6 +50,10 @@ export default {
       state.token = token
       setToken(token)
     },
+    setAutoLogin (state, autoLogin) {
+      state.autoLogin = autoLogin
+      setAutoLogin(autoLogin)
+    },
     // setHasGetInfo (state, status) {
     //   state.hasGetInfo = status
     // },
@@ -82,7 +86,7 @@ export default {
   },
   actions: {
     // 登录
-    handleLogin ({ commit }, { userName, password }) {
+    handleLogin ({ commit }, { userName, password, autoLogin }) {
       userName = userName.trim()
       return new Promise((resolve, reject) => {
         login({
@@ -91,6 +95,7 @@ export default {
         }).then(res => {
           if (res.data.status === '200') {
             const data = res.data
+            commit('setAutoLogin', autoLogin)
             commit('setToken', data.data.token.authToken)
             commit('setUserId', data.data.id)
             commit('setOffice', data.data)
@@ -107,7 +112,6 @@ export default {
     // 退出登录
     handleLogOut ({ state, commit }) {
       return new Promise((resolve, reject) => {
-        console.log(123123123)
         commit('setToken', '')
         commit('setUserId', '')
         commit('setOffice', {})
@@ -150,7 +154,6 @@ export default {
         status: '0'
       }).then(res => {
         const data = res.data.data.total
-        console.log(res)
         commit('setMessageCount', data)
       })
     },

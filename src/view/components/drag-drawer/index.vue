@@ -75,13 +75,6 @@ export default {
     placementComputed () {
       return this.placement ? 'left' : 'right'
     }
-  },
-  methods: {
-    handleResize (event) {
-      const { atMin } = event
-      /* eslint-disable */
-      console.log(atMin);
-    },
   }
 }
 </script>

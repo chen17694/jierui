@@ -2,7 +2,8 @@
   <div class="custom-bread-crumb">
     <Breadcrumb :style="{fontSize: `${fontSize}px`}">
       <BreadcrumbItem v-for="item in list" :to="item.to" :key="`bread-crumb-${item.name}`">
-        <common-icon style="margin-right: 4px;" :type="item.icon || ''"/>
+        <!--<common-icon style="margin-right: 4px;" :type="item.icon || ''"/>-->
+        <img v-if="item.meta.title === '首页'" :src="item.icon" style="margin-right: 4px; width: 14px">
         {{ showTitle(item) }}
       </BreadcrumbItem>
     </Breadcrumb>

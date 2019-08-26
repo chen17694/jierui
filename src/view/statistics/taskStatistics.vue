@@ -521,7 +521,6 @@ export default {
       })
     },
     pageChange (val) {
-      console.log(val)
       this.fourSearch.page = val
       this.TaskScoringAndWorkloadBean(() => {
         this.setPie5()

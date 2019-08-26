@@ -142,7 +142,6 @@ export default{
     },
     handleChange (newTargetKeys) {
       this.targetKeys = newTargetKeys
-      console.log(this.targetKeys)
     },
     allocateRender (item) {
       return item.text

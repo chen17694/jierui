@@ -184,7 +184,6 @@ export default {
               taskCrossingId: this.$route.query.taskCrossingId,
               userId: getUserId()
             }).then((res) => {
-              console.log(res)
               this.addPermission = res.data.data.addPermission
               this.annexBeans = res.data.data.annexBeans
             })
@@ -199,14 +198,12 @@ export default {
           id: this.$route.query.taskCrossingId,
           channelizationMapUrl: this.photo
         }).then((res) => {
-          console.log(res)
           this.$Message.info(res.data.msg)
         })
       })
     },
     uploadFile (e) {
       uploadImgToAliOss(e).then(res => {
-        console.log(res)
         let name = res[1]
         this.file = res[0]
         addTaskCrossingAnnex({
@@ -215,13 +212,11 @@ export default {
           annexName: name,
           id: this.$route.query.taskCrossingId
         }).then((res) => {
-          console.log(res)
           this.$Message.info(res.data.msg)
           listTaskCrossingAnnex({
             taskCrossingId: this.$route.query.taskCrossingId,
             userId: getUserId()
           }).then((res) => {
-            console.log(res)
             this.addPermission = res.data.data.addPermission
             this.annexBeans = res.data.data.annexBeans
           })
@@ -242,7 +237,6 @@ export default {
         taskCrossingId: this.$route.query.taskCrossingId,
         userId: getUserId()
       }).then((res) => {
-        console.log(res)
         this.detailData = res.data.data
         this.ycfl = res.data.data.businessTaskCrossingInspectBean && res.data.data.businessTaskCrossingInspectBean.exceptionType.split(',')
         this.photo = res.data.data.channelizationMapUrl
@@ -255,7 +249,6 @@ export default {
             this.exceptionDescriptionDisabled = false
           }
         }
-        console.log(this.ycfl)
       })
     },
     back () {
@@ -298,7 +291,6 @@ export default {
       })
     },
     editChange () {
-      console.log(arguments)
       if (arguments[0] === '0') {
         this.formItemStatus = {
           status: '0',
@@ -318,14 +310,12 @@ export default {
       }
     },
     saveEdit () {
-      console.log(this.formItemStatus)
       uploadTaskCrossingInspect({
         businessTaskCrossingId: this.$route.query.taskCrossingId,
         status: this.formItemStatus.status,
         exceptionType: this.formItemStatus.exceptionType.join(','),
         exceptionDescription: this.formItemStatus.exceptionDescription
       }).then((res) => {
-        console.log(res)
         this.$Message.info(res.data.msg)
         this.editModel = false
       })
@@ -344,7 +334,6 @@ export default {
         taskCrossingId: this.$route.query.taskCrossingId,
         userId: getUserId()
       }).then((res) => {
-        console.log(res)
         this.addPermission = res.data.data.addPermission
         this.annexBeans = res.data.data.annexBeans
       })

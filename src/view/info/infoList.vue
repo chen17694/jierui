@@ -192,7 +192,6 @@ export default {
   },
   methods: {
     cancelAll () {
-      console.log('取消全选')
     },
     // 筛选提交
     filterSubmit () {
@@ -216,7 +215,6 @@ export default {
       this.getData()
     },
     onSelect (sel, row) {
-      console.log(sel)
       this.ids = sel.map((item) => {
         return item.id
       })
@@ -230,7 +228,6 @@ export default {
     },
     getData () {
       listMessage(this.params).then((res) => {
-        console.log(res.data.data)
         if (res.data.status === '200') {
           this.tableData = res.data.data.list
           this.total = parseInt(res.data.data.total)

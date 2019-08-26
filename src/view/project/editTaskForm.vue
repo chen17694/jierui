@@ -163,11 +163,8 @@ export default {
             radius: 1000,
             extensions: 'all'
           })
-          console.log(self.formItem.lat)
-          console.log(self.formItem.lng)
           geocoder.getAddress([self.formItem.lng, self.formItem.lat], function (status, result) {
             if (status === 'complete' && result.info === 'OK') {
-              console.log(result)
               if (result && result.regeocode) {
                 self.formItem.location = result.regeocode.formattedAddress
                 self.formItem.provinceName = result.regeocode.addressComponent.province
@@ -212,7 +209,6 @@ export default {
         userId: getUserId(),
         officeId: ''
       }).then((res) => {
-        console.log(res)
         this.taskHold = res.data.data.list
       })
     },
@@ -266,12 +262,10 @@ export default {
   },
   mounted () {
     this.addMarker()
-    console.log(this.$route.query.taskId)
     selectTaskDetail({
       taskId: this.$route.query.taskId,
       userId: getUserId()
     }).then((res) => {
-      console.log(res)
       this.detailData = res.data.data
       this.formItem.businessProjectId = this.detailData.businessProjectId
       this.formItem.businessProjectName = this.detailData.businessProjectName
@@ -282,7 +276,6 @@ export default {
         userId: getUserId(),
         officeId: ''
       }).then((res) => {
-        console.log(res)
         this.taskHold = res.data.data.list
         this.formItem.taskHoldersId = this.detailData.taskHoldersId
         this.formItem.taskHoldersName = this.detailData.taskHoldersName
@@ -293,7 +286,6 @@ export default {
       this.formItem.nature = this.detailData.nature
       this.formItem.remarks = this.detailData.remarks
       this.formItem.location = this.detailData.provinceName + this.detailData.cityName + this.detailData.districtName + this.detailData.specificAddress
-      console.log(this.formItem)
     })
   }
 }

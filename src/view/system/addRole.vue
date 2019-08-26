@@ -75,7 +75,6 @@ export default {
       })
     },
     save () {
-      console.log(this.menu)
       let params = {
         'name': this.formItem.userName,
         'type': '1',

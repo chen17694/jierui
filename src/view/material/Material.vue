@@ -219,7 +219,6 @@ export default {
       })
     },
     cancelAll () {
-      console.log('取消全选')
     },
     ListOffice () {
       let _this = this
@@ -270,7 +269,6 @@ export default {
       this.filterPanel = !this.filterPanel
     },
     pageSizeChange (val) {
-      console.log(val)
       this.params.pageSize = val
       this.getData()
     },
@@ -292,7 +290,6 @@ export default {
     },
     getData () {
       materialList(this.params).then((res) => {
-        console.log(res.data.data)
         if (res.data.status === '200') {
           this.tableData = res.data.data.businessMaterialBeanList
           this.total = parseInt(res.data.data.count)

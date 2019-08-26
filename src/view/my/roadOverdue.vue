@@ -69,7 +69,6 @@ export default{
   },
   methods: {
     onRowClick  () {
-      console.log(arguments)
       let type = arguments[0].type
       let id = arguments[0].id
       if (type === '1') {
@@ -164,7 +163,6 @@ export default{
       })
     },
     urge () {
-      console.log(arguments[0].row)
       taskCrossingFunction({
         taskCrossingId: arguments[0].row.id,
         userId: getUserId(),

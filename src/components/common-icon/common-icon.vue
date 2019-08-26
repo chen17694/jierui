@@ -1,5 +1,6 @@
 <template>
-  <component :is="iconType" :type="iconName" :color="iconColor" :size="iconSize"/>
+  <!--<component :is="iconType" :type="iconName" :color="iconColor" :size="iconSize"/>-->
+  <img :src="type" style="width: 14px; margin-right: 6px; position: relative; top: 2px">
 </template>
 
 <script>

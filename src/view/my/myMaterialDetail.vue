@@ -44,7 +44,6 @@ export default {
       taskMaterialDetail({
         id: this.$route.query.id
       }).then((res) => {
-        console.log(res)
         this.detailData = res.data.data
       })
     },

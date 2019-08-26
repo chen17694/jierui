@@ -167,7 +167,6 @@ export default {
           })
           geocoder.getAddress([self.formItem.lng, self.formItem.lat], function (status, result) {
             if (status === 'complete' && result.info === 'OK') {
-              console.log(result)
               if (result && result.regeocode) {
                 self.formItem.location = result.regeocode.formattedAddress
                 self.formItem.provinceName = result.regeocode.addressComponent.province
@@ -212,7 +211,6 @@ export default {
         userId: getUserId(),
         officeId: ''
       }).then((res) => {
-        console.log(res)
         this.taskHold = res.data.data.list
       })
     },
@@ -292,7 +290,6 @@ export default {
         userId: getUserId(),
         officeId: ''
       }).then((res) => {
-        console.log(res)
         this.taskHold = res.data.data.list
       })
     }

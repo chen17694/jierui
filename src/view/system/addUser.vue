@@ -243,7 +243,6 @@ export default {
   methods: {
     uploadPhoto (e) {
       uploadImgToAliOss(e).then(res => {
-        console.log(res)
         this.formItem.photo = res
       })
     },

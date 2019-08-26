@@ -219,7 +219,6 @@ export default{
       this.listParams.districtId = value[2]
     },
     editAreaChange () {
-      console.log(arguments)
       let value = arguments[1].slice(1, arguments[1].length).map((item) => {
         return item.value
       })
@@ -278,7 +277,6 @@ export default{
     },
     // 编辑
     onEdit () {
-      console.log(arguments)
       this.editType = 1
       this.area2 = ['1', arguments[0].row.provinceId, arguments[0].row.cityId, arguments[0].row.districtId]
       this.editParams = {
@@ -357,7 +355,6 @@ export default{
         }
       })
       getHeadOffice().then((res) => {
-        console.log(res.data.data)
         this.companyData = res.data.data
         this.companyName = res.data.data.name
         this.companyArea = (res.data.data.provinceName ? res.data.data.provinceName : '') + (res.data.data.cityName ? res.data.data.cityName : '') + (res.data.data.districtName ? res.data.data.districtName : '')
@@ -385,7 +382,6 @@ export default{
   mounted () {
     this.getData()
     getHeadOffice().then((res) => {
-      console.log(res.data.data)
       this.companyData = res.data.data
       this.companyName = res.data.data.name
       this.companyArea = (res.data.data.provinceName ? res.data.data.provinceName : '') + (res.data.data.cityName ? res.data.data.cityName : '') + (res.data.data.districtName ? res.data.data.districtName : '')

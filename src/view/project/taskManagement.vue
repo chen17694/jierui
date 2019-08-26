@@ -218,7 +218,6 @@ export default {
     },
     getData () {
       listTask(this.params).then((res) => {
-        console.log(res.data.data)
         this.creatProjectTaskPermission = res.data.data.creatProjectTaskPermission
         this.creatTaskPermission = res.data.data.creatTaskPermission
         this.creatProjectTaskPermission = res.data.data.creatProjectTaskPermission

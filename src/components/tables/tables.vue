@@ -267,14 +267,12 @@ export default {
         params.tableData = this.value
         return h('div', btns.map(item => item(h, params, this)))
       }
-      console.log(item)
       return item
     },
     handleColumns (columns
     ) {
       this.insideColumns = columns.map((item, index) => {
         let res = item
-        console.log(res)
         if (res.editable) res = this.suportEdit(res, index)
         if (res.key === 'handle') res = this.surportHandle(res)
         return res

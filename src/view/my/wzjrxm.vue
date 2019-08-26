@@ -107,7 +107,6 @@ export default {
           key: 'applyNum',
           width: '100px',
           render: (h, params) => {
-            console.log(this.addRows[params.index])
             return h('InputNumber', {
               props: {
                 value: this.addRows[params.index].applyNum,
@@ -168,7 +167,6 @@ export default {
     },
     getMaterialCategory () {
       materialCategory().then((res) => {
-        console.log(res)
         this.addRows[this.rowIndex].materialCategoryList = res.data.data
       })
     },
@@ -181,7 +179,6 @@ export default {
         materialCategoryId: id,
         officeId: ''
       }).then((res) => {
-        console.log(res)
         this.addRows[index].materialList = res.data.data.businessMaterialBeanList
         this.tableData[index].tname = this.addRows[index].materialList
       })
@@ -231,13 +228,11 @@ export default {
       })
     },
     getData () {
-      console.log(this.$route.params)
       detailProjectMaterialJoin({
         taskId: this.$route.params.data.taskId,
         userId: getUserId(),
         type: '2'
       }).then((res) => {
-        console.log(res.data.data)
         this.stepArr = res.data.data.list
         this.projectId = res.data.data.projectId
         this.detailData = res.data.data

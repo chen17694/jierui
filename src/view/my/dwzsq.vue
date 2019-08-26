@@ -79,7 +79,6 @@ export default {
       arr.forEach((item) => {
         delete item.initRowIndex
       })
-      console.log(arr)
       let obj = {
         opt: this.editParams.opt,
         taskId: this.$route.query.taskId,
@@ -90,7 +89,6 @@ export default {
           list: arr
         }
       }
-      console.log(obj)
       opt(obj).then((res) => {
         if (res.data.status === '200') {
           this.$router.push({
@@ -106,7 +104,6 @@ export default {
         userId: getUserId(),
         type: '1'
       }).then((res) => {
-        console.log(res.data.data)
         this.tableData = this.projectMaterialJoinApproveForm = res.data.data.materialList
         this.stepArr = res.data.data.list
         this.detailData = res.data.data

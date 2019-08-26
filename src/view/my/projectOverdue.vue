@@ -53,7 +53,6 @@ export default{
       this.getData()
     },
     urge () {
-      console.log(arguments[0].row)
       projectFunction({
         projectId: arguments[0].row.id,
         userId: getUserId(),
@@ -63,12 +62,10 @@ export default{
       })
     },
     pageSizeChange (val) {
-      console.log(val)
       this.params.pageSize = val
       this.getData()
     },
     pageChange (val) {
-      console.log(val)
       this.params.page = val
       this.getData()
     },

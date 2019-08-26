@@ -100,9 +100,6 @@ export default {
           break
       }
     }
-  },
-  mounted () {
-    console.log(getOffice())
   }
 }
 </script>

@@ -145,7 +145,6 @@ export default {
     },
     getData () {
       listMyMaterial(this.params).then((res) => {
-        console.log(res.data.data)
         if (res.data.status === '200') {
           this.tableData = res.data.data.businessTaskMaterialBeanList
           this.total = Number(res.data.data.count)
@@ -192,7 +191,6 @@ export default {
         cityName: '',
         districtName: ''
       }).then((res) => {
-        console.log(res)
         this.taskList = res.data.data.taskDetailBeans
       })
     },
@@ -230,7 +228,6 @@ export default {
                   returnNum: item.amount
                 })
               })
-              console.log(materialReturnParameterList)
               materialReturn({
                 userId: getUserId(),
                 materialReturnParameterList

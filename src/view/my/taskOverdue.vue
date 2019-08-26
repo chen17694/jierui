@@ -122,7 +122,6 @@ export default{
       this.getData()
     },
     urge () {
-      console.log(arguments[0].row)
       taskFunction({
         taskId: arguments[0].row.id,
         userId: getUserId(),

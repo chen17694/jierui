@@ -157,7 +157,6 @@ export default {
       this.oneInterface()
     },
     pageSizeChange (val) {
-      console.log(val)
       this.Search.pageSize = val
       this.oneInterface()
     },

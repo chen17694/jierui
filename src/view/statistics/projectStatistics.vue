@@ -508,7 +508,6 @@ export default {
       finishProjectTaskCount(_this.oneSearch).then(res => {
         if (res.data.status === '200') {
           _this.finishProjectTaskData = res.data.data
-          console.log(res.data.data)
           if (func && typeof func === 'function') {
             func()
           }
@@ -969,7 +968,6 @@ export default {
       this.dom.setOption(option)
     },
     pageChange (val) {
-      console.log(val)
       this.ProjectWorkloadCountSearch.page = val
       this.ProjectWorkloadCount()
     },

@@ -187,7 +187,6 @@ export default {
           // // 去重
           // _this.crossList = _this.crossList.reduce((cur, next) => {
           //   obj[next.id] ? '' : obj[next.id] = true && cur.push(next)
-          //   // console.log(obj[next.id] ? '' : obj[next.id] = true && cur.push(next))
           //   return cur
           // }, [])
         } else {

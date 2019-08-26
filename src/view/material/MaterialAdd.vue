@@ -151,7 +151,6 @@ export default {
       materialDetail({ id: id }).then((res) => {
         if (res.data.status === '200') {
           let gdata = res.data.data
-          console.log(gdata.amount)
           this.formMaterial.id = gdata.id
           this.formMaterial.name = gdata.name
           this.formMaterial.amount = Number(gdata.amount)
@@ -161,7 +160,6 @@ export default {
           this.formMaterial.officeId = gdata.officeId
           this.formMaterial.officeName = gdata.officeName
           this.formMaterial.needReturnStatus = gdata.needReturnStatus
-          console.log(this.formMaterial)
         } else {}
       })
     },
@@ -219,7 +217,6 @@ export default {
     AddMaterial () {
       let _this = this
       addMaterial(_this.formMaterial).then((res) => {
-        console.log(res.data)
         if (res.data.status === '200') {
           _this.$Message.info(res.data.msg)
           _this.$router.push('materialList')

@@ -230,13 +230,11 @@ export default {
 
     },
     dateChange () {
-      console.log(arguments)
       this.formItem2.startTime = arguments[0][0]
       this.formItem2.completionTime = arguments[0][1]
     },
     saveTaskRoad () {
       let idLIst = this.selectList.map(item => item.id)
-      console.log(idLIst)
       let params = {
         businessProjectId: this.formItem2.businessProjectId,
         businessTaskId: this.formItem2.businessTaskId,
@@ -277,7 +275,7 @@ export default {
         districtName: ''
       }).then((res) => {
         this.taskList = res.data.data.taskDetailBeans.filter((item) => {
-          return item.taskStatus !== '8'
+          return (item.taskStatus === '2' || item.taskStatus === '3')
         })
       })
     },
@@ -293,7 +291,6 @@ export default {
         lng: this.lng,
         lat: this.lat
       }
-      console.log(params)
       addCrossing(params).then((res) => {
         this.$Message.info(res.data.msg)
         this.markers = []
@@ -337,13 +334,11 @@ export default {
         this.selectList.push(item)
       }
       this.stateCheck(this.roadList, this.selectList)
-      console.log(this.roadList)
     },
     cascaderChange () {
       let value = arguments[1].slice(1, arguments[1].length).map((item) => {
         return item.label
       })
-      console.log(value)
       this.keywords = value.join()
       this.searchArea()
     },
@@ -370,7 +365,6 @@ export default {
     },
     getRoad () {
       listCrossingAndCount(this.params).then((res) => {
-        console.log(res)
         let roadList = this.roadList = res.data.data.list
         this.total = res.data.data.count
         if (this.total === '0') {
@@ -428,7 +422,6 @@ export default {
       startTime: '',
       endTime: ''
     }).then((res) => {
-      console.log(res.data.data.projectList)
       this.projectList = res.data.data.projectList
     })
     this.formItem1.userName = JSON.parse(getUserInfo()).name

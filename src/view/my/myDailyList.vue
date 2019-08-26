@@ -130,8 +130,6 @@ export default {
                   this.addRows[params.index].projectId = id
                   this.addRows[params.index].taskList = []
                   this.addRows[params.index].taskId = ''
-                  console.log(id)
-                  console.log(params.index)
                   this.getListTask(1, id, params.index)
                 }
               }
@@ -395,7 +393,6 @@ export default {
       this.getListTask(2, arguments[0])
     },
     dataDate () {
-      console.log(arguments)
       this.params.startDate = arguments[0]
       this.params.endDate = arguments[0]
       this.params.type = '6'
@@ -424,7 +421,6 @@ export default {
       this.formValidate.reportDate = arguments[0]
     },
     onEdit () {
-      console.log(arguments)
       // arguments[0].row
       this.formValidate = {
         id: arguments[0].row.id,

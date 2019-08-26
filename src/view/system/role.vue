@@ -111,7 +111,6 @@ export default{
       })
     },
     editRole () {
-      console.log(arguments)
       this.$router.push({
         name: 'editRole',
         params: {
@@ -133,7 +132,6 @@ export default{
       this.params.type = this.tab === 'system' ? '1' : '2'
       listRole(this.params).then(res => {
         if (res.data.status === '200') {
-          console.log(res)
           this.tableData = res.data.data.list
           this.total = res.data.data.total
         }

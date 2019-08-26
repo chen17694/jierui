@@ -99,7 +99,6 @@ export const getRegionList = req => {
       ]
     }))
   })
-  console.log(data)
   return data
 }
 export const getUserList = req => {
@@ -143,7 +142,6 @@ export const getRegion = req => {
       areaId: Random.zip()
     }))
   })
-  console.log(data)
   return data
 }
 

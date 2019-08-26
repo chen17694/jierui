@@ -157,7 +157,6 @@ export default {
         userId: getUserId(),
         type: '1'
       }).then((res) => {
-        console.log(res.data.data)
         this.detailData = res.data.data
         this.stepArr = res.data.data.list
       })

@@ -168,7 +168,6 @@ export default {
   },
   methods: {
     onRowClick () {
-      console.log(arguments)
       let type = arguments[0].type
       let id = arguments[0].id
       if (type === '1') {
@@ -209,7 +208,6 @@ export default {
     },
     getData () {
       listTaskCrossing(this.params).then((res) => {
-        console.log(res.data.data)
         this.tableData = res.data.data.taskCrossingDetailBeanList
         this.creatThisTaskCrossingPermission = res.data.data.creatThisTaskCrossingPermission
         this.creatTaskCrossingPermission = res.data.data.creatTaskCrossingPermission
@@ -235,7 +233,6 @@ export default {
         cityName: '',
         districtName: ''
       }).then((res) => {
-        console.log(res)
         this.taskList = res.data.data.taskDetailBeans
       })
     },
@@ -278,7 +275,6 @@ export default {
       })
     },
     onEdit (params, row) {
-      console.log(arguments)
       let str = ''
       switch (params.permissionCode) {
         case '1':

@@ -123,7 +123,6 @@ export default {
     // 单选
     onSelect (row) {
       this.rowId = this.$refs.child1.getCheckedProp('id')
-      console.log(this.rowId)
     },
     // 全选
     onSelectionChange (row) {
@@ -131,14 +130,12 @@ export default {
       row.forEach((item) => {
         this.rowId.push(item.id)
       })
-      console.log(this.rowId)
     },
     // 批量删除
     dropdownClick (name) {
       this.rowId = this.rowId.map((item) => {
         return String(item)
       })
-      console.log(this.rowId)
       if (name === '批量删除') {
         let params = {
           'ids': this.rowId,
@@ -167,7 +164,6 @@ export default {
     },
     // 编辑
     onEdit () {
-      console.log(arguments)
       this.modalType = 1
       this.formValidate.parentId = arguments[0].row.parentId
       this.formValidate.id = arguments[0].row.id
@@ -213,7 +209,6 @@ export default {
     getData () {
       getRegionList().then(res => {
         if (res.data.status === '200') {
-          console.log(res)
           this.tableData = res.data.data
         }
       })

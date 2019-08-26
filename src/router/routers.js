@@ -1,6 +1,14 @@
 import Main from '@/components/main'
 import parentView from '@/components/parent-view'
 import addTask from '@/view/project/addTask.vue'
+import home from '@/assets/images/home.png'
+import i1 from '@/assets/images/i1.png'
+import i2 from '@/assets/images/i2.png'
+import i3 from '@/assets/images/i3.png'
+import i4 from '@/assets/images/i4.png'
+import i5 from '@/assets/images/i5.png'
+import i6 from '@/assets/images/i6.png'
+import i7 from '@/assets/images/i7.png'
 /**
  * iview-admin中meta除了原生参数外可配置的参数:
  * meta: {
@@ -42,9 +50,9 @@ export default [
         name: 'home',
         meta: {
           hideInMenu: true,
-          title: '我的项目',
+          title: '首页',
           notCache: true,
-          icon: 'md-home'
+          icon: home
         },
         component: () => import('@/view/my/myProject.vue')
       }
@@ -54,7 +62,7 @@ export default [
     path: '/my',
     name: 'my',
     meta: {
-      icon: 'md-menu',
+      icon: i1,
       title: '我的'
     },
     component: Main,
@@ -63,7 +71,6 @@ export default [
         path: 'myProject',
         name: 'myProject',
         meta: {
-          icon: 'md-funnel',
           title: '我的项目'
         },
         component: () => import('@/view/my/myProject.vue')
@@ -72,9 +79,9 @@ export default [
         path: 'userInfo',
         name: 'userInfo',
         meta: {
-          icon: 'md-funnel',
           title: '我的信息',
-          hideInMenu: true
+          hideInMenu: true,
+          needInBread: true
         },
         component: () => import('@/view/my/userInfo.vue')
       },
@@ -82,9 +89,9 @@ export default [
         path: 'projectDetail',
         name: 'projectDetail',
         meta: {
-          icon: 'md-funnel',
           title: '项目详情',
-          hideInMenu: true
+          hideInMenu: true,
+          needInBread: true
         },
         component: () => import('@/view/my/projectDetail.vue')
       },
@@ -92,9 +99,9 @@ export default [
         path: 'taskDetail',
         name: 'taskDetail',
         meta: {
-          icon: 'md-funnel',
           title: '任务详情',
-          hideInMenu: true
+          hideInMenu: true,
+          needInBread: true
         },
         component: () => import('@/view/my/taskDetail.vue')
       },
@@ -102,9 +109,9 @@ export default [
         path: 'xjDetail',
         name: 'xjDetail',
         meta: {
-          icon: 'md-funnel',
           title: '任务路口详情',
-          hideInMenu: true
+          hideInMenu: true,
+          needInBread: true
         },
         component: () => import('@/view/my/xjDetail.vue')
       },
@@ -112,9 +119,9 @@ export default [
         path: 'yhDetail',
         name: 'yhDetail',
         meta: {
-          icon: 'md-funnel',
           title: '任务路口详情',
-          hideInMenu: true
+          hideInMenu: true,
+          needInBread: true
         },
         component: () => import('@/view/my/yhDetail.vue')
       },
@@ -122,9 +129,9 @@ export default [
         path: 'xcDetail',
         name: 'xcDetail',
         meta: {
-          icon: 'md-funnel',
           title: '任务路口详情',
-          hideInMenu: true
+          hideInMenu: true,
+          needInBread: true
         },
         component: () => import('@/view/my/xcDetail.vue')
       },
@@ -132,9 +139,9 @@ export default [
         path: 'roadHistory',
         name: 'roadHistory',
         meta: {
-          icon: 'md-funnel',
-          title: '任务路口历史版本信息',
-          hideInMenu: true
+          title: '路口历史版本',
+          hideInMenu: true,
+          needInBread: true
         },
         component: () => import('@/view/my/roadHistory.vue')
       },
@@ -142,7 +149,6 @@ export default [
         path: 'map',
         name: 'map',
         meta: {
-          icon: 'md-funnel',
           title: '地图定位',
           hideInMenu: true
         },
@@ -152,7 +158,6 @@ export default [
         path: 'map2',
         name: 'map2',
         meta: {
-          icon: 'md-funnel',
           title: '地图定位',
           hideInMenu: true
         },
@@ -162,9 +167,9 @@ export default [
         path: 'xmsxxg',
         name: 'xmsxxg',
         meta: {
-          icon: 'md-funnel',
           title: '项目属性修改',
-          hideInMenu: true
+          hideInMenu: true,
+          needInBread: true
         },
         component: () => import('@/view/my/xmsxxg.vue')
       },
@@ -172,9 +177,9 @@ export default [
         path: 'myTask',
         name: 'myTask',
         meta: {
-          icon: 'md-funnel',
           title: '我的任务',
-          hideInMenu: true
+          hideInMenu: true,
+          needInBread: true
         },
         component: () => import('@/view/my/myTask.vue')
       },
@@ -182,9 +187,9 @@ export default [
         path: 'myTaskRoad',
         name: 'myTaskRoad',
         meta: {
-          icon: 'md-funnel',
           title: '我的任务路口',
-          hideInMenu: true
+          hideInMenu: true,
+          needInBread: true
         },
         component: () => import('@/view/my/myTaskRoad.vue')
       },
@@ -192,7 +197,6 @@ export default [
         path: 'myMaterial',
         name: 'myMaterial',
         meta: {
-          icon: 'md-boat',
           title: '我的物资'
         },
         component: () => import('@/view/my/myMaterial.vue')
@@ -201,9 +205,9 @@ export default [
         path: 'myMaterialDetail',
         name: 'myMaterialDetail',
         meta: {
-          icon: 'md-boat',
-          title: '我的物资详情',
-          hideInMenu: true
+          title: '物资详情',
+          hideInMenu: true,
+          needInBread: true
         },
         component: () => import('@/view/my/myMaterialDetail.vue')
       },
@@ -211,9 +215,9 @@ export default [
         path: 'applyMaterial',
         name: 'applyMaterial',
         meta: {
-          icon: 'md-funnel',
           title: '物资申请',
-          hideInMenu: true
+          hideInMenu: true,
+          needInBread: true
         },
         component: () => import('@/view/my/applyMaterial.vue')
       },
@@ -221,7 +225,6 @@ export default [
         path: 'myDaily',
         name: 'myDaily',
         meta: {
-          icon: 'md-funnel',
           title: '我的日报'
         },
         component: () => import('@/view/my/myDaily.vue')
@@ -230,9 +233,9 @@ export default [
         path: 'myDailyList',
         name: 'myDailyList',
         meta: {
-          icon: 'md-funnel',
           title: '我的日报',
-          hideInMenu: true
+          hideInMenu: true,
+          needInBread: true
         },
         component: () => import('@/view/my/myDailyList.vue')
       },
@@ -240,7 +243,6 @@ export default [
         path: 'myProcessed',
         name: 'myProcessed',
         meta: {
-          icon: 'md-funnel',
           title: '我的审核审批'
         },
         component: parentView,
@@ -249,7 +251,6 @@ export default [
             path: 'myApproval',
             name: 'myApproval',
             meta: {
-              icon: 'md-funnel',
               title: '我的审核审批',
               hideInBread: true
             },
@@ -259,9 +260,9 @@ export default [
             path: 'dxmsq',
             name: 'dxmsq',
             meta: {
-              icon: 'md-funnel',
               title: '项目审批',
-              hideInMenu: true
+              hideInMenu: true,
+              needInBread: true
             },
             component: () => import('@/view/my/dxmsq.vue')
           },
@@ -269,9 +270,9 @@ export default [
             path: 'dwzsq',
             name: 'dwzsq',
             meta: {
-              icon: 'md-funnel',
               title: '物资申请审批',
-              hideInMenu: true
+              hideInMenu: true,
+              needInBread: true
             },
             component: () => import('@/view/my/dwzsq.vue')
           },
@@ -279,9 +280,9 @@ export default [
             path: 'dwzghsq',
             name: 'dwzghsq',
             meta: {
-              icon: 'md-funnel',
               title: '物资归还审批',
-              hideInMenu: true
+              hideInMenu: true,
+              needInBread: true
             },
             component: () => import('@/view/my/dwzghsq.vue')
           },
@@ -289,9 +290,9 @@ export default [
             path: 'dxmsxxgsq',
             name: 'dxmsxxgsq',
             meta: {
-              icon: 'md-funnel',
               title: '项目属性修改审批',
-              hideInMenu: true
+              hideInMenu: true,
+              needInBread: true
             },
             component: () => import('@/view/my/dxmsxxgsq.vue')
           },
@@ -299,9 +300,9 @@ export default [
             path: 'dxmztxgsq',
             name: 'dxmztxgsq',
             meta: {
-              icon: 'md-funnel',
               title: '项目状态修改审批',
-              hideInMenu: true
+              hideInMenu: true,
+              needInBread: true
             },
             component: () => import('@/view/my/dxmztxgsq.vue')
           },
@@ -309,9 +310,9 @@ export default [
             path: 'drwsq',
             name: 'drwsq',
             meta: {
-              icon: 'md-funnel',
               title: '任务审批',
-              hideInMenu: true
+              hideInMenu: true,
+              needInBread: true
             },
             component: () => import('@/view/my/drwsq.vue')
           },
@@ -319,9 +320,9 @@ export default [
             path: 'drwlksq',
             name: 'drwlksq',
             meta: {
-              icon: 'md-funnel',
               title: '任务路口审批',
-              hideInMenu: true
+              hideInMenu: true,
+              needInBread: true
             },
             component: () => import('@/view/my/drwlksq.vue')
           },
@@ -329,9 +330,9 @@ export default [
             path: 'dwzjrxm',
             name: 'dwzjrxm',
             meta: {
-              icon: 'md-funnel',
               title: '物资加入项目申请审批',
-              hideInMenu: true
+              hideInMenu: true,
+              needInBread: true
             },
             component: () => import('@/view/my/dwzjrxm.vue')
           },
@@ -339,9 +340,9 @@ export default [
             path: 'dryjrxmsq',
             name: 'dryjrxmsq',
             meta: {
-              icon: 'md-funnel',
               title: '人员加入项目申请审批',
-              hideInMenu: true
+              hideInMenu: true,
+              needInBread: true
             },
             component: () => import('@/view/my/dryjrxmsq.vue')
           },
@@ -350,9 +351,9 @@ export default [
             path: 'xmsq',
             name: 'xmsq',
             meta: {
-              icon: 'md-funnel',
               title: '我的项目审批',
-              hideInMenu: true
+              hideInMenu: true,
+              needInBread: true
             },
             component: () => import('@/view/my/xmsq.vue')
           },
@@ -360,9 +361,9 @@ export default [
             path: 'wzsq',
             name: 'wzsq',
             meta: {
-              icon: 'md-funnel',
               title: '我的物资审批',
-              hideInMenu: true
+              hideInMenu: true,
+              needInBread: true
             },
             component: () => import('@/view/my/wzsq.vue')
           },
@@ -370,9 +371,9 @@ export default [
             path: 'wzghsq',
             name: 'wzghsq',
             meta: {
-              icon: 'md-funnel',
               title: '我的物资归还审批',
-              hideInMenu: true
+              hideInMenu: true,
+              needInBread: true
             },
             component: () => import('@/view/my/wzghsq.vue')
           },
@@ -380,9 +381,9 @@ export default [
             path: 'xmsxxgsq',
             name: 'xmsxxgsq',
             meta: {
-              icon: 'md-funnel',
               title: '我的项目属性修改审批',
-              hideInMenu: true
+              hideInMenu: true,
+              needInBread: true
             },
             component: () => import('@/view/my/xmsxxgsq.vue')
           },
@@ -390,9 +391,9 @@ export default [
             path: 'xmztxgsq',
             name: 'xmztxgsq',
             meta: {
-              icon: 'md-funnel',
               title: '我的项目状态修改审批',
-              hideInMenu: true
+              hideInMenu: true,
+              needInBread: true
             },
             component: () => import('@/view/my/xmztxgsq.vue')
           },
@@ -400,9 +401,9 @@ export default [
             path: 'rwsq',
             name: 'rwsq',
             meta: {
-              icon: 'md-funnel',
               title: '我的任务审批',
-              hideInMenu: true
+              hideInMenu: true,
+              needInBread: true
             },
             component: () => import('@/view/my/rwsq.vue')
           },
@@ -410,9 +411,9 @@ export default [
             path: 'rwlksq',
             name: 'rwlksq',
             meta: {
-              icon: 'md-funnel',
               title: '我的任务路口审批',
-              hideInMenu: true
+              hideInMenu: true,
+              needInBread: true
             },
             component: () => import('@/view/my/rwlksq.vue')
           },
@@ -420,9 +421,9 @@ export default [
             path: 'wzjrxm',
             name: 'wzjrxm',
             meta: {
-              icon: 'md-funnel',
               title: '我的物资加入项目申请审批',
-              hideInMenu: true
+              hideInMenu: true,
+              needInBread: true
             },
             component: () => import('@/view/my/wzjrxm.vue')
           },
@@ -430,9 +431,9 @@ export default [
             path: 'ryjrxmsq',
             name: 'ryjrxmsq',
             meta: {
-              icon: 'md-funnel',
               title: '我的人员加入项目申请审批',
-              hideInMenu: true
+              hideInMenu: true,
+              needInBread: true
             },
             component: () => import('@/view/my/ryjrxmsq.vue')
           }
@@ -442,7 +443,6 @@ export default [
         path: 'myOverdue',
         name: 'myOverdue',
         meta: {
-          icon: 'md-funnel',
           title: '逾期信息'
         },
         component: parentView,
@@ -451,7 +451,6 @@ export default [
             path: 'projectOverdue',
             name: 'projectOverdue',
             meta: {
-              icon: 'md-funnel',
               title: '项目逾期'
             },
             component: () => import('@/view/my/projectOverdue.vue')
@@ -460,7 +459,6 @@ export default [
             path: 'taskOverdue',
             name: 'taskOverdue',
             meta: {
-              icon: 'md-funnel',
               title: '任务逾期'
             },
             component: () => import('@/view/my/taskOverdue.vue')
@@ -469,7 +467,6 @@ export default [
             path: 'roadOverdue',
             name: 'roadOverdue',
             meta: {
-              icon: 'md-funnel',
               title: '任务路口逾期'
             },
             component: () => import('@/view/my/roadOverdue.vue')
@@ -478,7 +475,6 @@ export default [
             path: 'returnOverdue',
             name: 'returnOverdue',
             meta: {
-              icon: 'md-funnel',
               title: '物资归还逾期'
             },
             component: () => import('@/view/my/returnOverdue.vue')
@@ -491,29 +487,29 @@ export default [
     path: '/road',
     name: 'road',
     meta: {
-      icon: 'md-menu',
+      icon: i3,
       title: '路口管理'
     },
     component: Main,
     children: [
       {
-        path: 'addRoad',
-        name: 'addRoad',
-        meta: {
-          icon: 'md-funnel',
-          title: '新建路口',
-          hideInMenu: true
-        },
-        component: () => import('@/view/road/addRoad.vue')
-      },
-      {
         path: 'roadList',
         name: 'roadList',
         meta: {
-          icon: 'md-funnel',
+          icon: i3,
           title: '路口列表'
         },
         component: () => import('@/view/road/roadList.vue')
+      },
+      {
+        path: 'addRoad',
+        name: 'addRoad',
+        meta: {
+          title: '新建路口',
+          hideInMenu: true,
+          needInBread: true
+        },
+        component: () => import('@/view/road/addRoad.vue')
       }
     ]
   },
@@ -521,7 +517,7 @@ export default [
     path: '/project',
     name: 'project',
     meta: {
-      icon: 'md-menu',
+      icon: i2,
       title: '项目管理'
     },
     component: Main,
@@ -530,7 +526,6 @@ export default [
         path: 'projectManagement',
         name: 'projectManagement',
         meta: {
-          icon: 'md-funnel',
           title: '项目管理'
         },
         component: parentView,
@@ -539,7 +534,6 @@ export default [
             path: 'projectManagementList',
             name: 'projectManagementList',
             meta: {
-              icon: 'md-funnel',
               title: '项目管理',
               hideInBread: true
             },
@@ -549,7 +543,6 @@ export default [
             path: 'addProject',
             name: 'addProject',
             meta: {
-              icon: 'md-funnel',
               title: '新建项目',
               hideInMenu: true,
               needInBread: true
@@ -560,7 +553,6 @@ export default [
             path: 'addProjectForm',
             name: 'addProjectForm',
             meta: {
-              icon: 'md-funnel',
               title: '新建项目',
               hideInMenu: true,
               needInBread: true,
@@ -572,7 +564,6 @@ export default [
             path: 'projectReminder',
             name: 'projectReminder',
             meta: {
-              icon: 'md-funnel',
               title: '项目提醒',
               hideInMenu: true,
               needInBread: true
@@ -594,7 +585,6 @@ export default [
             path: 'taskManagementList',
             name: 'taskManagementList',
             meta: {
-              icon: 'md-funnel',
               title: '任务管理',
               hideInBread: true
             },
@@ -604,7 +594,6 @@ export default [
             path: 'addTask',
             name: 'addTask',
             meta: {
-              icon: 'md-funnel',
               title: '新建任务',
               hideInMenu: true,
               needInBread: true
@@ -615,7 +604,6 @@ export default [
             path: 'addTaskForm',
             name: 'addTaskForm',
             meta: {
-              icon: 'md-funnel',
               title: '新建任务',
               hideInMenu: true,
               needInBread: true
@@ -626,7 +614,6 @@ export default [
             path: 'editTaskForm',
             name: 'editTaskForm',
             meta: {
-              icon: 'md-funnel',
               title: '修改任务属性',
               hideInMenu: true,
               needInBread: true,
@@ -638,7 +625,6 @@ export default [
             path: 'taskReminder',
             name: 'taskReminder',
             meta: {
-              icon: 'md-funnel',
               title: '任务提醒',
               hideInMenu: true,
               needInBread: true
@@ -651,7 +637,6 @@ export default [
         path: 'taskRoadManagement',
         name: 'taskRoadManagement',
         meta: {
-          icon: 'md-funnel',
           title: '任务路口管理'
         },
         component: parentView,
@@ -660,7 +645,6 @@ export default [
             path: 'taskRoadManagementList',
             name: 'taskRoadManagementList',
             meta: {
-              icon: 'md-funnel',
               title: '任务路口管理',
               hideInBread: true
             },
@@ -670,7 +654,6 @@ export default [
             path: 'addTaskRoad',
             name: 'addTaskRoad',
             meta: {
-              icon: 'md-funnel',
               title: '新建任务路口',
               hideInMenu: true,
               needInBread: true
@@ -681,7 +664,6 @@ export default [
             path: 'taskRoadReminder',
             name: 'taskRoadReminder',
             meta: {
-              icon: 'md-funnel',
               title: '任务路口提醒',
               hideInMenu: true,
               needInBread: true
@@ -696,7 +678,7 @@ export default [
     path: '/statistics',
     name: 'statistics',
     meta: {
-      icon: 'md-podium',
+      icon: i6,
       title: '统计分析'
     },
     component: Main,
@@ -705,7 +687,6 @@ export default [
         path: 'projectStatistics',
         name: 'projectStatistics',
         meta: {
-          icon: 'md-funnel',
           title: '项目统计'
         },
         component: () => import('@/view/statistics/projectStatistics.vue')
@@ -714,7 +695,6 @@ export default [
         path: 'tastStatistics',
         name: 'tastStatistics',
         meta: {
-          icon: 'md-funnel',
           title: '任务统计'
         },
         component: () => import('@/view/statistics/taskStatistics.vue')
@@ -723,7 +703,6 @@ export default [
         path: 'taskIntersectionStatistics',
         name: 'taskIntersectionStatistics',
         meta: {
-          icon: 'md-funnel',
           title: '任务路口统计'
         },
         component: () => import('@/view/statistics/taskIntersectionStatistics.vue')
@@ -732,7 +711,6 @@ export default [
         path: 'IntersectionStatistics',
         name: 'IntersectionStatistics',
         meta: {
-          icon: 'md-funnel',
           title: '路口统计'
         },
         component: () => import('@/view/statistics/IntersectionStatistics.vue')
@@ -741,7 +719,6 @@ export default [
         path: 'MaterialStatistics',
         name: 'MaterialStatistics',
         meta: {
-          icon: 'md-funnel',
           title: '物资统计'
         },
         component: () => import('@/view/statistics/MaterialStatistics.vue')
@@ -750,7 +727,6 @@ export default [
         path: 'EmployeeWorkloadStatistics',
         name: 'EmployeeWorkloadStatistics',
         meta: {
-          icon: 'md-funnel',
           title: '员工工作量统计'
         },
         component: () => import('@/view/statistics/EmployeeWorkloadStatistics.vue')
@@ -761,7 +737,7 @@ export default [
     path: '/MaterialManager',
     name: 'MaterialManager',
     meta: {
-      icon: 'md-boat',
+      icon: i4,
       title: '物资管理',
       hideInMenu: false
     },
@@ -771,7 +747,6 @@ export default [
         path: 'MaterialList',
         name: 'MaterialList',
         meta: {
-          icon: 'md-menu',
           title: '物资列表',
           hideInMenu: false
         },
@@ -781,7 +756,6 @@ export default [
         path: 'MaterialAdd',
         name: 'MaterialAdd',
         meta: {
-          icon: 'md-add',
           title: '创建物资',
           hideInMenu: false
         },
@@ -791,9 +765,9 @@ export default [
         path: 'MaterialDetail',
         name: 'MaterialDetail',
         meta: {
-          icon: 'md-funnel',
           title: '物资详情',
-          hideInMenu: true
+          hideInMenu: true,
+          needInBread: true
         },
         component: () => import('@/view/material/MaterialDetail.vue')
       }
@@ -803,7 +777,7 @@ export default [
     path: '/DailyReview',
     name: 'DailyReview',
     meta: {
-      icon: 'ios-calendar',
+      icon: i5,
       title: '日报审阅'
     },
     component: Main,
@@ -812,29 +786,19 @@ export default [
         path: 'dailyList',
         name: 'dailyList',
         meta: {
-          icon: 'md-menu',
+          icon: i5,
           title: '日报列表',
           hideInMenu: false
         },
         component: () => import('@/view/daily/dailyList.vue')
       },
       {
-        path: '',
-        name: '',
-        meta: {
-          icon: '',
-          title: '',
-          hideInMenu: false
-        }
-        // component: () => import('@/view/daily/dailyList.vue')
-      },
-      {
         path: 'dailyDetail',
         name: 'dailyDetail',
         meta: {
-          icon: 'md-funnel',
           title: '日报详情',
-          hideInMenu: true
+          hideInMenu: true,
+          needInBread: true
         },
         component: () => import('@/view/daily/dailyDetail.vue')
       }
@@ -844,8 +808,8 @@ export default [
     path: '/info',
     name: 'info',
     meta: {
-      icon: 'ios-chatboxes',
-      title: '消息'
+      title: '消息',
+      hideInMenu: true
     },
     component: Main,
     children: [
@@ -853,9 +817,7 @@ export default [
         path: 'infoList',
         name: 'infoList',
         meta: {
-          icon: 'md-funnel',
-          title: '消息列表',
-          hideInMenu: false
+          title: '消息列表'
         },
         component: () => import('@/view/info/infoList.vue')
       },
@@ -863,9 +825,9 @@ export default [
         path: 'infoDetail',
         name: 'infoDetail',
         meta: {
-          icon: 'md-funnel',
           title: '消息详情',
-          hideInMenu: true
+          hideInMenu: true,
+          needInBread: true
         },
         component: () => import('@/view/info/infoDetail.vue')
       },
@@ -873,9 +835,7 @@ export default [
         path: 'infoPush',
         name: 'infoPush',
         meta: {
-          icon: 'md-funnel',
-          title: '消息推送',
-          hideInMenu: false
+          title: '消息推送'
         },
         component: () => import('@/view/info/infoPush.vue')
       }
@@ -885,7 +845,7 @@ export default [
     path: '/system',
     name: 'system',
     meta: {
-      icon: 'md-menu',
+      icon: i7,
       title: '系统管理'
     },
     component: Main,
@@ -894,7 +854,6 @@ export default [
         path: 'user',
         name: 'user',
         meta: {
-          icon: 'md-funnel',
           title: '用户管理'
         },
         component: parentView,
@@ -903,7 +862,6 @@ export default [
             path: 'userList',
             name: 'userList',
             meta: {
-              icon: 'md-funnel',
               title: '用户管理',
               hideInBread: true
             },
@@ -913,7 +871,6 @@ export default [
             path: 'addUser',
             name: 'addUser',
             meta: {
-              icon: 'md-funnel',
               title: '新增用户',
               hideInMenu: true,
               needInBread: true
@@ -924,7 +881,6 @@ export default [
             path: 'editUser',
             name: 'editUser',
             meta: {
-              icon: 'md-funnel',
               title: '编辑用户',
               hideInMenu: true,
               needInBread: true
@@ -937,7 +893,6 @@ export default [
         path: 'role',
         name: 'role',
         meta: {
-          icon: 'md-funnel',
           title: '角色管理'
         },
         component: parentView,
@@ -946,7 +901,6 @@ export default [
             path: 'roleList',
             name: 'roleList',
             meta: {
-              icon: 'md-funnel',
               title: '角色管理',
               hideInBread: true
             },
@@ -956,7 +910,6 @@ export default [
             path: 'addRole',
             name: 'addRole',
             meta: {
-              icon: 'md-funnel',
               title: '新增角色',
               hideInMenu: true,
               needInBread: true
@@ -967,7 +920,6 @@ export default [
             path: 'editRole',
             name: 'editRole',
             meta: {
-              icon: 'md-funnel',
               title: '编辑角色',
               hideInMenu: true,
               needInBread: true
@@ -978,7 +930,6 @@ export default [
             path: 'roleUserList',
             name: 'roleUserList',
             meta: {
-              icon: 'md-funnel',
               title: '角色用户管理',
               hideInMenu: true,
               needInBread: true
@@ -991,7 +942,6 @@ export default [
         path: 'region',
         name: 'region',
         meta: {
-          icon: 'md-funnel',
           title: '行政区域管理'
         },
         component: () => import('@/view/system/region.vue')
@@ -1000,7 +950,6 @@ export default [
         path: 'unit',
         name: 'unit',
         meta: {
-          icon: 'md-funnel',
           title: '单位管理'
         },
         component: () => import('@/view/system/unit.vue')

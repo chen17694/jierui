@@ -111,7 +111,6 @@ export default {
     if (getUserId()) {
       this.formInfo.userId = getUserId()
     }
-    console.log(getOffice())
     this.listUserRole()
     this.getUserList()
     this.ListProject()
@@ -240,7 +239,6 @@ export default {
     CreateMessage () {
       let _this = this
       createMessage(_this.formInfo).then((res) => {
-        console.log(res.data)
         if (res.data.status === '200') {
           _this.$Message.info(res.data.msg)
           _this.$router.push('infolist')

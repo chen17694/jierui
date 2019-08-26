@@ -531,9 +531,7 @@ export default {
         startTime: '',
         endTime: ''
       }).then((res) => {
-        console.log(res.data.data)
         this.taskList = res.data.data.taskDetailBeans
-        console.log(this.taskList)
         this.total = res.data.data.count
         if (this.total === '0') {
           this.page = 0
@@ -680,7 +678,6 @@ export default {
                 break
             }
           }
-          console.log(status)
           this.markers.push({
             position: [item.lng, item.lat],
             id: item.id,
@@ -712,16 +709,13 @@ export default {
       }).then((res) => {
         let taskList = this.taskListNew = res.data.data = res.data.data
         this.total = res.data.data.length
-        console.log(taskList)
         if (taskList.length > 0) {
           this.center = [taskList[0].lng || 116.397428, taskList[0].lat || 39.90923]
         } else {
           this.center = this.center.length === 0 ? [116.397428, 39.90923] : this.center
         }
-        console.log(this.center)
         let self = this
         taskList.forEach((item) => {
-          console.log(item)
           let status = ''
           switch (item.type) {
             case '1' :

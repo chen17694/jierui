@@ -23,9 +23,6 @@ export default {
     return {
       info: getOffice()
     }
-  },
-  mounted () {
-    console.log(getOffice())
   }
 }
 </script>

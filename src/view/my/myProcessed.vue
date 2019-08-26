@@ -31,7 +31,6 @@ export default {
         { title: '审核审批类型',
           key: 'type',
           render: (h, params) => {
-            console.log(params)
             let text = ''
             if (params.row.type === '1') {
               text = '项目审核'
@@ -58,7 +57,6 @@ export default {
         { title: '审批状态',
           key: 'approvalStatus',
           render: (h, params) => {
-            console.log(params)
             let text = ''
             if (params.row.approvalStatus === '1') {
               text = '审核中'
@@ -80,7 +78,6 @@ export default {
         { title: '审核审批类型',
           key: 'type',
           render: (h, params) => {
-            console.log(params)
             let text = ''
             if (params.row.type === '1') {
               text = '项目审核'
@@ -127,7 +124,6 @@ export default {
       this.getData()
     },
     onRowClick () {
-      console.log(arguments[0])
       if (this.tab === 'waiting') {
         switch (arguments[0].type) {
           case ('1'):

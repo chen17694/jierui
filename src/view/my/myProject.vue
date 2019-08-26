@@ -406,8 +406,6 @@ export default {
           }
         })
       }
-      // console.log(params)
-      // console.log(row)
       // if (params.permissionCode === '2' || params.permissionCode === '3') {
       //   this.$Modal.confirm({
       //     title: params.permissionCode === '2' ? '确定要' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该项目吗？' : '确定要申请' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该项目吗？',
@@ -552,7 +550,6 @@ export default {
       }).then((res) => {
         this.projectList = res.data.data.projectList
         this.total = res.data.data.count
-        console.log(this.total)
         if (this.total === '0') {
           this.page = 0
         } else {
@@ -662,7 +659,6 @@ export default {
       let value = arguments[1].slice(1, arguments[1].length).map((item) => {
         return item.label
       })
-      console.log(value)
       this.keywords = value.join()
       this.searchArea()
     },

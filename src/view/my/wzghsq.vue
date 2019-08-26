@@ -85,7 +85,6 @@ export default {
         userId: getUserId(),
         type: '2'
       }).then((res) => {
-        console.log(res.data.data)
         this.tableData = this.projectMaterialJoinApproveForm = res.data.data.materialList
         this.stepArr = res.data.data.list
         this.detailData = res.data.data

@@ -146,7 +146,6 @@ export default{
       })
     },
     urge () {
-      console.log(arguments[0].row)
       taskCrossingFunction({
         taskCrossingId: arguments[0].row.id,
         userId: getUserId(),

@@ -107,12 +107,10 @@ export default {
       this.$router.push('materialList')
     },
     pageSizeChange (val) {
-      console.log(val)
       this.params.pageSize = val
       this.getData()
     },
     pageChange (val) {
-      console.log(val)
       this.params.page = val
       this.getData()
     },

@@ -363,7 +363,6 @@ export default {
       return this.showDate.year + '年' + (this.showDate.month > 9 ? this.showDate.month + '月' : '0' + this.showDate.month + '月')
     },
     rows () {
-      const timestamp = this.timestamp
       const { year, month } = this.showDate
       const months = (new Date(year, month, 0)).getDate()
       const result = []
@@ -387,7 +386,6 @@ export default {
           row = []
         }
       }
-      console.log(timestamp)
       return result
     }
   },
@@ -400,7 +398,6 @@ export default {
     },
     detailData: {
       handler (val) {
-        console.log(val)
       },
       deep: true
     }
@@ -471,8 +468,6 @@ export default {
       this.moreList = true
     },
     openDetail (d) {
-      console.log(d)
-      console.log(typeof d.reportDate)
       this.detailData = {
         id: d.id,
         projectName: d.projectName,
@@ -484,7 +479,6 @@ export default {
         reportDate: d.reportDate,
         workingContent: d.workingContent
       }
-      console.log(this.detailData)
       this.detail = true
     },
     addSave () {
@@ -674,7 +668,6 @@ export default {
           result.monthStr = monthJson[result.month]
         }
       } catch (error) {
-        console.error(error)
       }
       return result
     },
@@ -733,7 +726,6 @@ export default {
       }).then((res) => {
         let obj = {}
         if (res.data.data.list.length > 0) {
-          console.log(res.data.data.list)
           res.data.data.list.reverse().forEach((item) => {
             if (!obj[item.reportDate]) {
               this.dailyList[item.reportDate.split('-')[2]] = {
@@ -754,7 +746,6 @@ export default {
           this.dailyList = {}
         }
         this.timestamp = new Date().getTime()
-        console.log(this.dailyList)
       })
     }
   },

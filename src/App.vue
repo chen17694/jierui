@@ -5,8 +5,16 @@
 </template>
 
 <script>
+import { setToken, getAutoLogin } from '@/libs/util'
 export default {
-  name: 'App'
+  name: 'App',
+  mounted () {
+    window.onbeforeunload = function (e) {
+      if (getAutoLogin() === 'false') {
+        setToken('')
+      }
+    }
+  }
 }
 </script>
 

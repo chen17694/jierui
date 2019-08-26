@@ -100,6 +100,9 @@
           <div style="line-height: 24px"><span class="label">项目角色：</span><span>{{detailData.userTopRoleName}}</span></div>
           <div style="line-height: 24px"><span class="label">逾期天数：</span><span>{{detailData.overdueDays}}</span></div>
           <div style="line-height: 24px"><span class="label">甲方评分：</span><span>{{detailData.firstPartyScoring}}</span></div>
+          <div style="position: absolute; bottom: 15px; right: 15px;">
+            <button typeof="button" @click="toTaskDetail(detailData.id, detailData.type)" style="border: 1px solid #2E8CEB; width: 58px; height: 41px; background-color: #ffffff; border-radius: 3px; color: #2E8CEB; cursor: pointer">详情</button>
+          </div>
         </div>
         <div style=" padding: 5px 15px; border-bottom: 1px solid rgb(230, 230, 230);">
           任务路口基本信息
@@ -293,8 +296,6 @@ export default {
       })
     },
     onEdit (params, row) {
-      console.log(params)
-      console.log(row)
       let str = ''
       switch (params.permissionCode) {
         case '1':
@@ -474,7 +475,6 @@ export default {
         }
         let self = this
         taskCrossingList.forEach((item) => {
-          console.log(123)
           let status = ''
           switch (item.type) {
             case '1' :
@@ -571,7 +571,6 @@ export default {
               }
               break
           }
-          console.log(status)
           this.markers.push({
             position: [item.lng, item.lat],
             id: item.id,
@@ -609,7 +608,6 @@ export default {
       let value = arguments[1].slice(1, arguments[1].length).map((item) => {
         return item.label
       })
-      console.log(value)
       this.keywords = value.join()
       this.searchArea()
     },

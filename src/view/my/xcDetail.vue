@@ -108,7 +108,6 @@ export default {
               taskCrossingId: this.$route.query.taskCrossingId,
               userId: getUserId()
             }).then((res) => {
-              console.log(res)
               this.addPermission = res.data.data.addPermission
               this.annexBeans = res.data.data.annexBeans
             })
@@ -126,14 +125,12 @@ export default {
           id: this.$route.query.taskCrossingId,
           channelizationMapUrl: this.photo
         }).then((res) => {
-          console.log(res)
           this.$Message.info(res.data.msg)
         })
       })
     },
     uploadFile (e) {
       uploadImgToAliOss(e).then(res => {
-        console.log(res)
         let name = res[1]
         this.file = res[0]
         addTaskCrossingAnnex({
@@ -142,13 +139,11 @@ export default {
           annexName: name,
           id: this.$route.query.taskCrossingId
         }).then((res) => {
-          console.log(res)
           this.$Message.info(res.data.msg)
           listTaskCrossingAnnex({
             taskCrossingId: this.$route.query.taskCrossingId,
             userId: getUserId()
           }).then((res) => {
-            console.log(res)
             this.addPermission = res.data.data.addPermission
             this.annexBeans = res.data.data.annexBeans
           })
@@ -169,7 +164,6 @@ export default {
         taskCrossingId: this.$route.query.taskCrossingId,
         userId: getUserId()
       }).then((res) => {
-        console.log(res)
         this.detailData = res.data.data
         this.photo = res.data.data.channelizationMapUrl
       })
@@ -216,7 +210,6 @@ export default {
         taskCrossingId: this.$route.query.taskCrossingId,
         userId: getUserId()
       }).then((res) => {
-        console.log(res)
         this.addPermission = res.data.data.addPermission
         this.annexBeans = res.data.data.annexBeans
       })

@@ -28,7 +28,7 @@
 
 <script>
 import Tables from '_c/tables'
-import { listCrossing, areaData } from '@/api/data'
+import { listCrossingAndCount, areaData } from '@/api/data'
 export default {
   name: 'roadList',
   components: { Tables },
@@ -56,7 +56,6 @@ export default {
   },
   methods: {
     onRowClick () {
-      console.log(arguments)
       // this.$router.push({
       //   name: 'roadHistory',
       //   query: {
@@ -77,7 +76,6 @@ export default {
       this.params.provinceName = value[0]
       this.params.cityName = value[1]
       this.params.districtName = value[2]
-      console.log(value)
       this.getData()
     },
     getAreaData () {
@@ -88,21 +86,21 @@ export default {
       })
     },
     handleSearch () {
-      console.log(arguments)
       this.params.alias = arguments[0]
       this.getData()
     },
     pageChange (page) {
-      this.listParams.page = page
+      this.params.page = page
       this.getData()
     },
     pageSizeChange (size) {
-      this.listParams.pageSize = size
+      this.params.pageSize = size
       this.getData()
     },
     getData () {
-      listCrossing(this.params).then((res) => {
-        this.tableData = res.data.data
+      listCrossingAndCount(this.params).then((res) => {
+        this.tableData = res.data.data.list
+        this.total = Number(res.data.data.count)
       })
     }
   },

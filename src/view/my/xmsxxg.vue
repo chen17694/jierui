@@ -113,7 +113,6 @@ export default {
           })
           geocoder.getAddress([self.formItem.lng, self.formItem.lat], function (status, result) {
             if (status === 'complete' && result.info === 'OK') {
-              console.log(result)
               if (result && result.regeocode) {
                 self.formItem.position = result.regeocode.formattedAddress
               }
@@ -132,7 +131,6 @@ export default {
       this.formItem.projectManagerId = arguments[0].value
     },
     partAChange () {
-      console.log(arguments)
       this.formItem.firstPartyUserName = arguments[0]
       this.formItem.firstPartyUserId = arguments[1]
     },
@@ -158,9 +156,7 @@ export default {
         projectId: this.detailData.id,
         remarks: this.formItem.remarks
       }
-      console.log(obj)
       projectAttributeModify(obj).then((res) => {
-        console.log(res)
         this.$Message.info(res.data.msg)
       })
     },
@@ -169,7 +165,6 @@ export default {
         projectId: this.$route.query.projectId,
         userId: getUserId()
       }).then((res) => {
-        console.log(res)
         this.detailData = res.data.data
         this.formItem = {
           lng: this.$route.query.lng,
@@ -186,17 +181,14 @@ export default {
           seTime: [this.detailData.startTime, this.detailData.endTime],
           position: this.detailData.provinceName + this.detailData.cityName + this.detailData.districtName + this.detailData.specificAddress
         }
-        console.log(this)
         this.getUser()
       })
     },
     deteChange () {
-      console.log(arguments)
       this.formItem.startTime = arguments[0][0]
       this.formItem.endTime = arguments[0][1]
     },
     getUser () {
-      console.log(this.detailData)
       getUserList({
         'pageSize': 0,
         'page': 0,
@@ -235,7 +227,6 @@ export default {
     }
   },
   mounted () {
-    console.log(getOffice())
     this.getData()
     this.getProjectManager()
     this.addMarker()

@@ -93,7 +93,6 @@ export default {
         comment: this.editParams.comment,
         processType: this.$route.query.type
       }
-      console.log(obj)
       opt(obj).then((res) => {
         if (res.data.status === '200') {
           this.$router.push({
@@ -109,7 +108,6 @@ export default {
         userId: getUserId(),
         type: '1'
       }).then((res) => {
-        console.log(res.data.data)
         this.detailData = res.data.data
         this.stepArr = res.data.data.list
       })

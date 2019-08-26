@@ -74,7 +74,6 @@ export default {
         userId: getUserId(),
         crossingCode: this.$route.query.crossingCode
       }).then((res) => {
-        console.log(res)
         this.banbenList = res.data.data
         this.detailData = this.banbenList[this.index]
       })
@@ -92,7 +91,6 @@ export default {
       taskCrossingId: this.$route.query.taskCrossingId,
       userId: getUserId()
     }).then((res) => {
-      console.log(res)
       this.annexBeans = res.data.data.annexBeans
     })
   }

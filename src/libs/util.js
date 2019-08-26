@@ -8,7 +8,10 @@ const { title, cookieExpires, useI18n } = config
 export const TOKEN_KEY = 'token'
 
 export const setToken = (token) => {
-  Cookies.set(TOKEN_KEY, token, { expires: cookieExpires || 1 })
+  Cookies.set(TOKEN_KEY, token, { expires: cookieExpires })
+}
+export const setAutoLogin = (autoLogin) => {
+  Cookies.set('autoLogin', autoLogin, { expires: cookieExpires })
 }
 export const setUserId = (id) => {
   Cookies.set('userId', id, { expires: cookieExpires || 1 })
@@ -23,6 +26,10 @@ export const getToken = () => {
   const token = Cookies.get(TOKEN_KEY)
   if (token) return token
   else return false
+}
+export const getAutoLogin = () => {
+  const autoLogin = Cookies.get('autoLogin')
+  return autoLogin
 }
 export const getUserId = () => {
   const id = Cookies.get('userId')

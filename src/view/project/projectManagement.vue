@@ -240,10 +240,8 @@ export default {
     },
     getData () {
       listProject(this.params).then((res) => {
-        console.log(res)
         this.creatProjectPermission = res.data.data.creatProjectPermission
         this.tableData = res.data.data.projectList
-        console.log(res.data.data.projectList)
         this.branchBusinessManager = res.data.data.projectList[0].branchBusinessManager
         this.total = Number(res.data.data.count)
       })

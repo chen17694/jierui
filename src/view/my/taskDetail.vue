@@ -166,7 +166,6 @@ export default {
               taskId: this.$route.query.taskId,
               userId: getUserId()
             }).then((res) => {
-              console.log(res)
               this.annexBeans = res.data.data.annexBeans
               this.addPermission = res.data.data.addPermission
             })
@@ -179,7 +178,6 @@ export default {
     },
     uploadFile (e) {
       uploadImgToAliOss(e).then(res => {
-        console.log(res)
         let name = res[1]
         this.file = res[0]
         addTaskAnnex({
@@ -188,13 +186,11 @@ export default {
           annexName: name,
           id: this.$route.query.taskId
         }).then((res) => {
-          console.log(res)
           this.$Message.info(res.data.msg)
           listTaskAnnex({
             taskId: this.$route.query.taskId,
             userId: getUserId()
           }).then((res) => {
-            console.log(res)
             this.annexBeans = res.data.data.annexBeans
             this.addPermission = res.data.data.addPermission
           })
@@ -202,7 +198,6 @@ export default {
       })
     },
     sxxiugai () {
-      console.log(this.detailData)
       this.$router.push({
         name: 'editTaskForm',
         query: {
@@ -226,7 +221,6 @@ export default {
       this.getData()
     },
     onEdit (params, row) {
-      console.log(arguments)
       let str = ''
       switch (params.permissionCode) {
         case '1':
@@ -258,7 +252,6 @@ export default {
         taskId: this.$route.query.taskId,
         userId: getUserId()
       }).then((res) => {
-        console.log(res)
         this.detailData = res.data.data
       })
     },
@@ -324,7 +317,6 @@ export default {
     init () {
       this.getData()
       listTaskCrossing(this.params).then((res) => {
-        console.log(res.data.data)
         this.tableData = res.data.data.taskCrossingDetailBeanList
         this.total = Number(res.data.data.count)
       })
@@ -332,7 +324,6 @@ export default {
         taskId: this.$route.query.taskId,
         userId: getUserId()
       }).then((res) => {
-        console.log(res)
         this.annexBeans = res.data.data.annexBeans
         this.addPermission = res.data.data.addPermission
       })

@@ -365,7 +365,6 @@ export default {
           key: 'taskStatus',
           render: (h, params) => {
             let text = ''
-            console.log(params.row.taskStatus)
             if (params.row.taskStatus === '1') {
               text = '未领取'
             } else if (params.row.taskStatus === '2') {
@@ -438,7 +437,6 @@ export default {
               userId: getUserId(),
               projectId: this.$route.query.projectId
             }).then((res) => {
-              console.log(res)
               this.annexBeans = res.data.data.annexBeans
               this.addPermission = res.data.data.addPermission
             })
@@ -450,11 +448,8 @@ export default {
       window.open(item.annexUrl)
     },
     uploadFile (e) {
-      console.log(e)
       uploadImgToAliOss(e).then(res => {
-        console.log(res)
         let name = res[1]
-        console.log(name)
         this.file = res[0]
         addProjectAnnex({
           userId: getUserId(),
@@ -462,13 +457,11 @@ export default {
           annexName: name,
           id: this.$route.query.projectId
         }).then((res) => {
-          console.log(res)
           this.$Message.info(res.data.msg)
           listProjectAnnex({
             userId: getUserId(),
             projectId: this.$route.query.projectId
           }).then((res) => {
-            console.log(res)
             this.annexBeans = res.data.data.annexBeans
             this.addPermission = res.data.data.addPermission
           })
@@ -476,32 +469,26 @@ export default {
       })
     },
     pageSizeChange1 (val) {
-      console.log(val)
       this.params1.pageSize = val
       this.getData()
     },
     pageChange1 (val) {
-      console.log(val)
       this.params1.page = val
       this.getData()
     },
     pageSizeChange2 (val) {
-      console.log(val)
       this.params2.pageSize = val
       this.getData()
     },
     pageChange2 (val) {
-      console.log(val)
       this.params2.page = val
       this.getData()
     },
     pageSizeChange3 (val) {
-      console.log(val)
       this.params3.pageSize = val
       this.getData()
     },
     pageChange3 (val) {
-      console.log(val)
       this.params3.page = val
       this.getData()
     },
@@ -512,12 +499,10 @@ export default {
       this.$router.back(-1)
     },
     joinChange () {
-      console.log(arguments)
       this.formItemJoin.officeId = arguments[0].value
       this.formItemJoin.officeName = arguments[0].label
     },
     materialChange () {
-      console.log(arguments)
       this.formItemMaterial.materOfficeId = arguments[0].value
       this.formItemMaterial.materOfficeName = arguments[0].label
     },
@@ -529,7 +514,6 @@ export default {
         userId: getUserId(),
         comment: this.formItemMaterial.comment
       }).then((res) => {
-        console.log(res)
         this.$Message.info(res.data.msg)
         this.materialModel = false
       })
@@ -545,7 +529,6 @@ export default {
         office: this.formItemJoin.officeName,
         remark: this.formItemJoin.remark
       }).then((res) => {
-        console.log(res)
         this.$Message.info(res.data.msg)
         this.joinModel = false
       })
@@ -567,7 +550,6 @@ export default {
         projectId: this.detailData.id,
         userId: getUserId()
       }).then((res) => {
-        console.log(res)
         if (res.data.status === '200') {
           res.data.data.wait.forEach((item, index) => {
             item.key = item.id
@@ -588,7 +570,6 @@ export default {
     },
     handleChange (newTargetKeys) {
       this.targetKeys = newTargetKeys
-      console.log(this.targetKeys)
     },
     filterMethod (data, query) {
       return data.text.indexOf(query) > -1
@@ -691,7 +672,6 @@ export default {
       }
     },
     sxxiugai () {
-      console.log(this.detailData)
       this.$router.push({
         name: 'xmsxxg',
         query: {
@@ -703,7 +683,6 @@ export default {
     },
     getData () {
       selectProjectDetail(this.params).then((res) => {
-        console.log(res)
         this.detailData = res.data.data
       })
     },
@@ -724,7 +703,6 @@ export default {
         this.tableData3 = res.data.data.list
         this.tableData3Btns = res.data.data.projectButtonPermissionBeans
         this.total3 = Number(res.data.data.total)
-        console.log(this.tableData3)
       })
     },
     onEdit1 (params, row) {
@@ -798,7 +776,6 @@ export default {
         userId: getUserId(),
         projectId: this.$route.query.projectId
       }).then((res) => {
-        console.log(res)
         this.annexBeans = res.data.data.annexBeans
         this.addPermission = res.data.data.addPermission
       })
@@ -806,7 +783,6 @@ export default {
         projectId: this.$route.query.projectId,
         userId: getUserId()
       }).then((res) => {
-        console.log(res)
         this.dissatisfiedTaskCrossingTaskBeanList = res.data.data.dissatisfiedTaskCrossingTaskBeanList
       })
     }
