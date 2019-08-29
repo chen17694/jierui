@@ -27,7 +27,7 @@
           不满意原因：{{detailData.dissatisfiedReason}}
         </dd>
       </dl>
-      <div class="btns" v-if="this.detailData.status !== '6'">
+      <div class="btns" v-if="this.detailData.status !== '6' && (detailData.taskCrossingButtonPermissionBeanList && detailData.taskCrossingButtonPermissionBeanList.length > 0)">
         <Button type="primary" v-for="(item, index) in detailData.taskCrossingButtonPermissionBeanList"  @click="statusChange(item.permissionCode)" style="margin: 0 10px" :key="index">{{item.name}}</Button>
       </div>
       <Tabs style="margin-top: 20px">
@@ -45,6 +45,11 @@
             </li>
             <li><span style="font-weight: bold">路口别名：</span>单点优化</li>
             <li><span style="font-weight: bold">路口位置：</span>{{detailData.provinceName}}{{detailData.cityName}}{{detailData.districtName}}{{detailData.specificAddress}}</li>
+            <li style="margin-top: 10px">
+              <el-amap ref="map" :center="center" vid="amapDemo" :zoom="zoom" class="amap-demo">
+                <el-amap-marker v-for="(marker, index) in markers" :position="marker.position" :key="index" :vid="index"/>
+              </el-amap>
+            </li>
           </ul>
           <div style="margin: 30px 0">
             <p style="font-weight: bold; margin-bottom: 10px">渠化图</p>
@@ -144,6 +149,9 @@ export default {
   name: 'xjDetail',
   data () {
     return {
+      center: [this.$route.query.lng, this.$route.query.lat],
+      zoom: 14,
+      markers: [],
       addPermission: '0',
       annexBeans: [],
       photo: '',
@@ -162,6 +170,12 @@ export default {
     }
   },
   methods: {
+    addMarker () {
+      let marker = {
+        position: [this.$route.query.lng, this.$route.query.lat]
+      }
+      this.markers.push(marker)
+    },
     deleteFile (id) {
       this.$Modal.confirm({
         title: '是否执行删除操作',
@@ -216,7 +230,7 @@ export default {
     },
     toHistory () {
       this.$router.push({
-        name: 'roadHistory',
+        name: 'taskRoadHistory',
         query: {
           crossingCode: this.detailData.crossingCode,
           taskCrossingId: this.$route.query.taskCrossingId
@@ -332,6 +346,7 @@ export default {
   },
   mounted () {
     this.init()
+    this.addMarker()
   }
 }
 </script>
@@ -379,5 +394,9 @@ export default {
     height: 50px;
     line-height: 50px;
     border-radius: 50%;
+  }
+  .amap-demo{
+    width: 700px;
+    height: 300px;
   }
 </style>

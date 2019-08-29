@@ -74,7 +74,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tableDaily" :loading="tableLoading" :total="total" v-model="tableData" :columns="columns" :on-change="pageChange" :on-page-size-change="pageSizeChange" @on-select="onSelect"></tables>
+    <tables ref="tableDaily" :loading="tableLoading"  @on-row-dblclick="onRowClick" :total="total" v-model="tableData" :columns="columns" :on-change="pageChange" :on-page-size-change="pageSizeChange" @on-select="onSelect"></tables>
   </div>
 </template>
 
@@ -122,31 +122,7 @@ export default {
         { title: '任务名称', key: 'taskName' },
         { title: '登记人员', key: 'userName', width: 120 },
         { title: '时长', key: 'workingHours', width: 120 },
-        { title: '工作内容', key: 'workingContent' },
-        {
-          title: '操作',
-          key: 'action',
-          fixed: 'right',
-          width: 80,
-          align: 'center',
-          render: (h, params) => {
-            return h('div', [
-              h('Button', {
-                style: {
-                },
-                props: {
-                  type: 'success',
-                  size: 'small'
-                },
-                nativeOn: {
-                  click: () => {
-                    this.$router.push({ path: 'dailyDetail', query: { id: params.row.id } })
-                  }
-                }
-              }, '详细')
-            ])
-          }
-        }
+        { title: '工作内容', key: 'workingContent' }
       ]
     }
   },
@@ -160,6 +136,14 @@ export default {
     this.GetUserList()
   },
   methods: {
+    onRowClick () {
+      console.log(arguments)
+      this.$router.push(
+        {
+          path: 'dailyDetail',
+          query: { id: arguments[0].id }
+        })
+    },
     curTime (val) {
       this.params.currentDate = val
     },

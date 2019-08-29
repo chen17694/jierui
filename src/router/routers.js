@@ -146,6 +146,16 @@ export default [
         component: () => import('@/view/my/roadHistory.vue')
       },
       {
+        path: 'taskRoadHistory',
+        name: 'taskRoadHistory',
+        meta: {
+          title: '路口历史版本',
+          hideInMenu: true,
+          needInBread: true
+        },
+        component: () => import('@/view/my/taskRoadHistory.vue')
+      },
+      {
         path: 'map',
         name: 'map',
         meta: {
@@ -717,6 +727,7 @@ export default [
         name: 'MaterialList',
         meta: {
           title: '物资列表',
+          icon: i4,
           hideInMenu: false
         },
         component: () => import('@/view/material/Material.vue')
@@ -726,9 +737,18 @@ export default [
         name: 'MaterialAdd',
         meta: {
           title: '创建物资',
-          hideInMenu: false
+          hideInMenu: true
         },
         component: () => import('@/view/material/MaterialAdd.vue')
+      },
+      {
+        path: 'MaterialEdit',
+        name: 'MaterialEdit',
+        meta: {
+          title: '编辑物资',
+          hideInMenu: true
+        },
+        component: () => import('@/view/material/MaterialEdit.vue')
       },
       {
         path: 'MaterialDetail',

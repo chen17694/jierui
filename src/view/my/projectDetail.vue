@@ -45,6 +45,11 @@
             </li>
             <li><span style="font-weight: bold">项目备注：</span>{{detailData.remarks}}</li>
             <li><span style="font-weight: bold">项目位置：</span>{{detailData.provinceName}}{{detailData.cityName}}{{detailData.districtName}}{{detailData.specificAddress}}</li>
+            <li style="margin-top: 10px">
+              <el-amap ref="map" :center="center" vid="amapDemo" :zoom="zoom" class="amap-demo">
+                <el-amap-marker v-for="(marker, index) in markers" :position="marker.position" :key="index" :vid="index"/>
+              </el-amap>
+            </li>
           </ul>
         </TabPane>
         <TabPane label="任务" name="name2">
@@ -234,6 +239,9 @@ export default {
   components: { Tables },
   data () {
     return {
+      center: [this.$route.query.lng, this.$route.query.lat],
+      zoom: 14,
+      markers: [],
       dissatisfiedTaskCrossingTaskBeanList: [],
       annexBeans: [],
       addPermission: '0',
@@ -443,6 +451,12 @@ export default {
           })
         }
       })
+    },
+    addMarker () {
+      let marker = {
+        position: [this.$route.query.lng, this.$route.query.lat]
+      }
+      this.markers.push(marker)
     },
     download (item) {
       window.open(item.annexUrl)
@@ -789,6 +803,7 @@ export default {
   },
   mounted () {
     this.init()
+    this.addMarker()
   }
 }
 </script>
@@ -814,5 +829,9 @@ export default {
   }
   .ivu-tabs{
     overflow: initial;
+  }
+  .amap-demo{
+    width: 700px;
+    height: 300px;
   }
 </style>

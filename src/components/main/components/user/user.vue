@@ -1,7 +1,7 @@
 <template>
   <div class="user-avatar-dropdown" style="display: flex">
     <Badge :dot="!!messageUnreadCount" style="display: flex; align-items: center;">
-      <img src="../../../../assets/images/message.png" style="width: 17px; margin-right: 46px">
+      <img src="../../../../assets/images/message.png" style="width: 17px; margin-right: 46px" @click="message">
     </Badge>
     <Dropdown :transfer="true" placement="bottom-end">
       <Avatar :src="userInfo.photo"/>

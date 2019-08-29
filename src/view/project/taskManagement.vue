@@ -199,7 +199,9 @@ export default {
       this.$router.push({
         name: 'taskDetail',
         query: {
-          taskId: arguments[0].id
+          taskId: arguments[0].id,
+          lat: arguments[0].lat,
+          lng: arguments[0].lng
         }
       })
     },

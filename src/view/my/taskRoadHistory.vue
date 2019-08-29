@@ -52,10 +52,10 @@
 </template>
 
 <script>
-import { listCrossingByCode, listBusinessCrossingAnnex, selectCrossing } from '@/api/data'
+import { listCrossingByCode, listTaskCrossingAnnex, selectTaskCrossingDetailBean } from '@/api/data'
 import { getUserId } from '@/libs/util'
 export default {
-  name: 'roadHistory',
+  name: 'taskRoadHistory',
   data () {
     return {
       banbenList: [],
@@ -81,13 +81,14 @@ export default {
   },
   mounted () {
     this.selectBanben(this.index)
-    selectCrossing({
-      id: this.$route.query.crossingId
+    selectTaskCrossingDetailBean({
+      taskCrossingId: this.$route.query.taskCrossingId,
+      userId: getUserId()
     }).then((res) => {
       this.photo = res.data.data.channelizationMapUrl
     })
-    listBusinessCrossingAnnex({
-      crossingId: this.$route.query.crossingId,
+    listTaskCrossingAnnex({
+      taskCrossingId: this.$route.query.taskCrossingId,
       userId: getUserId()
     }).then((res) => {
       this.annexBeans = res.data.data.annexBeans

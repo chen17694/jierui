@@ -61,8 +61,8 @@ export default {
       this.$router.push({
         name: 'roadHistory',
         query: {
-          crossingCode: arguments[0].crossingCode,
-          taskCrossingId: arguments[0].id
+          crossingId: arguments[0].id,
+          crossingCode: arguments[0].crossingCode
         }
       })
     },

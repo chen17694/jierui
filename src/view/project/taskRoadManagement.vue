@@ -174,21 +174,27 @@ export default {
         this.$router.push({
           name: 'xjDetail',
           query: {
-            taskCrossingId: id
+            taskCrossingId: id,
+            lat: arguments[0].lat,
+            lng: arguments[0].lng
           }
         })
       } else if (type === '2') {
         this.$router.push({
           name: 'yhDetail',
           query: {
-            taskCrossingId: id
+            taskCrossingId: id,
+            lat: arguments[0].lat,
+            lng: arguments[0].lng
           }
         })
       } else if (type === '3') {
         this.$router.push({
           name: 'xcDetail',
           query: {
-            taskCrossingId: id
+            taskCrossingId: id,
+            lat: arguments[0].lat,
+            lng: arguments[0].lng
           }
         })
       }

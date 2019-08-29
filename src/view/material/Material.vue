@@ -63,7 +63,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tableMaterial" :total="total" @on-row-dblclick="onRowClick" v-model="tableData" :columns="columns" :on-change="pageChange" :on-page-size-change="pageSizeChange" @on-select="onSelect"></tables>
+    <tables ref="tableMaterial" :total="total" @on-row-dblclick="onRowClick" v-model="tableData" :columns="columns" @on-edit="onEdit" :on-change="pageChange" :on-page-size-change="pageSizeChange" @on-select="onSelect"></tables>
   </div>
 </template>
 
@@ -105,99 +105,8 @@ export default {
         { title: '物资类型', key: 'materialCategoryName' },
         {
           title: '操作',
-          key: 'action',
-          fixed: 'right',
-          width: 150,
-          render: (h, params) => {
-            return h('div', [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                nativeOn: {
-                  click: () => {
-                    this.$router.push({ path: 'materialAdd', query: { id: params.row.id } })
-                  }
-                }
-              }, [
-                h('Icon', {
-                  props: {
-                    type: 'md-create',
-                    size: 16
-                  },
-                  on: {
-                    click: () => {
-                      this.$emit('on-delete', params)
-                    }
-                  }
-                })
-              ]),
-              h('Button', {
-                style: {
-                  marginLeft: '6px'
-                },
-                props: {
-                  type: 'success',
-                  size: 'small'
-                },
-                nativeOn: {
-                  click: () => {
-                    this.$router.push({ path: 'materialDetail', query: { id: params.row.id } })
-                  }
-                }
-              }, [
-                h('Icon', {
-                  props: {
-                    type: 'md-list-box',
-                    size: 16
-                  },
-                  on: {
-                    click: () => {
-                      vm.$emit('on-delete', params)
-                    }
-                  }
-                })
-              ]),
-              h('Button', {
-                style: {
-                  marginLeft: '6px'
-                },
-                props: {
-                  type: 'error',
-                  size: 'small'
-                },
-                nativeOn: {
-                  click: () => {
-                    this.$Modal.confirm({
-                      title: '是否执行删除操作',
-                      content: '<p>删除后不能找回，还要继续吗</p>',
-                      onOk: () => {
-                        this.idList = []
-                        this.idList.push(params.row.id)
-                        this.DeleteMaterial(this.idList)
-                      },
-                      onCancel: () => {
-                        this.$Message.info('操作已取消！')
-                      }
-                    })
-                  }
-                }
-              }, [
-                h('Icon', {
-                  props: {
-                    type: 'md-trash',
-                    size: 16
-                  },
-                  on: {
-                    click: () => {
-                      vm.$emit('on-delete', params)
-                    }
-                  }
-                })
-              ])
-            ])
-          }
+          key: 'handle',
+          options: ['edit']
         }
       ]
     }
@@ -217,6 +126,9 @@ export default {
           taskId: arguments[0].id
         }
       })
+    },
+    onEdit () {
+      this.$router.push({ path: 'materialEdit', query: { id: arguments[0].row.id } })
     },
     cancelAll () {
     },

@@ -221,7 +221,9 @@ export default {
       this.$router.push({
         name: 'projectDetail',
         query: {
-          projectId: arguments[0].id
+          projectId: arguments[0].id,
+          lat: arguments[0].lat,
+          lng: arguments[0].lng
         }
       })
     },

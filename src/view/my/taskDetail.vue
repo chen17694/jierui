@@ -49,6 +49,11 @@
             <li v-if="detailData.nature === '3'"><span style="font-weight: bold">任务性质：</span>区域优化</li>
             <li><span style="font-weight: bold">任务描述：</span>{{detailData.remarks}}</li>
             <li><span style="font-weight: bold">任务位置：</span>{{detailData.provinceName}}{{detailData.cityName}}{{detailData.districtName}}{{detailData.specificAddress}}</li>
+            <li style="margin-top: 10px">
+              <el-amap ref="map" :center="center" vid="amapDemo" :zoom="zoom" class="amap-demo">
+                <el-amap-marker v-for="(marker, index) in markers" :position="marker.position" :key="index" :vid="index"/>
+              </el-amap>
+            </li>
           </ul>
         </TabPane>
         <TabPane label="任务路口" name="name2">
@@ -87,6 +92,9 @@ export default {
   components: { Tables },
   data () {
     return {
+      center: [this.$route.query.lng, this.$route.query.lat],
+      zoom: 14,
+      markers: [],
       annexBeans: [],
       addPermission: '0',
       params: {
@@ -153,6 +161,12 @@ export default {
     }
   },
   methods: {
+    addMarker () {
+      let marker = {
+        position: [this.$route.query.lng, this.$route.query.lat]
+      }
+      this.markers.push(marker)
+    },
     deleteFile (id) {
       this.$Modal.confirm({
         title: '是否执行删除操作',
@@ -331,6 +345,7 @@ export default {
   },
   mounted () {
     this.init()
+    this.addMarker()
   }
 }
 </script>
@@ -356,5 +371,9 @@ export default {
   }
   .ivu-tabs{
     overflow: initial;
+  }
+  .amap-demo{
+    width: 700px;
+    height: 300px;
   }
 </style>
