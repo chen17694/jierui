@@ -523,154 +523,123 @@ export default [
     component: Main,
     children: [
       {
-        path: 'projectManagement',
-        name: 'projectManagement',
+        path: 'projectManagementList',
+        name: 'projectManagementList',
         meta: {
-          title: '项目管理'
+          title: '项目管理',
+          hideInBread: true
         },
-        component: parentView,
-        children: [
-          {
-            path: 'projectManagementList',
-            name: 'projectManagementList',
-            meta: {
-              title: '项目管理',
-              hideInBread: true
-            },
-            component: () => import('@/view/project/projectManagement.vue')
-          },
-          {
-            path: 'addProject',
-            name: 'addProject',
-            meta: {
-              title: '新建项目',
-              hideInMenu: true,
-              needInBread: true
-            },
-            component: () => import('@/view/project/addProject.vue')
-          },
-          {
-            path: 'addProjectForm',
-            name: 'addProjectForm',
-            meta: {
-              title: '新建项目',
-              hideInMenu: true,
-              needInBread: true,
-              notCache: true
-            },
-            component: () => import('@/view/project/addProjectForm.vue')
-          },
-          {
-            path: 'projectReminder',
-            name: 'projectReminder',
-            meta: {
-              title: '项目提醒',
-              hideInMenu: true,
-              needInBread: true
-            },
-            component: () => import('@/view/project/projectReminder.vue')
-          }
-        ]
+        component: () => import('@/view/project/projectManagement.vue')
       },
       {
-        path: 'taskManagement',
-        name: 'taskManagement',
+        path: 'addProject',
+        name: 'addProject',
         meta: {
-          icon: 'md-funnel',
-          title: '任务管理'
+          title: '新建项目',
+          hideInMenu: true,
+          needInBread: true
         },
-        component: parentView,
-        children: [
-          {
-            path: 'taskManagementList',
-            name: 'taskManagementList',
-            meta: {
-              title: '任务管理',
-              hideInBread: true
-            },
-            component: () => import('@/view/project/taskManagement.vue')
-          },
-          {
-            path: 'addTask',
-            name: 'addTask',
-            meta: {
-              title: '新建任务',
-              hideInMenu: true,
-              needInBread: true
-            },
-            component: addTask
-          },
-          {
-            path: 'addTaskForm',
-            name: 'addTaskForm',
-            meta: {
-              title: '新建任务',
-              hideInMenu: true,
-              needInBread: true
-            },
-            component: () => import('@/view/project/addTaskForm.vue')
-          },
-          {
-            path: 'editTaskForm',
-            name: 'editTaskForm',
-            meta: {
-              title: '修改任务属性',
-              hideInMenu: true,
-              needInBread: true,
-              notCache: true
-            },
-            component: () => import('@/view/project/editTaskForm.vue')
-          },
-          {
-            path: 'taskReminder',
-            name: 'taskReminder',
-            meta: {
-              title: '任务提醒',
-              hideInMenu: true,
-              needInBread: true
-            },
-            component: () => import('@/view/project/taskReminder.vue')
-          }
-        ]
+        component: () => import('@/view/project/addProject.vue')
       },
       {
-        path: 'taskRoadManagement',
-        name: 'taskRoadManagement',
+        path: 'addProjectForm',
+        name: 'addProjectForm',
         meta: {
-          title: '任务路口管理'
+          title: '新建项目',
+          hideInMenu: true,
+          needInBread: true,
+          notCache: true
         },
-        component: parentView,
-        children: [
-          {
-            path: 'taskRoadManagementList',
-            name: 'taskRoadManagementList',
-            meta: {
-              title: '任务路口管理',
-              hideInBread: true
-            },
-            component: () => import('@/view/project/taskRoadManagement.vue')
-          },
-          {
-            path: 'addTaskRoad',
-            name: 'addTaskRoad',
-            meta: {
-              title: '新建任务路口',
-              hideInMenu: true,
-              needInBread: true
-            },
-            component: () => import('@/view/project/addTaskRoad.vue')
-          },
-          {
-            path: 'taskRoadReminder',
-            name: 'taskRoadReminder',
-            meta: {
-              title: '任务路口提醒',
-              hideInMenu: true,
-              needInBread: true
-            },
-            component: () => import('@/view/project/taskRoadReminder.vue')
-          }
-        ]
+        component: () => import('@/view/project/addProjectForm.vue')
+      },
+      {
+        path: 'projectReminder',
+        name: 'projectReminder',
+        meta: {
+          title: '项目提醒',
+          hideInMenu: true,
+          needInBread: true
+        },
+        component: () => import('@/view/project/projectReminder.vue')
+      },
+      {
+        path: 'taskManagementList',
+        name: 'taskManagementList',
+        meta: {
+          title: '任务管理',
+          hideInBread: true
+        },
+        component: () => import('@/view/project/taskManagement.vue')
+      },
+      {
+        path: 'addTask',
+        name: 'addTask',
+        meta: {
+          title: '新建任务',
+          hideInMenu: true,
+          needInBread: true
+        },
+        component: addTask
+      },
+      {
+        path: 'addTaskForm',
+        name: 'addTaskForm',
+        meta: {
+          title: '新建任务',
+          hideInMenu: true,
+          needInBread: true
+        },
+        component: () => import('@/view/project/addTaskForm.vue')
+      },
+      {
+        path: 'editTaskForm',
+        name: 'editTaskForm',
+        meta: {
+          title: '修改任务属性',
+          hideInMenu: true,
+          needInBread: true,
+          notCache: true
+        },
+        component: () => import('@/view/project/editTaskForm.vue')
+      },
+      {
+        path: 'taskReminder',
+        name: 'taskReminder',
+        meta: {
+          title: '任务提醒',
+          hideInMenu: true,
+          needInBread: true
+        },
+        component: () => import('@/view/project/taskReminder.vue')
+      },
+      {
+        path: 'taskRoadManagementList',
+        name: 'taskRoadManagementList',
+        meta: {
+          title: '任务路口管理',
+          hideInBread: true
+        },
+        component: () => import('@/view/project/taskRoadManagement.vue')
+      },
+      {
+        path: 'addTaskRoad',
+        name: 'addTaskRoad',
+        meta: {
+          title: '新建任务路口',
+          hideInMenu: true,
+          needInBread: true
+        },
+        component: () => import('@/view/project/addTaskRoad.vue')
+      },
+      {
+        path: 'taskRoadReminder',
+        name: 'taskRoadReminder',
+        meta: {
+          title: '任务路口提醒',
+          hideInMenu: true,
+          needInBread: true
+        },
+        component: () => import('@/view/project/taskRoadReminder.vue')
       }
     ]
   },

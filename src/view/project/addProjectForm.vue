@@ -108,7 +108,7 @@ export default {
       }
     }
     return {
-      center: [this.$route.params.lng, this.$route.params.lat],
+      center: [this.$route.query.lng, this.$route.query.lat],
       zoom: 14,
       formItem: {
         name: '',
@@ -123,8 +123,8 @@ export default {
         projectManagerId: '',
         projectManagerName: '',
         location: '',
-        lng: this.$route.params.lng,
-        lat: this.$route.params.lat,
+        lng: this.$route.query.lng,
+        lat: this.$route.query.lat,
         remarks: '',
         dates: []
       },
@@ -238,7 +238,7 @@ export default {
     },
     addMarker () {
       let marker = {
-        position: [this.$route.params.lng, this.$route.params.lat]
+        position: [this.$route.query.lng, this.$route.query.lat]
       }
       this.markers.push(marker)
     },

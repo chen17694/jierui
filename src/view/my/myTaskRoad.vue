@@ -1,11 +1,6 @@
 <template>
   <div style="height: 100%">
     <div class="amap-page-container">
-      <div class="amap-demo" v-if="this.center.length === 0">
-        <div class="spin-container">
-          <Spin size="large" fix></Spin>
-        </div>
-      </div>
       <el-amap
         v-if="this.center.length === 2"
         :amap-manager="amapManager"
@@ -54,7 +49,7 @@
               <img src="../../assets/images/icon1.png" style="width: 18px; margin-right: 5px">{{item.alias}}
             </div>
             <div style="line-height: 20px;">
-              <p :style="{ 'font-size': '20px', color: ( item.progress === '100' ? '#15C41B' : '#FB861B' ) }">{{item.progress ? item.progress : 0}}%</p>
+              <p :style="{ 'font-size': '20px', color: ( item.progress === '100' ? '#15C41B' : '#FB861B' ) }">{{onStatus === '6' ? '100' : '0'}}%</p>
               <p style="color: #999999">进度</p>
             </div>
           </div>

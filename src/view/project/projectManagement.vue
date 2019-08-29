@@ -13,7 +13,7 @@
       </Col>
       <Col span="12">
         <div style="float: right">
-          <Button type="warning" style="margin-right: 10px" @click="reminder" v-if="branchBusinessManager === '0'">项目提醒</Button>
+          <Button type="warning" style="margin-right: 10px" @click="reminder" v-if="branchBusinessManager === '1'">项目提醒</Button>
           <Button type="success" @click="toAdd" v-if="creatProjectPermission === '0'">新建项目</Button>
         </div>
       </Col>
@@ -129,7 +129,7 @@
 </template>
 
 <script>
-import { listProject, projectFunction, getUnitList, getUserList } from '@/api/data'
+import { listProject, projectFunction, getUnitList, getUserList, getUserCount } from '@/api/data'
 import { getUserId, getUserInfo, getOffice } from '@/libs/util'
 import Tables from '_c/tables'
 export default {
@@ -238,11 +238,18 @@ export default {
       this.params.pageSize = size
       this.getData()
     },
+    getUserCount () {
+      getUserCount({
+        id: getUserId()
+      }).then((res) => {
+        console.log(res.data.data)
+        this.branchBusinessManager = res.data.data.isShowRemind
+      })
+    },
     getData () {
       listProject(this.params).then((res) => {
         this.creatProjectPermission = res.data.data.creatProjectPermission
         this.tableData = res.data.data.projectList
-        this.branchBusinessManager = res.data.data.projectList[0].branchBusinessManager
         this.total = Number(res.data.data.count)
       })
     },
@@ -450,6 +457,7 @@ export default {
     this.getData()
     this.getFirstPartyCompany()
     this.getProjectManager()
+    this.getUserCount()
   }
 }
 </script>

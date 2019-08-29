@@ -56,13 +56,15 @@ export default {
   },
   methods: {
     onRowClick () {
-      // this.$router.push({
-      //   name: 'roadHistory',
-      //   query: {
-      //     crossingCode: this.detailData.crossingCode,
-      //     taskCrossingId: this.$route.query.taskCrossingId
-      //   }
-      // })
+      console.log(arguments[0].crossingCode)
+      console.log(arguments[0].id)
+      this.$router.push({
+        name: 'roadHistory',
+        query: {
+          crossingCode: arguments[0].crossingCode,
+          taskCrossingId: arguments[0].id
+        }
+      })
     },
     onAdd () {
       this.$router.push({

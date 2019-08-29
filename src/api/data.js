@@ -600,6 +600,13 @@ export const addProject = (params) => {
     method: 'post'
   })
 }
+export const getUserCount = (params) => {
+  return axios.request({
+    url: '/user/getUserCount',
+    data: params,
+    method: 'post'
+  })
+}
 export const listTaskSimple = (params) => {
   return axios.request({
     url: '/task/listTaskSimple',
@@ -707,6 +714,7 @@ export const uploadImgToAliOss = (e) => {
 }
 
 const upOss = (e, res) => {
+  console.log(e)
   let client = new OSS({
     endpoint: res.data.data.endpoint,
     accessKeyId: res.data.data.accessKeyId,
@@ -716,6 +724,34 @@ const upOss = (e, res) => {
   })
   return new Promise((resolve, reject) => {
     client.multipartUpload(e.target.files[0].name, e.target.files[0]).then(result => {
+      let src = result.res.requestUrls[0].split('?')
+      let arr = [src[0], result.name]
+      resolve(arr)
+    })
+  })
+}
+export const uploadImgToAliOssHead = (e) => {
+  console.log(e)
+  return new Promise((resolve, reject) => {
+    getStsToken().then(res => {
+      if (res.data.status === '200') {
+        upOssHead(e, res).then(ress => {
+          resolve(ress)
+        })
+      }
+    })
+  })
+}
+const upOssHead = (e, res) => {
+  let client = new OSS({
+    endpoint: res.data.data.endpoint,
+    accessKeyId: res.data.data.accessKeyId,
+    stsToken: res.data.data.securityToken,
+    accessKeySecret: res.data.data.accessKeySecret,
+    bucket: res.data.data.bucketName
+  })
+  return new Promise((resolve, reject) => {
+    client.multipartUpload('head', e).then(result => {
       let src = result.res.requestUrls[0].split('?')
       let arr = [src[0], result.name]
       resolve(arr)

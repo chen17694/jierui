@@ -1,16 +1,16 @@
 <template>
   <div class="cropper-wrapper">
+    <slot>
+      <Upload action="image/upload" :before-upload="beforeUpload">
+        <Button style="width: 150px;" type="primary">选择文件</Button>
+      </Upload>
+    </slot>
     <div class="img-box">
       <img class="cropper-image" :id="imgId" alt="">
     </div>
     <div class="right-con">
       <div v-if="preview" class="preview-box" :id="previewId"></div>
       <div class="button-box">
-        <slot>
-          <Upload action="image/upload" :before-upload="beforeUpload">
-            <Button style="width: 150px;" type="primary">上传图片</Button>
-          </Upload>
-        </slot>
         <div v-show="insideSrc">
           <Button type="primary" @click="rotate">
             <Icon type="md-refresh" :size="18"/>
@@ -124,6 +124,8 @@ export default {
       this.cropper.getCroppedCanvas().toBlob(blob => {
         this.$emit('on-crop', blob)
       })
+      // let file = this.cropper.getCroppedCanvas().toDataURL('image/png')
+      // this.$emit('on-crop', file)
     }
   },
   mounted () {

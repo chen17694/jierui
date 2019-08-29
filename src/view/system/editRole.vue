@@ -48,7 +48,7 @@ export default {
     }
     return {
       formItem: {
-        userName: this.$route.params.role
+        userName: this.$route.query.role
       },
       ruleValidate: {
         userName: [
@@ -76,6 +76,7 @@ export default {
     },
     save () {
       let params = {
+        'id': this.$route.query.id,
         'name': this.formItem.userName,
         'type': '1',
         'menu': this.menu,
@@ -96,8 +97,8 @@ export default {
     }
   },
   mounted () {
-    if (this.$route.params.id) {
-      ListAllMenu({ type: '1', roleId: this.$route.params.id }).then(res => {
+    if (this.$route.query.id) {
+      ListAllMenu({ type: '1', roleId: this.$route.query.id }).then(res => {
         this.menuData = res.data.data
         this.menuData.forEach((item) => {
           if (item.child.length > 0) {

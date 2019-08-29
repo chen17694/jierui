@@ -1,12 +1,12 @@
 <template>
-  <div class="user-avatar-dropdown">
-    <Badge :dot="!!messageUnreadCount">
-      <Icon type="ios-mail-outline" @click="message" style="font-size: 40px; margin: 0 10px"/>
+  <div class="user-avatar-dropdown" style="display: flex">
+    <Badge :dot="!!messageUnreadCount" style="display: flex; align-items: center;">
+      <img src="../../../../assets/images/message.png" style="width: 17px; margin-right: 46px">
     </Badge>
     <Dropdown :transfer="true" placement="bottom-end">
-      <Avatar :src="userAvatar || userInfo.photo"/>
-      <span style="margin: 0 10px">{{userInfo.name}}</span>
-      <Icon :size="18" type="md-arrow-dropdown"></Icon>
+      <Avatar :src="userInfo.photo"/>
+      <span style="margin: 0 10px; color: #cccccc">{{userInfo.name}}</span>
+      <Icon type="ios-arrow-down" style="color: #cccccc"></Icon>
       <DropdownMenu slot="list">
         <DropdownItem name="message">
           <div style="width: 200px">
@@ -35,14 +35,19 @@
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>
-    <span @click="logout" style="margin-left: 10px">退出</span>
+    <span @click="logout" style="margin-left: 60px; color: #2E8CEB; font-weight: bold">退出</span>
     <Modal
       v-model="head"
-      title="Common Modal dialog box title"
+      title="修改头像"
+      width="622"
       @on-ok="setHead">
-      <p>Content of dialog</p>
-      <p>Content of dialog</p>
-      <p>Content of dialog</p>
+      <div class="cropper-example cropper-first">
+        <cropper
+          :src="exampleImageSrc"
+          crop-button-text="确认提交"
+          @on-crop="handleCroped"
+        ></cropper>
+      </div>
     </Modal>
   </div>
 </template>
@@ -50,15 +55,27 @@
 <script>
 import './user.less'
 import { mapActions } from 'vuex'
+import Cropper from '@/components/cropper'
+import { uploadImgToAliOssHead } from '@/api/data'
 import { getOffice } from '@/libs/util'
 export default {
   name: 'User',
+  components: {
+    Cropper
+  },
   data () {
     return {
       head: false,
-      userName: getOffice().name,
-      userAvatar: getOffice().photo,
-      userInfo: getOffice()
+      userInfo: {
+        name: getOffice().name || '',
+        office: getOffice().office || '',
+        role: getOffice().role || '',
+        phone: getOffice().phone || '',
+        email: getOffice().email || '',
+        photo: getOffice().photo || ''
+      },
+      exampleImageSrc: '',
+      file: ''
     }
   },
   props: {
@@ -72,10 +89,16 @@ export default {
       'handleLogOut'
     ]),
     openSetHead () {
-
+      this.head = true
     },
     setHead () {
-
+      uploadImgToAliOssHead(this.file).then(res => {
+        console.log(res)
+      })
+    },
+    handleCroped (file) {
+      console.log(file)
+      this.file = file
     },
     logout () {
       this.handleLogOut().then(() => {
@@ -107,8 +130,12 @@ export default {
 <style scoped lang="less">
   .ivu-badge{
     /deep/ .ivu-badge-dot{
-    top: 20px;
-    right: 8px;
+      top: 20px;
+      right: 40px;
+      background-color: #BC0000;
     }
+  }
+  .cropper-example{
+    height: 400px;
   }
 </style>

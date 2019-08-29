@@ -58,7 +58,7 @@ export default {
     toAdd () {
       this.$router.push({
         name: 'addProjectForm',
-        params: {
+        query: {
           lat: this.lat,
           lng: this.lng
         }

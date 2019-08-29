@@ -50,7 +50,7 @@
             <p style="font-weight: bold; margin-bottom: 10px">渠化图</p>
             <img src="../../assets/images/default_pic.png" v-if="!photo" style="margin: 15px 15px 0 0">
             <img :src="photo" v-if="photo" style="margin: 15px 15px 0 0; cursor:zoom-in;" @click="download(photo)">
-            <div class="ivu-upload ivu-upload-drag" style="display: inline-block; width: 58px;position: relative;">
+            <div v-if="detailData.status !== '4'" class="ivu-upload ivu-upload-drag" style="display: inline-block; width: 58px;position: relative;">
               <input type="file" @change="uploadPhoto($event)">
               <div style="width: 58px;height:58px;line-height: 58px;">
                 <Icon type="ios-camera" size="20"></Icon>

@@ -50,18 +50,9 @@
             <p style="font-weight: bold; margin-bottom: 10px">渠化图</p>
             <img src="../../assets/images/default_pic.png" v-if="!photo" style="margin: 15px 15px 0 0">
             <img :src="photo" v-if="photo" style="margin: 15px 15px 0 0; cursor:zoom-in;" @click="download(photo)">
-            <div class="ivu-upload ivu-upload-drag" style="display: inline-block; width: 58px;position: relative;">
-              <input type="file" @change="uploadPhoto($event)">
-              <div style="width: 58px;height:58px;line-height: 58px;">
-                <Icon type="ios-camera" size="20"></Icon>
-              </div>
-            </div>
           </div>
           <div style="margin: 30px 0">
-            <p style="font-weight: bold; margin-bottom: 10px; position: relative">附件
-              <span style="position: absolute; opacity: 0; right: 0;"><input type="file" @change="uploadFile($event)" v-if="addPermission === '0'"></span>
-              <Button type="primary" style="float: right" v-if="addPermission === '0'">上传附件</Button>
-            </p>
+            <p style="font-weight: bold; margin-bottom: 10px; position: relative">附件</p>
             <ul style="list-style-type: none; display: flex">
               <li v-for="(item ,index) in annexBeans" @click="download(item)" :key="index" style="cursor: pointer;border: 1px solid #dcdee2;border-radius: 5px; padding-top: 10px; width: 120px; margin-right: 10px">
                 <div style="background-color: #ffffff; display: flex; align-items: center; justify-content: center;">

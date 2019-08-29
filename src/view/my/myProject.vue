@@ -1,11 +1,6 @@
 <template>
   <div style="height: 100%">
     <div class="amap-page-container">
-      <div class="amap-demo" v-if="this.center.length === 0">
-        <div class="spin-container">
-          <Spin size="large" fix></Spin>
-        </div>
-      </div>
       <el-amap
         v-if="this.center.length === 2"
         :amap-manager="amapManager"
@@ -181,7 +176,7 @@ import p_revoke from '../../assets/images/p_revoke.png'
 import { AMapManager, lazyAMapApiLoaderInstance } from 'vue-amap'
 let amapManager = new AMapManager()
 export default {
-  name: 'my',
+  name: 'myProject',
   data () {
     let self = this
     return {

@@ -14,13 +14,16 @@ export const setAutoLogin = (autoLogin) => {
   Cookies.set('autoLogin', autoLogin, { expires: cookieExpires })
 }
 export const setUserId = (id) => {
-  Cookies.set('userId', id, { expires: cookieExpires || 1 })
+  Cookies.set('userId', id, { expires: cookieExpires })
 }
 export const setOffice = (office) => {
-  Cookies.set('office', office, { expires: cookieExpires || 1 })
+  Cookies.set('office', office, { expires: cookieExpires })
+}
+export const setHead = (head) => {
+  Cookies.set('head', head, { expires: cookieExpires })
 }
 export const setUserInfo = (data) => {
-  Cookies.set('userInfo', data, { expires: cookieExpires || 1 })
+  Cookies.set('userInfo', data, { expires: cookieExpires })
 }
 export const getToken = () => {
   const token = Cookies.get(TOKEN_KEY)

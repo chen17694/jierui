@@ -113,7 +113,7 @@ export default{
     editRole () {
       this.$router.push({
         name: 'editRole',
-        params: {
+        query: {
           id: arguments[0].row.id,
           role: arguments[0].row.name
         }
