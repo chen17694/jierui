@@ -1,6 +1,6 @@
 import axios from 'axios'
 import store from '@/store'
-import { Spin } from 'iview'
+import { Spin, Modal } from 'iview'
 import { getToken } from '@/libs/util'
 const addErrorLog = errorInfo => {
   const { statusText, status, request: { responseURL } } = errorInfo
@@ -12,7 +12,6 @@ const addErrorLog = errorInfo => {
   }
   if (!responseURL.includes('save_error_logger')) store.dispatch('addErrorLog', info)
 }
-console.log(store)
 class HttpRequest {
   constructor (baseUrl = baseURL) {
     this.baseUrl = baseUrl
@@ -65,6 +64,23 @@ class HttpRequest {
         if (errorInfo.status === 401) {
           store.dispatch('handleLogOut').then(() => {
             window.location.href = '#/login'
+          })
+        } else if (errorInfo.status === 405) {
+          Spin.hide()
+          this.queue = {}
+          Modal.confirm({
+            title: '无操作权限',
+            onOk: () => {
+              window.history.go(-1)
+            },
+            onCancel: () => {
+              window.history.go(-1)
+            }
+          })
+        } else if (errorInfo.status === 500) {
+          Spin.hide()
+          Modal.confirm({
+            title: '网络错误'
           })
         }
       }

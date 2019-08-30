@@ -81,8 +81,7 @@ export default {
       return this.$store.state.user.avatarImgPath
     },
     cacheList () {
-      const list = ['MaterialAdd', 'addProjectForm', 'myTaskRoad', 'myProject', 'myTask']
-      console.log(list)
+      const list = ['MaterialAdd', 'addProjectForm', 'myTaskRoad', 'myProject', 'myTask', 'xmsxxg']
       return list
     },
     menuList () {

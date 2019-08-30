@@ -69,7 +69,6 @@ export default{
   },
   methods: {
     onRowClick  () {
-      console.log(arguments)
       let type = arguments[0].type
       let id = arguments[0].id
       if (type === '1') {

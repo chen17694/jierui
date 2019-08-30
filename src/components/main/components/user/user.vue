@@ -30,6 +30,7 @@
             </ul>
             <ul style="list-style-type: none">
               <li @click="openSetHead">修改头像</li>
+              <li @click="openSetPassWord">修改密码</li>
             </ul>
           </div>
         </DropdownItem>
@@ -49,15 +50,27 @@
         ></cropper>
       </div>
     </Modal>
+    <!--<Modal-->
+      <!--v-model="passWord"-->
+      <!--title="修改密码"-->
+      <!--@on-ok="setPassWord">-->
+      <!--<div class="cropper-example cropper-first">-->
+        <!--<Form ref="formValidate" :model="passWordForm" :label-width="80">-->
+          <!--<FormItem label="请输入新密码" prop="password">-->
+            <!--<Input v-model="passWordForm.password" placeholder="Enter your name"/>-->
+          <!--</FormItem>-->
+        <!--</Form>-->
+      <!--</div>-->
+    <!--</Modal>-->
   </div>
 </template>
 
 <script>
 import './user.less'
-import { mapActions } from 'vuex'
+import { mapActions, mapMutations } from 'vuex'
 import Cropper from '@/components/cropper'
-import { uploadImgToAliOssHead } from '@/api/data'
-import { getOffice } from '@/libs/util'
+import { uploadImgToAliOssHead, updateUserInfo } from '@/api/data'
+import { getOffice, getUserId } from '@/libs/util'
 export default {
   name: 'User',
   components: {
@@ -66,6 +79,7 @@ export default {
   data () {
     return {
       head: false,
+      passWord: false,
       userInfo: {
         name: getOffice().name || '',
         office: getOffice().office || '',
@@ -75,7 +89,11 @@ export default {
         photo: getOffice().photo || ''
       },
       exampleImageSrc: '',
-      file: ''
+      file: '',
+      passWordForm: {
+        password: '',
+        code: ''
+      }
     }
   },
   props: {
@@ -84,24 +102,44 @@ export default {
       default: 0
     }
   },
+  computed: {
+    tagNavList () {
+      return this.$store.state.app.tagNavList
+    }
+  },
   methods: {
+    ...mapMutations([
+      'setTagNavList'
+    ]),
     ...mapActions([
       'handleLogOut'
     ]),
+    openSetPassWord () {
+      this.passWord = true
+    },
     openSetHead () {
       this.head = true
     },
     setHead () {
       uploadImgToAliOssHead(this.file).then(res => {
-        console.log(res)
+        updateUserInfo({
+          id: getUserId(),
+          name: getOffice().name,
+          photo: res[0]
+        }).then((res) => {
+        })
       })
     },
+    setPassWord () {
+
+    },
     handleCroped (file) {
-      console.log(file)
       this.file = file
     },
     logout () {
       this.handleLogOut().then(() => {
+        let res = this.tagNavList.filter(item => item.name === this.$config.homeName)
+        this.setTagNavList(res)
         this.$router.push({
           name: 'login'
         })

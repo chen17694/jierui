@@ -88,7 +88,7 @@
 </template>
 
 <script>
-import { getUserList, projectAttributeModify, selectProjectDetail } from '@/api/data'
+import { getUserList, projectAttributeModify, selectProjectDetail, listProjectUser } from '@/api/data'
 import { getUserId, getOffice } from '@/libs/util'
 export default {
   name: 'xmsxxg',
@@ -154,7 +154,8 @@ export default {
         userId: getUserId(),
         comment: this.formItem.comment,
         projectId: this.detailData.id,
-        remarks: this.formItem.remarks
+        remarks: this.formItem.remarks,
+        address: this.formItem.position
       }
       projectAttributeModify(obj).then((res) => {
         this.$Message.info(res.data.msg)
@@ -177,11 +178,12 @@ export default {
           projectManagerName: this.detailData.projectManagerName,
           remarks: this.detailData.remarks,
           startTime: this.detailData.startTime,
-          endTime: this.detailData.endTime,
-          seTime: [this.detailData.startTime, this.detailData.endTime],
+          endTime: this.detailData.completionTime,
+          seTime: [this.detailData.startTime, this.detailData.completionTime],
           position: this.detailData.provinceName + this.detailData.cityName + this.detailData.districtName + this.detailData.specificAddress
         }
         this.getUser()
+        this.getProjectManager()
       })
     },
     deteChange () {
@@ -203,14 +205,15 @@ export default {
       })
     },
     getProjectManager () {
-      getUserList({
+      let obj = {
         'pageSize': 0,
         'page': 0,
-        'name': '',
-        'office': this.detailData.officeId,
-        'role': '',
-        'isLoginApp': ''
-      }).then((res) => {
+        'id': this.detailData.id,
+        'officeId': this.detailData.officeId,
+        'userId': getUserId(),
+        'name': ''
+      }
+      listProjectUser(obj).then((res) => {
         if (res.data.status === '200') {
           this.projectManager = res.data.data.list
         }
@@ -228,7 +231,7 @@ export default {
   },
   mounted () {
     this.getData()
-    this.getProjectManager()
+
     this.addMarker()
   }
 }

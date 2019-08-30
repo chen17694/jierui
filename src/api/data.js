@@ -656,7 +656,13 @@ export const listProjectAnnex = (params) => {
     method: 'post'
   })
 }
-
+export const updateUserInfo = (params) => {
+  return axios.request({
+    url: '/user/updateUserInfo',
+    data: params,
+    method: 'post'
+  })
+}
 export const selectCrossing = (params) => {
   return axios.request({
     url: '/CrossingAPI/selectCrossing',
@@ -729,7 +735,6 @@ export const uploadImgToAliOss = (e) => {
 }
 
 const upOss = (e, res) => {
-  console.log(e)
   let client = new OSS({
     endpoint: res.data.data.endpoint,
     accessKeyId: res.data.data.accessKeyId,
@@ -746,7 +751,6 @@ const upOss = (e, res) => {
   })
 }
 export const uploadImgToAliOssHead = (e) => {
-  console.log(e)
   return new Promise((resolve, reject) => {
     getStsToken().then(res => {
       if (res.data.status === '200') {

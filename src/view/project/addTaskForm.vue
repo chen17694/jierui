@@ -6,7 +6,7 @@
         <FormItem label="项目" prop="businessProjectId">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.businessProjectId" label-in-value @on-change="businessProjectOnChange">
+              <Select v-model="formItem.businessProjectId" label-in-value @on-change="businessProjectOnChange" filterable>
                 <Option v-for="(item, index) in businessProject" :value="item.id " :key="index">{{item.name}}</Option>
               </Select>
             </Col>

@@ -16,12 +16,13 @@
         </div>
       </Col>
     </Row>
-    <tree-table ref="child1" expand-key="name" searchable :expand-type="false" children-prop="child" :selectable="true" :columns="columns" :data="tableData" @checkbox-click="onSelect">
+    <tree-table ref="child1" expand-key="name" :is-fold="false" searchable :expand-type="false" children-prop="child" :selectable="true" :columns="columns" :data="tableData" @checkbox-click="onSelect">
       <template slot="type" slot-scope="scope">
         <div>{{renderType(scope)}}</div>
       </template>
       <template slot="likes" slot-scope="scope">
-        <Button style="margin-right: 10px"  @click="onAdd(scope)">
+        <div v-if="renderType(scope) === '区'" style="width: 46px; display: inline-block; margin-right: 10px"></div>
+        <Button style="margin-right: 10px" @click="onAdd(scope)" v-else>
           <Icon type="md-add"  size="14"/>
         </Button>
         <Button @click="onEdit(scope)" v-if="renderType(scope) !== '国家'">

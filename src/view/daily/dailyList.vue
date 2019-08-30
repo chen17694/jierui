@@ -137,7 +137,6 @@ export default {
   },
   methods: {
     onRowClick () {
-      console.log(arguments)
       this.$router.push(
         {
           path: 'dailyDetail',

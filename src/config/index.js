@@ -16,14 +16,14 @@ export default {
   /**
    * @description api请求基础路径
    */
-  baseUrl: {
-    dev: 'http://59.46.65.242:8534/rest',
-    pro: 'http://59.46.65.242:8534/rest'
-  },
   // baseUrl: {
-  //   dev: 'http://192.168.4.52:8534/rest',
-  //   pro: 'http://192.168.4.52:8534/rest'
+  //   dev: 'http://59.46.65.242:8534/rest',
+  //   pro: 'http://59.46.65.242:8534/rest'
   // },
+  baseUrl: {
+    dev: 'http://192.168.4.56:8534/rest',
+    pro: 'http://192.168.4.56:8534/rest'
+  },
   /**
    * @description 默认打开的首页的路由name值，默认为home
    */

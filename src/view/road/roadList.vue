@@ -56,8 +56,6 @@ export default {
   },
   methods: {
     onRowClick () {
-      console.log(arguments[0].crossingCode)
-      console.log(arguments[0].id)
       this.$router.push({
         name: 'roadHistory',
         query: {

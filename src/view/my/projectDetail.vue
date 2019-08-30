@@ -257,7 +257,7 @@ export default {
       },
       materialModel: false,
       joinModel: false,
-      transferTitles: ['未分配', '已分配'],
+      transferTitles: ['未指定', '已指定'],
       allocatePanel: false,
       allocateData: [],
       targetKeys: [],

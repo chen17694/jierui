@@ -244,7 +244,6 @@ export default {
       getUserCount({
         id: getUserId()
       }).then((res) => {
-        console.log(res.data.data)
         this.branchBusinessManager = res.data.data.isShowRemind
       })
     },
