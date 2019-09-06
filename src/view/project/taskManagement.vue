@@ -27,7 +27,7 @@
                 <span class="label">项目:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.businessProjectId">
+                <Select v-model="params.businessProjectId" filterable clearable>
                   <Option v-for="(item, index) in businessProject" :value="item.id " :key="index">{{item.name}}</Option>
                 </Select>
               </Col>
@@ -39,7 +39,7 @@
                 <span class="label">任务类型:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.type">
+                <Select v-model="params.type" clearable>
                   <Option value="1">巡检任务</Option>
                   <Option value="2">优化任务</Option>
                   <Option value="3">宣传任务</Option>
@@ -53,7 +53,7 @@
                 <span class="label">任务状态:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.taskStatus">
+                <Select v-model="params.taskStatus" clearable>
                   <Option value="1">未领取</Option>
                   <Option value="2">已拒绝</Option>
                   <Option value="3">未开始</Option>
@@ -73,7 +73,7 @@
                 <span class="label">甲方评分:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.firstPartyScoring">
+                <Select v-model="params.firstPartyScoring" clearable>
                   <Option value="1">非常满意</Option>
                   <Option value="2">满意</Option>
                   <Option value="3">不满意</Option>

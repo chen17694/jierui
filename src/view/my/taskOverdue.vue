@@ -6,7 +6,7 @@
       <div class="filter" style="display: flex; justify-content: space-between;">
         <div>
           项目：
-          <Select v-model="params.projectId" style="width:200px">
+          <Select v-model="params.projectId" style="width:200px" filterable clearable>
             <Option v-for="(item, index) in projectList" :value="item.id" :label="item.name" :key="index">{{ item.name }}</Option>
           </Select>
         </div>

@@ -9,7 +9,7 @@
                 <span class="label">选择项目:</span>
               </Col>
               <Col span="17">
-                <Select v-model="params.projectId" @on-change="projectChange" label-in-value>
+                <Select v-model="params.projectId" @on-change="projectChange" label-in-value filterable clearable>
                   <Option v-for="(item, index) in businessProject" :value="item.id " :key="index">{{item.name}}</Option>
                 </Select>
               </Col>
@@ -21,7 +21,7 @@
                 <span class="label">选择任务:</span>
               </Col>
               <Col span="17">
-                <Select v-model="params.taskId" @on-change="taskChange" label-in-value>
+                <Select v-model="params.taskId" @on-change="taskChange" label-in-value filterable clearable>
                   <Option v-for="(item, index) in taskList" :key="index" :value="item.id">{{item.name}}</Option>
                 </Select>
               </Col>

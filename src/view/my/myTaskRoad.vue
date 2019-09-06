@@ -30,7 +30,7 @@
           <div style="font-size: 16px; font-weight: bold">
             任务路口数量：{{this.total}}
           </div>
-          <Select v-model="onStatus" style="width:100px" @on-change="statusChange">
+          <Select v-model="onStatus" style="width:100px" @on-change="statusChange" clearable>
             <span :style="{ backgroundColor: avatar }" style="width: 15px; height: 15px; display: inline-block; border-radius: 50%; vertical-align: middle;" slot="prefix"></span>
             <Option value="1" >未领取</Option>
             <Option value="2" >已拒绝</Option>
@@ -325,6 +325,7 @@ export default {
       this.markers = []
       this.markerRefs = []
       this.map.clearMarkers()
+      this.page = 1
       this.getMapProject()
       this.getProject()
     },
@@ -402,14 +403,14 @@ export default {
       listTaskCrossing(obj).then((res) => {
         this.projectList = res.data.data.taskCrossingDetailBeanList
         this.total = res.data.data.count
-        if (this.total === '0') {
-          this.page = 0
+        if (Number(this.total) < 3 && Number(this.total) > 0) {
+          this.maxPage = 1
+        } else if (Number(this.total) === 0) {
+          this.maxPage = 1
+          this.page = 1
         } else {
-          if (this.page === 0) {
-            this.page = 1
-          }
+          this.maxPage = Math.ceil(Number(this.total) / 3)
         }
-        this.maxPage = Math.ceil(this.total / 3)
       })
     },
     toTaskDetail (id, type) {

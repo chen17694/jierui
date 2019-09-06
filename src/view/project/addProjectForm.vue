@@ -16,7 +16,7 @@
         <FormItem label="甲方公司" prop="firstPartyCompanyId">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.firstPartyCompanyId" label-in-value @on-change="firstPartyCompanyOnChange">
+              <Select v-model="formItem.firstPartyCompanyId" label-in-value @on-change="firstPartyCompanyOnChange" filterable clearable>
                 <Option v-for="(item, index) in firstPartyCompany" :value="item.id " :key="index">{{item.name}}</Option>
               </Select>
             </Col>
@@ -25,7 +25,7 @@
         <FormItem label="甲方负责人" prop="firstPartyUserId">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.firstPartyUserId" label-in-value @on-change="firstPartyUserOnChange">
+              <Select v-model="formItem.firstPartyUserId" label-in-value @on-change="firstPartyUserOnChange" filterable clearable>
                 <Option v-for="(item, index) in firstPartyUser" :value="item.id " :key="index">{{item.name}}</Option>
               </Select>
             </Col>
@@ -48,7 +48,7 @@
         <FormItem label="项目经理" prop="projectManagerId">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.projectManagerId" label-in-value @on-change="projectManagerOnChange">
+              <Select v-model="formItem.projectManagerId" label-in-value @on-change="projectManagerOnChange" filterable clearable>
                 <Option v-for="(item, index) in projectManager" :value="item.id " :key="index">{{item.name}}</Option>
               </Select>
             </Col>

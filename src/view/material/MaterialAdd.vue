@@ -28,7 +28,7 @@
         <FormItem label="所属单位" prop="officeId">
           <Row>
               <Col span="20">
-                <Select v-model="formMaterial.officeId" placeholder="请选择" label-in-value @on-change="officeCategoryChange">
+                <Select v-model="formMaterial.officeId" placeholder="请选择" label-in-value @on-change="officeCategoryChange" filterable clearable>
                   <Option v-for="(item, key) in officeCategory" :key="key" :value="item.value">{{item.label}}</Option>
                 </Select>
               </Col>
@@ -37,7 +37,7 @@
         <FormItem label="物资类别" prop="materialCategoryName">
           <Row>
                 <Col span="20">
-                   <Select v-model="formMaterial.materialCategoryId" placeholder="请选择" label-in-value @on-change="materialCategoryChange">
+                   <Select v-model="formMaterial.materialCategoryId" placeholder="请选择" label-in-value @on-change="materialCategoryChange" filterable clearable>
                       <Option v-for="(item, key) in materialCategory" :key="key" :value="item.value">{{item.label}}</Option>
                   </Select>
                 </Col>
@@ -48,8 +48,8 @@
         </FormItem>
         <FormItem label="是否需要归还" prop="needReturnStatus">
             <RadioGroup v-model="formMaterial.needReturnStatus">
-                <Radio label="1">是</Radio>
-                <Radio label="0">否</Radio>
+                <Radio label="0">是</Radio>
+                <Radio label="1">否</Radio>
             </RadioGroup>
         </FormItem>
         <FormItem>

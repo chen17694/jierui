@@ -1,7 +1,7 @@
 import axios from 'axios'
 import store from '@/store'
 import { Spin, Modal } from 'iview'
-import { getToken } from '@/libs/util'
+import { getToken, getUserId } from '@/libs/util'
 const addErrorLog = errorInfo => {
   const { statusText, status, request: { responseURL } } = errorInfo
   let info = {
@@ -22,7 +22,8 @@ class HttpRequest {
       baseURL: this.baseUrl,
       headers: {
         authToken: getToken(),
-        appType: '0'
+        appType: '0',
+        userId: getUserId()
       }
     }
     return config
@@ -36,8 +37,9 @@ class HttpRequest {
   interceptors (instance, url) {
     // 请求拦截
     instance.interceptors.request.use(config => {
+      console.log(config.data)
       // 添加全局的loading...
-      if (!Object.keys(this.queue).length) {
+      if (!Object.keys(this.queue).length && (config.data && config.data.noLoading !== '1')) {
         Spin.show()
       }
       this.queue[url] = true

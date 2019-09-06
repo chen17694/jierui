@@ -160,7 +160,7 @@
                   <div class="Title" style="margin-top:10px;">选定任务下任务完成百分比</div>
                   <div style="margin: 10px 0">
                     选择项目：
-                    <Select v-model="oneSearch.projectId" style="width:200px" @on-change="proSel">
+                    <Select v-model="oneSearch.projectId" style="width:200px" @on-change="proSel" filterable clearable>
                       <Option
                         v-for="item in projectList"
                         :value="item.value"
@@ -185,7 +185,7 @@
               <div class="Title" style="display:inline-block">地区项目个数统计</div>
               <div style="float:right">
                 地区类型：
-                <Select v-model="oneSearch.type" style="width:200px;text-align:left" @on-change="regionTypeSel">
+                <Select v-model="oneSearch.type" style="width:200px;text-align:left" @on-change="regionTypeSel" clearable>
                   <Option value="0">省级</Option>
                   <Option value="1">市级</Option>
                 </Select>
@@ -243,7 +243,7 @@
       <div slot="extra" style>
         <div style>
           选择项目：
-          <Select v-model="threeSearch.projectId" style="width:200px" @on-change="proSelthree">
+          <Select v-model="threeSearch.projectId" style="width:200px" @on-change="proSelthree" filterable clearable>
             <Option
               v-for="item in projectList"
               :value="item.value"

@@ -266,8 +266,9 @@ export default {
             // 我的审批 项目属性修改审批
             this.$router.push({
               name: 'xmsxxgsq',
-              params: {
-                data: arguments[0]
+              query: {
+                type: arguments[0].type,
+                taskId: arguments[0].taskId
               }
             })
             break

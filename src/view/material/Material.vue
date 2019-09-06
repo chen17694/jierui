@@ -36,7 +36,7 @@
                 <span class="label">归属单位:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.officeId" placeholder="请选择" label-in-value>
+                <Select v-model="params.officeId" placeholder="请选择" label-in-value filterable clearable>
                   <Option v-for="(item, key) in officeCategory" :key="key" :value="item.value">{{item.label}}</Option>
                 </Select>
               </Col>
@@ -48,7 +48,7 @@
                 <span class="label">物资类型:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.materialCategoryId" placeholder="请选择" label-in-value>
+                <Select v-model="params.materialCategoryId" placeholder="请选择" label-in-value filterable clearable>
                       <Option v-for="(item, key) in materialCategory" :key="key" :value="item.value">{{item.label}}</Option>
                   </Select>
               </Col>

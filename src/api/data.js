@@ -685,6 +685,21 @@ export const addTaskAnnex = (params) => {
     method: 'post'
   })
 }
+export const sendCodeGeneral = (params) => {
+  return axios.request({
+    url: '/user/sendCodeGeneral',
+    data: params,
+    method: 'post'
+  })
+}
+export const resetGeneral = (params) => {
+  return axios.request({
+    url: '/user/resetGeneral',
+    data: params,
+    method: 'post'
+  })
+}
+
 export const addTaskCrossingAnnex = (params) => {
   return axios.request({
     url: '/taskCrossingRelation/addTaskCrossingAnnex',
@@ -770,7 +785,13 @@ const upOssHead = (e, res) => {
     bucket: res.data.data.bucketName
   })
   return new Promise((resolve, reject) => {
-    client.multipartUpload('head', e).then(result => {
+    let chars = 'abcdefhijkmnprstwxyz'
+    let maxPos = chars.length
+    let pwd = ''
+    for (let i = 0; i < 3; i++) {
+      pwd += chars.charAt(Math.floor(Math.random() * maxPos))
+    }
+    client.multipartUpload(pwd, e).then(result => {
       let src = result.res.requestUrls[0].split('?')
       let arr = [src[0], result.name]
       resolve(arr)

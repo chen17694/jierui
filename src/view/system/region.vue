@@ -42,7 +42,7 @@
           <Input v-model="formValidate.name" placeholder="请输入行政区划名称"></Input>
         </FormItem>
         <FormItem label="行政区划类型" prop="type">
-          <Select v-model="formValidate.type" placeholder="请选择行政区划类型">
+          <Select v-model="formValidate.type" placeholder="请选择行政区划类型" clearable>
             <Option value="0">根节点</Option>
             <Option value="1">国家</Option>
             <Option value="2">省</Option>

@@ -27,7 +27,7 @@
                 <span class="label">甲方公司:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.firstPartyCompanyId">
+                <Select v-model="params.firstPartyCompanyId" filterable clearable>
                   <Option v-for="(item, index) in firstPartyCompany" :value="item.id " :key="index">{{item.name}}</Option>
                 </Select>
               </Col>
@@ -39,7 +39,7 @@
                 <span class="label">项目经理:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.projectManagerId">
+                <Select v-model="params.projectManagerId" filterable clearable>
                   <Option v-for="(item, index) in projectManager" :value="item.id " :key="index">{{item.name}}</Option>
                 </Select>
               </Col>
@@ -51,7 +51,7 @@
                 <span class="label">项目状态:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.status">
+                <Select v-model="params.status" clearable>
                   <Option value="1">未开始</Option>
                   <Option value="2">进行中</Option>
                   <Option value="3">审核中</Option>
@@ -69,7 +69,7 @@
                 <span class="label">甲方评分:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.firstPartyScoring">
+                <Select v-model="params.firstPartyScoring" clearable>
                   <Option value="1">非常满意</Option>
                   <Option value="2">满意</Option>
                   <Option value="3">不满意</Option>
@@ -182,7 +182,7 @@ export default {
                 text = '已撤销'
               }
             } else {
-              text = '暂停中'
+              text = '已暂停'
             }
             return h('div', { props: {} }, text)
           }

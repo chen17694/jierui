@@ -62,7 +62,7 @@
                 <span class="label">单位类型:</span>
               </Col>
               <Col span="19">
-                <Select v-model="listParams.type">
+                <Select v-model="listParams.type" clearable>
                   <Option value="1">主营单位</Option>
                   <Option value="2">下属单位</Option>
                   <Option value="3">甲方单位</Option>

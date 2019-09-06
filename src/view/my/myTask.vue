@@ -27,9 +27,9 @@
       </Card>
       <div style="width:350px; position: absolute; left: 20px; top: 120px; background-color: #ffffff">
         <div v-if="tab === 'tab2'" style="padding: 10px">
-          <Form :label-width="80">
+          <Form :label-width="82">
             <FormItem label="项目选择：">
-              <Select v-model="businessProjectId" @on-change="changeProject">
+              <Select v-model="businessProjectId" @on-change="changeProject" filterable>
                 <Option value="">全部</Option>
                 <Option v-for="(item, index) in projectList" :value="item.id " :key="index">{{item.name}}</Option>
               </Select>
@@ -43,7 +43,7 @@
                 <div style="font-size: 16px; font-weight: bold">
                   任务数量：{{this.total}}
                 </div>
-                <Select v-model="onStatus" style="width:100px" @on-change="statusChange">
+                <Select v-model="onStatus" style="width:100px" @on-change="statusChange" clearable>
                   <span :style="{ backgroundColor: avatar }" style="width: 15px; height: 15px; display: inline-block; border-radius: 50%; vertical-align: middle;" slot="prefix"></span>
                   <!--<Option value="1" >未领取</Option>-->
                   <Option value="2" >已拒绝</Option>
@@ -139,7 +139,7 @@
                 <div style="font-size: 16px; font-weight: bold">
                   任务数量：{{this.total}}
                 </div>
-                <Select v-model="onType" style="width:110px" @on-change="typeChange">
+                <Select v-model="onType" style="width:120px" @on-change="typeChange" clearable>
                   <Avatar :src="avatar2" slot="prefix" size="small" />
                   <Option value="1" >巡检任务</Option>
                   <Option value="2" >优化任务</Option>
@@ -448,6 +448,7 @@ export default {
       this.markers = []
       this.markerRefs = []
       this.map.clearMarkers()
+      this.page = 1
       this.getTask()
       this.getMapTask()
     },
@@ -528,14 +529,14 @@ export default {
       }).then((res) => {
         this.taskList = res.data.data.taskDetailBeans
         this.total = res.data.data.count
-        if (this.total === '0') {
-          this.page = 0
+        if (Number(this.total) < 3 && Number(this.total) > 0) {
+          this.maxPage = 1
+        } else if (Number(this.total) === 0) {
+          this.maxPage = 1
+          this.page = 1
         } else {
-          if (this.page === 0) {
-            this.page = 1
-          }
+          this.maxPage = Math.ceil(Number(this.total) / 3)
         }
-        this.maxPage = Math.ceil(this.total / 3)
       })
     },
     getProjectDetail (id) {

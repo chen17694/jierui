@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie'
 // cookie保存的天数
 import config from '@/config'
-import { forEach, hasOneOf, objEqual } from '@/libs/tools'
+import { forEach, hasOneOf } from '@/libs/tools'
 
 const { title, cookieExpires, useI18n } = config
 
@@ -15,6 +15,9 @@ export const setAutoLogin = (autoLogin) => {
 }
 export const setUserId = (id) => {
   Cookies.set('userId', id, { expires: cookieExpires })
+}
+export const setAvatar = (data) => {
+  Cookies.set('avatar', data, { expires: cookieExpires })
 }
 export const setOffice = (office) => {
   Cookies.set('office', office, { expires: cookieExpires })
@@ -38,6 +41,11 @@ export const getUserId = () => {
   const id = Cookies.get('userId')
   if (id) return id
   else return false
+}
+export const getAvatar = () => {
+  const avatar = Cookies.get('avatar')
+  if (avatar) return avatar
+  else return ''
 }
 export const getOffice = () => {
   const id = Cookies.get('office')
@@ -361,11 +369,12 @@ export const showByAccess = (access, canViewAccess) => {
  * @param {*} route2 路由对象
  */
 export const routeEqual = (route1, route2) => {
-  const params1 = route1.params || {}
-  const params2 = route2.params || {}
-  const query1 = route1.query || {}
-  const query2 = route2.query || {}
-  return (route1.name === route2.name) && objEqual(params1, params2) && objEqual(query1, query2)
+  return (route1.name === route2.name)
+  // const params1 = route1.params || {}
+  // const params2 = route2.params || {}
+  // const query1 = route1.query || {}
+  // const query2 = route2.query || {}
+  // return (route1.name === route2.name) && objEqual(params1, params2) && objEqual(query1, query2)
 }
 
 /**

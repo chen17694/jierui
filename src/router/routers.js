@@ -845,38 +845,27 @@ export default [
         meta: {
           title: '用户管理'
         },
-        component: parentView,
-        children: [
-          {
-            path: 'userList',
-            name: 'userList',
-            meta: {
-              title: '用户管理',
-              hideInBread: true
-            },
-            component: () => import('@/view/system/user.vue')
-          },
-          {
-            path: 'addUser',
-            name: 'addUser',
-            meta: {
-              title: '新增用户',
-              hideInMenu: true,
-              needInBread: true
-            },
-            component: () => import('@/view/system/addUser.vue')
-          },
-          {
-            path: 'editUser',
-            name: 'editUser',
-            meta: {
-              title: '编辑用户',
-              hideInMenu: true,
-              needInBread: true
-            },
-            component: () => import('@/view/system/editUser.vue')
-          }
-        ]
+        component: () => import('@/view/system/user.vue')
+      },
+      {
+        path: 'addUser',
+        name: 'addUser',
+        meta: {
+          title: '新增用户',
+          hideInMenu: true,
+          needInBread: true
+        },
+        component: () => import('@/view/system/addUser.vue')
+      },
+      {
+        path: 'editUser',
+        name: 'editUser',
+        meta: {
+          title: '编辑用户',
+          hideInMenu: true,
+          needInBread: true
+        },
+        component: () => import('@/view/system/editUser.vue')
       },
       {
         path: 'role',
@@ -884,48 +873,37 @@ export default [
         meta: {
           title: '角色管理'
         },
-        component: parentView,
-        children: [
-          {
-            path: 'roleList',
-            name: 'roleList',
-            meta: {
-              title: '角色管理',
-              hideInBread: true
-            },
-            component: () => import('@/view/system/role.vue')
-          },
-          {
-            path: 'addRole',
-            name: 'addRole',
-            meta: {
-              title: '新增角色',
-              hideInMenu: true,
-              needInBread: true
-            },
-            component: () => import('@/view/system/addRole.vue')
-          },
-          {
-            path: 'editRole',
-            name: 'editRole',
-            meta: {
-              title: '编辑角色',
-              hideInMenu: true,
-              needInBread: true
-            },
-            component: () => import('@/view/system/editRole.vue')
-          },
-          {
-            path: 'roleUserList',
-            name: 'roleUserList',
-            meta: {
-              title: '角色用户管理',
-              hideInMenu: true,
-              needInBread: true
-            },
-            component: () => import('@/view/system/roleUserList.vue')
-          }
-        ]
+        component: () => import('@/view/system/role.vue')
+      },
+      {
+        path: 'addRole',
+        name: 'addRole',
+        meta: {
+          title: '新增角色',
+          hideInMenu: true,
+          needInBread: true
+        },
+        component: () => import('@/view/system/addRole.vue')
+      },
+      {
+        path: 'editRole',
+        name: 'editRole',
+        meta: {
+          title: '编辑角色',
+          hideInMenu: true,
+          needInBread: true
+        },
+        component: () => import('@/view/system/editRole.vue')
+      },
+      {
+        path: 'roleUserList',
+        name: 'roleUserList',
+        meta: {
+          title: '角色用户管理',
+          hideInMenu: true,
+          needInBread: true
+        },
+        component: () => import('@/view/system/roleUserList.vue')
       },
       {
         path: 'region',

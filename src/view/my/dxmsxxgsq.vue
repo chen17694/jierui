@@ -21,7 +21,7 @@
       <h3 style="color: #2d8cf0; margin-bottom: 20px">变更属性</h3>
       <ul style="list-style-type: none">
         <li style="margin-bottom: 5px">甲方负责人修改为：{{detailData.newPartAName}}</li>
-        <li style="margin-bottom: 5px">项目修改日期修改为：{{detailData.newStartTime}} - {{detailData.newStartTime}}</li>
+        <li style="margin-bottom: 5px">项目修改日期修改为：{{detailData.newStartTime}} - {{detailData.newEndTime}}</li>
         <li style="margin-bottom: 5px">项目备注修改为：{{detailData.newRemark}}</li>
         <!--<li style="margin-bottom: 5px">项目位置修改为：{{detailData.taskHoldersName}}</li>-->
       </ul>

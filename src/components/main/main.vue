@@ -12,7 +12,7 @@
     <Layout>
       <Header class="header-con">
         <header-bar :collapsed="collapsed" @on-coll-change="handleCollapsedChange">
-          <user :message-unread-count="unreadCount" :user-avatar="userAvatar"/>
+          <user :message-unread-count="unreadCount" :user-avatar="userAvatar" @get-user-avatar="getUserAvatar"/>
           <language v-if="$config.useI18n" @on-lang-change="setLocal" style="margin-right: 10px;" :lang="local"/>
           <!--<error-store v-if="$config.plugin['error-store'] && $config.plugin['error-store'].showInHeader" :has-read="hasReadErrorPage" :count="errorCount"></error-store>-->
           <!--<fullscreen v-model="isFullscreen" style="margin-right: 10px;"/>-->
@@ -44,7 +44,7 @@ import Fullscreen from './components/fullscreen'
 import Language from './components/language'
 import ErrorStore from './components/error-store'
 import { mapMutations, mapActions, mapGetters } from 'vuex'
-import { getNewTagList, routeEqual } from '@/libs/util'
+import { getNewTagList, routeEqual, getAvatar } from '@/libs/util'
 import routers from '@/router/routers'
 import maxLogo from '@/assets/images/logo.png'
 import './main.less'
@@ -64,7 +64,8 @@ export default {
     return {
       collapsed: false,
       maxLogo,
-      isFullscreen: false
+      isFullscreen: false,
+      userAvatar: getAvatar()
     }
   },
   computed: {
@@ -76,9 +77,6 @@ export default {
     },
     tagRouter () {
       return this.$store.state.app.tagRouter
-    },
-    userAvatar () {
-      return this.$store.state.user.avatarImgPath
     },
     cacheList () {
       const list = ['MaterialAdd', 'addProjectForm', 'myTaskRoad', 'myProject', 'myTask', 'xmsxxg']
@@ -110,6 +108,9 @@ export default {
       'handleLogin',
       'getUnreadMessageCount'
     ]),
+    getUserAvatar (data) {
+      this.userAvatar = data
+    },
     turnToPage (route) {
       let { name, params, query } = {}
       if (typeof route === 'string') name = route

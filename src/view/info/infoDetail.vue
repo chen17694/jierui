@@ -66,7 +66,7 @@
           <Row style="align-items:center">
             <Col span="8" style="line-height: 30px;">任务路口列表：</Col>
             <Col span="16">
-              <Select placeholder="查看任务路口列表">
+              <Select placeholder="查看任务路口列表" filterable clearable>
                 <Option v-for="(item, key) in crossList" :key="key" :value="item.value">{{item.label}}</Option>
               </Select>
             </Col>

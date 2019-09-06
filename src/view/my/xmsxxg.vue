@@ -13,7 +13,7 @@
         <FormItem label="甲方负责人">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.firstPartyUserId" label-in-value @on-change="partAChange">
+              <Select v-model="formItem.firstPartyUserId" label-in-value @on-change="partAChange" filterable clearable>
                 <Option v-for="(item, index) in firstPartyUser" :value="item.id " :key="index">{{item.name}}</Option>
               </Select>
             </Col>
@@ -36,7 +36,7 @@
         <FormItem label="项目经理">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.projectManagerId" label-in-value @on-change="projectManagerChange">
+              <Select v-model="formItem.projectManagerId" label-in-value @on-change="projectManagerChange" filterable clearable>
                 <Option v-for="(item, index) in projectManager" :value="item.id " :key="index">{{item.name}}</Option>
               </Select>
             </Col>
@@ -131,8 +131,8 @@ export default {
       this.formItem.projectManagerId = arguments[0].value
     },
     partAChange () {
-      this.formItem.firstPartyUserName = arguments[0]
-      this.formItem.firstPartyUserId = arguments[1]
+      this.formItem.firstPartyUserName = arguments[0].label
+      this.formItem.firstPartyUserId = arguments[0].value
     },
     addMarker () {
       let marker = {
@@ -141,25 +141,29 @@ export default {
       this.markers.push(marker)
     },
     save () {
-      let obj = {
-        projectName: this.formItem.name,
-        partAId: this.formItem.firstPartyUserId,
-        partAName: this.formItem.firstPartyUserName,
-        startTime: this.formItem.startTime,
-        endTime: this.formItem.endTime,
-        projectManagerId: this.formItem.projectManagerId,
-        projectManagerName: this.formItem.projectManagerName,
-        lng: this.formItem.lng,
-        lat: this.formItem.lat,
-        userId: getUserId(),
-        comment: this.formItem.comment,
-        projectId: this.detailData.id,
-        remarks: this.formItem.remarks,
-        address: this.formItem.position
+      if ((this.detailData.firstPartyUserId === this.formItem.firstPartyUserId) && (this.detailData.startTime === this.formItem.startTime) && (this.detailData.completionTime === this.formItem.endTime) && (this.detailData.projectManagerId === this.formItem.projectManagerId) && (this.detailData.remarks === this.formItem.remarks) && (this.detailData.lat === this.formItem.lat) && (this.detailData.lng === this.formItem.lng)) {
+        this.$Message.info('未做任何更改，无需提交')
+      } else {
+        let obj = {
+          projectName: this.formItem.name,
+          partAId: this.formItem.firstPartyUserId,
+          partAName: this.formItem.firstPartyUserName,
+          startTime: this.formItem.startTime,
+          endTime: this.formItem.endTime,
+          projectManagerId: this.formItem.projectManagerId,
+          projectManagerName: this.formItem.projectManagerName,
+          lng: this.formItem.lng,
+          lat: this.formItem.lat,
+          userId: getUserId(),
+          comment: this.formItem.comment,
+          projectId: this.detailData.id,
+          remarks: this.formItem.remarks,
+          address: this.formItem.position
+        }
+        projectAttributeModify(obj).then((res) => {
+          this.$Message.info(res.data.msg)
+        })
       }
-      projectAttributeModify(obj).then((res) => {
-        this.$Message.info(res.data.msg)
-      })
     },
     getData () {
       selectProjectDetail({

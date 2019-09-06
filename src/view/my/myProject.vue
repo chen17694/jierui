@@ -30,7 +30,7 @@
           <div style="font-size: 16px; font-weight: bold">
             项目数量：{{this.total}}
           </div>
-          <Select v-model="onStatus" style="width:100px" @on-change="statusChange">
+          <Select v-model="onStatus" style="width:100px" @on-change="statusChange" clearable>
             <Avatar :src="avatar" slot="prefix" size="small" />
             <Option value="1" >未开始</Option>
             <Option value="2" >进行中</Option>
@@ -41,9 +41,9 @@
             <Option value="7" >已暂停</Option>
           </Select>
         </div>
-        <div v-for="(item, index) in projectList" :key="index" @click="positioning(item.lng, item.lat)" v-show="panelShow" style="position: relative; padding: 15px; padding-bottom: 10px; border-bottom: 1px solid #e6e6e6;">
+        <div v-for="(item, index) in projectList" @contextmenu.prevent="handleContextmenu(item.id, $event)" :key="index" @click="positioning(item.lng, item.lat)" v-show="panelShow" style="position: relative; padding: 15px; padding-bottom: 10px; border-bottom: 1px solid #e6e6e6;">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px">
-            <div style="font-size: 16px; display: flex; align-items: center;">
+            <div style="font-size: 16px; display: flex; align-items: center;" @click.stop>
               <img src="../../assets/images/icon1.png" style="width: 18px; margin-right: 5px">{{item.name}}
             </div>
             <div style="line-height: 20px;">
@@ -160,11 +160,44 @@
         <Button type="primary" size="large" @click="saveStatus">确定</Button>
       </div>
     </Modal>
+    <Dropdown
+      placement="right-start"
+      trigger="custom"
+      ref="contextMenu"
+      :visible="currentVisible"
+      @on-clickoutside="handleCancel"
+    >
+      <DropdownMenu slot="list">
+        <Dropdown v-for="(t, index) in task" :key="index" placement="right-start" @on-visible-change="hoverTask($event,t)">
+          <DropdownItem>
+            {{t.name}}
+            <Icon type="ios-arrow-forward"></Icon>
+          </DropdownItem>
+          <DropdownMenu slot="list" v-show="taskRoad.length > 0">
+            <DropdownItem  v-for="(tr, index) in taskRoad" :key="index">{{tr.alias}}</DropdownItem>
+            <DropdownItem>
+              <div style="display: flex; align-items: center" @click.stop>
+                <img src="../../assets/images/prev.png" style="width: 20px" @click="taskRoadPrev">
+                <span style="margin:0 24px">{{taskRoadPage}}/{{maxTaskRoadPage}}</span>
+                <img src="../../assets/images/next.png" style="width: 20px" @click="taskRoadNext">
+              </div>
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+        <DropdownItem>
+          <div style="display: flex; align-items: center">
+            <img src="../../assets/images/prev.png" style="width: 20px" @click="taskPrev">
+            <span style="margin:0 24px">{{taskPage}}/{{maxTaskPage}}</span>
+            <img src="../../assets/images/next.png" style="width: 20px" @click="taskNext">
+          </div>
+        </DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
   </div>
 </template>
 
 <script>
-import { listProject, areaData, listMapProject, selectProjectDetail, projectFunction } from '@/api/data'
+import { listProject, areaData, listMapProject, selectProjectDetail, projectFunction, listTask, listTaskCrossing } from '@/api/data'
 import { getUserId, getOffice } from '@/libs/util'
 import p_pause from '../../assets/images/p_pause.png'
 import p_noStarted from '../../assets/images/p_noStarted.png'
@@ -180,6 +213,20 @@ export default {
   data () {
     let self = this
     return {
+      taskListId: '',
+      taskRoadPage: 1,
+      taskRoadTotal: 0,
+      maxTaskRoadPage: 1,
+      projectListId: '',
+      taskPage: 1,
+      taskTotal: 0,
+      maxTaskPage: 1,
+      task: [],
+      taskRoad: [],
+      posX: 0,
+      posY: 0,
+      currentVisible: false,
+      locator: null,
       p_pause,
       p_noStarted,
       p_start,
@@ -294,6 +341,161 @@ export default {
     }
   },
   methods: {
+    createLocator () {
+      // 获取Dropdown
+      const contextmenu = this.$refs.contextMenu
+      // 创建locator
+      const locator = document.createElement('div')
+      locator.style.cssText = `position:fixed;left:${this.posX}px;top:${this.posY}px`
+      document.body.appendChild(locator)
+      // 将locator绑定到Dropdown的reference上
+      contextmenu.$refs.reference = locator
+      this.locator = locator
+    },
+    removeLocator () {
+      if (this.locator) document.body.removeChild(this.locator)
+      this.locator = null
+    },
+    hoverTask (visible, task) {
+      if (visible) {
+        this.taskListId = task.id
+        listTaskCrossing({
+          pageSize: 10,
+          page: this.taskRoadPage,
+          projectId: '',
+          taskId: task.id,
+          userId: getUserId(),
+          alias: '',
+          taskCrossingStatus: '',
+          timeStatus: '',
+          startTime: '',
+          endTime: '',
+          provinceName: '',
+          cityName: '',
+          districtName: '',
+          noLoading: '1'
+        }).then((res) => {
+          console.log(res.data.data.count)
+          this.taskRoad = res.data.data.taskCrossingDetailBeanList
+          this.taskRoadTotal = res.data.data.count
+          if (Number(this.taskRoadTotal) < 10 && Number(this.taskRoadTotal) > 0) {
+            this.maxTaskRoadPage = 1
+          } else if (Number(this.taskRoadTotal) === 0) {
+            this.maxTaskRoadPage = 1
+            this.taskRoadPage = 1
+          } else {
+            this.maxTaskRoadPage = Math.ceil(Number(this.taskRoadTotal) / 10)
+          }
+        })
+      }
+    },
+    handleContextmenu (id, { button, clientX, clientY }) {
+      if (this.currentVisible) {
+        this.currentVisible = false
+      }
+      this.projectListId = id
+      listTask({
+        pageSize: 10,
+        page: this.taskPage,
+        businessProjectId: id,
+        type: '',
+        name: '',
+        taskStatus: '',
+        firstPartyScoring: '',
+        userId: getUserId(),
+        timeStatus: '',
+        startTime: '',
+        endTime: '',
+        provinceName: '',
+        cityName: '',
+        districtName: '',
+        noLoading: '1'
+      }).then((res) => {
+        this.task = res.data.data.taskDetailBeans
+        this.taskTotal = res.data.data.count
+        if (Number(this.taskTotal) < 10 && Number(this.taskTotal) > 0) {
+          this.maxTaskPage = 1
+        } else if (Number(this.taskTotal) === 0) {
+          this.maxTaskPage = 1
+          this.taskPage = 1
+        } else {
+          this.maxTaskPage = Math.ceil(Number(this.taskTotal) / 10)
+        }
+        if (this.task.length > 0) {
+          if (button === 2) {
+            if (this.posX !== clientX) this.posX = clientX
+            if (this.posY !== clientY) this.posY = clientY
+            if (this.trigger !== 'custom') {
+              this.createLocator()
+              this.currentVisible = true
+            }
+          }
+        }
+      })
+    },
+    getTaskRoad () {
+      listTaskCrossing({
+        pageSize: 10,
+        page: this.taskRoadPage,
+        projectId: '',
+        taskId: this.taskListId,
+        userId: getUserId(),
+        alias: '',
+        taskCrossingStatus: '',
+        timeStatus: '',
+        startTime: '',
+        endTime: '',
+        provinceName: '',
+        cityName: '',
+        districtName: '',
+        noLoading: '1'
+      }).then((res) => {
+        this.taskRoad = res.data.data.taskCrossingDetailBeanList
+        this.taskRoadTotal = res.data.data.count
+        if (Number(this.taskRoadTotal) < 10 && Number(this.taskRoadTotal) > 0) {
+          this.maxTaskRoadPage = 1
+        } else if (Number(this.taskRoadTotal) === 0) {
+          this.maxTaskRoadPage = 1
+          this.taskRoadPage = 1
+        } else {
+          this.maxTaskRoadPage = Math.ceil(Number(this.taskRoadTotal) / 10)
+        }
+      })
+    },
+    getTask () {
+      listTask({
+        pageSize: 10,
+        page: this.taskPage,
+        businessProjectId: this.projectListId,
+        type: '',
+        name: '',
+        taskStatus: '',
+        firstPartyScoring: '',
+        userId: getUserId(),
+        timeStatus: '',
+        startTime: '',
+        endTime: '',
+        provinceName: '',
+        cityName: '',
+        districtName: '',
+        noLoading: '1'
+      }).then((res) => {
+        this.task = res.data.data.taskDetailBeans
+        this.taskTotal = res.data.data.count
+        if (Number(this.taskTotal) < 10 && Number(this.taskTotal) > 0) {
+          this.maxTaskPage = 1
+        } else if (Number(this.taskTotal) === 0) {
+          this.maxTaskPage = 1
+          this.taskPage = 1
+        } else {
+          this.maxTaskPage = Math.ceil(Number(this.taskTotal) / 10)
+        }
+      })
+    },
+    handleCancel () {
+      this.currentVisible = false
+      this.removeLocator()
+    },
     onChangeNav (to) {
       this.$router.push({
         name: to
@@ -468,6 +670,7 @@ export default {
       this.markers = []
       this.markerRefs = []
       this.map.clearMarkers()
+      this.page = 1
       this.getMapProject()
       this.getProject()
     },
@@ -504,6 +707,30 @@ export default {
         this.map.clearMarkers()
         this.getMapProject()
         this.getProject()
+      }
+    },
+    taskRoadPrev () {
+      if (this.taskRoadPage !== 1) {
+        this.taskRoadPage--
+        this.getTaskRoad()
+      }
+    },
+    taskRoadNext () {
+      if (this.taskRoadPage < this.maxTaskRoadPage) {
+        this.taskRoadPage++
+        this.getTaskRoad()
+      }
+    },
+    taskPrev () {
+      if (this.taskPage !== 1) {
+        this.taskPage--
+        this.getTask()
+      }
+    },
+    taskNext () {
+      if (this.taskPage < this.maxTaskPage) {
+        this.taskPage++
+        this.getTask()
       }
     },
     nextPage () {
@@ -545,14 +772,14 @@ export default {
       }).then((res) => {
         this.projectList = res.data.data.projectList
         this.total = res.data.data.count
-        if (this.total === '0') {
-          this.page = 0
+        if (Number(this.total) < 3 && Number(this.total) > 0) {
+          this.maxPage = 1
+        } else if (Number(this.total) === 0) {
+          this.maxPage = 1
+          this.page = 1
         } else {
-          if (this.page === 0) {
-            this.page = 1
-          }
+          this.maxPage = Math.ceil(Number(this.total) / 3)
         }
-        this.maxPage = Math.ceil(this.total / 3)
       })
     },
     getProjectDetail (id) {
@@ -716,5 +943,11 @@ export default {
     color: rgb(153, 153, 153);
     width: 84px;
     display: inline-block;
+  }
+  .ivu-dropdown{
+    display: block;
+    /deep/ .ivu-select-dropdown{
+      width: auto;
+    }
   }
 </style>

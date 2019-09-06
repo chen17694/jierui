@@ -6,8 +6,8 @@ import {
   removeReaded,
   restoreTrash
 } from '@/api/user'
-import { setToken, getToken, setUserId, setUserInfo, setOffice, getUserId, setAutoLogin } from '@/libs/util'
-import { listMessage } from '@/api/data'
+import { setToken, getToken, setUserId, setUserInfo, setOffice, getUserId, setAutoLogin, setAvatar } from '@/libs/util'
+import { listMessage, getUserCount } from '@/api/data'
 
 export default {
   state: {
@@ -27,6 +27,7 @@ export default {
   mutations: {
     setAvatar (state, avatarPath) {
       state.avatarImgPath = avatarPath
+      setAvatar(avatarPath)
     },
     setUserInfo (state, info) {
       state.userInfo = info
@@ -100,6 +101,7 @@ export default {
             commit('setUserId', data.data.id)
             commit('setOffice', data.data)
             commit('setUserInfo', data.data)
+            commit('setAvatar', data.data.photo)
             resolve(res)
           } else {
             reject(res.data.msg)
@@ -116,6 +118,7 @@ export default {
         commit('setUserId', '')
         commit('setOffice', {})
         commit('setUserInfo', '')
+        commit('setAvatar', '')
         resolve()
         // 如果你的退出登录无需请求接口，则可以直接使用下面三行代码而无需使用logout调用接口
         // commit('setToken', '')
@@ -127,13 +130,16 @@ export default {
     getUserInfo ({ state, commit }) {
       return new Promise((resolve, reject) => {
         try {
-          getUserInfo(state.token).then(res => {
+          getUserCount({
+            'id': getUserId()
+          }).then(res => {
+            console.log(res)
             const data = res.data
-            commit('setAvatar', data.avatar)
-            commit('setUserName', data.name)
-            commit('setUserId', data.user_id)
-            commit('setAccess', data.access)
-            commit('setHasGetInfo', true)
+            commit('setAvatar', data.data.photo)
+            // commit('setUserName', data.name)
+            // commit('setUserId', data.user_id)
+            // commit('setAccess', data.access)
+            // commit('setHasGetInfo', true)
             resolve(data)
           }).catch(err => {
             reject(err)

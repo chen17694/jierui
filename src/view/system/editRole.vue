@@ -33,6 +33,7 @@
 <script>
 import { ListAllMenu, insertOrUpdateRole } from '@/api/data'
 export default {
+  name: 'editRole',
   data () {
     const validateUserName = (rule, value, callback) => {
       const eReg = /^.{1,10}$/
@@ -79,7 +80,7 @@ export default {
         'id': this.$route.query.id,
         'name': this.formItem.userName,
         'type': '1',
-        'menu': this.menu,
+        'menus': this.menu,
         'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
       }
       this.$refs['formItem'].validate((valid) => {

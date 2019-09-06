@@ -81,7 +81,7 @@
         <FormItem label="归属单位" prop="officeId">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.officeId" @on-change="selectUnit">
+              <Select v-model="formItem.officeId" @on-change="selectUnit" filterable clearable>
                 <Option v-for="item in unitList" :value="item.id" :key="item.id">{{item.name}}</Option>
               </Select>
             </Col>
@@ -112,7 +112,7 @@
         <FormItem label="角色" prop="roleId">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.roleId">
+              <Select v-model="formItem.roleId" filterable clearable>
                 <Option v-for="item in roleList" :value="item.id" :key="item.id">{{item.name}}</Option>
               </Select>
             </Col>

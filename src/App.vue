@@ -29,6 +29,33 @@ html,body{
   margin: 0;
   padding: 0;
 }
+.ivu-modal-header-inner{
+  font-size: 18px !important;
+  font-weight: bold !important;
+  color: #515A6E !important;
+}
+.ivu-modal-footer{
+  .ivu-btn-text{
+    margin-right: 60px !important;
+    width: 140px !important;
+    height: 40px !important;
+    color: #3483F3 !important;
+    background-color: #F8F8F9 !important;
+    border: 1px solid #E8EAEC !important;
+  }
+  .ivu-btn-default{
+    margin-right: 60px !important;
+    width: 140px !important;
+    height: 40px !important;
+    color: #3483F3 !important;
+    background-color: #F8F8F9 !important;
+    border: 1px solid #E8EAEC !important;
+  }
+  .ivu-btn-primary{
+    width: 140px !important;
+    height: 40px !important;
+  }
+}
 #app {
   .size;
 }
