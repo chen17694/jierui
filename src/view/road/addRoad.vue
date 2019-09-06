@@ -1,9 +1,15 @@
 <template>
   <div style="height: 100%">
     <div class="amap-page-container">
-      <div style="position: absolute; z-index: 1; left: 20px; top: 20px; background-color: #ffffff; width: 300px">
+      <Card style="width:300px; position: absolute; left: 20px; top: 20px; border: 0 none; z-index: 1">
+        <div style="display: flex">
+          <input type="text" v-model="roadName" class="ivu-input ivu-input-default" style="height: 50px; border: 0 none; border-radius: 0; font-size: 15px; color: #999999">
+          <img src="../../assets/images/search.png" style=" cursor: pointer" @click="searchProject">
+        </div>
+      </Card>
+      <div style="position: absolute; z-index: 1; left: 20px; top: 90px; background-color: #ffffff; width: 300px">
         <div style="font-size: 14px;font-weight: bold;padding: 0 10px 0 10px;border-bottom: 1px solid rgb(232, 232, 232);line-height: 40px;">路口数量：{{this.total}}</div>
-        <div v-for="(item, index) in roadList" :key="index" @click="setCenter(item.lng, item.lat)" style="display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #e8e8e8; justify-content: space-between">
+        <div v-for="(item, index) in roadList" :key="index" @click="setCenter(item.lng, item.lat)" v-show="panelShow" style="display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #e8e8e8; justify-content: space-between">
           <span style="margin-right: 10px; display: flex; align-items: center">
             <img src="../../assets/images/icon1.png" style="width: 13px; margin-right: 5px">
             <span style="width: 155px; display: inline-block;">{{item.alias}}</span>
@@ -22,6 +28,10 @@
               <li title="下一页" @click="nextPage" class="ivu-page-prev"><a><i class="ivu-icon ivu-icon-ios-arrow-forward"></i></a></li>
             </ul>
           </div>
+        </div>
+        <div style="display: flex; justify-content: space-between; padding: 10px 15px; color: #2E8CEB;">
+          <span @click="allProject" style="cursor: pointer">所有路口</span>
+          <span @click="close" style="cursor: pointer">{{this.panelShow ? '收起' : '展开'}}</span>
         </div>
       </div>
       <!--<div style="position: absolute; z-index: 1; right: 20px; top: 70px; background-color: #ffffff; width: 300px">-->
@@ -49,18 +59,18 @@
       >
         <el-amap-marker v-for="(marker, index) in markers" :key="index" :extData = "marker.id" vid="chenyiming" :position="marker.position" :content="marker.content" :events="marker.events"></el-amap-marker>
       </el-amap>
-      <Cascader :data="areaData" v-model="areaValue" change-on-select style="position: absolute; right: 20px; top: 20px; width: 200px;" @on-change="cascaderChange"></Cascader>
+      <Cascader :data="areaData" v-model="areaValue" style="position: absolute; right: 20px; top: 20px; width: 200px;" @on-change="cascaderChange"></Cascader>
     </div>
     <Modal
       v-model="roadPanel"
       @on-ok="saveRoad"
       title="新增路口">
-      <Form ref="formItem1" :model="formItem1" :label-width="120" label-position="left" :rules="ruleValidate" >
+      <Form ref="formItem1" :model="formItem1" :label-width="130" label-position="left" :rules="ruleValidate" >
         <FormItem label="创建/更新人员姓名">
           {{formItem1.userName}}
         </FormItem>
         <FormItem label="路口别名" prop="alias">
-          <Input type="text" v-model="formItem1.alias"></Input>
+          {{formItem1.alias}}
         </FormItem>
         <FormItem label="省/市/区" prop="area">
           <Cascader :data="areaData" @on-change="areaChange"></Cascader>
@@ -77,12 +87,12 @@
     >
       <Form ref="formItem1" :model="formItem1" :label-width="70" label-position="left" :rules="ruleValidate" >
         <FormItem label="项目">
-          <Select v-model="formItem2.businessProjectId" @on-change="projectChange">
+          <Select v-model="formItem2.businessProjectId" @on-change="projectChange" filterable clearable>
             <Option v-for="(item, index) in projectList" :value="item.id" :key="index">{{item.name}}</Option>
           </Select>
         </FormItem>
         <FormItem label="任务">
-          <Select v-model="formItem2.businessTaskId" @on-change="taskChange">
+          <Select v-model="formItem2.businessTaskId" @on-change="taskChange" filterable clearable>
             <Option v-for="(item, index) in taskList" :value="item.id" :key="index">{{item.name}}</Option>
           </Select>
         </FormItem>
@@ -106,6 +116,8 @@ export default {
   data () {
     const self = this
     return {
+      roadName: '',
+      panelShow: true,
       params: {
         pageSize: 10,
         page: 1,
@@ -143,6 +155,7 @@ export default {
         ]
       },
       roadPanel: false,
+      alias: '',
       road,
       icon1,
       center: [],
@@ -175,6 +188,18 @@ export default {
             self.close()
           }, 0)
           o.on('rightclick', (e) => {
+            console.log(e)
+            var geocoder = new AMap.Geocoder({
+              radius: 1000,
+              extensions: 'all'
+            })
+            geocoder.getAddress([e.lnglat.lng, e.lnglat.lat], function (status, result) {
+              if (status === 'complete' && result.info === 'OK') {
+                if (result && result.regeocode) {
+                  self.formItem1.alias = result.regeocode.formattedAddress
+                }
+              }
+            })
             self.lat = e.lnglat.lat
             self.lng = e.lnglat.lng
             self.menu.open(o, e.lnglat)
@@ -184,6 +209,23 @@ export default {
     }
   },
   methods: {
+    searchProject () {
+      this.markers = []
+      this.markerRefs = []
+      this.map.clearMarkers()
+      this.page = 1
+      this.params.alias = this.roadName
+      this.getRoad()
+    },
+    allProject () {
+      this.markers = []
+      this.markerRefs = []
+      this.map.clearMarkers()
+      this.getMapRoad()
+    },
+    close () {
+      this.panelShow = !this.panelShow
+    },
     firstPage () {
       this.params.page = 1
       this.markers = []
@@ -326,6 +368,7 @@ export default {
         return item.label
       })
       this.keywords = value.join()
+      this.zoom = 16
       this.searchArea()
     },
     searchArea () {
@@ -347,6 +390,45 @@ export default {
         gridSize: 80,
         // renderCluserMarker: self._renderCluserMarker,
         minClusterSize: 2
+      })
+    },
+    getMapRoad () {
+      listCrossingAndCount({
+        pageSize: 0,
+        page: 0,
+        alias: '',
+        provinceName: '',
+        cityName: '',
+        districtName: ''
+      }).then((res) => {
+        let roadList = res.data.data.list
+        if (roadList.length > 0) {
+          this.center = [roadList[0].lng || 116.397428, roadList[0].lat || 39.90923]
+        } else {
+          this.center = this.center.length === 0 ? [116.397428, 39.90923] : this.center
+        }
+        let self = this
+        roadList.forEach((item) => {
+          let status = `<div><img src="${road}" style="width: 40px; height: 40px"></div>`
+          this.markers.push({
+            position: [item.lng, item.lat],
+            id: item.id,
+            content: status,
+            events: {
+              init (o) {
+                self.markerRefs.push(o)
+              },
+              click (e) {
+                self.getProjectDetail(e.target.get('extData'))
+              }
+            }
+          })
+        })
+        setTimeout(() => {
+          self.initMark(self, amapManager.getMap())
+          let o = amapManager.getMap()
+          o.setFitView(self.markerRefs)
+        }, 0)
       })
     },
     getRoad () {

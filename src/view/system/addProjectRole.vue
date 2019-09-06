@@ -34,7 +34,6 @@
 import { ListAllMenu, insertOrUpdateRole } from '@/api/data'
 import { getUserId } from '@/libs/util'
 export default {
-  name: 'editRole',
   data () {
     const validateUserName = (rule, value, callback) => {
       const eReg = /^.{1,10}$/
@@ -50,7 +49,7 @@ export default {
     }
     return {
       formItem: {
-        userName: this.$route.query.role
+        userName: ''
       },
       ruleValidate: {
         userName: [
@@ -78,20 +77,23 @@ export default {
     },
     save () {
       let params = {
-        'id': this.$route.query.id,
         'name': this.formItem.userName,
-        'type': '1',
+        'type': '2',
         'menus': this.menu,
         'userId': getUserId()
       }
       this.$refs['formItem'].validate((valid) => {
         if (valid) {
           insertOrUpdateRole(params).then((res) => {
-            this.$Message.info(res.data.msg)
             if (res.data.status === '200') {
+              this.$Message.info(res.data.msg)
+              this.$refs['formItem'].resetFields()
+              this.menu = []
               this.$router.push({
                 name: 'role'
               })
+            } else {
+              this.$Message.info(res.data.msg)
             }
           })
         }
@@ -99,22 +101,18 @@ export default {
     }
   },
   mounted () {
-    if (this.$route.query.id) {
-      ListAllMenu({ type: '1', roleId: this.$route.query.id }).then(res => {
-        this.menuData = res.data.data
-        this.menuData.forEach((item) => {
-          if (item.child.length > 0) {
-            item.child.forEach((item) => {
-              if (item.isCheck === '1') {
-                this.menu.push(item.id)
-              }
-            })
-          }
-        })
+    ListAllMenu({ type: '2' }).then(res => {
+      this.menuData = res.data.data
+      this.menuData.forEach((item) => {
+        if (item.child.length > 0) {
+          item.child.forEach((item) => {
+            if (item.isCheck === '1') {
+              this.menu.push(item.id)
+            }
+          })
+        }
       })
-    } else {
-      this.back()
-    }
+    })
   }
 }
 </script>

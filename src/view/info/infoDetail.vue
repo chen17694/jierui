@@ -15,9 +15,9 @@
         <Col span="24">
         <div class="infoItem">提醒内容：{{info.content}}</div>
         </Col>
-        <Col span="24">
-        <div class="infoItem">起止日期：{{info.startTime}} 至 {{info.endTime}}</div>
-        </Col>
+        <!--<Col span="24">-->
+        <!--<div class="infoItem">起止日期：{{info.startTime}} 至 {{info.endTime}}</div>-->
+        <!--</Col>-->
       </div>
       <div v-if="Type == '3'">
         <Col span="24">
@@ -41,7 +41,7 @@
         <div class="infoItem">消息名称：{{info.title}}</div>
         </Col>
         <Col span="24">
-        <div class="infoItem">推送人员：{{info.userName}}</div>
+        <div class="infoItem">推送人员：{{info.fromUserName}}</div>
         </Col>
         <Col span="24">
         <div class="infoItem">推送时间：{{info.createDate}}</div>
@@ -66,7 +66,7 @@
           <Row style="align-items:center">
             <Col span="8" style="line-height: 30px;">任务路口列表：</Col>
             <Col span="16">
-              <Select placeholder="查看任务路口列表">
+              <Select placeholder="查看任务路口列表" filterable clearable>
                 <Option v-for="(item, key) in crossList" :key="key" :value="item.value">{{item.label}}</Option>
               </Select>
             </Col>

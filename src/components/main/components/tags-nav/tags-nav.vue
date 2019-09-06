@@ -165,6 +165,7 @@ export default {
         this.refsTag = this.$refs.tagsPageOpened
         this.refsTag.forEach((item, index) => {
           if (routeEqual(route, item.$attrs['data-route-item'])) {
+            console.log(123)
             let tag = this.refsTag[index].$el
             this.moveToView(tag)
           }

@@ -6,7 +6,7 @@
         <FormItem label="用户名" prop="userName">
           <Row>
             <Col span="11">
-              <Input v-model="formItem.userName" placeholder="请输入用户名"/>
+              <Input v-model="formItem.userName" :disabled="isSys === '1'" placeholder="请输入用户名"/>
             </Col>
             <Col span="11">
               （1-10个字符）
@@ -52,6 +52,7 @@ export default {
       formItem: {
         userName: this.$route.query.role
       },
+      isSys: this.$route.query.isSys,
       ruleValidate: {
         userName: [
           { required: true, validator: validateUserName, trigger: 'blur' }
@@ -80,7 +81,7 @@ export default {
       let params = {
         'id': this.$route.query.id,
         'name': this.formItem.userName,
-        'type': '1',
+        'type': '2',
         'menus': this.menu,
         'userId': getUserId()
       }
@@ -100,7 +101,7 @@ export default {
   },
   mounted () {
     if (this.$route.query.id) {
-      ListAllMenu({ type: '1', roleId: this.$route.query.id }).then(res => {
+      ListAllMenu({ type: '2', roleId: this.$route.query.id }).then(res => {
         this.menuData = res.data.data
         this.menuData.forEach((item) => {
           if (item.child.length > 0) {

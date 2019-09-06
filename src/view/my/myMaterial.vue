@@ -36,7 +36,7 @@
                 <span class="label">项目:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.projectId" @on-change="projectChange">
+                <Select v-model="params.projectId" @on-change="projectChange" filterable clearable>
                   <Option v-for="(item, index) in businessProject" :value="item.id " :key="index">{{item.name}}</Option>
                 </Select>
               </Col>
@@ -48,7 +48,7 @@
                 <span class="label">任务:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.taskId">
+                <Select v-model="params.taskId" filterable clearable>
                   <Option v-for="(item, index) in taskList" :key="index" :value="item.id">{{item.name}}</Option>
                 </Select>
               </Col>

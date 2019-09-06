@@ -26,7 +26,7 @@
           不满意原因：{{detailData.dissatisfiedReason}}
         </dd>
       </dl>
-      <div class="btns" v-if="this.detailData.status !== '4'">
+      <div class="btns" v-if="this.detailData.status !== '4' && (detailData.projectButtonPermissionBeans && detailData.projectButtonPermissionBeans.length > 0)">
         <Button type="primary" v-for="(item, index) in detailData.projectButtonPermissionBeans" style="margin: 0 10px" :key="index" @click="statusChange(item.permissionCode)">{{item.name}}</Button>
       </div>
       <Tabs style="margin-top: 20px">
@@ -84,9 +84,9 @@
               </div>
             </li>
           </ul>
-          <div v-if="addPermission === '0'">
+          <div v-if="addPermission === '0' && detailData.status !== '4'">
             <div style="text-align: center">
-              <input type="file" @change="uploadFile($event)" style=" position: absolute; width: 80px; opacity: 0;">
+              <input type="file" @change="uploadFile($event)" style="margin-top: 10px; position: absolute; width: 80px; opacity: 0;">
               <Button type="primary">上传附件</Button>
             </div>
           </div>
@@ -148,7 +148,7 @@
         <FormItem label="物资归属单位：">
           <Row>
             <Col span="11">
-              <Select v-model="formItemMaterial.materOfficeId" placeholder="请选择" label-in-value @on-change="materialChange">
+              <Select v-model="formItemMaterial.materOfficeId" placeholder="请选择" label-in-value @on-change="materialChange" filterable clearable>
                 <Option v-for="(item, key) in unitList" :key="key" :value="item.id">{{item.name}}</Option>
               </Select>
             </Col>
@@ -181,7 +181,7 @@
         <FormItem label="人员归属单位：">
           <Row>
             <Col span="11">
-              <Select v-model="formItemJoin.officeId" placeholder="请选择" label-in-value @on-change="joinChange">
+              <Select v-model="formItemJoin.officeId" placeholder="请选择" label-in-value @on-change="joinChange" filterable clearable>
                 <Option v-for="(item, key) in unitList" :key="key" :value="item.id">{{item.name}}</Option>
               </Select>
             </Col>
@@ -213,7 +213,7 @@
       title="指定副项目经理"
       @on-ok="save"
     >
-      <Select v-model="unit" style="width:200px; margin-bottom: 15px" @on-change="selectUnit">
+      <Select v-model="unit" style="width:200px; margin-bottom: 15px" @on-change="selectUnit" filterable clearable>
         <Option v-for="item in unitList" :value="item.id" :key="item.id">{{ item.name }}</Option>
       </Select>
       <Transfer
@@ -734,6 +734,10 @@ export default {
               this.getData()
             })
           }
+        })
+      } else if (params.permissionCode === '99') {
+        this.$router.push({
+          name: 'addTaskRoad'
         })
       } else {
         let str = ''

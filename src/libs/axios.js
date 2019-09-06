@@ -1,7 +1,7 @@
 import axios from 'axios'
 import store from '@/store'
 import { Spin, Modal } from 'iview'
-import { getToken } from '@/libs/util'
+import { getToken, getUserId } from '@/libs/util'
 const addErrorLog = errorInfo => {
   const { statusText, status, request: { responseURL } } = errorInfo
   let info = {
@@ -18,10 +18,13 @@ class HttpRequest {
     this.queue = {}
   }
   getInsideConfig () {
+    let token = getToken() ? getToken() : ''
+    console.log(getToken())
+    console.log(getUserId())
     const config = {
       baseURL: this.baseUrl,
       headers: {
-        authToken: getToken(),
+        authToken: token,
         appType: '0'
       }
     }
@@ -36,9 +39,22 @@ class HttpRequest {
   interceptors (instance, url) {
     // 请求拦截
     instance.interceptors.request.use(config => {
+      console.log(config.data)
       // 添加全局的loading...
-      if (!Object.keys(this.queue).length) {
-        Spin.show()
+      if (!Object.keys(this.queue).length && (config.data && config.data.noLoading !== '1')) {
+        Spin.show({
+          render: (h) => {
+            return h('div', [
+              h('Icon', {
+                'class': 'demo-spin-icon-load',
+                props: {
+                  type: 'ios-loading',
+                  size: 58
+                }
+              })
+            ])
+          }
+        })
       }
       this.queue[url] = true
       return config

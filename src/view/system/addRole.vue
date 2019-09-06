@@ -32,6 +32,7 @@
 
 <script>
 import { ListAllMenu, insertOrUpdateRole } from '@/api/data'
+import { getUserId } from '@/libs/util'
 export default {
   data () {
     const validateUserName = (rule, value, callback) => {
@@ -71,7 +72,7 @@ export default {
   methods: {
     back () {
       this.$router.push({
-        name: 'roleList'
+        name: 'role'
       })
     },
     save () {
@@ -79,7 +80,7 @@ export default {
         'name': this.formItem.userName,
         'type': '1',
         'menus': this.menu,
-        'userId': 'd3c6b26c272f4b0c96ec8f7a3062230b'
+        'userId': getUserId()
       }
       this.$refs['formItem'].validate((valid) => {
         if (valid) {
@@ -89,7 +90,7 @@ export default {
               this.$refs['formItem'].resetFields()
               this.menu = []
               this.$router.push({
-                name: 'roleList'
+                name: 'role'
               })
             } else {
               this.$Message.info(res.data.msg)

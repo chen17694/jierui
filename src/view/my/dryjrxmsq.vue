@@ -159,6 +159,16 @@ export default {
       }).then((res) => {
         this.detailData = res.data.data
         this.stepArr = res.data.data.list
+        getUserList({
+          'pageSize': 0,
+          'page': 0,
+          'name': '',
+          'office': this.detailData.officeId,
+          'role': '',
+          'isLoginApp': ''
+        }).then((res) => {
+          this.addRows[this.rowIndex].userList = res.data.data.list
+        })
       })
     },
     delRow () {
@@ -178,16 +188,6 @@ export default {
   },
   mounted: function () {
     this.getData()
-    getUserList({
-      'pageSize': 0,
-      'page': 0,
-      'name': '',
-      'office': '',
-      'role': '',
-      'isLoginApp': ''
-    }).then((res) => {
-      this.addRows[this.rowIndex].userList = res.data.data.list
-    })
   }
 }
 </script>

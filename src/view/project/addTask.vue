@@ -2,7 +2,8 @@
   <div style="height: 100%">
     <div class="amap-page-container">
       <el-amap ref="map" :center="center" vid="amapDemo" :amap-manager="amapManager" :zoom="zoom" class="amap-demo" :events="events"></el-amap>
-      <Cascader :data="areaData" v-model="areaValue" change-on-select style="position: absolute; right: 20px; top: 20px; width: 200px;" @on-change="cascaderChange"></Cascader>
+      <Cascader :data="areaData" v-model="areaValue" style="position: absolute; right: 100px; top: 20px; width: 200px;" @on-change="cascaderChange"></Cascader>
+      <Button style="position: absolute; right: 20px; top: 20px;" type="primary" @click="back">返回</Button>
       <Card style="width:350px; position: absolute; left: 20px; top: 20px; border: 0 none">
         <p slot="title">任务位置</p>
         <p>在地图右键点击设置任务位置。</p>
@@ -55,6 +56,11 @@ export default {
     }
   },
   methods: {
+    back () {
+      this.$router.push({
+        name: 'taskManagementList'
+      })
+    },
     toAdd () {
       if (this.$route.query.projectId) {
         this.$router.push({
@@ -85,6 +91,7 @@ export default {
         return item.label
       })
       this.keywords = value.join()
+      this.zoom = 16
       this.searchArea()
     },
     getAreaData () {

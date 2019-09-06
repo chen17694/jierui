@@ -4,7 +4,7 @@
     <Divider />
     <div style="display:inline-block;">
       选择人员:
-      <Select v-model="Search.userId" style="width:200px;text-align:left" @on-change="userSel">
+      <Select v-model="Search.userId" style="width:200px;text-align:left" @on-change="userSel" filterable clearable>
           <Option v-for="(item, key) in userList" :key="key" :value="item.value">{{item.label}}</Option>
         </Select>
     </div>

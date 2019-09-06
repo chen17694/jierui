@@ -4,7 +4,7 @@
       <tables :total="this.total" :on-change="pageChange" :on-page-size-change="pageSizeChange" v-model="tableData" :columns="columns1" @on-edit="editRole" @on-roles="toRoleUserList"  @on-selection-change="onSelectionChange"></tables>
     </TabPane>
     <TabPane label="项目角色" name="project">
-      <tables :total="this.total" :on-change="pageChange" :on-page-size-change="pageSizeChange" v-model="tableData" :columns="columns2"></tables>
+      <tables :total="this.total" :on-change="pageChange" :on-page-size-change="pageSizeChange" v-model="tableData" @on-edit="editRole2" :columns="columns2" @on-selection-change="onSelectionChange"></tables>
     </TabPane>
     <div class="handle" slot="extra" v-show="tab==='system'">
       <Dropdown @on-click="dropdownClick" style="margin-right: 10px">
@@ -18,6 +18,19 @@
         </DropdownMenu>
       </Dropdown>
       <Button type="success" @click="addRole">新增角色</Button>
+    </div>
+    <div class="handle" slot="extra" v-show="tab==='project'">
+      <Dropdown @on-click="dropdownClick" style="margin-right: 10px">
+        <Button type="primary" ghost>
+          选择操作
+          <Icon type="ios-arrow-down"></Icon>
+        </Button>
+        <DropdownMenu slot="list">
+          <DropdownItem name="批量删除">批量删除</DropdownItem>
+          <DropdownItem name="取消">取消</DropdownItem>
+        </DropdownMenu>
+      </Dropdown>
+      <Button type="success" @click="addProjectRole">新增项目角色</Button>
     </div>
   </Tabs>
 </template>
@@ -53,7 +66,18 @@ export default{
         }
       ],
       columns2: [
-        { title: '角色', key: 'name' }
+        {
+          type: 'selection',
+          width: 60,
+          align: 'center'
+        },
+        { title: '角色', key: 'name' },
+        {
+          title: '操作',
+          key: 'handle',
+          width: 150,
+          options: ['edit']
+        }
       ],
       tableData: [],
       rowId: []
@@ -110,12 +134,27 @@ export default{
         name: 'addRole'
       })
     },
+    addProjectRole () {
+      this.$router.push({
+        name: 'addProjectRole'
+      })
+    },
     editRole () {
       this.$router.push({
         name: 'editRole',
         query: {
           id: arguments[0].row.id,
           role: arguments[0].row.name
+        }
+      })
+    },
+    editRole2 () {
+      this.$router.push({
+        name: 'editProjectRole',
+        query: {
+          id: arguments[0].row.id,
+          role: arguments[0].row.name,
+          isSys: arguments[0].row.isSys
         }
       })
     },
@@ -132,6 +171,11 @@ export default{
       this.params.type = this.tab === 'system' ? '1' : '2'
       listRole(this.params).then(res => {
         if (res.data.status === '200') {
+          res.data.data.list.forEach((item) => {
+            if (item.isSys === '1') {
+              item._disabled = true
+            }
+          })
           this.tableData = res.data.data.list
           this.total = res.data.data.total
         }

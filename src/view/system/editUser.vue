@@ -78,7 +78,7 @@
         <FormItem label="归属单位" prop="officeId">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.officeId" @on-change="selectUnit">
+              <Select v-model="formItem.officeId" @on-change="selectUnit" filterable clearable>
                 <Option v-for="item in unitList" :value="item.id" :key="item.id">{{item.name}}</Option>
               </Select>
             </Col>
@@ -109,7 +109,7 @@
         <FormItem label="角色" prop="role">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.roleId">
+              <Select v-model="formItem.roleId" filterable clearable>
                 <Option v-for="item in roleList" :value="item.id" :key="item.id">{{item.name}}</Option>
               </Select>
             </Col>
@@ -134,6 +134,7 @@
 import { insertOrUpdateUser, getUnitList, listRoleByOfficeId, uploadImgToAliOss } from '@/api/data'
 import { getUserId } from '@/libs/util'
 export default {
+  name: 'editUser',
   data () {
     const validatePass = (rule, value, callback) => {
       const eEeg = /^[0-9a-zA-Z_]{6,20}$/
@@ -247,9 +248,15 @@ export default {
       'userId': getUserId()
     }).then(res => {
       if (res.data.status === '200') {
-        this.unitList = res.data.data.list
-        this.formItem = this.$route.params.row
-        this.selectUnit(this.formItem.officeId)
+        if (this.$route.params.row) {
+          this.unitList = res.data.data.list
+          this.formItem = this.$route.params.row
+          this.selectUnit(this.formItem.officeId)
+        } else {
+          this.$router.push({
+            name: 'userList'
+          })
+        }
       }
     })
   },
@@ -266,7 +273,7 @@ export default {
     },
     save () {
       let params = {
-        'loginName': this.formItem.userName || 'zhm',
+        'loginName': this.formItem.loginName || '',
         'phone': this.formItem.phone || '',
         'photo': this.formItem.photo || '',
         'email': this.formItem.email || '',
@@ -276,7 +283,8 @@ export default {
         'isLoginApp': this.formItem.isLoginApp || '',
         'officeId': this.formItem.officeId || '',
         'roleId': this.formItem.roleId || '',
-        'userId': this.formItem.id || ''
+        'id': this.formItem.id || '',
+        'userId': getUserId()
       }
       this.$refs['formItem'].validate((valid) => {
         if (valid) {

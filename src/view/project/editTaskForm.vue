@@ -23,7 +23,7 @@
         <FormItem label="任务类型" prop="type">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.type" label-in-value>
+              <Select v-model="formItem.type" label-in-value clearable>
                 <Option value="1">巡检任务</Option>
                 <Option value="2">优化任务</Option>
                 <Option value="3">宣传任务</Option>
@@ -34,7 +34,7 @@
         <FormItem label="任务负责人" prop="taskHoldersId">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.taskHoldersId" label-in-value @on-change="taskHoldersOnChange">
+              <Select v-model="formItem.taskHoldersId" label-in-value @on-change="taskHoldersOnChange" filterable clearable>
                 <Option v-for="(item, index) in taskHold" :value="item.id " :key="index">{{item.name}}</Option>
               </Select>
             </Col>
@@ -50,7 +50,7 @@
         <FormItem  v-if="formItem.type === '2'" label="任务性质" prop="nature">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.nature" label-in-value>
+              <Select v-model="formItem.nature" label-in-value clearable>
                 <Option value="1">单点优化</Option>
                 <Option value="2">线优化</Option>
                 <Option value="3">区域优化</Option>

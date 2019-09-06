@@ -17,13 +17,13 @@
         <div>
           <span style="margin-right: 60px">
             项目：
-            <Select v-model="projectId" style="width:200px" @on-change="changeProject">
+            <Select v-model="projectId" style="width:200px" @on-change="changeProject" filterable clearable>
               <Option v-for="(item, index) in projectList" :value="item.id" :key="index">{{ item.name }}</Option>
             </Select>
           </span>
           <span>
             任务：
-            <Select v-model="taskId" style="width:200px">
+            <Select v-model="taskId" style="width:200px" filterable clearable>
               <Option v-for="item in taskList" :value="item.id" :key="item.id">{{ item.name }}</Option>
             </Select>
           </span>
@@ -91,12 +91,12 @@
           {{detailData.userName}}
         </FormItem>
         <FormItem prop="projectName" label="选择项目">
-          <Select v-model="detailData.projectId" @on-change="getListTask(2, detailData.projectId)">
+          <Select v-model="detailData.projectId" @on-change="getListTask(2, detailData.projectId)" filterable clearable>
             <Option v-for="(item, index) in projectList" :value="item.id" :labek="item.name" :key="index">{{ item.name }}</Option>
           </Select>
         </FormItem>
         <FormItem prop="taskName" label="选择任务">
-          <Select v-model="detailData.taskId">
+          <Select v-model="detailData.taskId" filterable clearable>
             <Option v-for="item in taskList" :value="item.id" :labek="item.name" :key="item.id">{{ item.name }}</Option>
           </Select>
         </FormItem>
@@ -400,6 +400,23 @@ export default {
       handler (val) {
       },
       deep: true
+    },
+    add (val) {
+      if (this.add === false) {
+        this.tableData = []
+        this.addRows = [
+          {
+            taskList: [],
+            projectList: [],
+            projectId: '',
+            taskId: '',
+            workingHours: 1,
+            reportDate: '',
+            workingContent: ''
+          }
+        ]
+        this.rowIndex = 0
+      }
     }
   },
   methods: {
@@ -507,6 +524,21 @@ export default {
       this.addRows.splice(arguments[0].index, 1)
       this.tableData.splice(arguments[0].index, 1)
       this.rowIndex = arguments[0].index - 1
+      if (this.addRows.length === 0) {
+        this.addRows = [
+          {
+            taskList: [],
+            projectList: [],
+            projectId: '',
+            taskId: '',
+            workingHours: 1,
+            reportDate: '',
+            workingContent: ''
+          }
+        ]
+        this.rowIndex = 0
+        this.addInit()
+      }
     },
     addRow () {
       this.rowIndex = arguments[0].index + 1
@@ -525,11 +557,29 @@ export default {
       })
     },
     addInit () {
-      this.tableData = [{
-        pname: this.addRows[0].projectList,
-        tname: this.addRows[0].taskList
-      }]
-      this.add = true
+      listProject({
+        pageSize: 100,
+        page: 1,
+        userId: getUserId(),
+        projectName: '',
+        firstPartyCompanyId: '',
+        projectManagerId: '',
+        status: '',
+        firstPartyScoring: '',
+        provinceName: '',
+        cityName: '',
+        districtName: '',
+        timeStatus: '',
+        startTime: '',
+        endTime: ''
+      }).then((res) => {
+        this.addRows[this.rowIndex].projectList = res.data.data.projectList
+        this.tableData = [{
+          pname: this.addRows[0].projectList,
+          tname: this.addRows[0].taskList
+        }]
+        this.add = true
+      })
     },
     getListTask (type, id, index) {
       if (!id) return false
@@ -597,7 +647,6 @@ export default {
         startTime: '',
         endTime: ''
       }).then((res) => {
-        this.addRows[this.rowIndex].projectList = res.data.data.projectList
         this.projectList = res.data.data.projectList
       })
     },

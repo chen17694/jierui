@@ -67,7 +67,7 @@ export default {
       editParams: {
         comment: '',
         opt: '1',
-        needPartA: ''
+        needPartA: '1'
       },
       detailData: {},
       tableData: [],

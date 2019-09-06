@@ -5,6 +5,7 @@
     v-bind="$attrs"
     @on-change="handleChange"
     multiple
+    clearable
   >
     <tree-select-tree-item
       :selectedArray="value"

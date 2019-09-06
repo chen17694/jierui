@@ -18,7 +18,7 @@
       </div>
       <p slot="title">物资分配</p>
       <div slot="extra" style>
-        选择项目：<Select v-model="pieSearch.projectId" style="width:200px" @on-change="projectSel">
+        选择项目：<Select clearable v-model="pieSearch.projectId" style="width:200px" @on-change="projectSel" filterable>
                       <Option
                         v-for="item in projectList"
                         :value="item.value"
@@ -26,7 +26,7 @@
                         :key="item.value"
                       >{{ item.label }}</Option>
                     </Select>
-        选择任务：<Select v-model="pieSearch.taskId" style="width:200px" @on-change="taskSel">
+        选择任务：<Select v-model="pieSearch.taskId" style="width:200px" @on-change="taskSel" filterable clearable>
                       <Option
                         v-for="item in listTask"
                         :value="item.value"
@@ -69,7 +69,7 @@
           @on-ok="selTimeTwo"
         ></DatePicker>
       </div>
-        物资类型：<Select v-model="pieSearch.projectId" style="width:200px" @on-change="materialCategorySel">
+        物资类型：<Select v-model="pieSearch.projectId" style="width:200px" @on-change="materialCategorySel" filterable clearable>
                       <Option
                         v-for="item in materialCategory"
                         :value="item.value"
@@ -77,7 +77,7 @@
                         :key="item.value"
                       >{{ item.label }}</Option>
                     </Select>
-        选择物资：<Select v-model="pieSearch.taskId" style="width:200px" @on-change="ProjectMaterialSel">
+        选择物资：<Select v-model="pieSearch.taskId" style="width:200px" @on-change="ProjectMaterialSel" filterable clearable>
                       <Option
                         v-for="item in listProjectMaterial"
                         :value="item.value"

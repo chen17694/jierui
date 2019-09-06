@@ -7,13 +7,13 @@
         <div>
           <span style="margin-right: 10px">
             项目：
-            <Select v-model="params.projectId" style="width:200px" @on-change="changeProject">
+            <Select v-model="params.projectId" style="width:200px" @on-change="changeProject" filterable clearable>
               <Option v-for="(item, index) in projectList" :value="item.id" :label="item.name" :key="index">{{ item.name }}</Option>
             </Select>
           </span>
           <span>
             任务：
-              <Select v-model="params.taskId" style="width:200px">
+              <Select v-model="params.taskId" style="width:200px" filterable clearable>
                 <Option v-for="item in taskList" :value="item.id" :key="item.id">{{ item.name }}</Option>
               </Select>
           </span>

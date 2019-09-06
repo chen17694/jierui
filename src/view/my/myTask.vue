@@ -13,7 +13,7 @@
       >
         <el-amap-marker v-for="(marker, index) in markers" :key="index" :extData = "marker.id" vid="chenyiming" :position="marker.position" :content="marker.content" :events="marker.events"></el-amap-marker>
       </el-amap>
-      <Cascader :data="areaData" v-model="areaValue" change-on-select style="position: absolute; right: 20px; top: 20px; width: 200px;" @on-change="cascaderChange"></Cascader>
+      <Cascader :data="areaData" v-model="areaValue" style="position: absolute; right: 20px; top: 20px; width: 200px;" @on-change="cascaderChange"></Cascader>
       <div style="color: #666666; display: flex; width:350px; position: absolute; left: 20px; top: 20px; border: 0 none">
         <div style="background-color: #F2F2F2; padding: 10px 20px; line-height: 20px; cursor: pointer" @click="onChangeNav('myProject')">我的项目</div>
         <div style="background-color: #ffffff; padding: 10px 20px; line-height: 20px; cursor: pointer">我的任务</div>
@@ -27,9 +27,9 @@
       </Card>
       <div style="width:350px; position: absolute; left: 20px; top: 120px; background-color: #ffffff">
         <div v-if="tab === 'tab2'" style="padding: 10px">
-          <Form :label-width="80">
+          <Form :label-width="82">
             <FormItem label="项目选择：">
-              <Select v-model="businessProjectId" @on-change="changeProject">
+              <Select v-model="businessProjectId" @on-change="changeProject" filterable>
                 <Option value="">全部</Option>
                 <Option v-for="(item, index) in projectList" :value="item.id " :key="index">{{item.name}}</Option>
               </Select>
@@ -43,7 +43,7 @@
                 <div style="font-size: 16px; font-weight: bold">
                   任务数量：{{this.total}}
                 </div>
-                <Select v-model="onStatus" style="width:100px" @on-change="statusChange">
+                <Select v-model="onStatus" style="width:100px" @on-change="statusChange" clearable>
                   <span :style="{ backgroundColor: avatar }" style="width: 15px; height: 15px; display: inline-block; border-radius: 50%; vertical-align: middle;" slot="prefix"></span>
                   <!--<Option value="1" >未领取</Option>-->
                   <Option value="2" >已拒绝</Option>
@@ -98,7 +98,7 @@
                 </div>
               </div>
               <div style="display: flex; justify-content: space-between; padding: 10px 15px; color: #2E8CEB;">
-                <span @click="allProject" style="cursor: pointer">所有项目</span>
+                <span @click="allProject" style="cursor: pointer">所有任务</span>
                 <span @click="close" style="cursor: pointer">{{this.panelShow ? '收起' : '展开'}}</span>
               </div>
             </Card>
@@ -139,7 +139,7 @@
                 <div style="font-size: 16px; font-weight: bold">
                   任务数量：{{this.total}}
                 </div>
-                <Select v-model="onType" style="width:110px" @on-change="typeChange">
+                <Select v-model="onType" style="width:120px" @on-change="typeChange" clearable>
                   <Avatar :src="avatar2" slot="prefix" size="small" />
                   <Option value="1" >巡检任务</Option>
                   <Option value="2" >优化任务</Option>
@@ -306,6 +306,9 @@ export default {
     },
     'onStatus': function (val) {
       switch (val) {
+        case undefined:
+          this.onStatus = ''
+          break
         case '1':
           this.avatar = '#FF5000'
           break
@@ -397,46 +400,38 @@ export default {
       })
     },
     statusChange () {
+      this.getTask()
       this.markers = []
       this.markerRefs = []
       this.map.clearMarkers()
-      this.getMapTask()
-      this.getTask()
+      this.getMapTask().then(() => {
+        if (this.onStatus === '') {
+          let o = amapManager.getMap()
+          o.setFitView(this.markerRefs)
+        }
+      })
     },
     toList () {
       this.isDetail = false
     },
     firstPage () {
       this.page = 1
-      this.markers = []
-      this.markerRefs = []
-      this.map.clearMarkers()
-      this.getMapTask()
       this.getTask()
     },
     prevPage () {
       if (this.page !== 1) {
         this.page--
-        this.markers = []
-        this.markerRefs = []
-        this.map.clearMarkers()
-        this.getMapTask()
         this.getTask()
       }
     },
     nextPage () {
       if (this.page < this.maxPage) {
         this.page++
-        this.markers = []
-        this.markerRefs = []
-        this.map.clearMarkers()
-        this.getMapTask()
         this.getTask()
       }
     },
     allProject () {
-      let o = amapManager.getMap()
-      o.setFitView(this.markerRefs)
+      this.onStatus = ''
     },
     close () {
       this.panelShow = !this.panelShow
@@ -445,11 +440,8 @@ export default {
       this.center = [lng, lat]
     },
     searchProject () {
-      this.markers = []
-      this.markerRefs = []
-      this.map.clearMarkers()
+      this.page = 1
       this.getTask()
-      this.getMapTask()
     },
     onEdit (params, row) {
       if (params.permissionCode === '2') {
@@ -527,15 +519,20 @@ export default {
         endTime: ''
       }).then((res) => {
         this.taskList = res.data.data.taskDetailBeans
-        this.total = res.data.data.count
-        if (this.total === '0') {
-          this.page = 0
+        if (this.taskList.length > 0) {
+          this.center = [this.taskList[0].lng, this.taskList[0].lat]
         } else {
-          if (this.page === 0) {
-            this.page = 1
-          }
+          this.center = this.center.length === 0 ? [116.397428, 39.90923] : this.center
         }
-        this.maxPage = Math.ceil(this.total / 3)
+        this.total = res.data.data.count
+        if (Number(this.total) < 3 && Number(this.total) > 0) {
+          this.maxPage = 1
+        } else if (Number(this.total) === 0) {
+          this.maxPage = 1
+          this.page = 1
+        } else {
+          this.maxPage = Math.ceil(Number(this.total) / 3)
+        }
       })
     },
     getProjectDetail (id) {
@@ -548,7 +545,7 @@ export default {
       })
     },
     getMapTask () {
-      listMapTask({
+      return listMapTask({
         pageSize: 0,
         page: 0,
         userId: getUserId(),
@@ -565,24 +562,19 @@ export default {
         endTime: ''
       }).then((res) => {
         let taskList = res.data.data.taskList
-        if (taskList.length > 0) {
-          this.center = [taskList[0].lng, taskList[0].lat]
-        } else {
-          this.center = this.center.length === 0 ? [116.397428, 39.90923] : this.center
-        }
         let self = this
         taskList.forEach((item) => {
           let status = ''
           if (item.pauseStatus === '1') {
             switch (item.type) {
               case '1' :
-                status = `<div><img src="${txj9}" style="width: 40px; height: 40px"></div>`
+                status = `<div><img src="${txj9}" style="width: 30px; height: 30px"></div>`
                 break
               case '2' :
-                status = `<div><img src="${ty9}" style="width: 40px; height: 40px"></div>`
+                status = `<div><img src="${ty9}" style="width: 30px; height: 30px"></div>`
                 break
               case '3' :
-                status = `<div><img src="${tx9}" style="width: 40px; height: 40px"></div>`
+                status = `<div><img src="${tx9}" style="width: 30px; height: 30px"></div>`
                 break
             }
           } else {
@@ -590,84 +582,84 @@ export default {
               case '1' :
                 switch (item.taskStatus) {
                   case '1':
-                    status = `<div><img src="${txj1}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${txj1}" style="width: 30px; height: 30px"></div>`
                     break
                   case '2':
-                    status = `<div><img src="${txj2}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${txj2}" style="width: 30px; height: 30px"></div>`
                     break
                   case '3':
-                    status = `<div><img src="${txj3}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${txj3}" style="width: 30px; height: 30px"></div>`
                     break
                   case '4':
-                    status = `<div><img src="${txj4}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${txj4}" style="width: 30px; height: 30px"></div>`
                     break
                   case '5':
-                    status = `<div><img src="${txj5}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${txj5}" style="width: 30px; height: 30px"></div>`
                     break
                   case '6':
-                    status = `<div><img src="${txj6}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${txj6}" style="width: 30px; height: 30px"></div>`
                     break
                   case '7':
-                    status = `<div><img src="${txj7}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${txj7}" style="width: 30px; height: 30px"></div>`
                     break
                   case '8':
-                    status = `<div><img src="${txj8}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${txj8}" style="width: 30px; height: 30px"></div>`
                     break
                 }
                 break
               case '2' :
                 switch (item.taskStatus) {
                   case '1':
-                    status = `<div><img src="${ty1}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${ty1}" style="width: 30px; height: 30px"></div>`
                     break
                   case '2':
-                    status = `<div><img src="${ty2}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${ty2}" style="width: 30px; height: 30px"></div>`
                     break
                   case '3':
-                    status = `<div><img src="${ty3}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${ty3}" style="width: 30px; height: 30px"></div>`
                     break
                   case '4':
-                    status = `<div><img src="${ty4}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${ty4}" style="width: 30px; height: 30px"></div>`
                     break
                   case '5':
-                    status = `<div><img src="${ty5}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${ty5}" style="width: 30px; height: 30px"></div>`
                     break
                   case '6':
-                    status = `<div><img src="${ty6}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${ty6}" style="width: 30px; height: 30px"></div>`
                     break
                   case '7':
-                    status = `<div><img src="${ty7}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${ty7}" style="width: 30px; height: 30px"></div>`
                     break
                   case '8':
-                    status = `<div><img src="${ty8}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${ty8}" style="width: 30px; height: 30px"></div>`
                     break
                 }
                 break
               case '3' :
                 switch (item.taskStatus) {
                   case '1':
-                    status = `<div><img src="${tx1}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${tx1}" style="width: 30px; height: 30px"></div>`
                     break
                   case '2':
-                    status = `<div><img src="${tx2}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${tx2}" style="width: 30px; height: 30px"></div>`
                     break
                   case '3':
-                    status = `<div><img src="${tx3}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${tx3}" style="width: 30px; height: 30px"></div>`
                     break
                   case '4':
-                    status = `<div><img src="${tx4}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${tx4}" style="width: 30px; height: 30px"></div>`
                     break
                   case '5':
-                    status = `<div><img src="${tx5}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${tx5}" style="width: 30px; height: 30px"></div>`
                     break
                   case '6':
-                    status = `<div><img src="${tx6}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${tx6}" style="width: 30px; height: 30px"></div>`
                     break
                   case '7':
-                    status = `<div><img src="${tx7}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${tx7}" style="width: 30px; height: 30px"></div>`
                     break
                   case '8':
-                    status = `<div><img src="${tx8}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${tx8}" style="width: 30px; height: 30px"></div>`
                     break
                 }
                 break
@@ -714,13 +706,13 @@ export default {
           let status = ''
           switch (item.type) {
             case '1' :
-              status = `<div><img src="${txj1}" style="width: 40px; height: 40px"></div>`
+              status = `<div><img src="${txj1}" style="width: 30px; height: 30px"></div>`
               break
             case '2' :
-              status = `<div><img src="${ty1}" style="width: 40px; height: 40px"></div>`
+              status = `<div><img src="${ty1}" style="width: 30px; height: 30px"></div>`
               break
             case '3' :
-              status = `<div><img src="${tx1}" style="width: 40px; height: 40px"></div>`
+              status = `<div><img src="${tx1}" style="width: 30px; height: 30px"></div>`
               break
           }
           if (item.lng && item.lat) {
@@ -769,6 +761,7 @@ export default {
         return item.label
       })
       this.keywords = value.join()
+      this.zoom = 16
       this.searchArea()
     }
   },

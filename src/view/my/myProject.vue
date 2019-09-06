@@ -13,7 +13,7 @@
       >
         <el-amap-marker v-for="(marker, index) in markers" :key="index" :extData = "marker.id" vid="chenyiming" :position="marker.position" :content="marker.content" :events="marker.events"></el-amap-marker>
       </el-amap>
-      <Cascader :data="areaData" v-model="areaValue" change-on-select style="position: absolute; right: 20px; top: 20px; width: 200px;" @on-change="cascaderChange"></Cascader>
+      <Cascader :data="areaData" v-model="areaValue" style="position: absolute; right: 20px; top: 20px; width: 200px;" @on-change="cascaderChange"></Cascader>
       <div style="color: #666666; display: flex; width:350px; position: absolute; left: 20px; top: 20px; border: 0 none">
         <div style="background-color: #ffffff; padding: 10px 20px; line-height: 20px; cursor: pointer">我的项目</div>
         <div style="background-color: #F2F2F2; padding: 10px 20px; line-height: 20px; cursor: pointer" @click="onChangeNav('myTask')">我的任务</div>
@@ -30,7 +30,7 @@
           <div style="font-size: 16px; font-weight: bold">
             项目数量：{{this.total}}
           </div>
-          <Select v-model="onStatus" style="width:100px" @on-change="statusChange">
+          <Select v-model="onStatus" style="width:100px" @on-change="statusChange" clearable>
             <Avatar :src="avatar" slot="prefix" size="small" />
             <Option value="1" >未开始</Option>
             <Option value="2" >进行中</Option>
@@ -41,9 +41,9 @@
             <Option value="7" >已暂停</Option>
           </Select>
         </div>
-        <div v-for="(item, index) in projectList" :key="index" @click="positioning(item.lng, item.lat)" v-show="panelShow" style="position: relative; padding: 15px; padding-bottom: 10px; border-bottom: 1px solid #e6e6e6;">
+        <div v-for="(item, index) in projectList" @contextmenu.prevent="handleContextmenu(item.id, $event)" :key="index" @click="positioning(item.lng, item.lat)" v-show="panelShow" style="position: relative; padding: 15px; padding-bottom: 10px; border-bottom: 1px solid #e6e6e6;">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px">
-            <div style="font-size: 16px; display: flex; align-items: center;">
+            <div style="font-size: 16px; display: flex; align-items: center;" @click.stop>
               <img src="../../assets/images/icon1.png" style="width: 18px; margin-right: 5px">{{item.name}}
             </div>
             <div style="line-height: 20px;">
@@ -160,11 +160,44 @@
         <Button type="primary" size="large" @click="saveStatus">确定</Button>
       </div>
     </Modal>
+    <Dropdown
+      placement="right-start"
+      trigger="custom"
+      ref="contextMenu"
+      :visible="currentVisible"
+      @on-clickoutside="handleCancel"
+    >
+      <DropdownMenu slot="list">
+        <Dropdown v-for="(t, index) in task" :key="index" placement="right-start" @on-visible-change="hoverTask($event,t)">
+          <DropdownItem>
+            {{t.name}}
+            <Icon type="ios-arrow-forward"></Icon>
+          </DropdownItem>
+          <DropdownMenu slot="list" v-show="taskRoad.length > 0">
+            <DropdownItem  v-for="(tr, index) in taskRoad" :key="index">{{tr.alias}}</DropdownItem>
+            <DropdownItem>
+              <div style="display: flex; align-items: center" @click.stop>
+                <img src="../../assets/images/prev.png" style="width: 20px" @click="taskRoadPrev">
+                <span style="margin:0 24px">{{taskRoadPage}}/{{maxTaskRoadPage}}</span>
+                <img src="../../assets/images/next.png" style="width: 20px" @click="taskRoadNext">
+              </div>
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+        <DropdownItem>
+          <div style="display: flex; align-items: center">
+            <img src="../../assets/images/prev.png" style="width: 20px" @click="taskPrev">
+            <span style="margin:0 24px">{{taskPage}}/{{maxTaskPage}}</span>
+            <img src="../../assets/images/next.png" style="width: 20px" @click="taskNext">
+          </div>
+        </DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
   </div>
 </template>
 
 <script>
-import { listProject, areaData, listMapProject, selectProjectDetail, projectFunction } from '@/api/data'
+import { listProject, areaData, listMapProject, selectProjectDetail, projectFunction, listTask, listTaskCrossing, getRoute } from '@/api/data'
 import { getUserId, getOffice } from '@/libs/util'
 import p_pause from '../../assets/images/p_pause.png'
 import p_noStarted from '../../assets/images/p_noStarted.png'
@@ -180,6 +213,20 @@ export default {
   data () {
     let self = this
     return {
+      taskListId: '',
+      taskRoadPage: 1,
+      taskRoadTotal: 0,
+      maxTaskRoadPage: 1,
+      projectListId: '',
+      taskPage: 1,
+      taskTotal: 0,
+      maxTaskPage: 1,
+      task: [],
+      taskRoad: [],
+      posX: 0,
+      posY: 0,
+      currentVisible: false,
+      locator: null,
       p_pause,
       p_noStarted,
       p_start,
@@ -250,6 +297,9 @@ export default {
   watch: {
     'onStatus': function (val) {
       switch (val) {
+        case undefined:
+          this.onStatus = ''
+          break
         case '1':
           this.avatar = p_noStarted
           break
@@ -294,6 +344,161 @@ export default {
     }
   },
   methods: {
+    createLocator () {
+      // 获取Dropdown
+      const contextmenu = this.$refs.contextMenu
+      // 创建locator
+      const locator = document.createElement('div')
+      locator.style.cssText = `position:fixed;left:${this.posX}px;top:${this.posY}px`
+      document.body.appendChild(locator)
+      // 将locator绑定到Dropdown的reference上
+      contextmenu.$refs.reference = locator
+      this.locator = locator
+    },
+    removeLocator () {
+      if (this.locator) document.body.removeChild(this.locator)
+      this.locator = null
+    },
+    hoverTask (visible, task) {
+      if (visible) {
+        this.taskListId = task.id
+        listTaskCrossing({
+          pageSize: 10,
+          page: this.taskRoadPage,
+          projectId: '',
+          taskId: task.id,
+          userId: getUserId(),
+          alias: '',
+          taskCrossingStatus: '',
+          timeStatus: '',
+          startTime: '',
+          endTime: '',
+          provinceName: '',
+          cityName: '',
+          districtName: '',
+          noLoading: '1'
+        }).then((res) => {
+          console.log(res.data.data.count)
+          this.taskRoad = res.data.data.taskCrossingDetailBeanList
+          this.taskRoadTotal = res.data.data.count
+          if (Number(this.taskRoadTotal) < 10 && Number(this.taskRoadTotal) > 0) {
+            this.maxTaskRoadPage = 1
+          } else if (Number(this.taskRoadTotal) === 0) {
+            this.maxTaskRoadPage = 1
+            this.taskRoadPage = 1
+          } else {
+            this.maxTaskRoadPage = Math.ceil(Number(this.taskRoadTotal) / 10)
+          }
+        })
+      }
+    },
+    handleContextmenu (id, { button, clientX, clientY }) {
+      if (this.currentVisible) {
+        this.currentVisible = false
+      }
+      this.projectListId = id
+      listTask({
+        pageSize: 10,
+        page: this.taskPage,
+        businessProjectId: id,
+        type: '',
+        name: '',
+        taskStatus: '',
+        firstPartyScoring: '',
+        userId: getUserId(),
+        timeStatus: '',
+        startTime: '',
+        endTime: '',
+        provinceName: '',
+        cityName: '',
+        districtName: '',
+        noLoading: '1'
+      }).then((res) => {
+        this.task = res.data.data.taskDetailBeans
+        this.taskTotal = res.data.data.count
+        if (Number(this.taskTotal) < 10 && Number(this.taskTotal) > 0) {
+          this.maxTaskPage = 1
+        } else if (Number(this.taskTotal) === 0) {
+          this.maxTaskPage = 1
+          this.taskPage = 1
+        } else {
+          this.maxTaskPage = Math.ceil(Number(this.taskTotal) / 10)
+        }
+        if (this.task.length > 0) {
+          if (button === 2) {
+            if (this.posX !== clientX) this.posX = clientX
+            if (this.posY !== clientY) this.posY = clientY
+            if (this.trigger !== 'custom') {
+              this.createLocator()
+              this.currentVisible = true
+            }
+          }
+        }
+      })
+    },
+    getTaskRoad () {
+      listTaskCrossing({
+        pageSize: 10,
+        page: this.taskRoadPage,
+        projectId: '',
+        taskId: this.taskListId,
+        userId: getUserId(),
+        alias: '',
+        taskCrossingStatus: '',
+        timeStatus: '',
+        startTime: '',
+        endTime: '',
+        provinceName: '',
+        cityName: '',
+        districtName: '',
+        noLoading: '1'
+      }).then((res) => {
+        this.taskRoad = res.data.data.taskCrossingDetailBeanList
+        this.taskRoadTotal = res.data.data.count
+        if (Number(this.taskRoadTotal) < 10 && Number(this.taskRoadTotal) > 0) {
+          this.maxTaskRoadPage = 1
+        } else if (Number(this.taskRoadTotal) === 0) {
+          this.maxTaskRoadPage = 1
+          this.taskRoadPage = 1
+        } else {
+          this.maxTaskRoadPage = Math.ceil(Number(this.taskRoadTotal) / 10)
+        }
+      })
+    },
+    getTask () {
+      listTask({
+        pageSize: 10,
+        page: this.taskPage,
+        businessProjectId: this.projectListId,
+        type: '',
+        name: '',
+        taskStatus: '',
+        firstPartyScoring: '',
+        userId: getUserId(),
+        timeStatus: '',
+        startTime: '',
+        endTime: '',
+        provinceName: '',
+        cityName: '',
+        districtName: '',
+        noLoading: '1'
+      }).then((res) => {
+        this.task = res.data.data.taskDetailBeans
+        this.taskTotal = res.data.data.count
+        if (Number(this.taskTotal) < 10 && Number(this.taskTotal) > 0) {
+          this.maxTaskPage = 1
+        } else if (Number(this.taskTotal) === 0) {
+          this.maxTaskPage = 1
+          this.taskPage = 1
+        } else {
+          this.maxTaskPage = Math.ceil(Number(this.taskTotal) / 10)
+        }
+      })
+    },
+    handleCancel () {
+      this.currentVisible = false
+      this.removeLocator()
+    },
     onChangeNav (to) {
       this.$router.push({
         name: to
@@ -465,10 +670,7 @@ export default {
       // }
     },
     searchProject () {
-      this.markers = []
-      this.markerRefs = []
-      this.map.clearMarkers()
-      this.getMapProject()
+      this.page = 1
       this.getProject()
     },
     initMark (self, o) {
@@ -479,46 +681,62 @@ export default {
       })
     },
     statusChange () {
+      this.getProject()
       this.markers = []
       this.markerRefs = []
       this.map.clearMarkers()
-      this.getMapProject()
-      this.getProject()
+      this.getMapProject().then(() => {
+        if (this.onStatus === '') {
+          let o = amapManager.getMap()
+          o.setFitView(this.markerRefs)
+        }
+      })
     },
     toList () {
       this.isDetail = false
     },
     firstPage () {
       this.page = 1
-      this.markers = []
-      this.markerRefs = []
-      this.map.clearMarkers()
-      this.getMapProject()
       this.getProject()
     },
     prevPage () {
       if (this.page !== 1) {
         this.page--
-        this.markers = []
-        this.markerRefs = []
-        this.map.clearMarkers()
-        this.getMapProject()
         this.getProject()
+      }
+    },
+    taskRoadPrev () {
+      if (this.taskRoadPage !== 1) {
+        this.taskRoadPage--
+        this.getTaskRoad()
+      }
+    },
+    taskRoadNext () {
+      if (this.taskRoadPage < this.maxTaskRoadPage) {
+        this.taskRoadPage++
+        this.getTaskRoad()
+      }
+    },
+    taskPrev () {
+      if (this.taskPage !== 1) {
+        this.taskPage--
+        this.getTask()
+      }
+    },
+    taskNext () {
+      if (this.taskPage < this.maxTaskPage) {
+        this.taskPage++
+        this.getTask()
       }
     },
     nextPage () {
       if (this.page < this.maxPage) {
         this.page++
-        this.markers = []
-        this.markerRefs = []
-        this.map.clearMarkers()
-        this.getMapProject()
         this.getProject()
       }
     },
     allProject () {
-      let o = amapManager.getMap()
-      o.setFitView(this.markerRefs)
+      this.onStatus = ''
     },
     close () {
       this.panelShow = !this.panelShow
@@ -527,6 +745,7 @@ export default {
       this.center = [lng, lat]
     },
     getProject () {
+      console.log(this)
       listProject({
         pageSize: 3,
         page: this.page,
@@ -544,15 +763,20 @@ export default {
         endTime: ''
       }).then((res) => {
         this.projectList = res.data.data.projectList
-        this.total = res.data.data.count
-        if (this.total === '0') {
-          this.page = 0
+        if (this.projectList.length > 0) {
+          this.center = [this.projectList[0].lng || 116.397428, this.projectList[0].lat || 39.90923]
         } else {
-          if (this.page === 0) {
-            this.page = 1
-          }
+          this.center = this.center.length === 0 ? [116.397428, 39.90923] : this.center
         }
-        this.maxPage = Math.ceil(this.total / 3)
+        this.total = res.data.data.count
+        if (Number(this.total) < 3 && Number(this.total) > 0) {
+          this.maxPage = 1
+        } else if (Number(this.total) === 0) {
+          this.maxPage = 1
+          this.page = 1
+        } else {
+          this.maxPage = Math.ceil(Number(this.total) / 3)
+        }
       })
     },
     getProjectDetail (id) {
@@ -565,7 +789,7 @@ export default {
       })
     },
     getMapProject () {
-      listMapProject({
+      return listMapProject({
         pageSize: 0,
         page: 0,
         userId: getUserId(),
@@ -582,38 +806,33 @@ export default {
         endTime: ''
       }).then((res) => {
         let projectList = res.data.data.projectList
-        if (projectList.length > 0) {
-          this.center = [projectList[0].lng || 116.397428, projectList[0].lat || 39.90923]
-        } else {
-          this.center = this.center.length === 0 ? [116.397428, 39.90923] : this.center
-        }
         let self = this
         projectList.forEach((item) => {
           let status = ''
           if (item.pauseStatus === '1') {
-            status = `<div><img src="${p_pause}" style="width: 40px; height: 40px"></div>`
+            status = `<div><img src="${p_pause}" style="width: 30px; height: 30px"></div>`
           } else {
             switch (item.status) {
               case '1':
-                status = `<div><img src="${p_noStarted}" style="width: 40px; height: 40px"></div>`
+                status = `<div><img src="${p_noStarted}" style="width: 30px; height: 30px"></div>`
                 break
               case '2':
-                status = `<div><img src="${p_start}" style="width: 40px; height: 40px"></div>`
+                status = `<div><img src="${p_start}" style="width: 30px; height: 30px"></div>`
                 break
               case '3':
-                status = `<div><img src="${p_review}" style="width: 40px; height: 40px"></div>`
+                status = `<div><img src="${p_review}" style="width: 30px; height: 30px"></div>`
                 break
               case '4':
-                status = `<div><img src="${p_completed}" style="width: 40px; height: 40px"></div>`
+                status = `<div><img src="${p_completed}" style="width: 30px; height: 30px"></div>`
                 break
               case '5':
-                status = `<div><img src="${p_reject}" style="width: 40px; height: 40px"></div>`
+                status = `<div><img src="${p_reject}" style="width: 30px; height: 30px"></div>`
                 break
               case '6':
-                status = `<div><img src="${p_revoke}" style="width: 40px; height: 40px"></div>`
+                status = `<div><img src="${p_revoke}" style="width: 30px; height: 30px"></div>`
                 break
               case '7':
-                status = `<div><img src="${p_pause}" style="width: 40px; height: 40px"></div>`
+                status = `<div><img src="${p_pause}" style="width: 30px; height: 30px"></div>`
                 break
             }
           }
@@ -655,6 +874,7 @@ export default {
         return item.label
       })
       this.keywords = value.join()
+      this.zoom = 16
       this.searchArea()
     },
     _renderCluserMarker (context) {
@@ -683,6 +903,11 @@ export default {
   },
   mounted () {
     this.getAreaData()
+    getRoute({
+      id: '27275ab6e7644f05b9921193295e2c7b'
+    }).then((res) => {
+      console.log(res)
+    })
     lazyAMapApiLoaderInstance.load().then(() => {
       this.getMapProject()
       this.getProject()
@@ -716,5 +941,11 @@ export default {
     color: rgb(153, 153, 153);
     width: 84px;
     display: inline-block;
+  }
+  .ivu-dropdown{
+    display: block;
+    /deep/ .ivu-select-dropdown{
+      width: auto;
+    }
   }
 </style>

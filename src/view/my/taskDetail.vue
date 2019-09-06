@@ -28,7 +28,7 @@
           不满意原因：{{detailData.dissatisfiedReason}}
         </dd>
       </dl>
-      <div class="btns" v-if="this.detailData.status !== '6'">
+      <div class="btns" v-if="this.detailData.status !== '6'  && (detailData.taskButtonPermissionBeans && detailData.taskButtonPermissionBeans.length > 0)">
         <Button type="primary" v-for="(item, index) in detailData.taskButtonPermissionBeans" style="margin: 0 10px" :key="index" @click="statusChange(item.permissionCode)">{{item.name}}</Button>
       </div>
       <Tabs style="margin-top: 20px">
