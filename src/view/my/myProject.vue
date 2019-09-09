@@ -197,7 +197,7 @@
 </template>
 
 <script>
-import { listProject, areaData, listMapProject, selectProjectDetail, projectFunction, listTask, listTaskCrossing, getRoute } from '@/api/data'
+import { listProject, areaData, listMapProject, selectProjectDetail, projectFunction, listTask, listTaskCrossing } from '@/api/data'
 import { getUserId, getOffice } from '@/libs/util'
 import p_pause from '../../assets/images/p_pause.png'
 import p_noStarted from '../../assets/images/p_noStarted.png'
@@ -903,11 +903,6 @@ export default {
   },
   mounted () {
     this.getAreaData()
-    getRoute({
-      id: '27275ab6e7644f05b9921193295e2c7b'
-    }).then((res) => {
-      console.log(res)
-    })
     lazyAMapApiLoaderInstance.load().then(() => {
       this.getMapProject()
       this.getProject()
