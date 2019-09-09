@@ -462,6 +462,9 @@ export default {
         let taskCrossingList = res.data.data.taskCrossingList
         let self = this
         taskCrossingList.forEach((item) => {
+          console.log(item.lat)
+          console.log(item.lng)
+          console.log('--------------')
           let status = ''
           switch (item.type) {
             case '1' :
