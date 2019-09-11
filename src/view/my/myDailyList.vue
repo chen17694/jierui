@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Row type="flex" justify="space-between" style="padding: 10px 0">
+    <Row type="flex" justify="space-between" style="padding: 10px 0 20px">
       <Col span="12">
         <ul class="dateRange">
           <li :class="{active: params.type === '' || params.type === '6'}" @click="dateRange('')">全部</li>

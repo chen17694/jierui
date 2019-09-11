@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Row type="flex" justify="space-between" style="padding: 10px 0">
+    <Row type="flex" justify="space-between" style="padding: 10px 0 20px">
       <Col span="12">
         <p style="font-size: 18px; font-weight: bold">{{this.$route.params.role}}</p>
       </Col>

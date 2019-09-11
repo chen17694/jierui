@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%">
+  <div style="height: 100%;margin: -18px;">
     <div class="amap-page-container">
       <el-amap
         v-if="this.center.length === 2"
