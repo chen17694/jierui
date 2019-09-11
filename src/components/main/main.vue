@@ -16,6 +16,7 @@
           <language v-if="$config.useI18n" @on-lang-change="setLocal" style="margin-right: 10px;" :lang="local"/>
           <!--<error-store v-if="$config.plugin['error-store'] && $config.plugin['error-store'].showInHeader" :has-read="hasReadErrorPage" :count="errorCount"></error-store>-->
           <fullscreen v-model="isFullscreen" style="margin-right: 10px;"/>
+          <HeaderMainCenter></HeaderMainCenter>
         </header-bar>
       </Header>
       <Content class="main-content-con">
@@ -40,6 +41,7 @@ import HeaderBar from './components/header-bar'
 import TagsNav from './components/tags-nav'
 import User from './components/user'
 import ABackTop from './components/a-back-top'
+import HeaderMainCenter from './components/header-main-center'
 import Fullscreen from './components/fullscreen'
 import Language from './components/language'
 import ErrorStore from './components/error-store'
@@ -58,7 +60,8 @@ export default {
     Fullscreen,
     ErrorStore,
     User,
-    ABackTop
+    ABackTop,
+    HeaderMainCenter
   },
   data () {
     return {

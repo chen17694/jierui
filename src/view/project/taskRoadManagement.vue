@@ -153,7 +153,23 @@ export default {
           }
         },
         { title: '逾期天数', key: 'overdueDays' },
-        { title: '甲方评分', key: 'firstPartyScoring' },
+        { title: '甲方评分',
+          key: '',
+          render: (h, params) => {
+            console.log(params.row)
+            let text = ''
+            if (params.row.firstPartyScoring === '1') {
+              text = '非常满意'
+            } else if (params.row.firstPartyScoring === '2') {
+              text = '满意'
+            } else if (params.row.firstPartyScoring === '3') {
+              text = '不满意'
+            } else {
+              text = '未评分'
+            }
+            return h('div', {}, text)
+          }
+         },
         {
           title: '操作',
           slot: 'action3'
