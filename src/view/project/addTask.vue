@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%">
+  <div style="height: 100%;margin: -18px;">
     <div class="amap-page-container">
       <el-amap ref="map" :center="center" vid="amapDemo" :amap-manager="amapManager" :zoom="zoom" class="amap-demo" :events="events"></el-amap>
       <Cascader :data="areaData" v-model="areaValue" style="position: absolute; right: 100px; top: 20px; width: 200px;" @on-change="cascaderChange"></Cascader>

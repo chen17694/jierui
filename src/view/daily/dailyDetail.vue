@@ -1,6 +1,6 @@
 <template>
   <div class="dailycontent" style="height: calc(100vh - 100px);">
-    <Row type="flex" justify="space-between" style="padding: 10px 0">
+    <Row type="flex" justify="space-between" style="padding: 10px 0 20px">
       <Col span="24">
        <div class="baseInfo">日报详情</div>
       </Col>
