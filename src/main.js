@@ -16,6 +16,8 @@ import '@/assets/icons/iconfont.css'
 import TreeTable from 'tree-table-vue'
 import VOrgTree from 'v-org-tree'
 import 'v-org-tree/dist/v-org-tree.css'
+import vertifyCode from './components/vertifyCode'
+Vue.use(vertifyCode)
 // 实际打包时应该不引入mock
 /* eslint-disable */
 // if (process.env.NODE_ENV !== 'production') require('@/mock')
@@ -28,7 +30,7 @@ Vue.use(VOrgTree)
 Vue.use(VueAMap);
 VueAMap.initAMapApiLoader({
   key: '4a39b6a30a22fedf2647a6d0f759b010',
-  plugin: ['Geocoder', 'ToolBar', 'PlaceSearch', 'MarkerClusterer', 'DistrictSearch', 'DistrictLayer'],
+  plugin: ['Geocoder', 'ToolBar', 'PlaceSearch', 'MarkerClusterer', 'DistrictSearch', 'MapType' , 'DistrictLayer'],
   v: '1.4.15'
 });
 lazyAMapApiLoaderInstance.load().then(()=>{

@@ -82,7 +82,7 @@ export default{
   methods: {
     backPage () {
       this.$router.push({
-        name: 'roleList'
+        name: 'role'
       })
     },
     pageChange (page) {

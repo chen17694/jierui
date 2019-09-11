@@ -2,7 +2,7 @@
   <div>
     <Row type="flex" justify="space-between" style="padding: 10px 0 20px">
       <Col span="12">
-       <div class="materialName">激光测距仪</div>
+       <div class="materialName">{{info.name}}</div>
       </Col>
       <Col span="12">
         <div style="float: right">
@@ -26,7 +26,7 @@
        <div class="infoItem">是否需要单位负责人审批：{{info.approvalStatus == '0' ? '否' : '是'}}</div>
       </Col>
       <Col span="8">
-       <div class="infoItem">是否需要归还：{{info.needReturnStatus == '0' ? '否' : '是'}}</div>
+       <div class="infoItem">是否需要归还：{{info.needReturnStatus == '0' ? '是' : '否'}}</div>
       </Col>
       <Col span="8">
        <div class="infoItem">物资总数：{{info.amount}}</div>

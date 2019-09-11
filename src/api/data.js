@@ -737,6 +737,13 @@ export const taskMaterialDetail = (params) => {
     method: 'post'
   })
 }
+export const mapCoordinateStatistics = (params) => {
+  return axios.request({
+    url: '/statistics/mapCoordinateStatistics',
+    data: params,
+    method: 'post'
+  })
+}
 export const uploadTaskCrossingInspect = (params) => {
   return axios.request({
     url: '/taskCrossingRelation/uploadTaskCrossingInspect',
