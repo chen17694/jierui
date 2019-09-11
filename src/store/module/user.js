@@ -25,6 +25,12 @@ export default {
     messageContentStore: {}
   },
   mutations: {
+    setRouters (state, routers) {
+      state.routers = routers
+    },
+    setHasGetRouter (state, status) {
+      state.hasGetRouter = status
+    },
     setAvatar (state, avatarPath) {
       state.avatarImgPath = avatarPath
       setAvatar(avatarPath)
@@ -119,6 +125,8 @@ export default {
         commit('setOffice', {})
         commit('setUserInfo', '')
         commit('setAvatar', '')
+        commit('setRouters', [])
+        commit('setHasGetRouter', false)
         resolve()
         // 如果你的退出登录无需请求接口，则可以直接使用下面三行代码而无需使用logout调用接口
         // commit('setToken', '')

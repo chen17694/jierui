@@ -26,7 +26,7 @@ import Tables from '_c/tables'
 import { listHistory, listWait } from '@/api/data'
 import { getUserId } from '@/libs/util'
 export default {
-  name: 'myAudit',
+  name: 'myProcessed',
   components: { Tables },
   data () {
     return {
