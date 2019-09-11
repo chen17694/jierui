@@ -243,12 +243,12 @@ export default {
   methods: {
     uploadPhoto (e) {
       uploadImgToAliOss(e).then(res => {
-        this.formItem.photo = res
+        this.formItem.photo = res[0]
       })
     },
     back () {
       this.$router.push({
-        name: 'userList'
+        name: 'user'
       })
     },
     save () {
@@ -271,7 +271,7 @@ export default {
             this.$Message.info(res.data.msg)
             if (res.data.status === '200') {
               this.$router.push({
-                name: 'userList'
+                name: 'user'
               })
             }
           })

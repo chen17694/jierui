@@ -31,6 +31,8 @@
             <ul style="list-style-type: none; display: flex">
               <li @click="openSetHead" style="margin-right: 10px">修改头像</li>
               <li @click="openSetPassWord" style="margin-right: 10px">修改密码</li>
+              <li @click="openSetPhone" style="margin-right: 10px">修改手机</li>
+              <li @click="openSetEmail" style="margin-right: 10px">修改邮箱</li>
             </ul>
           </div>
         </DropdownItem>
@@ -66,10 +68,10 @@
         <p style="font-weight: bold; font-size: 26px; text-align: center;margin-bottom: 10px">密码修改</p>
         <p style="text-align: center;" v-show="sendDone">“杰瑞配时手机验证码”已发送至您的手机</p>
         <p style="font-weight: bold; font-size: 36px; text-align: center; margin-bottom: 20px">{{phone}}</p>
-        <Form ref="formValidate" :rules="ruleValidate" :model="passWordForm" :label-width="130">
+        <Form ref="formValidate" :rules="ruleValidate" :model="passWordForm" :label-width="150">
           <FormItem label="收到的验证码" prop="code">
             <Input v-model="passWordForm.code" style="width:280px"/>
-            <Button type="primary" style="margin-left: 20px" :disabled="codeStatus" @click="sendCode">{{codeText}}</Button>
+            <Button type="primary" style="margin-left: 20px" :disabled="codeStatus" @click="sendCode('1')">{{codeText}}</Button>
           </FormItem>
           <FormItem label="请输入新密码" prop="password">
             <Input v-model="passWordForm.password" style="width:280px"/>
@@ -82,6 +84,54 @@
       <div slot="footer">
         <Button type="text">取消</Button>
         <Button type="primary" @click="savePassWord">确定</Button>
+      </div>
+    </Modal>
+    <Modal
+      v-model="phoneModal"
+      title="修改手机号码"
+      class="passWord"
+      width="712">
+      <div style="padding: 44px">
+        <p style="font-weight: bold; font-size: 26px; text-align: center;margin-bottom: 10px">手机号码修改</p>
+        <p style="text-align: center;" v-show="sendDone">“杰瑞配时手机验证码”已发送至您的手机</p>
+        <p style="font-weight: bold; font-size: 36px; text-align: center; margin-bottom: 20px">{{phone}}</p>
+        <Form ref="formValidate2" :rules="ruleValidate2" :model="phoneForm" :label-width="150">
+          <FormItem label="收到的验证码" prop="code">
+            <Input v-model="phoneForm.code" style="width:280px"/>
+            <Button type="primary" style="margin-left: 20px" :disabled="codeStatus" @click="sendCode('2')">{{codeText}}</Button>
+          </FormItem>
+          <FormItem label="请输入新的手机号码" prop="phone">
+            <Input v-model="phoneForm.phone" style="width:280px"/>
+          </FormItem>
+        </Form>
+      </div>
+      <div slot="footer">
+        <Button type="text">取消</Button>
+        <Button type="primary" @click="savePhone">确定</Button>
+      </div>
+    </Modal>
+    <Modal
+      v-model="emailModal"
+      title="修改邮箱"
+      class="passWord"
+      width="712">
+      <div style="padding: 44px">
+        <p style="font-weight: bold; font-size: 26px; text-align: center;margin-bottom: 10px">邮箱修改</p>
+        <p style="text-align: center;" v-show="sendDone">“杰瑞配时手机验证码”已发送至您的邮箱</p>
+        <p style="font-weight: bold; font-size: 36px; text-align: center; margin-bottom: 20px">{{email}}</p>
+        <Form ref="formValidate3" :rules="ruleValidate3" :model="emailForm" :label-width="150">
+          <FormItem label="收到的验证码" prop="code">
+            <Input v-model="emailForm.code" style="width:280px"/>
+            <Button type="primary" style="margin-left: 20px" :disabled="codeStatus" @click="sendCode('2')">{{codeText}}</Button>
+          </FormItem>
+          <FormItem label="请输入新的邮箱" prop="phone">
+            <Input v-model="emailForm.email" style="width:280px"/>
+          </FormItem>
+        </Form>
+      </div>
+      <div slot="footer">
+        <Button type="text">取消</Button>
+        <Button type="primary" @click="saveEmail">确定</Button>
       </div>
     </Modal>
   </div>
@@ -121,6 +171,14 @@ export default {
         callback()
       }
     }
+    const validatePhone = (rule, value, callback) => {
+      const eReg = /^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\d{8}$/
+      if (!eReg.test(value)) {
+        callback(new Error('请输入正确的手机号码'))
+      } else {
+        callback()
+      }
+    }
     const validatePassCheck = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请再次输入密码'))
@@ -130,14 +188,25 @@ export default {
         callback()
       }
     }
+    const validateEmail = (rule, value, callback) => {
+      const eReg = /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
+      if (!eReg.test(value)) {
+        callback(new Error('请输入正确的邮箱地址'))
+      } else {
+        callback()
+      }
+    }
     return {
       codeText: '发送验证码',
       time: 90,
       head: false,
+      phoneModal: false,
+      emailModal: false,
       passWord: false,
       sendDone: false,
       codeStatus: false,
       code: '',
+      email: getOffice().email,
       phone: getOffice().phone,
       userInfo: {
         name: getOffice().name || '',
@@ -153,6 +222,14 @@ export default {
         password2: '',
         code: ''
       },
+      phoneForm: {
+        phone: '',
+        code: ''
+      },
+      emailForm: {
+        email: '',
+        code: ''
+      },
       ruleValidate: {
         code: [
           { required: true, validator: validateCode, trigger: 'blur' }
@@ -162,6 +239,22 @@ export default {
         ],
         password2: [
           { required: true, validator: validatePassCheck, trigger: 'blur' }
+        ]
+      },
+      ruleValidate2: {
+        code: [
+          { required: true, validator: validateCode, trigger: 'blur' }
+        ],
+        phone: [
+          { required: true, validator: validatePhone, trigger: 'blur' }
+        ]
+      },
+      ruleValidate3: {
+        code: [
+          { required: true, validator: validateCode, trigger: 'blur' }
+        ],
+        email: [
+          { required: true, validator: validateEmail, trigger: 'blur' }
         ]
       }
     }
@@ -210,10 +303,10 @@ export default {
       'handleLogOut',
       'getUserInfo'
     ]),
-    sendCode () {
+    sendCode (type) {
       sendCodeGeneral({
         'value': this.phone,
-        'type': '1'
+        'type': type
       }).then((res) => {
         console.log(res)
         if (res.data.status === '200') {
@@ -235,8 +328,39 @@ export default {
         }
       })
     },
+    saveEmail () {
+      this.$refs['formValidate3'].validate((valid) => {
+        if (valid) {
+          resetGeneral({
+            'value': this.emailForm.email,
+            'type': '3',
+            'code': this.emailForm.code
+          }).then((res) => {
+            this.$Message.info(res.data.msg)
+            this.emailModal = false
+          })
+        } else {
+          return false
+        }
+      })
+    },
+    savePhone () {
+      this.$refs['formValidate2'].validate((valid) => {
+        if (valid) {
+          resetGeneral({
+            'value': this.phoneForm.phone,
+            'type': '2',
+            'code': this.phoneForm.code
+          }).then((res) => {
+            this.$Message.info(res.data.msg)
+            this.phoneModal = false
+          })
+        } else {
+          return false
+        }
+      })
+    },
     savePassWord () {
-      console.log(123)
       this.$refs['formValidate'].validate((valid) => {
         if (valid) {
           resetGeneral({
@@ -254,6 +378,12 @@ export default {
     },
     openSetPassWord () {
       this.passWord = true
+    },
+    openSetEmail () {
+      this.emailModal = true
+    },
+    openSetPhone () {
+      this.phoneModal = true
     },
     openSetHead () {
       this.head = true

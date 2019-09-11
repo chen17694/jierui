@@ -123,7 +123,7 @@ export default {
       this.$router.push({
         name: 'MaterialDetail',
         query: {
-          taskId: arguments[0].id
+          id: arguments[0].id
         }
       })
     },

@@ -18,7 +18,7 @@ export default {
    */
   baseUrl: {
     dev: 'http://172.16.175.24:8534/rest',
-    pro: 'http://172.16.175.24:8534/rest'
+    pro: 'http://59.46.65.242:8534/rest'
   },
   // baseUrl: {
   //   dev: 'http://localhost:8534/rest',

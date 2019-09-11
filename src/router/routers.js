@@ -33,7 +33,8 @@ export default [
     redirect: '/home',
     component: Main,
     meta: {
-      hideInMenu: true,
+      hideInMenu: false,
+      title: 'Login - 登录',
       notCache: true
     },
     children: [
@@ -47,6 +48,17 @@ export default [
           icon: home
         },
         component: () => import('@/view/my/myProject.vue')
+      },
+      {
+        path: '/myStatistics',
+        name: 'myStatistics',
+        meta: {
+          hideInMenu: true,
+          title: '首页',
+          notCache: true,
+          icon: home
+        },
+        component: () => import('@/view/myStatistics/myStatistics.vue')
       }
     ]
   }

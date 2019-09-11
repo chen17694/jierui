@@ -193,6 +193,17 @@ export default{
       deletePanel: false
     }
   },
+  watch: {
+    listParams: {
+      handler (val) {
+        console.log(val)
+        if (val.type === undefined) {
+          this.listParams.type = ''
+        }
+      },
+      deep: true
+    }
+  },
   methods: {
     companyEdit () {
       this.editType = 1

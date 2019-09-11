@@ -254,7 +254,7 @@ export default {
           this.selectUnit(this.formItem.officeId)
         } else {
           this.$router.push({
-            name: 'userList'
+            name: 'user'
           })
         }
       }
@@ -263,12 +263,13 @@ export default {
   methods: {
     uploadPhoto (e) {
       uploadImgToAliOss(e).then(res => {
-        this.formItem.photo = res
+        console.log(res)
+        this.formItem.photo = res[0]
       })
     },
     back () {
       this.$router.push({
-        name: 'userList'
+        name: 'user'
       })
     },
     save () {

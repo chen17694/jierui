@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import routes from './routers'
 import store from '@/store'
 import iView from 'iview'
-import { getToken, setTitle } from '@/libs/util'
+import { getToken, setTitle, getUserId } from '@/libs/util'
 import config from '@/config'
 const { homeName } = config
 
@@ -11,14 +11,8 @@ Vue.use(Router)
 const router = new Router({
   routes
 })
-store.dispatch('getRouters').then((routers) => {
-  router.addRoutes(routers)
-})
+
 const LOGIN_PAGE_NAME = 'login'
-// const turnTo = (to, access, next) => {
-//   if (canTurnTo(to.name, access, routes)) next() // 有权限，可访问
-//   else next({ replace: true, name: 'error_401' }) // 无权限，重定向到401页面
-// }
 
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
@@ -37,7 +31,16 @@ router.beforeEach((to, from, next) => {
       name: homeName // 跳转到homeName页
     })
   } else {
-    next()
+    if (store.state.app.hasGetRouter) {
+      next()
+    } else {
+      console.log(getUserId())
+      store.dispatch('getRouters', getUserId()).then(routers => {
+        // commonRoutes需要追加到路由解析最后的404，把原先的routers.js中的404删掉即可
+        router.addRoutes(routers)
+        next({ ...to })
+      })
+    }
   }
 })
 

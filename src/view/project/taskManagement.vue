@@ -145,11 +145,11 @@ export default {
           key: 'nature',
           render: (h, params) => {
             let text = ''
-            if (params.row.type === '1') {
+            if (params.row.nature === '1') {
               text = '单点优化'
-            } else if (params.row.type === '2') {
+            } else if (params.row.nature === '2') {
               text = '线优化'
-            } else {
+            } else if (params.row.nature === '3') {
               text = '区域优化'
             }
             return h('div', { props: {} }, text)

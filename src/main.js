@@ -28,7 +28,8 @@ Vue.use(VOrgTree)
 Vue.use(VueAMap);
 VueAMap.initAMapApiLoader({
   key: '4a39b6a30a22fedf2647a6d0f759b010',
-  plugin: ['Geocoder', 'ToolBar', 'PlaceSearch', 'MarkerClusterer']
+  plugin: ['Geocoder', 'ToolBar', 'PlaceSearch', 'MarkerClusterer', 'DistrictSearch', 'DistrictLayer'],
+  v: '1.4.15'
 });
 lazyAMapApiLoaderInstance.load().then(()=>{
   localStorage.removeItem('_AMap_raster');

@@ -1,7 +1,19 @@
 <template>
   <Tabs v-model="tab" :animated="false">
     <TabPane label="我的审核审批进度" name="myAudit">
-      <tables :total="this.total"  v-model="tableData" @on-row-dblclick="onRowClick" :columns="columns1" :on-change="pageChange" :on-page-size-change="pageSizeChange"></tables>
+      <Row type="flex" justify="space-between" style="padding: 10px 0">
+        <Col span="12">
+          <div class="searchInput">
+            <div class="search">
+              <Input search @on-search="handleSearch" placeholder="输入关键字搜索" type="text" enter-button="搜索">
+              <span slot="prepend">审核审批名称:</span>
+              </Input>
+            </div>
+            <Button class="search-btn" type="primary" @click="openFilter"><Icon type="search"/>筛选</Button>
+          </div>
+        </Col>
+      </Row>
+      <tables :total="this.total" ref="tableData" v-model="tableData" @on-row-dblclick="onRowClick" :columns="columns1" :on-change="pageChange" :on-page-size-change="pageSizeChange"></tables>
     </TabPane>
     <TabPane label="待我审批" name="waiting">
       <tables :total="this.total" v-model="tableData" @on-row-dblclick="onRowClick" :columns="columns2" :on-change="pageChange" :on-page-size-change="pageSizeChange"></tables>
@@ -115,6 +127,12 @@ export default {
     }
   },
   methods: {
+    handleSearch () {
+
+    },
+    openFilter () {
+
+    },
     pageChange (page) {
       this.params.page = page
       this.getData()
@@ -320,6 +338,10 @@ export default {
   },
   mounted () {
     this.getData()
+    window.onresize = event => {
+      console.log(123)
+      this.$refs.tableData.handleResize()
+    }
   }
 }
 </script>
@@ -327,5 +349,48 @@ export default {
 <style scoped lang="less">
   .ivu-tabs{
     overflow: initial;
+  }
+  .searchInput{
+    float: left;
+    /deep/ .search-btn{
+      height: 32px;
+    }
+  }
+  .search{
+    float: left;
+    margin-right: 10px;
+    /deep/ .ivu-input-group-prepend{
+      background: none;
+      border: 0 none;
+    }
+    /deep/ .ivu-input-search{
+      border: 0 none;
+    }
+    /deep/ .ivu-input-search:before{
+      content: none
+    }
+    .search-btn{
+      float: right;
+    }
+  }
+  .filterPanel{
+    clear: both;
+    padding: 0 0 10px 0;
+    .label{
+      display: block;
+      text-align: right;
+      padding-right: 10px;
+      line-height: 32px;
+    }
+    .btns{
+      margin-top: 6px;
+      text-align: center;
+      .ivu-btn-primary{
+        margin-right: 10px;
+      }
+      .ivu-btn{
+        width: 80px;
+      }
+    }
   }
 </style>

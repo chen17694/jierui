@@ -39,7 +39,7 @@
           {{this.parentName}}
         </FormItem>
         <FormItem label="行政区划名称" prop="name">
-          <Input v-model="formValidate.name" placeholder="请输入行政区划名称"></Input>
+          <Input v-model="formValidate.name" placeholder="请输入行政区划名称"/>
         </FormItem>
         <FormItem label="行政区划类型" prop="type">
           <Select v-model="formValidate.type" placeholder="请选择行政区划类型" clearable>
@@ -118,6 +118,16 @@ export default {
           return '区'
         }
       }
+    }
+  },
+  watch: {
+    formValidate: {
+      handler: (val) => {
+        if (val.type === undefined) {
+          this.formValidate.type = ''
+        }
+      },
+      deep: true
     }
   },
   methods: {

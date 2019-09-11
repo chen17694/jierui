@@ -172,6 +172,14 @@ export default{
       area1: []
     }
   },
+  watch: {
+    params: {
+      handler: (val) => {
+        console.log(val)
+      },
+      deep: true
+    }
+  },
   methods: {
     pageChange (page) {
       this.params.page = page
