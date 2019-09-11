@@ -32,7 +32,7 @@
             <div>
               <div class="Title" style="display:inline-block;">单路口执行的各类任务</div>
               <div style="float:right">
-                路口别名：<Select v-model="Search.crossingCode" style="width:200px" @on-change="aliasSel">
+                路口别名：<Select v-model="Search.crossingCode" style="width:200px" @on-change="aliasSel" filterable clearable>
                         <Option
                           v-for="item in crossList"
                           :value="item.value"
@@ -83,7 +83,7 @@
         <div class="Title" style="display:inline-block; margin: 10px;">地区完成审核任务路口数量</div>
         <div  style="float:right;display:inline-block;">
             地区类型：
-            <Select v-model="Search.type" style="width:200px;text-align:left" @on-change="regionTypeSel">
+            <Select v-model="Search.type" style="width:200px;text-align:left" @on-change="regionTypeSel" clearable>
               <Option value="0" key="s1">省级</Option>
               <Option value="1" key="s2">市级</Option>
             </Select>

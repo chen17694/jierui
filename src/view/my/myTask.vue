@@ -1,11 +1,6 @@
 <template>
   <div style="height: 100%">
     <div class="amap-page-container">
-      <div class="amap-demo" v-if="this.center.length === 0">
-        <div class="spin-container">
-          <Spin size="large" fix></Spin>
-        </div>
-      </div>
       <el-amap
         v-if="this.center.length === 2"
         :amap-manager="amapManager"
@@ -18,7 +13,7 @@
       >
         <el-amap-marker v-for="(marker, index) in markers" :key="index" :extData = "marker.id" vid="chenyiming" :position="marker.position" :content="marker.content" :events="marker.events"></el-amap-marker>
       </el-amap>
-      <Cascader :data="areaData" v-model="areaValue" change-on-select style="position: absolute; right: 20px; top: 20px; width: 200px;" @on-change="cascaderChange"></Cascader>
+      <Cascader :data="areaData" v-model="areaValue" style="position: absolute; right: 20px; top: 20px; width: 200px;" @on-change="cascaderChange"></Cascader>
       <div style="color: #666666; display: flex; width:350px; position: absolute; left: 20px; top: 20px; border: 0 none">
         <div style="background-color: #F2F2F2; padding: 10px 20px; line-height: 20px; cursor: pointer" @click="onChangeNav('myProject')">我的项目</div>
         <div style="background-color: #ffffff; padding: 10px 20px; line-height: 20px; cursor: pointer">我的任务</div>
@@ -32,9 +27,9 @@
       </Card>
       <div style="width:350px; position: absolute; left: 20px; top: 120px; background-color: #ffffff">
         <div v-if="tab === 'tab2'" style="padding: 10px">
-          <Form :label-width="80">
+          <Form :label-width="82">
             <FormItem label="项目选择：">
-              <Select v-model="businessProjectId" @on-change="changeProject">
+              <Select v-model="businessProjectId" @on-change="changeProject" filterable>
                 <Option value="">全部</Option>
                 <Option v-for="(item, index) in projectList" :value="item.id " :key="index">{{item.name}}</Option>
               </Select>
@@ -48,9 +43,9 @@
                 <div style="font-size: 16px; font-weight: bold">
                   任务数量：{{this.total}}
                 </div>
-                <Select v-model="onStatus" style="width:100px" @on-change="statusChange">
+                <Select v-model="onStatus" style="width:100px" @on-change="statusChange" clearable>
                   <span :style="{ backgroundColor: avatar }" style="width: 15px; height: 15px; display: inline-block; border-radius: 50%; vertical-align: middle;" slot="prefix"></span>
-                  <Option value="1" >未领取</Option>
+                  <!--<Option value="1" >未领取</Option>-->
                   <Option value="2" >已拒绝</Option>
                   <Option value="3" >未开始</Option>
                   <Option value="4" >进行中</Option>
@@ -62,7 +57,7 @@
                 </Select>
               </div>
               <div v-for="(item, index) in taskList" :key="index" @click="positioning(item.lng, item.lat)" v-show="panelShow" style="position: relative; padding: 15px; border-bottom: 1px solid #e6e6e6;">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
                   <div style="font-size: 16px; display: flex; align-items: center;">
                     <img src="../../assets/images/icon1.png" style="width: 18px; margin-right: 5px">{{item.name}}
                   </div>
@@ -83,7 +78,7 @@
                       <Button v-if="i.permissionCode === '2' && item.pauseStatus === '0'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">暂停任务</Button>
                       <Button v-if="i.permissionCode === '3'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">撤销任务</Button>
                       <Button v-if="i.permissionCode === '4'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">催办任务</Button>
-                      <Button v-if="i.permissionCode === '5'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">新增任务路口</Button>
+                      <Button v-if="i.permissionCode === '5'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">提交审核</Button>
                       <Button v-if="i.permissionCode === '6'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">删除任务</Button>
                     </span>
                   </div>
@@ -103,7 +98,7 @@
                 </div>
               </div>
               <div style="display: flex; justify-content: space-between; padding: 10px 15px; color: #2E8CEB;">
-                <span @click="allProject" style="cursor: pointer">所有项目</span>
+                <span @click="allProject" style="cursor: pointer">所有任务</span>
                 <span @click="close" style="cursor: pointer">{{this.panelShow ? '收起' : '展开'}}</span>
               </div>
             </Card>
@@ -144,7 +139,7 @@
                 <div style="font-size: 16px; font-weight: bold">
                   任务数量：{{this.total}}
                 </div>
-                <Select v-model="onType" style="width:110px" @on-change="typeChange">
+                <Select v-model="onType" style="width:120px" @on-change="typeChange" clearable>
                   <Avatar :src="avatar2" slot="prefix" size="small" />
                   <Option value="1" >巡检任务</Option>
                   <Option value="2" >优化任务</Option>
@@ -152,23 +147,23 @@
                 </Select>
               </div>
               <div v-for="(item, index) in taskListNew" :key="index" @click="positioning(item.lng, item.lat)" v-show="panelShow" style="position: relative; padding: 15px; border-bottom: 1px solid #e6e6e6;">
-                <Collapse simple accordion>
-                  <Panel :hide-arrow="true">
+                <Collapse simple accordion value="1">
+                  <Panel :hide-arrow="true" name="1">
                     <div style="display: flex;width: 100%;justify-content: space-between;margin-bottom: 10px">
-                      <div style="padding-right: 10px">
-                        <span>{{item.name}}</span>
-                        <div v-if="item.taskStatus === 1" style="font-size: 12px"><span style="margin-right: 5px">任务类型: 巡检任务</span><span>路口数量: {{item.crossingList.length}}</span></div>
-                        <div v-if="item.taskStatus === 2" style="font-size: 12px"><span style="margin-right: 5px">任务类型: 优化任务</span><span>路口数量: {{item.crossingList.length}}</span></div>
-                        <div v-if="item.taskStatus === 3" style="font-size: 12px"><span style="margin-right: 5px">任务类型: 宣传任务</span><span>路口数量: {{item.crossingList.length}}</span></div>
+                      <div style="padding-right: 10px; line-height: 24px">
+                        <div>任务名称: {{item.name}}</div>
+                        <div v-if="item.taskStatus === 1" style="font-size: 12px"><p style="margin-right: 5px">任务类型: 巡检任务</p><p>路口数量: {{item.crossingList.length}}</p></div>
+                        <div v-if="item.taskStatus === 2" style="font-size: 12px"><p style="margin-right: 5px">任务类型: 优化任务</p><p>路口数量: {{item.crossingList.length}}</p></div>
+                        <div v-if="item.taskStatus === 3" style="font-size: 12px"><p style="margin-right: 5px">任务类型: 宣传任务</p><p>路口数量: {{item.crossingList.length}}</p></div>
                       </div>
                       <div style="text-align: right">
                         <Button type="success" @click="handleTask(item, '1')" style="margin-bottom: 10px; display: block">接受</Button>
                         <Button type="error" @click="handleTask(item, '2')">拒绝</Button>
                       </div>
                     </div>
-                    <div slot="content">
-                      <ul>
-                        <li v-for="(rItem, rIndex) in roadList[index]" :key="rIndex">{{rItem.alias}}</li>
+                    <div slot="content" style="padding: 0">
+                      <ul style="list-style-type: none; line-height: 30px">
+                        <li v-for="(rItem, rIndex) in item.crossingList" :key="rIndex" style="border-bottom: 1px solid #e6e6e6; font-size: 12px">任务路口: {{rItem.alias}}</li>
                       </ul>
                     </div>
                   </Panel>
@@ -183,7 +178,7 @@
 </template>
 
 <script>
-import { listTask, areaData, listMapTask, selectTaskDetail, listMyNotAcceptedTask, listMapProject, acceptOrRefuseTask, listTaskCrossing } from '@/api/data'
+import { listTask, areaData, listMapTask, selectTaskDetail, listMyNotAcceptedTask, listMapProject, acceptOrRefuseTask, taskFunction } from '@/api/data'
 import { getUserId } from '@/libs/util'
 import tx1 from '../../assets/images/tx1.png'
 import tx2 from '../../assets/images/tx2.png'
@@ -215,7 +210,7 @@ import ty9 from '../../assets/images/ty9.png'
 import { AMapManager, lazyAMapApiLoaderInstance } from 'vue-amap'
 let amapManager = new AMapManager()
 export default {
-  name: 'my',
+  name: 'myTask',
   data () {
     let self = this
     return {
@@ -251,13 +246,12 @@ export default {
       ty9,
       avatar: '#FF5000',
       avatar2: tx1,
-      onStatus: '1',
+      onStatus: '2',
       isDetail: false,
       detailData: {},
       minClusterSize: 2,
       panelShow: true,
       zoom: 16,
-      roadList: [],
       amapManager,
       center: [],
       areaData: [],
@@ -312,6 +306,9 @@ export default {
     },
     'onStatus': function (val) {
       switch (val) {
+        case undefined:
+          this.onStatus = ''
+          break
         case '1':
           this.avatar = '#FF5000'
           break
@@ -385,9 +382,7 @@ export default {
         this.markers = []
         this.markerRefs = []
         this.map.clearMarkers()
-        this.getMapTaskNew()
-        this.getMapTask()
-        this.getTask()
+        this.tab = 'tab1'
       })
     },
     changeProject () {
@@ -405,11 +400,16 @@ export default {
       })
     },
     statusChange () {
+      this.getTask()
       this.markers = []
       this.markerRefs = []
       this.map.clearMarkers()
-      this.getMapTask()
-      this.getTask()
+      this.getMapTask().then(() => {
+        if (this.onStatus === '') {
+          let o = amapManager.getMap()
+          o.setFitView(this.markerRefs)
+        }
+      })
     },
     toList () {
       this.isDetail = false
@@ -431,8 +431,7 @@ export default {
       }
     },
     allProject () {
-      let o = amapManager.getMap()
-      o.setFitView(this.markerRefs)
+      this.onStatus = ''
     },
     close () {
       this.panelShow = !this.panelShow
@@ -441,11 +440,8 @@ export default {
       this.center = [lng, lat]
     },
     searchProject () {
-      this.markers = []
-      this.markerRefs = []
-      this.map.clearMarkers()
+      this.page = 1
       this.getTask()
-      this.getMapTask()
     },
     onEdit (params, row) {
       if (params.permissionCode === '2') {
@@ -459,7 +455,11 @@ export default {
               'pauseStatus': row.pauseStatus === '0' ? '1' : '0'
             }).then((res) => {
               this.$Message.info(res.data.msg)
-              this.getData()
+              this.markers = []
+              this.markerRefs = []
+              this.map.clearMarkers()
+              this.getMapTask()
+              this.getTask()
             })
           }
         })
@@ -491,7 +491,11 @@ export default {
               'functionType': params.permissionCode
             }).then((res) => {
               this.$Message.info(res.data.msg)
-              this.getData()
+              this.markers = []
+              this.markerRefs = []
+              this.map.clearMarkers()
+              this.getMapTask()
+              this.getTask()
             })
           }
         })
@@ -514,18 +518,21 @@ export default {
         startTime: '',
         endTime: ''
       }).then((res) => {
-        console.log(res.data.data)
         this.taskList = res.data.data.taskDetailBeans
-        console.log(this.taskList)
-        this.total = res.data.data.count
-        if (this.total === '0') {
-          this.page = 0
+        if (this.taskList.length > 0) {
+          this.center = [this.taskList[0].lng, this.taskList[0].lat]
         } else {
-          if (this.page === 0) {
-            this.page = 1
-          }
+          this.center = this.center.length === 0 ? [116.397428, 39.90923] : this.center
         }
-        this.maxPage = Math.ceil(this.total / 3)
+        this.total = res.data.data.count
+        if (Number(this.total) < 3 && Number(this.total) > 0) {
+          this.maxPage = 1
+        } else if (Number(this.total) === 0) {
+          this.maxPage = 1
+          this.page = 1
+        } else {
+          this.maxPage = Math.ceil(Number(this.total) / 3)
+        }
       })
     },
     getProjectDetail (id) {
@@ -538,7 +545,7 @@ export default {
       })
     },
     getMapTask () {
-      listMapTask({
+      return listMapTask({
         pageSize: 0,
         page: 0,
         userId: getUserId(),
@@ -555,24 +562,19 @@ export default {
         endTime: ''
       }).then((res) => {
         let taskList = res.data.data.taskList
-        if (taskList.length > 0) {
-          this.center = [taskList[0].lng, taskList[0].lat]
-        } else {
-          this.center = this.center.length === 0 ? [116.397428, 39.90923] : this.center
-        }
         let self = this
         taskList.forEach((item) => {
           let status = ''
           if (item.pauseStatus === '1') {
             switch (item.type) {
               case '1' :
-                status = `<div><img src="${txj9}" style="width: 40px; height: 40px"></div>`
+                status = `<div><img src="${txj9}" style="width: 30px; height: 30px"></div>`
                 break
               case '2' :
-                status = `<div><img src="${ty9}" style="width: 40px; height: 40px"></div>`
+                status = `<div><img src="${ty9}" style="width: 30px; height: 30px"></div>`
                 break
               case '3' :
-                status = `<div><img src="${tx9}" style="width: 40px; height: 40px"></div>`
+                status = `<div><img src="${tx9}" style="width: 30px; height: 30px"></div>`
                 break
             }
           } else {
@@ -580,90 +582,89 @@ export default {
               case '1' :
                 switch (item.taskStatus) {
                   case '1':
-                    status = `<div><img src="${txj1}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${txj1}" style="width: 30px; height: 30px"></div>`
                     break
                   case '2':
-                    status = `<div><img src="${txj2}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${txj2}" style="width: 30px; height: 30px"></div>`
                     break
                   case '3':
-                    status = `<div><img src="${txj3}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${txj3}" style="width: 30px; height: 30px"></div>`
                     break
                   case '4':
-                    status = `<div><img src="${txj4}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${txj4}" style="width: 30px; height: 30px"></div>`
                     break
                   case '5':
-                    status = `<div><img src="${txj5}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${txj5}" style="width: 30px; height: 30px"></div>`
                     break
                   case '6':
-                    status = `<div><img src="${txj6}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${txj6}" style="width: 30px; height: 30px"></div>`
                     break
                   case '7':
-                    status = `<div><img src="${txj7}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${txj7}" style="width: 30px; height: 30px"></div>`
                     break
                   case '8':
-                    status = `<div><img src="${txj8}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${txj8}" style="width: 30px; height: 30px"></div>`
                     break
                 }
                 break
               case '2' :
                 switch (item.taskStatus) {
                   case '1':
-                    status = `<div><img src="${ty1}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${ty1}" style="width: 30px; height: 30px"></div>`
                     break
                   case '2':
-                    status = `<div><img src="${ty2}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${ty2}" style="width: 30px; height: 30px"></div>`
                     break
                   case '3':
-                    status = `<div><img src="${ty3}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${ty3}" style="width: 30px; height: 30px"></div>`
                     break
                   case '4':
-                    status = `<div><img src="${ty4}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${ty4}" style="width: 30px; height: 30px"></div>`
                     break
                   case '5':
-                    status = `<div><img src="${ty5}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${ty5}" style="width: 30px; height: 30px"></div>`
                     break
                   case '6':
-                    status = `<div><img src="${ty6}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${ty6}" style="width: 30px; height: 30px"></div>`
                     break
                   case '7':
-                    status = `<div><img src="${ty7}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${ty7}" style="width: 30px; height: 30px"></div>`
                     break
                   case '8':
-                    status = `<div><img src="${ty8}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${ty8}" style="width: 30px; height: 30px"></div>`
                     break
                 }
                 break
               case '3' :
                 switch (item.taskStatus) {
                   case '1':
-                    status = `<div><img src="${tx1}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${tx1}" style="width: 30px; height: 30px"></div>`
                     break
                   case '2':
-                    status = `<div><img src="${tx2}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${tx2}" style="width: 30px; height: 30px"></div>`
                     break
                   case '3':
-                    status = `<div><img src="${tx3}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${tx3}" style="width: 30px; height: 30px"></div>`
                     break
                   case '4':
-                    status = `<div><img src="${tx4}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${tx4}" style="width: 30px; height: 30px"></div>`
                     break
                   case '5':
-                    status = `<div><img src="${tx5}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${tx5}" style="width: 30px; height: 30px"></div>`
                     break
                   case '6':
-                    status = `<div><img src="${tx6}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${tx6}" style="width: 30px; height: 30px"></div>`
                     break
                   case '7':
-                    status = `<div><img src="${tx7}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${tx7}" style="width: 30px; height: 30px"></div>`
                     break
                   case '8':
-                    status = `<div><img src="${tx8}" style="width: 40px; height: 40px"></div>`
+                    status = `<div><img src="${tx8}" style="width: 30px; height: 30px"></div>`
                     break
                 }
                 break
             }
           }
-          console.log(status)
           this.markers.push({
             position: [item.lng, item.lat],
             id: item.id,
@@ -695,45 +696,23 @@ export default {
       }).then((res) => {
         let taskList = this.taskListNew = res.data.data = res.data.data
         this.total = res.data.data.length
-        console.log(taskList)
         if (taskList.length > 0) {
           this.center = [taskList[0].lng || 116.397428, taskList[0].lat || 39.90923]
         } else {
           this.center = this.center.length === 0 ? [116.397428, 39.90923] : this.center
         }
-        console.log(this.center)
         let self = this
         taskList.forEach((item) => {
-          console.log(item)
-          listTaskCrossing({
-            pageSize: 0,
-            page: 0,
-            projectId: '',
-            taskId: item.id,
-            userId: getUserId(),
-            alias: '',
-            taskCrossingStatus: '',
-            timeStatus: '',
-            startTime: '',
-            endTime: '',
-            provinceName: '',
-            cityName: '',
-            districtName: ''
-          }).then((res) => {
-            console.log(res)
-            this.roadList.push(res.data.data.taskCrossingDetailBeanList)
-            console.log(this.roadList)
-          })
           let status = ''
           switch (item.type) {
             case '1' :
-              status = `<div><img src="${txj1}" style="width: 40px; height: 40px"></div>`
+              status = `<div><img src="${txj1}" style="width: 30px; height: 30px"></div>`
               break
             case '2' :
-              status = `<div><img src="${ty1}" style="width: 40px; height: 40px"></div>`
+              status = `<div><img src="${ty1}" style="width: 30px; height: 30px"></div>`
               break
             case '3' :
-              status = `<div><img src="${tx1}" style="width: 40px; height: 40px"></div>`
+              status = `<div><img src="${tx1}" style="width: 30px; height: 30px"></div>`
               break
           }
           if (item.lng && item.lat) {
@@ -782,6 +761,7 @@ export default {
         return item.label
       })
       this.keywords = value.join()
+      this.zoom = 16
       this.searchArea()
     }
   },
@@ -862,5 +842,13 @@ export default {
   }
   .ivu-form-item{
     margin-bottom: 0;
+  }
+  .ivu-collapse-item-active{
+    /deep/ .ivu-collapse-content-box{
+      padding: 0;
+    }
+    /deep/ .ivu-collapse-content{
+      padding: 0;
+    }
   }
 </style>

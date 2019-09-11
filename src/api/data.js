@@ -148,6 +148,14 @@ export const deleteRole = (params) => {
     method: 'post'
   })
 }
+export const getRoute = (params) => {
+  return axios.request({
+    url: '/user/getRoute',
+    data: params,
+    method: 'post'
+  })
+}
+
 export const listAreaByType = (params) => {
   return axios.request({
     url: '/area/listAreaByType',
@@ -506,6 +514,14 @@ export const taskCrossingFunction = (params) => {
     method: 'post'
   })
 }
+export const listCrossingByCode = (params) => {
+  return axios.request({
+    url: '/CrossingAPI/listCrossingByCode',
+    data: params,
+    method: 'post'
+  })
+}
+
 export const projectMaterialJoin = (params) => {
   return axios.request({
     url: '/materia/projectMaterialJoin',
@@ -535,7 +551,27 @@ export const listOverdueMaterial = (params) => {
     method: 'post'
   })
 }
-
+export const deleteProjectAnnex = (params) => {
+  return axios.request({
+    url: '/project/deleteProjectAnnex',
+    data: params,
+    method: 'post'
+  })
+}
+export const deleteTasktAnnex = (params) => {
+  return axios.request({
+    url: '/task/deleteTasktAnnex',
+    data: params,
+    method: 'post'
+  })
+}
+export const deleteTaskCrossingAnnex = (params) => {
+  return axios.request({
+    url: '/taskCrossingRelation/deleteTaskCrossingAnnex',
+    data: params,
+    method: 'post'
+  })
+}
 export const deleteUser = (params) => {
   return axios.request({
     url: '/user/deleteUser',
@@ -572,9 +608,131 @@ export const addProject = (params) => {
     method: 'post'
   })
 }
+export const getUserCount = (params) => {
+  return axios.request({
+    url: '/user/getUserCount',
+    data: params,
+    method: 'post'
+  })
+}
+export const listTaskSimple = (params) => {
+  return axios.request({
+    url: '/task/listTaskSimple',
+    data: params,
+    method: 'post'
+  })
+}
+export const uploadChannelizationMap = (params) => {
+  return axios.request({
+    url: '/taskCrossingRelation/uploadChannelizationMap',
+    data: params,
+    method: 'post'
+  })
+}
+export const listTaskCrossingAnnex = (params) => {
+  return axios.request({
+    url: '/taskCrossingRelation/listTaskCrossingAnnex',
+    data: params,
+    method: 'post'
+  })
+}
+export const listTaskAnnex = (params) => {
+  return axios.request({
+    url: '/task/listTaskAnnex',
+    data: params,
+    method: 'post'
+  })
+}
+export const taskAnnexBeanListByProjectId = (params) => {
+  return axios.request({
+    url: '/project/taskAnnexBeanListByProjectId',
+    data: params,
+    method: 'post'
+  })
+}
+export const addProjectAnnex = (params) => {
+  return axios.request({
+    url: '/project/addProjectAnnex',
+    data: params,
+    method: 'post'
+  })
+}
+export const listProjectAnnex = (params) => {
+  return axios.request({
+    url: '/project/listProjectAnnex',
+    data: params,
+    method: 'post'
+  })
+}
+export const updateUserInfo = (params) => {
+  return axios.request({
+    url: '/user/updateUserInfo',
+    data: params,
+    method: 'post'
+  })
+}
+export const selectCrossing = (params) => {
+  return axios.request({
+    url: '/CrossingAPI/selectCrossing',
+    data: params,
+    method: 'post'
+  })
+}
+export const listBusinessCrossingAnnex = (params) => {
+  return axios.request({
+    url: '/CrossingAPI/listBusinessCrossingAnnex',
+    data: params,
+    method: 'post'
+  })
+}
+
+export const addTaskAnnex = (params) => {
+  return axios.request({
+    url: '/task/addTaskAnnex',
+    data: params,
+    method: 'post'
+  })
+}
+export const sendCodeGeneral = (params) => {
+  return axios.request({
+    url: '/user/sendCodeGeneral',
+    data: params,
+    method: 'post'
+  })
+}
+export const resetGeneral = (params) => {
+  return axios.request({
+    url: '/user/resetGeneral',
+    data: params,
+    method: 'post'
+  })
+}
+
+export const addTaskCrossingAnnex = (params) => {
+  return axios.request({
+    url: '/taskCrossingRelation/addTaskCrossingAnnex',
+    data: params,
+    method: 'post'
+  })
+}
+export const selectResponseDissatisfiedTaskCrossingBean = (params) => {
+  return axios.request({
+    url: '/taskCrossingRelation/selectResponseDissatisfiedTaskCrossingBean',
+    data: params,
+    method: 'post'
+  })
+}
+
 export const taskMaterialDetail = (params) => {
   return axios.request({
     url: '/materia/taskMaterialDetail',
+    data: params,
+    method: 'post'
+  })
+}
+export const uploadTaskCrossingInspect = (params) => {
+  return axios.request({
+    url: '/taskCrossingRelation/uploadTaskCrossingInspect',
     data: params,
     method: 'post'
   })
@@ -610,9 +768,41 @@ const upOss = (e, res) => {
   return new Promise((resolve, reject) => {
     client.multipartUpload(e.target.files[0].name, e.target.files[0]).then(result => {
       let src = result.res.requestUrls[0].split('?')
-      resolve(src[0])
-    }).catch(err => {
-      console.log(err)
+      let arr = [src[0], result.name]
+      resolve(arr)
+    })
+  })
+}
+export const uploadImgToAliOssHead = (e) => {
+  return new Promise((resolve, reject) => {
+    getStsToken().then(res => {
+      if (res.data.status === '200') {
+        upOssHead(e, res).then(ress => {
+          resolve(ress)
+        })
+      }
+    })
+  })
+}
+const upOssHead = (e, res) => {
+  let client = new OSS({
+    endpoint: res.data.data.endpoint,
+    accessKeyId: res.data.data.accessKeyId,
+    stsToken: res.data.data.securityToken,
+    accessKeySecret: res.data.data.accessKeySecret,
+    bucket: res.data.data.bucketName
+  })
+  return new Promise((resolve, reject) => {
+    let chars = 'abcdefhijkmnprstwxyz'
+    let maxPos = chars.length
+    let pwd = ''
+    for (let i = 0; i < 3; i++) {
+      pwd += chars.charAt(Math.floor(Math.random() * maxPos))
+    }
+    client.multipartUpload(pwd, e).then(result => {
+      let src = result.res.requestUrls[0].split('?')
+      let arr = [src[0], result.name]
+      resolve(arr)
     })
   })
 }

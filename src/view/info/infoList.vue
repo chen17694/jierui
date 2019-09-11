@@ -39,7 +39,7 @@
                 <span class="label">消息类型:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.type" placeholder="请选择" label-in-value>
+                <Select v-model="params.type" placeholder="请选择" label-in-value clearable>
                     <Option value="1">审核审批</Option>
                     <Option value="2">提醒</Option>
                     <Option value="3">催办</Option>
@@ -56,7 +56,7 @@
                 <span class="label">消息状态:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.isRead" placeholder="请选择" label-in-value>
+                <Select v-model="params.isRead" placeholder="请选择" label-in-value clearable>
                     <Option value="0">未读</Option>
                     <Option value="1">已读</Option>
                 </Select>
@@ -72,7 +72,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tableMaterial" :total="total" v-model="tableData" :columns="columns" :on-change="pageChange" :on-page-size-change="pageSizeChange" @on-select="onSelect" @on-select-all="onSelect"></tables>
+    <tables ref="tableMaterial" @on-row-dblclick="onRowClick" :total="total" v-model="tableData" :columns="columns" :on-change="pageChange" :on-page-size-change="pageSizeChange" @on-select="onSelect" @on-select-all="onSelect"></tables>
   </div>
 </template>
 
@@ -106,15 +106,9 @@ export default {
           width: 60,
           align: 'center'
         },
-        {
-          type: 'index',
-          width: 60,
-          align: 'center',
-          title: '序号'
-        },
         { title: '消息名称',
           render: (h, params) => {
-            return h('div', {}, params.row.content)
+            return h('div', {}, params.row.title)
           }
         },
         { title: '消息类型',
@@ -134,53 +128,6 @@ export default {
               }
             }, params.row.isRead === '0' ? '未读' : '已读')
           }
-        },
-        {
-          title: '操作',
-          key: 'action',
-          fixed: 'right',
-          width: 130,
-          render: (h, params) => {
-            return h('div', [
-              h('Button', {
-                style: {},
-                props: {
-                  type: 'success',
-                  size: 'small'
-                },
-                nativeOn: {
-                  click: () => {
-                    this.$router.push({ path: 'infoDetail', query: { id: params.row.id, type: params.row.type } })
-                  }
-                }
-              }, '详细'),
-              h('Button', {
-                style: {
-                  marginLeft: '6px'
-                },
-                props: {
-                  type: 'error',
-                  size: 'small'
-                },
-                nativeOn: {
-                  click: () => {
-                    this.$Modal.confirm({
-                      title: '是否删除此条消息？',
-                      content: '<p>删除后消息不能找回，还要继续吗</p>',
-                      onOk: () => {
-                        this.ids = []
-                        this.ids.push(params.row.id)
-                        this.DelMessage(this.ids)
-                      },
-                      onCancel: () => {
-                        this.$Message.info('操作已取消！')
-                      }
-                    })
-                  }
-                }
-              }, '删除')
-            ])
-          }
         }
       ]
     }
@@ -191,8 +138,17 @@ export default {
     }
   },
   methods: {
+    onRowClick () {
+      optMessage({ ids: [arguments[0].id], userId: getUserId() }).then((res) => {
+        this.$router.push(
+          {
+            path: 'infoDetail',
+            query: { id: arguments[0].id, type: arguments[0].type }
+          }
+        )
+      })
+    },
     cancelAll () {
-      console.log('取消全选')
     },
     // 筛选提交
     filterSubmit () {
@@ -216,7 +172,6 @@ export default {
       this.getData()
     },
     onSelect (sel, row) {
-      console.log(sel)
       this.ids = sel.map((item) => {
         return item.id
       })
@@ -230,7 +185,6 @@ export default {
     },
     getData () {
       listMessage(this.params).then((res) => {
-        console.log(res.data.data)
         if (res.data.status === '200') {
           this.tableData = res.data.data.list
           this.total = parseInt(res.data.data.total)

@@ -7,13 +7,13 @@
         <div>
           <span style="margin-right: 10px">
             项目：
-            <Select v-model="params.projectId" style="width:200px" @on-change="changeProject">
+            <Select v-model="params.projectId" style="width:200px" @on-change="changeProject" filterable clearable>
               <Option v-for="(item, index) in projectList" :value="item.id" :label="item.name" :key="index">{{ item.name }}</Option>
             </Select>
           </span>
           <span>
             任务：
-              <Select v-model="params.taskId" style="width:200px">
+              <Select v-model="params.taskId" style="width:200px" filterable clearable>
                 <Option v-for="item in taskList" :value="item.id" :key="item.id">{{ item.name }}</Option>
               </Select>
           </span>
@@ -25,7 +25,7 @@
       </div>
     </Card>
     <p style="font-weight: bold; font-size: 15px; margin: 15px 0">任务逾期数量:{{this.total}}</p>
-    <tables ref="tables" :total="this.total" v-model="tableData" :columns="columns" @on-urge="urge" :on-change="pageChange" :on-page-size-change="pageSizeChange"></tables>
+    <tables ref="tables" :total="this.total" @on-row-dblclick="onRowClick" v-model="tableData" :columns="columns" @on-urge="urge" :on-change="pageChange" :on-page-size-change="pageSizeChange"></tables>
   </div>
 </template>
 
@@ -68,6 +68,32 @@ export default{
     }
   },
   methods: {
+    onRowClick  () {
+      let type = arguments[0].type
+      let id = arguments[0].id
+      if (type === '1') {
+        this.$router.push({
+          name: 'xjDetail',
+          query: {
+            taskCrossingId: id
+          }
+        })
+      } else if (type === '2') {
+        this.$router.push({
+          name: 'yhDetail',
+          query: {
+            taskCrossingId: id
+          }
+        })
+      } else if (type === '3') {
+        this.$router.push({
+          name: 'xcDetail',
+          query: {
+            taskCrossingId: id
+          }
+        })
+      }
+    },
     pageChange (page) {
       this.params.page = page
       this.getData()
@@ -137,7 +163,6 @@ export default{
       })
     },
     urge () {
-      console.log(arguments[0].row)
       taskCrossingFunction({
         taskCrossingId: arguments[0].row.id,
         userId: getUserId(),

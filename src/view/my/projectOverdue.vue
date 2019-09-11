@@ -2,7 +2,7 @@
   <div>
     <Input search @on-search="handleSearch" placeholder="输入关键字搜索" type="text" enter-button="搜索" style="width: 300px" />
     <p style="font-weight: bold; font-size: 15px; margin: 15px 0">项目逾期数量:{{this.total}}</p>
-    <tables ref="tables" :total="this.total" v-model="tableData" :columns="columns" @on-urge="urge" :on-change="pageChange" :on-page-size-change="pageSizeChange"></tables>
+    <tables ref="tables" :total="this.total" @on-row-dblclick="onRowClick" v-model="tableData" :columns="columns" @on-urge="urge" :on-change="pageChange" :on-page-size-change="pageSizeChange"></tables>
   </div>
 </template>
 
@@ -31,7 +31,7 @@ export default{
         { title: '截止日期', key: 'endTime' },
         { title: '逾期天数', key: 'days' },
         {
-          title: '催办',
+          title: '操作',
           key: 'handle',
           options: ['urge']
         }
@@ -40,12 +40,19 @@ export default{
     }
   },
   methods: {
+    onRowClick () {
+      this.$router.push({
+        name: 'projectDetail',
+        query: {
+          projectId: arguments[0].id
+        }
+      })
+    },
     handleSearch () {
       this.params.name = arguments[0]
       this.getData()
     },
     urge () {
-      console.log(arguments[0].row)
       projectFunction({
         projectId: arguments[0].row.id,
         userId: getUserId(),
@@ -55,12 +62,10 @@ export default{
       })
     },
     pageSizeChange (val) {
-      console.log(val)
       this.params.pageSize = val
       this.getData()
     },
     pageChange (val) {
-      console.log(val)
       this.params.page = val
       this.getData()
     },

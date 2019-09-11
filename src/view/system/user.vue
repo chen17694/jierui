@@ -36,7 +36,7 @@
                 <span class="label">归属单位:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.office" @on-change="selectUnit">
+                <Select v-model="params.office" @on-change="selectUnit" filterable clearable>
                   <Option v-for="item in unitList" :value="item.id" :key="item.id">{{item.name}}</Option>
                 </Select>
               </Col>
@@ -48,29 +48,29 @@
                 <span class="label">角色:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.role">
+                <Select v-model="params.role" filterable clearable>
                   <Option v-for="item in roleList" :value="item.id" :key="item.id">{{item.name}}</Option>
                 </Select>
               </Col>
             </Row>
           </Col>
-          <!--<Col span="12" style="margin-bottom: 16px">-->
-            <!--<Row>-->
-              <!--<Col span="5">-->
-                <!--<span class="label">所属地:</span>-->
-              <!--</Col>-->
-              <!--<Col span="19">-->
-                <!--<Cascader :data="areaData" v-model="params.area"></Cascader>-->
-              <!--</Col>-->
-            <!--</Row>-->
-          <!--</Col>-->
+          <Col span="12" style="margin-bottom: 16px">
+            <Row>
+              <Col span="5">
+                <span class="label">所属地:</span>
+              </Col>
+              <Col span="19">
+                <Cascader :data="areaData" v-model="area1" @on-change="filterAreaChange"></Cascader>
+              </Col>
+            </Row>
+          </Col>
           <Col span="12" style="margin-bottom: 16px">
             <Row>
               <Col span="5">
                 <span class="label">APP登录:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.isLoginApp">
+                <Select v-model="params.isLoginApp" clearable>
                   <Option value="1">是</Option>
                   <Option value="0">否</Option>
                 </Select>
@@ -105,7 +105,10 @@ export default{
         'name': '',
         'office': '',
         'role': '',
-        'isLoginApp': ''
+        'isLoginApp': '',
+        'provinceId': '',
+        'cityId': '',
+        'districtId': ''
       },
       total: 0,
       unitList: [],
@@ -145,7 +148,18 @@ export default{
         { title: '归属单位', key: 'office' },
         { title: '角色', key: 'role' },
         { title: '所属地', key: 'area' },
-        { title: 'APP登录', key: 'isLoginApp' },
+        { title: 'APP登录',
+          key: 'isLoginApp',
+          render: (h, params) => {
+            let text = ''
+            if (params.row.isLoginApp === '1') {
+              text = '是'
+            } else if (params.row.isLoginApp === '0') {
+              text = '否'
+            }
+            return h('div', { props: {} }, text)
+          }
+        },
         {
           title: '操作',
           key: 'handle',
@@ -154,7 +168,16 @@ export default{
       ],
       tableData: [],
       roleList: [],
-      areaData: []
+      areaData: [],
+      area1: []
+    }
+  },
+  watch: {
+    params: {
+      handler: (val) => {
+        console.log(val)
+      },
+      deep: true
     }
   },
   methods: {
@@ -243,6 +266,18 @@ export default{
       this.params.role = ''
       this.params.isLoginApp = ''
       this.roleList = []
+      this.area1 = []
+      this.params.provinceId = ''
+      this.params.cityId = ''
+      this.params.districtId = ''
+    },
+    filterAreaChange () {
+      let value = arguments[1].slice(1, arguments[1].length).map((item) => {
+        return item.value
+      })
+      this.params.provinceId = value[0]
+      this.params.cityId = value[1]
+      this.params.districtId = value[2]
     },
     getData () {
       getUserList(this.params).then(res => {

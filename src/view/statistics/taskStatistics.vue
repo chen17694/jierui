@@ -68,7 +68,7 @@
       <Row>
         <div  style="text-align:right">
             地区类型：
-            <Select v-model="twoSearch.type" style="width:200px;text-align:left" @on-change="regionTypeSel">
+            <Select v-model="twoSearch.type" style="width:200px;text-align:left" @on-change="regionTypeSel" clearable>
               <Option value="0" key="s1">省级</Option>
               <Option value="1" key="s2">市级</Option>
             </Select>
@@ -211,7 +211,7 @@
     </Card>
     <Card style="margin-top: 20px">
       <div slot="title" style="display:inline-block;">
-        选择项目：<Select v-model="fourSearch.projectId" style="width:200px" @on-change="projectSel">
+        选择项目：<Select v-model="fourSearch.projectId" style="width:200px" @on-change="projectSel" filterable clearable>
                       <Option
                         v-for="item in projectList"
                         :value="item.value"
@@ -521,7 +521,6 @@ export default {
       })
     },
     pageChange (val) {
-      console.log(val)
       this.fourSearch.page = val
       this.TaskScoringAndWorkloadBean(() => {
         this.setPie5()

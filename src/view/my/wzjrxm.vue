@@ -107,10 +107,10 @@ export default {
           key: 'applyNum',
           width: '100px',
           render: (h, params) => {
-            console.log(this.addRows[params.index])
             return h('InputNumber', {
               props: {
-                value: this.addRows[params.index].applyNum
+                value: this.addRows[params.index].applyNum,
+                min: 1
               },
               on: {
                 'on-change': (applyNum) => {
@@ -162,12 +162,11 @@ export default {
   methods: {
     back () {
       this.$router.push({
-        name: 'projectOverdue'
+        name: 'myApproval'
       })
     },
     getMaterialCategory () {
       materialCategory().then((res) => {
-        console.log(res)
         this.addRows[this.rowIndex].materialCategoryList = res.data.data
       })
     },
@@ -180,7 +179,6 @@ export default {
         materialCategoryId: id,
         officeId: ''
       }).then((res) => {
-        console.log(res)
         this.addRows[index].materialList = res.data.data.businessMaterialBeanList
         this.tableData[index].tname = this.addRows[index].materialList
       })
@@ -210,7 +208,7 @@ export default {
     },
     chexiao () {
       this.$Modal.confirm({
-        title: '确定要撤销吗？',
+        title: '确定要撤销申请吗？',
         onOk: () => {
           let obj = {
             opt: '3',
@@ -219,20 +217,22 @@ export default {
             processType: this.$route.params.data.type
           }
           opt(obj).then((res) => {
-            console.log(res)
+            if (res.data.status === '200') {
+              this.$router.push({
+                name: 'myApproval'
+              })
+            }
             this.$Message.info(res.data.msg)
           })
         }
       })
     },
     getData () {
-      console.log(this.$route.params)
       detailProjectMaterialJoin({
         taskId: this.$route.params.data.taskId,
         userId: getUserId(),
         type: '2'
       }).then((res) => {
-        console.log(res.data.data)
         this.stepArr = res.data.data.list
         this.projectId = res.data.data.projectId
         this.detailData = res.data.data

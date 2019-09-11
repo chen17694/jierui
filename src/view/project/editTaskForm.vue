@@ -23,7 +23,7 @@
         <FormItem label="任务类型" prop="type">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.type" label-in-value>
+              <Select v-model="formItem.type" label-in-value clearable>
                 <Option value="1">巡检任务</Option>
                 <Option value="2">优化任务</Option>
                 <Option value="3">宣传任务</Option>
@@ -34,7 +34,7 @@
         <FormItem label="任务负责人" prop="taskHoldersId">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.taskHoldersId" label-in-value @on-change="taskHoldersOnChange">
+              <Select v-model="formItem.taskHoldersId" label-in-value @on-change="taskHoldersOnChange" filterable clearable>
                 <Option v-for="(item, index) in taskHold" :value="item.id " :key="index">{{item.name}}</Option>
               </Select>
             </Col>
@@ -50,7 +50,7 @@
         <FormItem  v-if="formItem.type === '2'" label="任务性质" prop="nature">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.nature" label-in-value>
+              <Select v-model="formItem.nature" label-in-value clearable>
                 <Option value="1">单点优化</Option>
                 <Option value="2">线优化</Option>
                 <Option value="3">区域优化</Option>
@@ -81,7 +81,7 @@
       </Form>
       <div class="btns">
         <Button type="primary" @click="this.save">保存</Button>
-        <Button>返回</Button>
+        <Button @click="back">返回</Button>
       </div>
     </Card>
   </div>
@@ -163,11 +163,8 @@ export default {
             radius: 1000,
             extensions: 'all'
           })
-          console.log(self.formItem.lat)
-          console.log(self.formItem.lng)
           geocoder.getAddress([self.formItem.lng, self.formItem.lat], function (status, result) {
             if (status === 'complete' && result.info === 'OK') {
-              console.log(result)
               if (result && result.regeocode) {
                 self.formItem.location = result.regeocode.formattedAddress
                 self.formItem.provinceName = result.regeocode.addressComponent.province
@@ -197,6 +194,9 @@ export default {
     }
   },
   methods: {
+    back () {
+      this.$router.go(-1)
+    },
     taskHoldersOnChange () {
       this.formItem.taskHoldersName = arguments[0].label
     },
@@ -209,7 +209,6 @@ export default {
         userId: getUserId(),
         officeId: ''
       }).then((res) => {
-        console.log(res)
         this.taskHold = res.data.data.list
       })
     },
@@ -263,12 +262,10 @@ export default {
   },
   mounted () {
     this.addMarker()
-    console.log(this.$route.query.taskId)
     selectTaskDetail({
       taskId: this.$route.query.taskId,
       userId: getUserId()
     }).then((res) => {
-      console.log(res)
       this.detailData = res.data.data
       this.formItem.businessProjectId = this.detailData.businessProjectId
       this.formItem.businessProjectName = this.detailData.businessProjectName
@@ -279,7 +276,6 @@ export default {
         userId: getUserId(),
         officeId: ''
       }).then((res) => {
-        console.log(res)
         this.taskHold = res.data.data.list
         this.formItem.taskHoldersId = this.detailData.taskHoldersId
         this.formItem.taskHoldersName = this.detailData.taskHoldersName
@@ -290,7 +286,6 @@ export default {
       this.formItem.nature = this.detailData.nature
       this.formItem.remarks = this.detailData.remarks
       this.formItem.location = this.detailData.provinceName + this.detailData.cityName + this.detailData.districtName + this.detailData.specificAddress
-      console.log(this.formItem)
     })
   }
 }

@@ -73,7 +73,7 @@ export default {
       editParams: {
         comment: '',
         opt: '1',
-        needPartA: ''
+        needPartA: '1'
       },
       detailData: {},
       tableData: [],
@@ -84,7 +84,7 @@ export default {
   methods: {
     back () {
       this.$router.push({
-        name: 'projectOverdue'
+        name: 'myApproval'
       })
     },
     shenpi () {
@@ -93,27 +93,29 @@ export default {
     save () {
       let obj = {
         opt: this.editParams.opt,
-        taskId: this.$route.params.data.taskId,
+        taskId: this.$route.query.taskId,
         userId: getUserId(),
         comment: this.editParams.comment,
-        processType: this.$route.params.data.type,
+        processType: this.$route.query.type,
         taskForm: {
           needPartA: this.editParams.needPartA
         }
       }
-      console.log(obj)
       opt(obj).then((res) => {
-        console.log(res)
+        if (res.data.status === '200') {
+          this.$router.push({
+            name: 'myApproval'
+          })
+        }
         this.$Message.info(res.data.msg)
       })
     },
     getData () {
       detailTaskApproval({
-        taskId: this.$route.params.data.taskId,
+        taskId: this.$route.query.taskId,
         userId: getUserId(),
         type: '1'
       }).then((res) => {
-        console.log(res.data.data)
         this.detailData = res.data.data
         this.stepArr = res.data.data.list
       })

@@ -68,7 +68,7 @@ export default {
   methods: {
     back () {
       this.$router.push({
-        name: 'projectOverdue'
+        name: 'myApproval'
       })
     },
     shenpi () {
@@ -79,30 +79,31 @@ export default {
       arr.forEach((item) => {
         delete item.initRowIndex
       })
-      console.log(arr)
       let obj = {
         opt: this.editParams.opt,
-        taskId: this.$route.params.data.taskId,
+        taskId: this.$route.query.taskId,
         userId: getUserId(),
         comment: this.editParams.comment,
-        processType: this.$route.params.data.type,
+        processType: this.$route.query.type,
         projectMaterialJoinApproveForm: {
           list: arr
         }
       }
-      console.log(obj)
       opt(obj).then((res) => {
-        console.log(res)
+        if (res.data.status === '200') {
+          this.$router.push({
+            name: 'myApproval'
+          })
+        }
         this.$Message.info(res.data.msg)
       })
     },
     getData () {
       detailMaterialApplication({
-        taskId: this.$route.params.data.taskId,
+        taskId: this.$route.query.taskId,
         userId: getUserId(),
         type: '1'
       }).then((res) => {
-        console.log(res.data.data)
         this.tableData = this.projectMaterialJoinApproveForm = res.data.data.materialList
         this.stepArr = res.data.data.list
         this.detailData = res.data.data

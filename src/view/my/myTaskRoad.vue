@@ -1,11 +1,6 @@
 <template>
   <div style="height: 100%">
     <div class="amap-page-container">
-      <div class="amap-demo" v-if="this.center.length === 0">
-        <div class="spin-container">
-          <Spin size="large" fix></Spin>
-        </div>
-      </div>
       <el-amap
         v-if="this.center.length === 2"
         :amap-manager="amapManager"
@@ -18,7 +13,7 @@
       >
         <el-amap-marker v-for="(marker, index) in markers" :key="index" :extData = "marker.id" vid="chenyiming" :position="marker.position" :content="marker.content" :events="marker.events"></el-amap-marker>
       </el-amap>
-      <Cascader :data="areaData" v-model="areaValue" change-on-select style="position: absolute; right: 20px; top: 20px; width: 200px;" @on-change="cascaderChange"></Cascader>
+      <Cascader :data="areaData" v-model="areaValue" style="position: absolute; right: 20px; top: 20px; width: 200px;" @on-change="cascaderChange"></Cascader>
       <div style="color: #666666; display: flex; width:350px; position: absolute; left: 20px; top: 20px; border: 0 none">
         <div style="background-color: #F2F2F2; padding: 10px 20px; line-height: 20px; cursor: pointer" @click="onChangeNav('myProject')">我的项目</div>
         <div style="background-color: #F2F2F2; padding: 10px 20px; line-height: 20px; cursor: pointer" @click="onChangeNav('myTask')">我的任务</div>
@@ -35,7 +30,7 @@
           <div style="font-size: 16px; font-weight: bold">
             任务路口数量：{{this.total}}
           </div>
-          <Select v-model="onStatus" style="width:100px" @on-change="statusChange">
+          <Select v-model="onStatus" style="width:100px" @on-change="statusChange" clearable>
             <span :style="{ backgroundColor: avatar }" style="width: 15px; height: 15px; display: inline-block; border-radius: 50%; vertical-align: middle;" slot="prefix"></span>
             <Option value="1" >未领取</Option>
             <Option value="2" >已拒绝</Option>
@@ -54,7 +49,7 @@
               <img src="../../assets/images/icon1.png" style="width: 18px; margin-right: 5px">{{item.alias}}
             </div>
             <div style="line-height: 20px;">
-              <p :style="{ 'font-size': '20px', color: ( item.progress === '100' ? '#15C41B' : '#FB861B' ) }">{{item.progress ? item.progress : 0}}%</p>
+              <p :style="{ 'font-size': '20px', color: ( item.progress === '100' ? '#15C41B' : '#FB861B' ) }">{{onStatus === '6' ? '100' : '0'}}%</p>
               <p style="color: #999999">进度</p>
             </div>
           </div>
@@ -71,7 +66,7 @@
               </span>
             </div>
             <div>
-              <button typeof="button" @click="getDetail(item.id)" style="border: 1px solid #2E8CEB; width: 58px; height: 41px; background-color: #ffffff; border-radius: 3px; color: #2E8CEB; cursor: pointer">详情</button>
+              <button typeof="button" @click="toTaskDetail(item.id, item.type)" style="border: 1px solid #2E8CEB; width: 58px; height: 41px; background-color: #ffffff; border-radius: 3px; color: #2E8CEB; cursor: pointer">详情</button>
             </div>
           </div>
         </div>
@@ -86,7 +81,7 @@
           </div>
         </div>
         <div style="display: flex; justify-content: space-between; padding: 10px 15px; color: #2E8CEB;">
-          <span @click="allProject" style="cursor: pointer">所有项目</span>
+          <span @click="allProject" style="cursor: pointer">所有任务路口</span>
           <span @click="close" style="cursor: pointer">{{this.panelShow ? '收起' : '展开'}}</span>
         </div>
       </Card>
@@ -96,17 +91,16 @@
           <img src="../../assets/images/icon1.png" style="width: 22px;">
         </div>
         <div style="padding: 15px; border-bottom: 1px solid rgb(230, 230, 230); position: relative">
-          <div style="position: absolute; right: 15px; top: 5px; text-align: right;">
-            <p :style="{ 'font-size': '30px', color: ( detailData.progress === '100' ? '#15C41B' : '#FB861B' ) }">{{detailData.progress ? detailData.progress : 0}}%</p>
-            <p>项目进度</p>
-          </div>
-          <div style="line-height: 24px"><span class="label">项目状态：</span><span>{{pStatus}}</span></div>
+          <div style="line-height: 24px"><span class="label">路口状态：</span><span>{{pStatus}}</span></div>
           <div style="line-height: 24px"><span class="label">项目角色：</span><span>{{detailData.userTopRoleName}}</span></div>
           <div style="line-height: 24px"><span class="label">逾期天数：</span><span>{{detailData.overdueDays}}</span></div>
           <div style="line-height: 24px"><span class="label">甲方评分：</span><span>{{detailData.firstPartyScoring}}</span></div>
+          <div style="position: absolute; bottom: 15px; right: 15px;">
+            <button typeof="button" @click="toTaskDetail(detailData.id, detailData.type)" style="border: 1px solid #2E8CEB; width: 58px; height: 41px; background-color: #ffffff; border-radius: 3px; color: #2E8CEB; cursor: pointer">详情</button>
+          </div>
         </div>
         <div style=" padding: 5px 15px; border-bottom: 1px solid rgb(230, 230, 230);">
-          项目基本信息
+          任务路口基本信息
         </div>
         <div style="padding: 15px; ">
           <div style="line-height: 24px"><span class="label">项目名称：</span><span>{{detailData.businessProjectName}}</span></div>
@@ -125,7 +119,7 @@
 </template>
 
 <script>
-import { areaData, projectFunction, listTaskCrossing, listMapTaskCrossing, selectTaskCrossingDetailBean } from '@/api/data'
+import { areaData, taskCrossingFunction, listTaskCrossing, listMapTaskCrossing, selectTaskCrossingDetailBean } from '@/api/data'
 import { getUserId } from '@/libs/util'
 import trx1 from '../../assets/images/trx1.png'
 import trx2 from '../../assets/images/trx2.png'
@@ -237,6 +231,9 @@ export default {
   watch: {
     'onStatus': function (val) {
       switch (val) {
+        case undefined:
+          this.onStatus = ''
+          break
         case '1':
           this.avatar = '#FF5000'
           break
@@ -297,8 +294,6 @@ export default {
       })
     },
     onEdit (params, row) {
-      console.log(params)
-      console.log(row)
       let str = ''
       switch (params.permissionCode) {
         case '1':
@@ -314,7 +309,7 @@ export default {
       this.$Modal.confirm({
         title: str,
         onOk: () => {
-          projectFunction({
+          taskCrossingFunction({
             'taskCrossingId': row.id,
             'userId': getUserId(),
             'functionType': params.permissionCode
@@ -330,10 +325,7 @@ export default {
       })
     },
     searchProject () {
-      this.markers = []
-      this.markerRefs = []
-      this.map.clearMarkers()
-      this.getMapProject()
+      this.page = 1
       this.getProject()
     },
     initMark (self, o) {
@@ -344,11 +336,16 @@ export default {
       })
     },
     statusChange () {
+      this.getProject()
       this.markers = []
       this.markerRefs = []
       this.map.clearMarkers()
-      this.getMapProject()
-      this.getProject()
+      this.getMapProject().then(() => {
+        if (this.onStatus === '') {
+          let o = amapManager.getMap()
+          o.setFitView(this.markerRefs)
+        }
+      })
     },
     toList () {
       this.isDetail = false
@@ -370,8 +367,7 @@ export default {
       }
     },
     allProject () {
-      let o = amapManager.getMap()
-      o.setFitView(this.markerRefs)
+      this.onStatus = ''
     },
     close () {
       this.panelShow = !this.panelShow
@@ -397,16 +393,45 @@ export default {
       }
       listTaskCrossing(obj).then((res) => {
         this.projectList = res.data.data.taskCrossingDetailBeanList
-        this.total = res.data.data.count
-        if (this.total === '0') {
-          this.page = 0
+        if (this.projectList.length > 0) {
+          this.center = [this.projectList[0].lng || 116.397428, this.projectList[0].lat || 39.90923]
         } else {
-          if (this.page === 0) {
-            this.page = 1
-          }
+          this.center = this.center.length === 0 ? [116.397428, 39.90923] : this.center
         }
-        this.maxPage = Math.ceil(this.total / 3)
+        this.total = res.data.data.count
+        if (Number(this.total) < 3 && Number(this.total) > 0) {
+          this.maxPage = 1
+        } else if (Number(this.total) === 0) {
+          this.maxPage = 1
+          this.page = 1
+        } else {
+          this.maxPage = Math.ceil(Number(this.total) / 3)
+        }
       })
+    },
+    toTaskDetail (id, type) {
+      if (type === '1') {
+        this.$router.push({
+          name: 'xjDetail',
+          query: {
+            taskCrossingId: id
+          }
+        })
+      } else if (type === '2') {
+        this.$router.push({
+          name: 'yhDetail',
+          query: {
+            taskCrossingId: id
+          }
+        })
+      } else if (type === '3') {
+        this.$router.push({
+          name: 'xcDetail',
+          query: {
+            taskCrossingId: id
+          }
+        })
+      }
     },
     getDetail (id) {
       selectTaskCrossingDetailBean({
@@ -419,8 +444,8 @@ export default {
     },
     getMapProject () {
       let obj = {
-        pageSize: 2,
-        page: this.page,
+        pageSize: 0,
+        page: 0,
         projectId: '',
         taskId: '',
         userId: getUserId(),
@@ -433,113 +458,109 @@ export default {
         cityName: '',
         districtName: ''
       }
-      listMapTaskCrossing(obj).then((res) => {
+      return listMapTaskCrossing(obj).then((res) => {
         let taskCrossingList = res.data.data.taskCrossingList
-        if (taskCrossingList.length > 0) {
-          this.center = [taskCrossingList[0].lng || 116.397428, taskCrossingList[0].lat || 39.90923]
-        } else {
-          this.center = this.center.length === 0 ? [116.397428, 39.90923] : this.center
-        }
         let self = this
         taskCrossingList.forEach((item) => {
-          console.log(123)
+          console.log(item.lat)
+          console.log(item.lng)
+          console.log('--------------')
           let status = ''
           switch (item.type) {
             case '1' :
               switch (item.status) {
                 case '1':
-                  status = `<div><img src="${trxj1}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${trxj1}" style="width: 30px; height: 30px"></div>`
                   break
                 case '2':
-                  status = `<div><img src="${trxj2}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${trxj2}" style="width: 30px; height: 30px"></div>`
                   break
                 case '3':
-                  status = `<div><img src="${trxj3}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${trxj3}" style="width: 30px; height: 30px"></div>`
                   break
                 case '4':
-                  status = `<div><img src="${trxj4}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${trxj4}" style="width: 30px; height: 30px"></div>`
                   break
                 case '5':
-                  status = `<div><img src="${trxj5}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${trxj5}" style="width: 30px; height: 30px"></div>`
                   break
                 case '6':
-                  status = `<div><img src="${trxj6}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${trxj6}" style="width: 30px; height: 30px"></div>`
                   break
                 case '7':
-                  status = `<div><img src="${trxj7}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${trxj7}" style="width: 30px; height: 30px"></div>`
                   break
                 case '8':
-                  status = `<div><img src="${trxj8}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${trxj8}" style="width: 30px; height: 30px"></div>`
                   break
                 case '9':
-                  status = `<div><img src="${trxj9}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${trxj9}" style="width: 30px; height: 30px"></div>`
                   break
               }
               break
             case '2' :
               switch (item.status) {
                 case '1':
-                  status = `<div><img src="${try1}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${try1}" style="width: 30px; height: 30px"></div>`
                   break
                 case '2':
-                  status = `<div><img src="${try2}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${try2}" style="width: 30px; height: 30px"></div>`
                   break
                 case '3':
-                  status = `<div><img src="${try3}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${try3}" style="width: 30px; height: 30px"></div>`
                   break
                 case '4':
-                  status = `<div><img src="${try4}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${try4}" style="width: 30px; height: 30px"></div>`
                   break
                 case '5':
-                  status = `<div><img src="${try5}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${try5}" style="width: 30px; height: 30px"></div>`
                   break
                 case '6':
-                  status = `<div><img src="${try6}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${try6}" style="width: 30px; height: 30px"></div>`
                   break
                 case '7':
-                  status = `<div><img src="${try7}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${try7}" style="width: 30px; height: 30px"></div>`
                   break
                 case '8':
-                  status = `<div><img src="${try8}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${try8}" style="width: 30px; height: 30px"></div>`
                   break
                 case '9':
-                  status = `<div><img src="${try9}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${try9}" style="width: 30px; height: 30px"></div>`
                   break
               }
               break
             case '3' :
               switch (item.status) {
                 case '1':
-                  status = `<div><img src="${trx1}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${trx1}" style="width: 30px; height: 30px"></div>`
                   break
                 case '2':
-                  status = `<div><img src="${trx2}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${trx2}" style="width: 30px; height: 30px"></div>`
                   break
                 case '3':
-                  status = `<div><img src="${trx3}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${trx3}" style="width: 30px; height: 30px"></div>`
                   break
                 case '4':
-                  status = `<div><img src="${trx4}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${trx4}" style="width: 30px; height: 30px"></div>`
                   break
                 case '5':
-                  status = `<div><img src="${trx5}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${trx5}" style="width: 30px; height: 30px"></div>`
                   break
                 case '6':
-                  status = `<div><img src="${trx6}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${trx6}" style="width: 30px; height: 30px"></div>`
                   break
                 case '7':
-                  status = `<div><img src="${trx7}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${trx7}" style="width: 30px; height: 30px"></div>`
                   break
                 case '8':
-                  status = `<div><img src="${trx8}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${trx8}" style="width: 30px; height: 30px"></div>`
                   break
                 case '9':
-                  status = `<div><img src="${trx9}" style="width: 40px; height: 40px"></div>`
+                  status = `<div><img src="${trx9}" style="width: 30px; height: 30px"></div>`
                   break
               }
               break
           }
-          console.log(status)
           this.markers.push({
             position: [item.lng, item.lat],
             id: item.id,
@@ -577,8 +598,8 @@ export default {
       let value = arguments[1].slice(1, arguments[1].length).map((item) => {
         return item.label
       })
-      console.log(value)
       this.keywords = value.join()
+      this.zoom = 16
       this.searchArea()
     },
     _renderCluserMarker (context) {
@@ -609,8 +630,8 @@ export default {
     this.getAreaData()
     lazyAMapApiLoaderInstance.load().then(() => {
       this.getMapProject()
+      this.getProject()
     })
-    this.getProject()
   }
 }
 </script>

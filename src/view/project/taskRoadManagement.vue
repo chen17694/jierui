@@ -14,7 +14,7 @@
       <Col span="12">
         <div style="float: right">
           <Button type="warning" style="margin-right: 10px" @click="reminder">任务路口提醒</Button>
-          <Button type="success" @click="toAdd">新建任务路口</Button>
+          <Button type="success" @click="toAdd" v-if="creatTaskCrossingPermission === '0' || creatThisTaskCrossingPermission === '0'">新建任务路口</Button>
         </div>
       </Col>
     </Row>
@@ -27,7 +27,7 @@
                 <span class="label">项目:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.projectId" @on-change="projectChange">
+                <Select v-model="params.projectId" @on-change="projectChange" filterable clearable>
                   <Option v-for="(item, index) in businessProject" :value="item.id " :key="index">{{item.name}}</Option>
                 </Select>
               </Col>
@@ -39,7 +39,7 @@
                 <span class="label">任务:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.taskId">
+                <Select v-model="params.taskId" filterable clearable>
                   <Option v-for="(item, index) in taskList" :key="index" :value="item.id">{{item.name}}</Option>
                 </Select>
               </Col>
@@ -51,7 +51,7 @@
                 <span class="label">任务路口状态:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.taskCrossingStatus">
+                <Select v-model="params.taskCrossingStatus" clearable>
                   <Option value="1">未领取</Option>
                   <Option value="2">已拒绝</Option>
                   <Option value="3">未开始</Option>
@@ -70,7 +70,7 @@
                 <span class="label">甲方评分:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.firstPartyScoring">
+                <Select v-model="params.firstPartyScoring" clearable>
                   <Option value="1">非常满意</Option>
                   <Option value="2">满意</Option>
                   <Option value="3">不满意</Option>
@@ -87,7 +87,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tables" :total="this.total" :on-change="pageChange" :on-page-size-change="pageSizeChange" :columns="columns" v-model="tableData" :taskRoadListBtnVisible="true" @on-edit="onEdit"/>
+    <tables ref="tables" :total="this.total" @on-row-dblclick="onRowClick" :on-change="pageChange" :on-page-size-change="pageSizeChange" :columns="columns" v-model="tableData" :taskRoadListBtnVisible="true" @on-edit="onEdit"/>
   </div>
 </template>
 
@@ -100,6 +100,8 @@ export default {
   components: { Tables },
   data () {
     return {
+      creatTaskCrossingPermission: '0',
+      creatThisTaskCrossingPermission: '0',
       params: {
         pageSize: 10,
         page: 1,
@@ -165,6 +167,38 @@ export default {
     }
   },
   methods: {
+    onRowClick () {
+      let type = arguments[0].type
+      let id = arguments[0].id
+      if (type === '1') {
+        this.$router.push({
+          name: 'xjDetail',
+          query: {
+            taskCrossingId: id,
+            lat: arguments[0].lat,
+            lng: arguments[0].lng
+          }
+        })
+      } else if (type === '2') {
+        this.$router.push({
+          name: 'yhDetail',
+          query: {
+            taskCrossingId: id,
+            lat: arguments[0].lat,
+            lng: arguments[0].lng
+          }
+        })
+      } else if (type === '3') {
+        this.$router.push({
+          name: 'xcDetail',
+          query: {
+            taskCrossingId: id,
+            lat: arguments[0].lat,
+            lng: arguments[0].lng
+          }
+        })
+      }
+    },
     pageChange (page) {
       this.params.page = page
       this.getData()
@@ -180,8 +214,9 @@ export default {
     },
     getData () {
       listTaskCrossing(this.params).then((res) => {
-        console.log(res.data.data)
         this.tableData = res.data.data.taskCrossingDetailBeanList
+        this.creatThisTaskCrossingPermission = res.data.data.creatThisTaskCrossingPermission
+        this.creatTaskCrossingPermission = res.data.data.creatTaskCrossingPermission
         this.total = Number(res.data.data.count)
       })
     },
@@ -204,7 +239,6 @@ export default {
         cityName: '',
         districtName: ''
       }).then((res) => {
-        console.log(res)
         this.taskList = res.data.data.taskDetailBeans
       })
     },
@@ -247,7 +281,6 @@ export default {
       })
     },
     onEdit (params, row) {
-      console.log(arguments)
       let str = ''
       switch (params.permissionCode) {
         case '1':

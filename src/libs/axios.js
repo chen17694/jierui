@@ -1,6 +1,7 @@
 import axios from 'axios'
 import store from '@/store'
-// import { Spin } from 'iview'
+import { Spin, Modal } from 'iview'
+import { getToken } from '@/libs/util'
 const addErrorLog = errorInfo => {
   const { statusText, status, request: { responseURL } } = errorInfo
   let info = {
@@ -11,16 +12,17 @@ const addErrorLog = errorInfo => {
   }
   if (!responseURL.includes('save_error_logger')) store.dispatch('addErrorLog', info)
 }
-
 class HttpRequest {
   constructor (baseUrl = baseURL) {
     this.baseUrl = baseUrl
     this.queue = {}
   }
   getInsideConfig () {
+    let token = getToken() ? getToken() : ''
     const config = {
       baseURL: this.baseUrl,
       headers: {
+        authToken: token,
         appType: '0'
       }
     }
@@ -29,15 +31,27 @@ class HttpRequest {
   destroy (url) {
     delete this.queue[url]
     if (!Object.keys(this.queue).length) {
-      // Spin.hide()
+      Spin.hide()
     }
   }
   interceptors (instance, url) {
     // 请求拦截
     instance.interceptors.request.use(config => {
       // 添加全局的loading...
-      if (!Object.keys(this.queue).length) {
-        // Spin.show() // 不建议开启，因为界面不友好
+      if (!Object.keys(this.queue).length && (config.data && config.data.noLoading !== '1')) {
+        Spin.show({
+          render: (h) => {
+            return h('div', [
+              h('Icon', {
+                'class': 'demo-spin-icon-load',
+                props: {
+                  type: 'ios-loading',
+                  size: 58
+                }
+              })
+            ])
+          }
+        })
       }
       this.queue[url] = true
       return config
@@ -58,6 +72,29 @@ class HttpRequest {
           statusText,
           status,
           request: { responseURL: config.url }
+        }
+      } else {
+        if (errorInfo.status === 401) {
+          store.dispatch('handleLogOut').then(() => {
+            window.location.href = '#/login'
+          })
+        } else if (errorInfo.status === 405) {
+          Spin.hide()
+          this.queue = {}
+          Modal.confirm({
+            title: '无操作权限',
+            onOk: () => {
+              window.history.go(-1)
+            },
+            onCancel: () => {
+              window.history.go(-1)
+            }
+          })
+        } else if (errorInfo.status === 500) {
+          Spin.hide()
+          Modal.confirm({
+            title: '网络错误'
+          })
         }
       }
       addErrorLog(errorInfo)

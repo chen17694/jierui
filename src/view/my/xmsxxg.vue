@@ -13,7 +13,7 @@
         <FormItem label="甲方负责人">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.firstPartyUserId" label-in-value @on-change="partAChange">
+              <Select v-model="formItem.firstPartyUserId" label-in-value @on-change="partAChange" filterable clearable>
                 <Option v-for="(item, index) in firstPartyUser" :value="item.id " :key="index">{{item.name}}</Option>
               </Select>
             </Col>
@@ -36,7 +36,7 @@
         <FormItem label="项目经理">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.projectManagerId" label-in-value @on-change="projectManagerChange">
+              <Select v-model="formItem.projectManagerId" label-in-value @on-change="projectManagerChange" filterable clearable>
                 <Option v-for="(item, index) in projectManager" :value="item.id " :key="index">{{item.name}}</Option>
               </Select>
             </Col>
@@ -88,7 +88,7 @@
 </template>
 
 <script>
-import { getUserList, projectAttributeModify, selectProjectDetail } from '@/api/data'
+import { getUserList, projectAttributeModify, selectProjectDetail, listProjectUser } from '@/api/data'
 import { getUserId, getOffice } from '@/libs/util'
 export default {
   name: 'xmsxxg',
@@ -113,7 +113,6 @@ export default {
           })
           geocoder.getAddress([self.formItem.lng, self.formItem.lat], function (status, result) {
             if (status === 'complete' && result.info === 'OK') {
-              console.log(result)
               if (result && result.regeocode) {
                 self.formItem.position = result.regeocode.formattedAddress
               }
@@ -132,9 +131,8 @@ export default {
       this.formItem.projectManagerId = arguments[0].value
     },
     partAChange () {
-      console.log(arguments)
-      this.formItem.firstPartyUserName = arguments[0]
-      this.formItem.firstPartyUserId = arguments[1]
+      this.formItem.firstPartyUserName = arguments[0].label
+      this.formItem.firstPartyUserId = arguments[0].value
     },
     addMarker () {
       let marker = {
@@ -143,33 +141,35 @@ export default {
       this.markers.push(marker)
     },
     save () {
-      let obj = {
-        projectName: this.formItem.name,
-        partAId: this.formItem.firstPartyUserId,
-        partAName: this.formItem.firstPartyUserName,
-        startTime: this.formItem.startTime,
-        endTime: this.formItem.endTime,
-        projectManagerId: this.formItem.projectManagerId,
-        projectManagerName: this.formItem.projectManagerName,
-        lng: this.formItem.lng,
-        lat: this.formItem.lat,
-        userId: getUserId(),
-        comment: this.formItem.comment,
-        projectId: this.detailData.id,
-        remarks: this.formItem.remarks
+      if ((this.detailData.firstPartyUserId === this.formItem.firstPartyUserId) && (this.detailData.startTime === this.formItem.startTime) && (this.detailData.completionTime === this.formItem.endTime) && (this.detailData.projectManagerId === this.formItem.projectManagerId) && (this.detailData.remarks === this.formItem.remarks) && (this.detailData.lat === this.formItem.lat) && (this.detailData.lng === this.formItem.lng)) {
+        this.$Message.info('未做任何更改，无需提交')
+      } else {
+        let obj = {
+          projectName: this.formItem.name,
+          partAId: this.formItem.firstPartyUserId,
+          partAName: this.formItem.firstPartyUserName,
+          startTime: this.formItem.startTime,
+          endTime: this.formItem.endTime,
+          projectManagerId: this.formItem.projectManagerId,
+          projectManagerName: this.formItem.projectManagerName,
+          lng: this.formItem.lng,
+          lat: this.formItem.lat,
+          userId: getUserId(),
+          comment: this.formItem.comment,
+          projectId: this.detailData.id,
+          remarks: this.formItem.remarks,
+          address: this.formItem.position
+        }
+        projectAttributeModify(obj).then((res) => {
+          this.$Message.info(res.data.msg)
+        })
       }
-      console.log(obj)
-      projectAttributeModify(obj).then((res) => {
-        console.log(res)
-        this.$Message.info(res.data.msg)
-      })
     },
     getData () {
       selectProjectDetail({
         projectId: this.$route.query.projectId,
         userId: getUserId()
       }).then((res) => {
-        console.log(res)
         this.detailData = res.data.data
         this.formItem = {
           lng: this.$route.query.lng,
@@ -182,15 +182,15 @@ export default {
           projectManagerName: this.detailData.projectManagerName,
           remarks: this.detailData.remarks,
           startTime: this.detailData.startTime,
-          endTime: this.detailData.endTime,
-          seTime: [this.detailData.startTime, this.detailData.endTime],
+          endTime: this.detailData.completionTime,
+          seTime: [this.detailData.startTime, this.detailData.completionTime],
           position: this.detailData.provinceName + this.detailData.cityName + this.detailData.districtName + this.detailData.specificAddress
         }
-        console.log(this)
+        this.getUser()
+        this.getProjectManager()
       })
     },
     deteChange () {
-      console.log(arguments)
       this.formItem.startTime = arguments[0][0]
       this.formItem.endTime = arguments[0][1]
     },
@@ -209,14 +209,15 @@ export default {
       })
     },
     getProjectManager () {
-      getUserList({
+      let obj = {
         'pageSize': 0,
         'page': 0,
-        'name': '',
-        'office': this.detailData.officeId,
-        'role': '',
-        'isLoginApp': ''
-      }).then((res) => {
+        'id': this.detailData.id,
+        'officeId': this.detailData.officeId,
+        'userId': getUserId(),
+        'name': ''
+      }
+      listProjectUser(obj).then((res) => {
         if (res.data.status === '200') {
           this.projectManager = res.data.data.list
         }
@@ -233,10 +234,8 @@ export default {
     }
   },
   mounted () {
-    console.log(getOffice())
     this.getData()
-    this.getUser()
-    this.getProjectManager()
+
     this.addMarker()
   }
 }

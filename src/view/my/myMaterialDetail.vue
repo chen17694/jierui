@@ -44,7 +44,6 @@ export default {
       taskMaterialDetail({
         id: this.$route.query.id
       }).then((res) => {
-        console.log(res)
         this.detailData = res.data.data
       })
     },
@@ -59,6 +58,11 @@ export default {
         ]
       }).then((res) => {
         this.$Message.info(res.data.msg)
+        if (res.data.status === '200') {
+          this.$router.push({
+            name: 'myMaterial'
+          })
+        }
       })
     },
     back () {

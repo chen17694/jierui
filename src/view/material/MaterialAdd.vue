@@ -28,7 +28,7 @@
         <FormItem label="所属单位" prop="officeId">
           <Row>
               <Col span="20">
-                <Select v-model="formMaterial.officeId" placeholder="请选择" label-in-value @on-change="officeCategoryChange">
+                <Select v-model="formMaterial.officeId" placeholder="请选择" label-in-value @on-change="officeCategoryChange" filterable clearable>
                   <Option v-for="(item, key) in officeCategory" :key="key" :value="item.value">{{item.label}}</Option>
                 </Select>
               </Col>
@@ -37,7 +37,7 @@
         <FormItem label="物资类别" prop="materialCategoryName">
           <Row>
                 <Col span="20">
-                   <Select v-model="formMaterial.materialCategoryId" placeholder="请选择" label-in-value @on-change="materialCategoryChange">
+                   <Select v-model="formMaterial.materialCategoryId" placeholder="请选择" label-in-value @on-change="materialCategoryChange" filterable clearable>
                       <Option v-for="(item, key) in materialCategory" :key="key" :value="item.value">{{item.label}}</Option>
                   </Select>
                 </Col>
@@ -48,8 +48,8 @@
         </FormItem>
         <FormItem label="是否需要归还" prop="needReturnStatus">
             <RadioGroup v-model="formMaterial.needReturnStatus">
-                <Radio label="1">是</Radio>
-                <Radio label="0">否</Radio>
+                <Radio label="0">是</Radio>
+                <Radio label="1">否</Radio>
             </RadioGroup>
         </FormItem>
         <FormItem>
@@ -106,7 +106,7 @@ export default {
         id: '',
         name: '',
         approvalStatus: null,
-        amount: '',
+        amount: 0,
         materialCategoryName: '',
         materialCategoryId: '',
         officeId: '',
@@ -114,14 +114,18 @@ export default {
         needReturnStatus: ''
       },
       ruleValidate: {
+        needReturnStatus: [
+          { required: true, message: '请选择是否需要归还', trigger: 'blur' }
+        ],
+        approvalStatus: [
+          { required: true, message: '请选择是否需要单位负责人审批', trigger: 'blur' }
+        ],
+        materialCategoryName: [{ required: true, message: '请选择物资类别', trigger: 'blur' }],
         name: [
           { required: true, message: '请输入少于20字的物资名称/物资名称已重复', trigger: 'blur' }
         ],
         amount: [
           { required: true, type: 'number', message: '请输入物资的数量', trigger: 'blur' }
-        ],
-        needReturnStatus: [
-          { require: true, trigger: 'change' }
         ],
         officeId: [
           { required: true, message: '请选择物资所属单位', trigger: 'change' }
@@ -147,17 +151,15 @@ export default {
       materialDetail({ id: id }).then((res) => {
         if (res.data.status === '200') {
           let gdata = res.data.data
-          console.log(gdata.amount)
           this.formMaterial.id = gdata.id
           this.formMaterial.name = gdata.name
-          this.formMaterial.amount = gdata.amount
+          this.formMaterial.amount = Number(gdata.amount)
           this.formMaterial.approvalStatus = gdata.approvalStatus
           this.formMaterial.materialCategoryName = gdata.materialCategoryName
           this.formMaterial.materialCategoryId = gdata.materialCategoryId
           this.formMaterial.officeId = gdata.officeId
           this.formMaterial.officeName = gdata.officeName
           this.formMaterial.needReturnStatus = gdata.needReturnStatus
-          console.log(this.formMaterial)
         } else {}
       })
     },
@@ -168,6 +170,7 @@ export default {
         if (res.data.status === '200') {
           _this.$Message.info(res.data.msg)
           _this.categoryModal = false
+          _this.MaterialCategory()
         } else {
           _this.$Message.info(res.data.msg)
         }
@@ -205,8 +208,6 @@ export default {
           } else {
             this.AddMaterial()
           }
-        } else {
-          this.$Message.info('请检查填写信息！')
         }
       })
     },
@@ -216,7 +217,6 @@ export default {
     AddMaterial () {
       let _this = this
       addMaterial(_this.formMaterial).then((res) => {
-        console.log(res.data)
         if (res.data.status === '200') {
           _this.$Message.info(res.data.msg)
           _this.$router.push('materialList')

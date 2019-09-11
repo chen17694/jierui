@@ -16,7 +16,7 @@
         <FormItem label="甲方公司" prop="firstPartyCompanyId">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.firstPartyCompanyId" label-in-value @on-change="firstPartyCompanyOnChange">
+              <Select v-model="formItem.firstPartyCompanyId" label-in-value @on-change="firstPartyCompanyOnChange" filterable clearable>
                 <Option v-for="(item, index) in firstPartyCompany" :value="item.id " :key="index">{{item.name}}</Option>
               </Select>
             </Col>
@@ -25,7 +25,7 @@
         <FormItem label="甲方负责人" prop="firstPartyUserId">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.firstPartyUserId" label-in-value @on-change="firstPartyUserOnChange">
+              <Select v-model="formItem.firstPartyUserId" label-in-value @on-change="firstPartyUserOnChange" filterable clearable>
                 <Option v-for="(item, index) in firstPartyUser" :value="item.id " :key="index">{{item.name}}</Option>
               </Select>
             </Col>
@@ -48,7 +48,7 @@
         <FormItem label="项目经理" prop="projectManagerId">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.projectManagerId" label-in-value @on-change="projectManagerOnChange">
+              <Select v-model="formItem.projectManagerId" label-in-value @on-change="projectManagerOnChange" filterable clearable>
                 <Option v-for="(item, index) in projectManager" :value="item.id " :key="index">{{item.name}}</Option>
               </Select>
             </Col>
@@ -77,7 +77,7 @@
         </FormItem>
       </Form>
       <div class="btns">
-        <Button type="primary" @click="this.save">保存</Button>
+        <Button type="primary" @click="save">保存</Button>
         <Button @click="back">返回</Button>
       </div>
     </Card>
@@ -108,7 +108,7 @@ export default {
       }
     }
     return {
-      center: [this.$route.params.lng, this.$route.params.lat],
+      center: [this.$route.query.lng, this.$route.query.lat],
       zoom: 14,
       formItem: {
         name: '',
@@ -123,8 +123,8 @@ export default {
         projectManagerId: '',
         projectManagerName: '',
         location: '',
-        lng: this.$route.params.lng,
-        lat: this.$route.params.lat,
+        lng: this.$route.query.lng,
+        lat: this.$route.query.lat,
         remarks: '',
         dates: []
       },
@@ -160,7 +160,6 @@ export default {
           })
           geocoder.getAddress([self.formItem.lng, self.formItem.lat], function (status, result) {
             if (status === 'complete' && result.info === 'OK') {
-              console.log(result)
               if (result && result.regeocode) {
                 self.formItem.location = result.regeocode.formattedAddress
                 self.formItem.provinceName = result.regeocode.addressComponent.province
@@ -228,13 +227,18 @@ export default {
             'userId': getUserId()
           }).then((res) => {
             this.$Message.info(res.data.msg)
+            if (res.data.status === '200') {
+              this.$router.push({
+                name: 'projectManagementList'
+              })
+            }
           })
         }
       })
     },
     addMarker () {
       let marker = {
-        position: [this.$route.params.lng, this.$route.params.lat]
+        position: [this.$route.query.lng, this.$route.query.lat]
       }
       this.markers.push(marker)
     },
@@ -290,7 +294,6 @@ export default {
     }
   },
   mounted () {
-    console.log(getOffice())
     this.getFirstPartyCompany()
     this.getProjectManager()
     this.addMarker()

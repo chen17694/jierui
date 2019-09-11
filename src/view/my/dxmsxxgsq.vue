@@ -21,7 +21,7 @@
       <h3 style="color: #2d8cf0; margin-bottom: 20px">变更属性</h3>
       <ul style="list-style-type: none">
         <li style="margin-bottom: 5px">甲方负责人修改为：{{detailData.newPartAName}}</li>
-        <li style="margin-bottom: 5px">项目修改日期修改为：{{detailData.newStartTime}} - {{detailData.newStartTime}}</li>
+        <li style="margin-bottom: 5px">项目修改日期修改为：{{detailData.newStartTime}} - {{detailData.newEndTime}}</li>
         <li style="margin-bottom: 5px">项目备注修改为：{{detailData.newRemark}}</li>
         <!--<li style="margin-bottom: 5px">项目位置修改为：{{detailData.taskHoldersName}}</li>-->
       </ul>
@@ -79,7 +79,7 @@ export default {
   methods: {
     back () {
       this.$router.push({
-        name: 'projectOverdue'
+        name: 'myApproval'
       })
     },
     shenpi () {
@@ -88,24 +88,26 @@ export default {
     save () {
       let obj = {
         opt: this.editParams.opt,
-        taskId: this.$route.params.data.taskId,
+        taskId: this.$route.query.taskId,
         userId: getUserId(),
         comment: this.editParams.comment,
-        processType: this.$route.params.data.type
+        processType: this.$route.query.type
       }
-      console.log(obj)
       opt(obj).then((res) => {
-        console.log(res)
+        if (res.data.status === '200') {
+          this.$router.push({
+            name: 'myApproval'
+          })
+        }
         this.$Message.info(res.data.msg)
       })
     },
     getData () {
       detailProjectAttributeModify({
-        taskId: this.$route.params.data.taskId,
+        taskId: this.$route.query.taskId,
         userId: getUserId(),
         type: '1'
       }).then((res) => {
-        console.log(res.data.data)
         this.detailData = res.data.data
         this.stepArr = res.data.data.list
       })

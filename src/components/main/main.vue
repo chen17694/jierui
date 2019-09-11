@@ -2,30 +2,31 @@
   <Layout style="height: 100%" class="main">
     <Sider hide-trigger collapsible :width="256" :collapsed-width="64" v-model="collapsed" class="left-sider" :style="{overflow: 'hidden'}">
       <side-menu accordion ref="sideMenu" :active-name="$route.name" :collapsed="collapsed" @on-select="turnToPage" :menu-list="menuList">
-        <div class="logo-con">
-          <img v-show="!collapsed" :src="maxLogo" key="max-logo" />
-          <img v-show="collapsed" :src="minLogo" key="min-logo" />
+        <!-- 需要放在菜单上面的内容，如Logo，写在side-menu标签内部，如下 -->
+        <div class="logo-con" style="display: flex; align-items: center; margin-bottom: 30px">
+          <img :src="maxLogo" key="max-logo" />
+          <div v-show="!collapsed" style="font-size: 18px; color: #ffffff; text-align: center; width: 100%">杰瑞配时管理平台</div>
         </div>
       </side-menu>
     </Sider>
     <Layout>
       <Header class="header-con">
         <header-bar :collapsed="collapsed" @on-coll-change="handleCollapsedChange">
-          <user :message-unread-count="unreadCount" :user-avatar="userAvatar"/>
+          <user :message-unread-count="unreadCount" :user-avatar="userAvatar" @get-user-avatar="getUserAvatar"/>
           <language v-if="$config.useI18n" @on-lang-change="setLocal" style="margin-right: 10px;" :lang="local"/>
-          <!-- <error-store v-if="$config.plugin['error-store'] && $config.plugin['error-store'].showInHeader" :has-read="hasReadErrorPage" :count="errorCount"></error-store> -->
+          <!--<error-store v-if="$config.plugin['error-store'] && $config.plugin['error-store'].showInHeader" :has-read="hasReadErrorPage" :count="errorCount"></error-store>-->
           <fullscreen v-model="isFullscreen" style="margin-right: 10px;"/>
         </header-bar>
       </Header>
       <Content class="main-content-con">
         <Layout class="main-layout-con">
-          <!-- <div class="tag-nav-wrapper">
+          <div class="tag-nav-wrapper">
             <tags-nav :value="$route" @input="handleClick" :list="tagNavList" @on-close="handleCloseTag"/>
-          </div> -->
+          </div>
           <Content class="content-wrapper">
-            <!-- <keep-alive :include="cacheList"> -->
+            <keep-alive :include="cacheList">
               <router-view/>
-            <!-- </keep-alive> -->
+            </keep-alive>
             <ABackTop :height="100" :bottom="80" :right="50" container=".content-wrapper"></ABackTop>
           </Content>
         </Layout>
@@ -43,10 +44,9 @@ import Fullscreen from './components/fullscreen'
 import Language from './components/language'
 import ErrorStore from './components/error-store'
 import { mapMutations, mapActions, mapGetters } from 'vuex'
-import { getNewTagList, routeEqual } from '@/libs/util'
+import { getNewTagList, routeEqual, getAvatar } from '@/libs/util'
 import routers from '@/router/routers'
-import minLogo from '@/assets/images/logo-min.jpg'
-import maxLogo from '@/assets/images/logo.jpg'
+import maxLogo from '@/assets/images/logo.png'
 import './main.less'
 export default {
   name: 'Main',
@@ -63,9 +63,9 @@ export default {
   data () {
     return {
       collapsed: false,
-      minLogo,
       maxLogo,
-      isFullscreen: false
+      isFullscreen: false,
+      userAvatar: getAvatar()
     }
   },
   computed: {
@@ -78,11 +78,8 @@ export default {
     tagRouter () {
       return this.$store.state.app.tagRouter
     },
-    userAvatar () {
-      return this.$store.state.user.avatarImgPath
-    },
     cacheList () {
-      const list = ['ParentView', ...this.tagNavList.length ? this.tagNavList.filter(item => !(item.meta && item.meta.notCache)).map(item => item.name) : []]
+      const list = ['MaterialAdd', 'addProjectForm', 'myTaskRoad', 'myProject', 'myTask', 'xmsxxg']
       return list
     },
     menuList () {
@@ -111,6 +108,9 @@ export default {
       'handleLogin',
       'getUnreadMessageCount'
     ]),
+    getUserAvatar (data) {
+      this.userAvatar = data
+    },
     turnToPage (route) {
       let { name, params, query } = {}
       if (typeof route === 'string') name = route
@@ -180,7 +180,7 @@ export default {
       })
     }
     // 获取未读消息条数
-    // this.getUnreadMessageCount()
+    this.getUnreadMessageCount()
   }
 }
 </script>

@@ -11,7 +11,7 @@ nowYear += (nowYear < 2000) ? 1900 : 0 //
 var lastMonthDate = new Date() // 上月日期
 lastMonthDate.setDate(1)
 lastMonthDate.setMonth(lastMonthDate.getMonth() - 1)
-var lastYear = lastMonthDate.getYear()
+// var lastYear = lastMonthDate.getYear()
 var lastMonth = lastMonthDate.getMonth()
 
 // 格式化日期：yyyy-MM-dd
@@ -30,12 +30,10 @@ export const formatDate = (date) => {
 }
 
 // 今天
-var getCurrentDate = new Date(nowYear, nowMonth, nowDay)
-var getCurrentDate = formatDate(getCurrentDate)
+// var getCurrentDate = formatDate(new Date(nowYear, nowMonth, nowDay))
 
 // 昨天
-var getYesterdayDate = new Date(nowYear, nowMonth, nowDay - 1)
-var getYesterdayDate = formatDate(getYesterdayDate)
+// var getYesterdayDate = formatDate(new Date(nowYear, nowMonth, nowDay - 1))
 
 // 获得某月的天数
 export const getMonthDays = (myMonth) => {
@@ -133,7 +131,7 @@ export const getLastQuarterEndDate = () => {
   var quarterEndMonth = getQuarterStartMonth() - 1
   var now = new Date()
   now.setMonth(quarterEndMonth)
-  var nowMonth = now.getMonth()
+  // var nowMonth = now.getMonth()
   var nowYear = now.getFullYear()
   return formatDate(new Date(nowYear, quarterEndMonth, getMonthDays(quarterEndMonth)))
 }
@@ -141,7 +139,7 @@ export const getLastQuarterEndDate = () => {
 // 获取本年日期
 export const getCurrentYear = () => {
   // 起止日期数组
-  var startStop = new Array()
+  var startStop = []
 
   // 本年第一天
   var currentYearFirstDate = new Date(nowYear, 0, 1)

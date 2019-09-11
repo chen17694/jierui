@@ -15,7 +15,7 @@
         <FormItem label="推送单位" prop="officeId">
           <Row>
               <Col span="20">
-                <Select v-model="formInfo.officeId" placeholder="请选择" label-in-value @on-change="officeCategoryChange">
+                <Select v-model="formInfo.officeId" placeholder="请选择" label-in-value @on-change="officeCategoryChange" filterable clearable>
                   <Option v-for="(item, key) in officeCategory" :key="key" :value="item.value">{{item.label}}</Option>
                 </Select>
               </Col>
@@ -111,7 +111,6 @@ export default {
     if (getUserId()) {
       this.formInfo.userId = getUserId()
     }
-    console.log(getOffice())
     this.listUserRole()
     this.getUserList()
     this.ListProject()
@@ -240,7 +239,6 @@ export default {
     CreateMessage () {
       let _this = this
       createMessage(_this.formInfo).then((res) => {
-        console.log(res.data)
         if (res.data.status === '200') {
           _this.$Message.info(res.data.msg)
           _this.$router.push('infolist')

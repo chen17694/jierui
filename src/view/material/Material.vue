@@ -36,7 +36,7 @@
                 <span class="label">归属单位:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.officeId" placeholder="请选择" label-in-value>
+                <Select v-model="params.officeId" placeholder="请选择" label-in-value filterable clearable>
                   <Option v-for="(item, key) in officeCategory" :key="key" :value="item.value">{{item.label}}</Option>
                 </Select>
               </Col>
@@ -48,7 +48,7 @@
                 <span class="label">物资类型:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.materialCategoryId" placeholder="请选择" label-in-value>
+                <Select v-model="params.materialCategoryId" placeholder="请选择" label-in-value filterable clearable>
                       <Option v-for="(item, key) in materialCategory" :key="key" :value="item.value">{{item.label}}</Option>
                   </Select>
               </Col>
@@ -63,7 +63,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tableMaterial" :total="total" v-model="tableData" :columns="columns" :on-change="pageChange" :on-page-size-change="pageSizeChange" @on-select="onSelect"></tables>
+    <tables ref="tableMaterial" :total="total" @on-row-dblclick="onRowClick" v-model="tableData" :columns="columns" @on-edit="onEdit" :on-change="pageChange" :on-page-size-change="pageSizeChange" @on-select="onSelect"></tables>
   </div>
 </template>
 
@@ -105,99 +105,8 @@ export default {
         { title: '物资类型', key: 'materialCategoryName' },
         {
           title: '操作',
-          key: 'action',
-          fixed: 'right',
-          width: 150,
-          render: (h, params) => {
-            return h('div', [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                nativeOn: {
-                  click: () => {
-                    this.$router.push({ path: 'materialAdd', query: { id: params.row.id } })
-                  }
-                }
-              }, [
-                h('Icon', {
-                  props: {
-                    type: 'md-create',
-                    size: 16
-                  },
-                  on: {
-                    click: () => {
-                      this.$emit('on-delete', params)
-                    }
-                  }
-                })
-              ]),
-              h('Button', {
-                style: {
-                  marginLeft: '6px'
-                },
-                props: {
-                  type: 'success',
-                  size: 'small'
-                },
-                nativeOn: {
-                  click: () => {
-                    this.$router.push({ path: 'materialDetail', query: { id: params.row.id } })
-                  }
-                }
-              }, [
-                h('Icon', {
-                  props: {
-                    type: 'md-list-box',
-                    size: 16
-                  },
-                  on: {
-                    click: () => {
-                      vm.$emit('on-delete', params)
-                    }
-                  }
-                })
-              ]),
-              h('Button', {
-                style: {
-                  marginLeft: '6px'
-                },
-                props: {
-                  type: 'error',
-                  size: 'small'
-                },
-                nativeOn: {
-                  click: () => {
-                    this.$Modal.confirm({
-                      title: '是否执行删除操作',
-                      content: '<p>删除后不能找回，还要继续吗</p>',
-                      onOk: () => {
-                        this.idList = []
-                        this.idList.push(params.row.id)
-                        this.DeleteMaterial(this.idList)
-                      },
-                      onCancel: () => {
-                        this.$Message.info('操作已取消！')
-                      }
-                    })
-                  }
-                }
-              }, [
-                h('Icon', {
-                  props: {
-                    type: 'md-trash',
-                    size: 16
-                  },
-                  on: {
-                    click: () => {
-                      vm.$emit('on-delete', params)
-                    }
-                  }
-                })
-              ])
-            ])
-          }
+          key: 'handle',
+          options: ['edit']
         }
       ]
     }
@@ -210,8 +119,18 @@ export default {
     this.ListOffice()
   },
   methods: {
+    onRowClick () {
+      this.$router.push({
+        name: 'MaterialDetail',
+        query: {
+          id: arguments[0].id
+        }
+      })
+    },
+    onEdit () {
+      this.$router.push({ path: 'materialEdit', query: { id: arguments[0].row.id } })
+    },
     cancelAll () {
-      console.log('取消全选')
     },
     ListOffice () {
       let _this = this
@@ -262,7 +181,6 @@ export default {
       this.filterPanel = !this.filterPanel
     },
     pageSizeChange (val) {
-      console.log(val)
       this.params.pageSize = val
       this.getData()
     },
@@ -284,7 +202,6 @@ export default {
     },
     getData () {
       materialList(this.params).then((res) => {
-        console.log(res.data.data)
         if (res.data.status === '200') {
           this.tableData = res.data.data.businessMaterialBeanList
           this.total = parseInt(res.data.data.count)

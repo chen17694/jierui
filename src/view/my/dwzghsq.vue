@@ -56,10 +56,10 @@ export default {
       stepArr: [],
       editPanel: false,
       columns: [
-        { title: '物资类型', key: 'materialTypeName' },
+        { title: '物资类型', key: 'typeName' },
         { title: '物资名称', key: 'materialName' },
         { title: '已借数量', key: 'borrowedNum' },
-        { title: '归还数量', key: 'returnNum ' },
+        { title: '归还数量', key: 'returnNum' },
         { title: '申请日期', key: 'applyTime' },
         { title: '预计归还日期', key: 'returnDate' }
       ],
@@ -69,7 +69,7 @@ export default {
   methods: {
     back () {
       this.$router.push({
-        name: 'projectOverdue'
+        name: 'myApproval'
       })
     },
     shenpi () {
@@ -79,27 +79,29 @@ export default {
       let arr = this.projectMaterialJoinApproveForm
       let obj = {
         opt: this.editParams.opt,
-        taskId: this.$route.params.data.taskId,
+        taskId: this.$route.query.taskId,
         userId: getUserId(),
         comment: this.editParams.comment,
-        processType: this.$route.params.data.type,
+        processType: this.$route.query.type,
         projectMaterialJoinApproveForm: {
           list: arr
         }
       }
-      console.log(obj)
       opt(obj).then((res) => {
-        console.log(res)
+        if (res.data.status === '200') {
+          this.$router.push({
+            name: 'myApproval'
+          })
+        }
         this.$Message.info(res.data.msg)
       })
     },
     getData () {
       detailMaterialReturnService({
-        taskId: this.$route.params.data.taskId,
+        taskId: this.$route.query.taskId,
         userId: getUserId(),
         type: '1'
       }).then((res) => {
-        console.log(res.data.data)
         this.tableData = this.projectMaterialJoinApproveForm = res.data.data.materialList
         this.stepArr = res.data.data.list
         this.detailData = res.data.data

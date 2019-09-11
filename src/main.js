@@ -18,7 +18,7 @@ import VOrgTree from 'v-org-tree'
 import 'v-org-tree/dist/v-org-tree.css'
 // 实际打包时应该不引入mock
 /* eslint-disable */
-if (process.env.NODE_ENV !== 'production') require('@/mock')
+// if (process.env.NODE_ENV !== 'production') require('@/mock')
 
 Vue.use(iView, {
   i18n: (key, value) => i18n.t(key, value)
@@ -28,7 +28,8 @@ Vue.use(VOrgTree)
 Vue.use(VueAMap);
 VueAMap.initAMapApiLoader({
   key: '4a39b6a30a22fedf2647a6d0f759b010',
-  plugin: ['Geocoder', 'ToolBar', 'PlaceSearch', 'MarkerClusterer']
+  plugin: ['Geocoder', 'ToolBar', 'PlaceSearch', 'MarkerClusterer', 'DistrictSearch', 'DistrictLayer'],
+  v: '1.4.15'
 });
 lazyAMapApiLoaderInstance.load().then(()=>{
   localStorage.removeItem('_AMap_raster');

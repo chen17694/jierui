@@ -16,15 +16,16 @@
         </div>
       </Col>
     </Row>
-    <tree-table ref="child1" expand-key="name" searchable :expand-type="false" children-prop="child" :selectable="true" :columns="columns" :data="tableData" @checkbox-click="onSelect">
+    <tree-table ref="child1" expand-key="name" :is-fold="false" searchable :expand-type="false" children-prop="child" :selectable="true" :columns="columns" :data="tableData" @checkbox-click="onSelect">
       <template slot="type" slot-scope="scope">
         <div>{{renderType(scope)}}</div>
       </template>
       <template slot="likes" slot-scope="scope">
-        <Button style="margin-right: 10px"  @click="onAdd(scope)">
+        <div v-if="renderType(scope) === '区'" style="width: 46px; display: inline-block; margin-right: 10px"></div>
+        <Button style="margin-right: 10px" @click="onAdd(scope)" v-else>
           <Icon type="md-add"  size="14"/>
         </Button>
-        <Button @click="onEdit(scope)">
+        <Button @click="onEdit(scope)" v-if="renderType(scope) !== '国家'">
           <Icon type="md-settings" size="14"/>
         </Button>
       </template>
@@ -38,10 +39,10 @@
           {{this.parentName}}
         </FormItem>
         <FormItem label="行政区划名称" prop="name">
-          <Input v-model="formValidate.name" placeholder="请输入行政区划名称"></Input>
+          <Input v-model="formValidate.name" placeholder="请输入行政区划名称"/>
         </FormItem>
         <FormItem label="行政区划类型" prop="type">
-          <Select v-model="formValidate.type" placeholder="请选择行政区划类型">
+          <Select v-model="formValidate.type" placeholder="请选择行政区划类型" clearable>
             <Option value="0">根节点</Option>
             <Option value="1">国家</Option>
             <Option value="2">省</Option>
@@ -119,11 +120,20 @@ export default {
       }
     }
   },
+  watch: {
+    formValidate: {
+      handler: (val) => {
+        if (val.type === undefined) {
+          this.formValidate.type = ''
+        }
+      },
+      deep: true
+    }
+  },
   methods: {
     // 单选
     onSelect (row) {
       this.rowId = this.$refs.child1.getCheckedProp('id')
-      console.log(this.rowId)
     },
     // 全选
     onSelectionChange (row) {
@@ -131,14 +141,12 @@ export default {
       row.forEach((item) => {
         this.rowId.push(item.id)
       })
-      console.log(this.rowId)
     },
     // 批量删除
     dropdownClick (name) {
       this.rowId = this.rowId.map((item) => {
         return String(item)
       })
-      console.log(this.rowId)
       if (name === '批量删除') {
         let params = {
           'ids': this.rowId,
@@ -167,7 +175,6 @@ export default {
     },
     // 编辑
     onEdit () {
-      console.log(arguments)
       this.modalType = 1
       this.formValidate.parentId = arguments[0].row.parentId
       this.formValidate.id = arguments[0].row.id

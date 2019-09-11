@@ -5,8 +5,16 @@
 </template>
 
 <script>
+import { setToken, getAutoLogin } from '@/libs/util'
 export default {
-  name: 'App'
+  name: 'App',
+  mounted () {
+    window.onbeforeunload = function (e) {
+      if (getAutoLogin() === 'false') {
+        setToken('')
+      }
+    }
+  }
 }
 </script>
 
@@ -20,6 +28,39 @@ html,body{
   overflow: hidden;
   margin: 0;
   padding: 0;
+}
+.ivu-modal-header-inner{
+  font-size: 18px !important;
+  font-weight: bold !important;
+  color: #515A6E !important;
+}
+.ivu-modal-footer{
+  .ivu-btn-text{
+    margin-right: 60px !important;
+    width: 140px !important;
+    height: 40px !important;
+    color: #3483F3 !important;
+    background-color: #F8F8F9 !important;
+    border: 1px solid #E8EAEC !important;
+  }
+  .ivu-btn-default{
+    margin-right: 60px !important;
+    width: 140px !important;
+    height: 40px !important;
+    color: #3483F3 !important;
+    background-color: #F8F8F9 !important;
+    border: 1px solid #E8EAEC !important;
+  }
+  .ivu-btn-primary{
+    width: 140px !important;
+    height: 40px !important;
+  }
+}
+.ivu-input-group-prepend, .ivu-input-group-append {
+  border-radius: 0 !important;
+}
+.demo-spin-icon-load{
+  animation: ani-demo-spin 1s linear infinite;
 }
 #app {
   .size;

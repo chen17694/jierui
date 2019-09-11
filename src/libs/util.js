@@ -1,33 +1,51 @@
 import Cookies from 'js-cookie'
 // cookie保存的天数
 import config from '@/config'
-import { forEach, hasOneOf, objEqual } from '@/libs/tools'
+import { forEach, hasOneOf } from '@/libs/tools'
 
 const { title, cookieExpires, useI18n } = config
 
 export const TOKEN_KEY = 'token'
 
 export const setToken = (token) => {
-  Cookies.set(TOKEN_KEY, token, { expires: cookieExpires || 1 })
+  Cookies.set(TOKEN_KEY, token, { expires: cookieExpires })
+}
+export const setAutoLogin = (autoLogin) => {
+  Cookies.set('autoLogin', autoLogin, { expires: cookieExpires })
 }
 export const setUserId = (id) => {
-  Cookies.set('userId', id, { expires: cookieExpires || 1 })
+  Cookies.set('userId', id, { expires: cookieExpires })
+}
+export const setAvatar = (data) => {
+  Cookies.set('avatar', data, { expires: cookieExpires })
 }
 export const setOffice = (office) => {
-  Cookies.set('office', office, { expires: cookieExpires || 1 })
+  Cookies.set('office', office, { expires: cookieExpires })
+}
+export const setHead = (head) => {
+  Cookies.set('head', head, { expires: cookieExpires })
 }
 export const setUserInfo = (data) => {
-  Cookies.set('userInfo', data, { expires: cookieExpires || 1 })
+  Cookies.set('userInfo', data, { expires: cookieExpires })
 }
 export const getToken = () => {
   const token = Cookies.get(TOKEN_KEY)
   if (token) return token
   else return false
 }
+export const getAutoLogin = () => {
+  const autoLogin = Cookies.get('autoLogin')
+  return autoLogin
+}
 export const getUserId = () => {
   const id = Cookies.get('userId')
   if (id) return id
   else return false
+}
+export const getAvatar = () => {
+  const avatar = Cookies.get('avatar')
+  if (avatar) return avatar
+  else return ''
 }
 export const getOffice = () => {
   const id = Cookies.get('office')
@@ -351,11 +369,12 @@ export const showByAccess = (access, canViewAccess) => {
  * @param {*} route2 路由对象
  */
 export const routeEqual = (route1, route2) => {
-  const params1 = route1.params || {}
-  const params2 = route2.params || {}
-  const query1 = route1.query || {}
-  const query2 = route2.query || {}
-  return (route1.name === route2.name) && objEqual(params1, params2) && objEqual(query1, query2)
+  return (route1.name === route2.name)
+  // const params1 = route1.params || {}
+  // const params2 = route2.params || {}
+  // const query1 = route1.query || {}
+  // const query2 = route2.query || {}
+  // return (route1.name === route2.name) && objEqual(params1, params2) && objEqual(query1, query2)
 }
 
 /**
@@ -431,4 +450,37 @@ export const Percentage = (num1, num2) => {
     // Math.round((parseFloat(num1) / parseFloat(num2)) * 10000) / 100.0 + "%"
     isNaN(Math.round((parseFloat(num1) / parseFloat(num2)) * 10000) / 100.0) ? '0%' : Math.round((parseFloat(num1) / parseFloat(num2)) * 10000) / 100.0 + '%'
   )
+}
+
+/**
+ * @description 将后端菜单树转换为路由树
+ * @param {Array} menus
+ * @returns {Array}
+ */
+export const backendMenusToRouters = (menus) => {
+  let routers = []
+  forEach(menus, (menu) => {
+    // 将后端数据转换成路由数据
+    let route = backendMenuToRoute(menu)
+    // 如果后端数据有下级，则递归处理下级
+    if (menu.children && menu.children.length !== 0) {
+      route.children = backendMenusToRouters(menu.children)
+    }
+    routers.push(route)
+  })
+  return routers
+}
+
+/**
+ * @description 将后端菜单转换为路由
+ * @param {Object} menu
+ * @returns {Object}
+ */
+const backendMenuToRoute = (menu) => {
+  // 具体内容根据自己的数据结构来定，这里需要注意的一点是
+  // 原先routers写法是component: () => import('@/view/error-page/404.vue')
+  // 经过json数据转换，这里会丢失，所以需要按照上面提过的做转换，下面只写了核心点，其他自行处理
+  let route = Object.assign({}, menu)
+  route.component = () => import(`@/${menu.component}`)
+  return route
 }

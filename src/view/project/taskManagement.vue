@@ -14,7 +14,7 @@
       <Col span="12">
         <div style="float: right">
           <Button type="warning" style="margin-right: 10px" @click="reminder">任务提醒</Button>
-          <Button type="success" @click="toAdd" v-if="creatTaskPermission === '0'">新建任务</Button>
+          <Button type="success" @click="toAdd" v-if="creatTaskPermission === '0' || creatProjectTaskPermission === '0'">新建任务</Button>
         </div>
       </Col>
     </Row>
@@ -27,7 +27,7 @@
                 <span class="label">项目:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.businessProjectId">
+                <Select v-model="params.businessProjectId" filterable clearable>
                   <Option v-for="(item, index) in businessProject" :value="item.id " :key="index">{{item.name}}</Option>
                 </Select>
               </Col>
@@ -39,7 +39,7 @@
                 <span class="label">任务类型:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.type">
+                <Select v-model="params.type" clearable>
                   <Option value="1">巡检任务</Option>
                   <Option value="2">优化任务</Option>
                   <Option value="3">宣传任务</Option>
@@ -53,7 +53,7 @@
                 <span class="label">任务状态:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.taskStatus">
+                <Select v-model="params.taskStatus" clearable>
                   <Option value="1">未领取</Option>
                   <Option value="2">已拒绝</Option>
                   <Option value="3">未开始</Option>
@@ -73,7 +73,7 @@
                 <span class="label">甲方评分:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.firstPartyScoring">
+                <Select v-model="params.firstPartyScoring" clearable>
                   <Option value="1">非常满意</Option>
                   <Option value="2">满意</Option>
                   <Option value="3">不满意</Option>
@@ -90,7 +90,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tables" :total="this.total" :columns="columns" v-model="tableData" :taskListBtnVisible="true" @on-edit="onEdit" :on-change="pageChange" :on-page-sizeChange="pageSizeChange"/>
+    <tables ref="tables" :total="this.total" @on-row-dblclick="onRowClick" :columns="columns" v-model="tableData" :taskListBtnVisible="true" @on-edit="onEdit" :on-change="pageChange" :on-page-size-change="pageSizeChange"/>
   </div>
 </template>
 
@@ -103,8 +103,8 @@ export default {
   components: { Tables },
   data () {
     return {
-      creatProjectTaskPermission: false,
       creatTaskPermission: '0',
+      creatProjectTaskPermission: '0',
       params: {
         pageSize: 10,
         page: 1,
@@ -145,11 +145,11 @@ export default {
           key: 'nature',
           render: (h, params) => {
             let text = ''
-            if (params.row.type === '1') {
+            if (params.row.nature === '1') {
               text = '单点优化'
-            } else if (params.row.type === '2') {
+            } else if (params.row.nature === '2') {
               text = '线优化'
-            } else {
+            } else if (params.row.nature === '3') {
               text = '区域优化'
             }
             return h('div', { props: {} }, text)
@@ -159,22 +159,24 @@ export default {
           key: 'taskStatus',
           render: (h, params) => {
             let text = ''
-            if (params.row.type === '1') {
+            if (params.row.taskStatus === '1') {
               text = '未领取'
-            } else if (params.row.type === '2') {
+            } else if (params.row.taskStatus === '2') {
               text = '已拒绝'
-            } else if (params.row.type === '3') {
+            } else if (params.row.taskStatus === '3') {
               text = '未开始'
-            } else if (params.row.type === '4') {
+            } else if (params.row.taskStatus === '4') {
               text = '进行中'
-            } else if (params.row.type === '5') {
+            } else if (params.row.taskStatus === '5') {
               text = '审核中'
-            } else if (params.row.type === '6') {
+            } else if (params.row.taskStatus === '6') {
               text = '已完成'
-            } else if (params.row.type === '7') {
+            } else if (params.row.taskStatus === '7') {
               text = '已驳回'
-            } else if (params.row.type === '8') {
+            } else if (params.row.taskStatus === '8') {
               text = '已撤销'
+            } else if (params.row.taskStatus === '9') {
+              text = '已暂停'
             }
             return h('div', { props: {} }, text)
           }
@@ -193,6 +195,16 @@ export default {
     }
   },
   methods: {
+    onRowClick () {
+      this.$router.push({
+        name: 'taskDetail',
+        query: {
+          taskId: arguments[0].id,
+          lat: arguments[0].lat,
+          lng: arguments[0].lng
+        }
+      })
+    },
     reminder () {
       this.$router.push({
         name: 'taskReminder'
@@ -208,9 +220,9 @@ export default {
     },
     getData () {
       listTask(this.params).then((res) => {
-        console.log(res.data.data)
         this.creatProjectTaskPermission = res.data.data.creatProjectTaskPermission
         this.creatTaskPermission = res.data.data.creatTaskPermission
+        this.creatProjectTaskPermission = res.data.data.creatProjectTaskPermission
         this.tableData = res.data.data.taskDetailBeans
         this.total = Number(res.data.data.count)
       })
@@ -256,7 +268,7 @@ export default {
     onEdit (params, row) {
       if (params.permissionCode === '2') {
         this.$Modal.confirm({
-          title: params.permissionCode === '2' ? '确定要' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该任务吗？' : '确定要申请' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该任务吗？',
+          title: '确定要' + (row.pauseStatus === '0' ? '暂停' : '开始') + '该任务吗？',
           onOk: () => {
             taskFunction({
               'taskId': row.id,
@@ -268,6 +280,10 @@ export default {
               this.getData()
             })
           }
+        })
+      } else if (params.permissionCode === '99') {
+        this.$router.push({
+          name: 'addTaskRoad'
         })
       } else {
         let str = ''

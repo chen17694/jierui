@@ -34,6 +34,7 @@ export default {
           document.msExitFullscreen()
         }
       } else {
+        console.log(main.requestFullscreen)
         if (main.requestFullscreen) {
           main.requestFullscreen()
         } else if (main.mozRequestFullScreen) {

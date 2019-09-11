@@ -7,12 +7,15 @@
         </span>
       </Input>
     </FormItem>
-    <FormItem prop="password">
+    <FormItem prop="password" style="margin-bottom: 10px">
       <Input type="password" v-model="form.password" placeholder="请输入密码">
         <span slot="prepend">
           <Icon :size="14" type="md-lock"></Icon>
         </span>
       </Input>
+    </FormItem>
+    <FormItem style="margin-bottom: 5px">
+      <Checkbox v-model="autoLogin">自动登录</Checkbox>
     </FormItem>
     <FormItem>
       <Button @click="handleSubmit" type="primary" long>登录</Button>
@@ -43,9 +46,10 @@ export default {
   data () {
     return {
       form: {
-        userName: 'super_admin',
+        userName: '',
         password: ''
-      }
+      },
+      autoLogin: true
     }
   },
   computed: {
@@ -62,7 +66,8 @@ export default {
         if (valid) {
           this.$emit('on-success-valid', {
             userName: this.form.userName,
-            password: this.form.password
+            password: this.form.password,
+            autoLogin: this.autoLogin
           })
         }
       })

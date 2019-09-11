@@ -24,7 +24,8 @@
               <DropdownItem name="取消">取消</DropdownItem>
             </DropdownMenu>
           </Dropdown>
-          <Button type="success" @click="addInit">新增日报</Button>
+          <Button @click="addInit">新增日报</Button>
+          <Button type="primary" @click="toDaily" style="margin-left: 10px">日历模式</Button>
         </div>
       </Col>
     </Row>
@@ -33,13 +34,13 @@
         <div>
           <span style="margin-right: 60px">
             项目：
-            <Select v-model="projectId" style="width:200px" @on-change="changeProject">
+            <Select v-model="projectId" style="width:200px" @on-change="changeProject" filterable clearable>
               <Option v-for="(item, index) in projectList" :value="item.id" :key="index">{{ item.name }}</Option>
             </Select>
           </span>
           <span>
             任务：
-            <Select v-model="taskId" style="width:200px">
+            <Select v-model="taskId" style="width:200px" filterable clearable>
               <Option v-for="item in taskList" :value="item.id" :key="item.id">{{ item.name }}</Option>
             </Select>
           </span>
@@ -60,12 +61,12 @@
           {{formValidate.userName}}
         </FormItem>
         <FormItem prop="projectName" label="选择项目">
-          <Select v-model="formValidate.projectId" @on-change="editChangeProject">
+          <Select v-model="formValidate.projectId" @on-change="editChangeProject" filterable clearable>
             <Option v-for="(item, index) in projectList" :value="item.id" :labek="item.name" :key="index">{{ item.name }}</Option>
           </Select>
         </FormItem>
         <FormItem prop="taskName" label="选择任务">
-          <Select v-model="formValidate.taskId">
+          <Select v-model="formValidate.taskId" filterable clearable>
             <Option v-for="item in editTaskList" :value="item.id" :labek="item.name" :key="item.id">{{ item.name }}</Option>
           </Select>
         </FormItem>
@@ -110,7 +111,7 @@ export default {
           projectList: [],
           projectId: '',
           taskId: '',
-          workingHours: 0,
+          workingHours: 1,
           reportDate: '',
           workingContent: ''
         }
@@ -130,8 +131,6 @@ export default {
                   this.addRows[params.index].projectId = id
                   this.addRows[params.index].taskList = []
                   this.addRows[params.index].taskId = ''
-                  console.log(id)
-                  console.log(params.index)
                   this.getListTask(1, id, params.index)
                 }
               }
@@ -246,7 +245,7 @@ export default {
         taskName: '',
         taskId: '',
         userName: '',
-        workingHours: 0,
+        workingHours: 1,
         reportDate: '',
         workingContent: ''
       },
@@ -294,8 +293,30 @@ export default {
   computed: {
   },
   watch: {
+    add (val) {
+      if (this.add === false) {
+        this.addTableData = []
+        this.addRows = [
+          {
+            taskList: [],
+            projectList: [],
+            projectId: '',
+            taskId: '',
+            workingHours: 1,
+            reportDate: '',
+            workingContent: ''
+          }
+        ]
+        this.rowIndex = 0
+      }
+    }
   },
   methods: {
+    toDaily () {
+      this.$router.push({
+        name: 'myDaily'
+      })
+    },
     editChangeProject () {
       this.formValidate.taskId = ''
       this.getListTask(3, arguments[0])
@@ -350,16 +371,49 @@ export default {
       })
     },
     addInit () {
-      this.addTableData = [{
-        pname: this.addRows[0].projectList,
-        tname: this.addRows[0].taskList
-      }]
-      this.add = true
+      listProject({
+        pageSize: 100,
+        page: 1,
+        userId: getUserId(),
+        projectName: '',
+        firstPartyCompanyId: '',
+        projectManagerId: '',
+        status: '',
+        firstPartyScoring: '',
+        provinceName: '',
+        cityName: '',
+        districtName: '',
+        timeStatus: '',
+        startTime: '',
+        endTime: ''
+      }).then((res) => {
+        this.addRows[this.rowIndex].projectList = res.data.data.projectList
+        this.addTableData = [{
+          pname: this.addRows[0].projectList,
+          tname: this.addRows[0].taskList
+        }]
+        this.add = true
+      })
     },
     delRow () {
       this.addRows.splice(arguments[0].index, 1)
       this.addTableData.splice(arguments[0].index, 1)
       this.rowIndex = arguments[0].index - 1
+      if (this.addRows.length === 0) {
+        this.addRows = [
+          {
+            taskList: [],
+            projectList: [],
+            projectId: '',
+            taskId: '',
+            workingHours: 1,
+            reportDate: '',
+            workingContent: ''
+          }
+        ]
+        this.rowIndex = 0
+        this.addInit()
+      }
     },
     addRow () {
       this.rowIndex = arguments[0].index + 1
@@ -368,7 +422,7 @@ export default {
         projectList: this.addRows[0].projectList,
         projectId: '',
         taskId: '',
-        workingHours: 0,
+        workingHours: 1,
         reportDate: '',
         workingContent: ''
       })
@@ -395,7 +449,6 @@ export default {
       this.getListTask(2, arguments[0])
     },
     dataDate () {
-      console.log(arguments)
       this.params.startDate = arguments[0]
       this.params.endDate = arguments[0]
       this.params.type = '6'
@@ -424,7 +477,6 @@ export default {
       this.formValidate.reportDate = arguments[0]
     },
     onEdit () {
-      console.log(arguments)
       // arguments[0].row
       this.formValidate = {
         id: arguments[0].row.id,
@@ -473,7 +525,6 @@ export default {
         startTime: '',
         endTime: ''
       }).then((res) => {
-        this.addRows[this.rowIndex].projectList = res.data.data.projectList
         this.projectList = res.data.data.projectList
       })
     },

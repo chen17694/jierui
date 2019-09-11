@@ -81,7 +81,7 @@
         <FormItem label="归属单位" prop="officeId">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.officeId" @on-change="selectUnit">
+              <Select v-model="formItem.officeId" @on-change="selectUnit" filterable clearable>
                 <Option v-for="item in unitList" :value="item.id" :key="item.id">{{item.name}}</Option>
               </Select>
             </Col>
@@ -112,7 +112,7 @@
         <FormItem label="角色" prop="roleId">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.roleId">
+              <Select v-model="formItem.roleId" filterable clearable>
                 <Option v-for="item in roleList" :value="item.id" :key="item.id">{{item.name}}</Option>
               </Select>
             </Col>
@@ -243,12 +243,12 @@ export default {
   methods: {
     uploadPhoto (e) {
       uploadImgToAliOss(e).then(res => {
-        this.formItem.photo = res
+        this.formItem.photo = res[0]
       })
     },
     back () {
       this.$router.push({
-        name: 'userList'
+        name: 'user'
       })
     },
     save () {
@@ -269,9 +269,11 @@ export default {
         if (valid) {
           insertOrUpdateUser(params).then((res) => {
             this.$Message.info(res.data.msg)
-            this.$router.push({
-              name: 'userList'
-            })
+            if (res.data.status === '200') {
+              this.$router.push({
+                name: 'user'
+              })
+            }
           })
         }
       })

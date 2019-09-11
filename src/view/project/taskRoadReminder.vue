@@ -46,6 +46,11 @@ export default {
         userId: getUserId()
       }).then((res) => {
         this.$Message.info(res.data.msg)
+        if (res.data.status === '200') {
+          this.$router.push({
+            name: 'taskRoadManagementList'
+          })
+        }
       })
     },
     getRemindSet () {
@@ -53,9 +58,7 @@ export default {
         type: '3',
         userId: getUserId()
       }).then((res) => {
-        console.log(res)
         if (res.data.status === '200') {
-          console.log(res.data.remindPercentage)
           this.formItem.remindPercentage = Number(res.data.data.remindPercentage)
           this.formItem.remindStatus = res.data.data.remindStatus === '0'
         }

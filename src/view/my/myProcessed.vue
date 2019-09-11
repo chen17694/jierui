@@ -1,10 +1,22 @@
 <template>
   <Tabs v-model="tab" :animated="false">
     <TabPane label="我的审核审批进度" name="myAudit">
-      <tables :total="this.total"  v-model="tableData" @on-row-click="onRowClick" :columns="columns1" :on-change="pageChange" :on-page-size-change="pageSizeChange"></tables>
+      <Row type="flex" justify="space-between" style="padding: 10px 0">
+        <Col span="12">
+          <div class="searchInput">
+            <div class="search">
+              <Input search @on-search="handleSearch" placeholder="输入关键字搜索" type="text" enter-button="搜索">
+              <span slot="prepend">审核审批名称:</span>
+              </Input>
+            </div>
+            <Button class="search-btn" type="primary" @click="openFilter"><Icon type="search"/>筛选</Button>
+          </div>
+        </Col>
+      </Row>
+      <tables :total="this.total" ref="tableData" v-model="tableData" @on-row-dblclick="onRowClick" :columns="columns1" :on-change="pageChange" :on-page-size-change="pageSizeChange"></tables>
     </TabPane>
     <TabPane label="待我审批" name="waiting">
-      <tables :total="this.total" v-model="tableData" @on-row-click="onRowClick" :columns="columns2" :on-change="pageChange" :on-page-size-change="pageSizeChange"></tables>
+      <tables :total="this.total" v-model="tableData" @on-row-dblclick="onRowClick" :columns="columns2" :on-change="pageChange" :on-page-size-change="pageSizeChange"></tables>
     </TabPane>
   </Tabs>
 </template>
@@ -31,7 +43,6 @@ export default {
         { title: '审核审批类型',
           key: 'type',
           render: (h, params) => {
-            console.log(params)
             let text = ''
             if (params.row.type === '1') {
               text = '项目审核'
@@ -58,7 +69,6 @@ export default {
         { title: '审批状态',
           key: 'approvalStatus',
           render: (h, params) => {
-            console.log(params)
             let text = ''
             if (params.row.approvalStatus === '1') {
               text = '审核中'
@@ -80,7 +90,6 @@ export default {
         { title: '审核审批类型',
           key: 'type',
           render: (h, params) => {
-            console.log(params)
             let text = ''
             if (params.row.type === '1') {
               text = '项目审核'
@@ -118,6 +127,12 @@ export default {
     }
   },
   methods: {
+    handleSearch () {
+
+    },
+    openFilter () {
+
+    },
     pageChange (page) {
       this.params.page = page
       this.getData()
@@ -127,15 +142,15 @@ export default {
       this.getData()
     },
     onRowClick () {
-      console.log(arguments[0])
       if (this.tab === 'waiting') {
         switch (arguments[0].type) {
           case ('1'):
             // 待审批 项目审批
             this.$router.push({
               name: 'dxmsq',
-              params: {
-                data: arguments[0]
+              query: {
+                type: arguments[0].type,
+                taskId: arguments[0].taskId
               }
             })
             break
@@ -143,8 +158,9 @@ export default {
             // 待审批 任务审批
             this.$router.push({
               name: 'drwsq',
-              params: {
-                data: arguments[0]
+              query: {
+                type: arguments[0].type,
+                taskId: arguments[0].taskId
               }
             })
             break
@@ -152,8 +168,9 @@ export default {
             // 待审批 任务路口审批
             this.$router.push({
               name: 'drwlksq',
-              params: {
-                data: arguments[0]
+              query: {
+                type: arguments[0].type,
+                taskId: arguments[0].taskId
               }
             })
             break
@@ -161,8 +178,9 @@ export default {
             // 待审批 物资申请审批
             this.$router.push({
               name: 'dwzsq',
-              params: {
-                data: arguments[0]
+              query: {
+                type: arguments[0].type,
+                taskId: arguments[0].taskId
               }
             })
             break
@@ -170,8 +188,9 @@ export default {
             // 待审批 物资归还审批
             this.$router.push({
               name: 'dwzghsq',
-              params: {
-                data: arguments[0]
+              query: {
+                type: arguments[0].type,
+                taskId: arguments[0].taskId
               }
             })
             break
@@ -179,8 +198,9 @@ export default {
             // 待审批 项目属性修改审批
             this.$router.push({
               name: 'dxmsxxgsq',
-              params: {
-                data: arguments[0]
+              query: {
+                type: arguments[0].type,
+                taskId: arguments[0].taskId
               }
             })
             break
@@ -188,24 +208,27 @@ export default {
             // 待审批 项目状态修改审批
             this.$router.push({
               name: 'dxmztxgsq',
-              params: {
-                data: arguments[0]
+              query: {
+                type: arguments[0].type,
+                taskId: arguments[0].taskId
               }
             })
             break
           case ('8'):
             this.$router.push({
               name: 'dwzjrxm',
-              params: {
-                data: arguments[0]
+              query: {
+                type: arguments[0].type,
+                taskId: arguments[0].taskId
               }
             })
             break
           case ('9'):
             this.$router.push({
               name: 'dryjrxmsq',
-              params: {
-                data: arguments[0]
+              query: {
+                type: arguments[0].type,
+                taskId: arguments[0].taskId
               }
             })
             break
@@ -261,8 +284,9 @@ export default {
             // 我的审批 项目属性修改审批
             this.$router.push({
               name: 'xmsxxgsq',
-              params: {
-                data: arguments[0]
+              query: {
+                type: arguments[0].type,
+                taskId: arguments[0].taskId
               }
             })
             break
@@ -314,10 +338,59 @@ export default {
   },
   mounted () {
     this.getData()
+    window.onresize = event => {
+      console.log(123)
+      this.$refs.tableData.handleResize()
+    }
   }
 }
 </script>
 
-<style scoped>
-
+<style scoped lang="less">
+  .ivu-tabs{
+    overflow: initial;
+  }
+  .searchInput{
+    float: left;
+    /deep/ .search-btn{
+      height: 32px;
+    }
+  }
+  .search{
+    float: left;
+    margin-right: 10px;
+    /deep/ .ivu-input-group-prepend{
+      background: none;
+      border: 0 none;
+    }
+    /deep/ .ivu-input-search{
+      border: 0 none;
+    }
+    /deep/ .ivu-input-search:before{
+      content: none
+    }
+    .search-btn{
+      float: right;
+    }
+  }
+  .filterPanel{
+    clear: both;
+    padding: 0 0 10px 0;
+    .label{
+      display: block;
+      text-align: right;
+      padding-right: 10px;
+      line-height: 32px;
+    }
+    .btns{
+      margin-top: 6px;
+      text-align: center;
+      .ivu-btn-primary{
+        margin-right: 10px;
+      }
+      .ivu-btn{
+        width: 80px;
+      }
+    }
+  }
 </style>

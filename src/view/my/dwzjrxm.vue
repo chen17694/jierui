@@ -10,6 +10,7 @@
       <ul style="list-style-type: none">
         <li style="margin-bottom: 5px">项目名称：{{detailData.projectName}}</li>
         <li style="margin-bottom: 5px">申请人员：{{detailData.applyName}}</li>
+        <li style="margin-bottom: 5px">归属单位：{{detailData.office}}</li>
         <li style="margin-bottom: 5px">申请时间：{{detailData.createTime}}</li>
         <li style="margin-bottom: 5px">需求描述及原因：{{detailData.applyReason}}</li>
       </ul>
@@ -35,7 +36,7 @@
           <Input v-model="editParams.comment" :disabled="editParams.opt === '1'" type="textarea" style="width: 80%" :autosize="{minRows: 5,maxRows: 10}"></Input>
         </FormItem>
       </Form>
-      <div class="tableWrapper">
+      <div class="tableWrapper" v-if="detailData.needForm === '1'">
         <tables ref="tables"  v-model="tableData" :columns="columns" @on-add="addRow" @on-remove="delRow" :showPage="false"></tables>
       </div>
     </Modal>
@@ -125,10 +126,10 @@ export default {
           key: 'applyNum',
           width: '100px',
           render: (h, params) => {
-            console.log(this.addRows[params.index])
             return h('InputNumber', {
               props: {
-                value: this.addRows[params.index].applyNum
+                value: this.addRows[params.index].applyNum,
+                min: 1
               },
               on: {
                 'on-change': (applyNum) => {
@@ -180,13 +181,12 @@ export default {
   methods: {
     getMaterialCategory () {
       materialCategory().then((res) => {
-        console.log(res)
         this.addRows[this.rowIndex].materialCategoryList = res.data.data
       })
     },
     back () {
       this.$router.push({
-        name: 'projectOverdue'
+        name: 'myApproval'
       })
     },
     getMaterialList (id, index) {
@@ -198,7 +198,6 @@ export default {
         materialCategoryId: id,
         officeId: ''
       }).then((res) => {
-        console.log(res)
         this.addRows[index].materialList = res.data.data.businessMaterialBeanList
         this.tableData[index].tname = this.addRows[index].materialList
       })
@@ -234,41 +233,53 @@ export default {
       this.editPanel = true
     },
     save () {
+      let obj = {}
       let projectMaterialJoinApproveForm = []
-      this.addRows.forEach((item) => {
-        projectMaterialJoinApproveForm.push({
-          materialTypeId: item.materialCategoryId,
-          materialTypeName: item.materialCategoryName,
-          materialId: item.materialId,
-          materialName: item.materialName,
-          returnDate: item.returnDate,
-          applyNum: item.applyNum
+      if (this.detailData.needForm === '1') {
+        this.addRows.forEach((item) => {
+          projectMaterialJoinApproveForm.push({
+            materialTypeId: item.materialCategoryId,
+            materialTypeName: item.materialCategoryName,
+            materialId: item.materialId,
+            materialName: item.materialName,
+            returnDate: item.returnDate,
+            applyNum: item.applyNum
+          })
         })
-      })
-      let obj = {
-        opt: this.editParams.opt,
-        taskId: this.$route.params.data.taskId,
-        userId: getUserId(),
-        comment: this.editParams.comment,
-        processType: this.$route.params.data.type,
-        projectMaterialJoinApproveForm: {
-          list: projectMaterialJoinApproveForm
+        obj = {
+          opt: this.editParams.opt,
+          taskId: this.$route.query.taskId,
+          userId: getUserId(),
+          comment: this.editParams.comment,
+          processType: this.$route.query.type,
+          projectMaterialJoinApproveForm: {
+            list: projectMaterialJoinApproveForm
+          }
+        }
+      } else {
+        obj = {
+          opt: this.editParams.opt,
+          taskId: this.$route.query.taskId,
+          userId: getUserId(),
+          comment: this.editParams.comment,
+          processType: this.$route.query.type
         }
       }
-      console.log(obj)
       opt(obj).then((res) => {
-        console.log(res)
+        if (res.data.status === '200') {
+          this.$router.push({
+            name: 'myApproval'
+          })
+        }
         this.$Message.info(res.data.msg)
       })
     },
     getData () {
-      console.log(this.$route.params)
       detailProjectMaterialJoin({
-        taskId: this.$route.params.data.taskId,
+        taskId: this.$route.query.taskId,
         userId: getUserId(),
         type: '1'
       }).then((res) => {
-        console.log(res.data.data)
         this.stepArr = res.data.data.list
         this.projectId = res.data.data.projectId
         this.detailData = res.data.data

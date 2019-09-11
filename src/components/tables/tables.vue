@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="searchable && searchPlace === 'top'" class="search-con search-con-top">
-      <!--<Select v-model="searchKey" class="search-col">-->
+      <!--<Select clearable v-model="searchKey" class="search-col">-->
         <!--<Option v-for="item in columns" v-if="item.key !== 'handle'" :value="item.key" :key="`search-col-${item.key}`">{{ item.title }}</Option>-->
       <!--</Select>-->
     </div>
@@ -41,7 +41,8 @@
             <img src="../../assets/images/p1.png" v-if="item.permissionCode === '1'" title="开始项目" class="btn" @click="onEdit(item, row)">
             <img src="../../assets/images/p1.png" v-if="item.permissionCode === '2' && row.pauseStatus === '1' " title="开始项目" class="btn" @click="onEdit(item, row)">
             <img src="../../assets/images/p2.png" v-if="item.permissionCode === '2' && row.pauseStatus === '0' " title="暂停项目" class="btn" @click="onEdit(item, row)">
-            <img src="../../assets/images/p3.png" v-if="item.permissionCode === '3'" title="申请暂停项目" class="btn" @click="onEdit(item, row)">
+            <img src="../../assets/images/p3.png" v-if="item.permissionCode === '3' && row.pauseStatus === '1'" title="申请开始项目" class="btn" @click="onEdit(item, row)">
+            <img src="../../assets/images/p3.png" v-if="item.permissionCode === '3' && row.pauseStatus === '0'" title="申请暂停项目" class="btn" @click="onEdit(item, row)">
             <img src="../../assets/images/p4.png" v-if="item.permissionCode === '4'" title="撤销项目" class="btn" @click="onEdit(item, row)">
             <img src="../../assets/images/p5.png" v-if="item.permissionCode === '5'" title="申请撤销项目" class="btn" @click="onEdit(item, row)">
             <img src="../../assets/images/p6.png" v-if="item.permissionCode === '6'" title="逾期催办项目" class="btn" @click="onEdit(item, row)">
@@ -61,6 +62,7 @@
             <img src="../../assets/images/t4.png" v-if="item.permissionCode === '4'" title="催办任务" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
             <img src="../../assets/images/t5.png" v-if="item.permissionCode === '5'" title="提交审核" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
             <img src="../../assets/images/t6.png" v-if="item.permissionCode === '6'" title="删除任务" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
+            <img src="../../assets/images/p9.png" v-if="item.permissionCode === '99'" title="新增任务路口" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
           </div>
         </div>
       </template>
@@ -265,14 +267,12 @@ export default {
         params.tableData = this.value
         return h('div', btns.map(item => item(h, params, this)))
       }
-      console.log(item)
       return item
     },
     handleColumns (columns
     ) {
       this.insideColumns = columns.map((item, index) => {
         let res = item
-        console.log(res)
         if (res.editable) res = this.suportEdit(res, index)
         if (res.key === 'handle') res = this.surportHandle(res)
         return res

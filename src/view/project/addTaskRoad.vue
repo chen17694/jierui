@@ -1,16 +1,22 @@
 <template>
   <div style="height: 100%">
     <div class="amap-page-container">
-      <div style="position: absolute; z-index: 1; left: 20px; top: 20px; background-color: #ffffff; width: 300px">
+      <Card style="width:300px; position: absolute; left: 20px; top: 20px; border: 0 none; z-index: 1">
+        <div style="display: flex">
+          <input type="text" v-model="roadName" class="ivu-input ivu-input-default" style="height: 50px; border: 0 none; border-radius: 0; font-size: 15px; color: #999999">
+          <img src="../../assets/images/search.png" style=" cursor: pointer" @click="searchProject">
+        </div>
+      </Card>
+      <div style="position: absolute; z-index: 1; left: 20px; top: 90px; background-color: #ffffff; width: 300px">
         <div style="font-size: 14px;font-weight: bold;padding: 0 10px 0 10px;border-bottom: 1px solid rgb(232, 232, 232);line-height: 40px;">路口数量：{{this.total}}</div>
-        <div v-for="(item, index) in roadList" :key="index" @click="setCenter(item.lng, item.lat)" style="display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #e8e8e8; justify-content: space-between">
+        <div v-for="(item, index) in roadList" :key="index" @click="setCenter(item.lng, item.lat)" v-show="panelShow" style="display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #e8e8e8; justify-content: space-between">
           <span style="margin-right: 10px; display: flex; align-items: center">
             <img src="../../assets/images/icon1.png" style="width: 13px; margin-right: 5px">
             <span style="width: 155px; display: inline-block;">{{item.alias}}</span>
           </span>
           <span @click.stop>
             <span style="margin-right: 10px; cursor: pointer" @click="toArray(item)">{{item.select ? '已选' : '选取'}}</span>
-            <Button type="primary" size="small">详情</Button>
+            <Button type="primary" @click="toDetail(item)" size="small">详情</Button>
           </span>
         </div>
         <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 11px 10px 15px; border-bottom: 1px solid #e6e6e6;">
@@ -24,7 +30,7 @@
           </div>
         </div>
         <div style="display: flex; justify-content: space-between; padding: 10px 15px; color: #2E8CEB;">
-          <span @click="allProject" style="cursor: pointer">所有项目</span>
+          <span @click="allProject" style="cursor: pointer">所有路口</span>
           <span @click="close" style="cursor: pointer">{{this.panelShow ? '收起' : '展开'}}</span>
         </div>
       </div>
@@ -37,7 +43,7 @@
           </span>
           <span>
             <span style="margin-right: 10px; cursor: pointer" @click="deleteArray(index)">移除</span>
-            <Button type="primary" size="small">详情</Button>
+            <Button type="primary" @click="toDetail(item)" size="small">详情</Button>
           </span>
         </div>
         <Button type="primary" style="width: 90%; margin: 10px auto; display: block" @click="taskRoadPanel = true">新增已选任务路口</Button>
@@ -53,7 +59,8 @@
       >
         <el-amap-marker v-for="(marker, index) in markers" :key="index" :extData = "marker.id" vid="chenyiming" :position="marker.position" :content="marker.content" :events="marker.events"></el-amap-marker>
       </el-amap>
-      <Cascader :data="areaData" v-model="areaValue" change-on-select style="position: absolute; right: 20px; top: 20px; width: 200px;" @on-change="cascaderChange"></Cascader>
+      <Cascader :data="areaData" v-model="areaValue" style="position: absolute; right: 100px; top: 20px; width: 200px;" @on-change="cascaderChange"></Cascader>
+      <Button style="position: absolute; right: 20px; top: 20px;" type="primary" @click="back">返回</Button>
     </div>
     <Modal
       v-model="roadPanel"
@@ -79,14 +86,14 @@
       title="新增任务路口"
       @on-ok="saveTaskRoad"
     >
-      <Form ref="formItem1" :model="formItem1" :label-width="70" label-position="left" :rules="ruleValidate" >
+      <Form ref="formItem2" :model="formItem2" :label-width="70" label-position="left" :rules="ruleValidate" >
         <FormItem label="项目">
-          <Select v-model="formItem2.businessProjectId" @on-change="projectChange">
+          <Select v-model="formItem2.businessProjectId" @on-change="projectChange" filterable clearable>
             <Option v-for="(item, index) in projectList" :value="item.id" :key="index">{{item.name}}</Option>
           </Select>
         </FormItem>
         <FormItem label="任务">
-          <Select v-model="formItem2.businessTaskId" @on-change="taskChange">
+          <Select v-model="formItem2.businessTaskId" @on-change="taskChange" filterable clearable>
             <Option v-for="(item, index) in taskList" :value="item.id" :key="index">{{item.name}}</Option>
           </Select>
         </FormItem>
@@ -100,7 +107,7 @@
 
 <script>
 import { AMapManager, lazyAMapApiLoaderInstance } from 'vue-amap'
-import { areaData, addCrossing, listProject, listTask, addTaskCrossing, listCrossingAndCount } from '@/api/data'
+import { areaData, addCrossing, listProject, addTaskCrossing, listCrossingAndCount, listTask } from '@/api/data'
 import { getUserInfo, getUserId } from '@/libs/util'
 import road from '../../assets/images/road.png'
 import icon1 from '../../assets/images/icon1.png'
@@ -110,13 +117,14 @@ export default {
   data () {
     const self = this
     return {
+      roadName: '',
       panelShow: true,
       maxPage: 0,
       total: 0,
       params: {
         pageSize: 10,
         page: 1,
-        alias: '',
+        alias: this.roadName,
         provinceName: '',
         cityName: '',
         districtName: ''
@@ -168,6 +176,7 @@ export default {
       lat: '',
       lng: '',
       projectList: [],
+      taskList2: [],
       events: {
         complete () {
           let o = amapManager.getMap()
@@ -189,36 +198,59 @@ export default {
     }
   },
   methods: {
+    back () {
+      this.$router.push({
+        name: 'taskRoadManagementList'
+      })
+    },
     firstPage () {
       this.params.page = 1
+      this.markers = []
+      this.markerRefs = []
+      this.map.clearMarkers()
       this.getRoad()
     },
     prevPage () {
       if (this.params.page !== 1) {
         this.params.page--
+        this.markers = []
+        this.markerRefs = []
+        this.map.clearMarkers()
         this.getRoad()
       }
+    },
+    toDetail (item) {
+      this.$router.push({
+        name: 'roadHistory',
+        query: {
+          crossingCode: item.crossingCode
+        }
+      })
     },
     nextPage () {
       if (this.params.page < this.maxPage) {
         this.params.page++
+        this.markers = []
+        this.markerRefs = []
+        this.map.clearMarkers()
         this.getRoad()
       }
     },
     allProject () {
-
+      this.markers = []
+      this.markerRefs = []
+      this.map.clearMarkers()
+      this.getMapRoad()
     },
     close () {
-
+      this.panelShow = !this.panelShow
     },
     dateChange () {
-      console.log(arguments)
       this.formItem2.startTime = arguments[0][0]
       this.formItem2.completionTime = arguments[0][1]
     },
     saveTaskRoad () {
       let idLIst = this.selectList.map(item => item.id)
-      console.log(idLIst)
       let params = {
         businessProjectId: this.formItem2.businessProjectId,
         businessTaskId: this.formItem2.businessTaskId,
@@ -245,12 +277,12 @@ export default {
       listTask({
         pageSize: 0,
         page: 0,
+        userId: getUserId(),
         businessProjectId: this.formItem2.businessProjectId,
         type: '',
         name: '',
         taskStatus: '',
         firstPartyScoring: '',
-        userId: getUserId(),
         timeStatus: '',
         startTime: '',
         endTime: '',
@@ -258,8 +290,9 @@ export default {
         cityName: '',
         districtName: ''
       }).then((res) => {
-        console.log(res)
-        this.taskList = res.data.data.taskDetailBeans
+        this.taskList = res.data.data.taskDetailBeans.filter((item) => {
+          return (item.taskStatus === '2' || item.taskStatus === '3')
+        })
       })
     },
     saveRoad () {
@@ -274,9 +307,11 @@ export default {
         lng: this.lng,
         lat: this.lat
       }
-      console.log(params)
       addCrossing(params).then((res) => {
         this.$Message.info(res.data.msg)
+        this.markers = []
+        this.markerRefs = []
+        this.map.clearMarkers()
         this.getRoad()
       })
     },
@@ -315,14 +350,13 @@ export default {
         this.selectList.push(item)
       }
       this.stateCheck(this.roadList, this.selectList)
-      console.log(this.roadList)
     },
     cascaderChange () {
       let value = arguments[1].slice(1, arguments[1].length).map((item) => {
         return item.label
       })
-      console.log(value)
       this.keywords = value.join()
+      this.zoom = 16
       this.searchArea()
     },
     searchArea () {
@@ -346,9 +380,55 @@ export default {
         minClusterSize: 2
       })
     },
+    getMapRoad () {
+      listCrossingAndCount({
+        pageSize: 0,
+        page: 0,
+        alias: '',
+        provinceName: '',
+        cityName: '',
+        districtName: ''
+      }).then((res) => {
+        let roadList = res.data.data.list
+        if (roadList.length > 0) {
+          this.center = [roadList[0].lng || 116.397428, roadList[0].lat || 39.90923]
+        } else {
+          this.center = this.center.length === 0 ? [116.397428, 39.90923] : this.center
+        }
+        let self = this
+        roadList.forEach((item) => {
+          let status = `<div><img src="${road}" style="width: 40px; height: 40px"></div>`
+          this.markers.push({
+            position: [item.lng, item.lat],
+            id: item.id,
+            content: status,
+            events: {
+              init (o) {
+                self.markerRefs.push(o)
+              },
+              click (e) {
+                self.getProjectDetail(e.target.get('extData'))
+              }
+            }
+          })
+        })
+        setTimeout(() => {
+          self.initMark(self, amapManager.getMap())
+          let o = amapManager.getMap()
+          o.setFitView(self.markerRefs)
+        }, 0)
+      })
+    },
+    searchProject () {
+      this.markers = []
+      this.markerRefs = []
+      this.map.clearMarkers()
+      this.page = 1
+      this.params.alias = this.roadName
+      this.getRoad()
+    },
     getRoad () {
       listCrossingAndCount(this.params).then((res) => {
-        console.log(res)
         let roadList = this.roadList = res.data.data.list
         this.total = res.data.data.count
         if (this.total === '0') {
@@ -406,7 +486,6 @@ export default {
       startTime: '',
       endTime: ''
     }).then((res) => {
-      console.log(res.data.data.projectList)
       this.projectList = res.data.data.projectList
     })
     this.formItem1.userName = JSON.parse(getUserInfo()).name

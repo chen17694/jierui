@@ -1,31 +1,27 @@
 <template>
   <div>
-    <Row type="flex" justify="space-between" style="padding: 0; background: #fff; margin-bottom:20px;">
-      <Col >
-        <Menu mode="horizontal" theme="light" :active-name="activeTime" @on-select="selMenu">
-            <MenuItem name="0">全部</MenuItem>
-            <MenuItem name="1">本周</MenuItem>
-            <MenuItem name="2">上周</MenuItem>
-            <MenuItem name="3">本月</MenuItem>
-            <MenuItem name="4">上月</MenuItem>
-            <MenuItem name="6">自定义</MenuItem>
-        </Menu>
-      </Col>
-      <Col span="15">
-        <div v-if="activeTime == '6'" style="display:inline-block;">
-          <DatePicker
-            :confirm="true"
-            type="daterange"
-            placement="bottom-end"
-            placeholder="请选择起止日期"
-            style="width: 200px"
-            @on-change="changeTime"
-            @on-ok="selTimeTwo"
-          ></DatePicker>
-        </div>
-          <Button type="primary" style="margin-left:10px;" class="search-btn" icon="ios-funnel" @click="openFilter"><Icon type="search"/>筛选</Button>
-      </Col>
-    </Row>
+    <div style="display: flex; align-items: center; margin-bottom: 20px; background-color: #ffffff">
+      <Menu mode="horizontal" theme="light" :active-name="activeTime" @on-select="selMenu">
+        <MenuItem name="0">全部</MenuItem>
+        <MenuItem name="1">本周</MenuItem>
+        <MenuItem name="2">上周</MenuItem>
+        <MenuItem name="3">本月</MenuItem>
+        <MenuItem name="4">上月</MenuItem>
+        <MenuItem name="6">自定义</MenuItem>
+      </Menu>
+      <div v-if="activeTime == '6'" style="display:inline-block; margin-left: 50px">
+        <DatePicker
+          :confirm="true"
+          type="daterange"
+          placement="bottom-end"
+          placeholder="请选择起止日期"
+          style="width: 200px"
+          @on-change="changeTime"
+          @on-ok="selTimeTwo"
+        ></DatePicker>
+      </div>
+      <Button type="primary" style="margin-left:10px;" class="search-btn" icon="ios-funnel" @click="openFilter"><Icon type="search"/>筛选</Button>
+    </div>
     <div slot="filterPanel" class="filterPanel" v-if="filterPanel">
       <Card :bordered="false">
         <Row>
@@ -35,7 +31,7 @@
                 <span class="label">项目:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.projectId" placeholder="请选择" label-in-value>
+                <Select v-model="params.projectId" placeholder="请选择" label-in-value filterable clearable>
                       <Option v-for="(item, key) in projectList" :key="key" :value="item.value">{{item.label}}</Option>
                   </Select>
               </Col>
@@ -47,7 +43,7 @@
                 <span class="label">任务:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.taskId" placeholder="请选择" label-in-value>
+                <Select v-model="params.taskId" placeholder="请选择" label-in-value filterable clearable>
                       <Option v-for="(item, key) in listTask" :key="key" :value="item.value">{{item.label}}</Option>
                   </Select>
               </Col>
@@ -59,7 +55,7 @@
                 <span class="label">登记人员:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.userId" placeholder="请选择" label-in-value>
+                <Select v-model="params.userId" placeholder="请选择" label-in-value filterable clearable>
                       <Option v-for="(item, key) in userList" :key="key" :value="item.value">{{item.label}}</Option>
                   </Select>
               </Col>
@@ -74,7 +70,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tableDaily" :loading="tableLoading" :total="total" v-model="tableData" :columns="columns" :on-change="pageChange" :on-page-size-change="pageSizeChange" @on-select="onSelect"></tables>
+    <tables ref="tableDaily" :loading="tableLoading"  @on-row-dblclick="onRowClick" :total="total" v-model="tableData" :columns="columns" :on-change="pageChange" :on-page-size-change="pageSizeChange" @on-select="onSelect"></tables>
   </div>
 </template>
 
@@ -122,31 +118,7 @@ export default {
         { title: '任务名称', key: 'taskName' },
         { title: '登记人员', key: 'userName', width: 120 },
         { title: '时长', key: 'workingHours', width: 120 },
-        { title: '工作内容', key: 'workingContent' },
-        {
-          title: '操作',
-          key: 'action',
-          fixed: 'right',
-          width: 80,
-          align: 'center',
-          render: (h, params) => {
-            return h('div', [
-              h('Button', {
-                style: {
-                },
-                props: {
-                  type: 'success',
-                  size: 'small'
-                },
-                nativeOn: {
-                  click: () => {
-                    this.$router.push({ path: 'dailyDetail', query: { id: params.row.id } })
-                  }
-                }
-              }, '详细')
-            ])
-          }
-        }
+        { title: '工作内容', key: 'workingContent' }
       ]
     }
   },
@@ -160,6 +132,13 @@ export default {
     this.GetUserList()
   },
   methods: {
+    onRowClick () {
+      this.$router.push(
+        {
+          path: 'dailyDetail',
+          query: { id: arguments[0].id }
+        })
+    },
     curTime (val) {
       this.params.currentDate = val
     },
@@ -351,5 +330,8 @@ export default {
   }
   .ivu-row-flex-space-between{
     align-items: center;
+  }
+  .ivu-menu-horizontal.ivu-menu-light:after {
+    background: none;
   }
 </style>

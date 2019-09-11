@@ -42,12 +42,12 @@ export default {
       stepArr: [],
       editPanel: false,
       columns: [
-        { title: '物资类型', key: 'materialTypeName' },
+        { title: '物资类型', key: 'typeName' },
         { title: '物资名称', key: 'materialName' },
         { title: '已借数量', key: 'borrowedNum' },
-        { title: '归还数量', key: 'returnNum ' },
+        { title: '归还数量', key: 'returnNum' },
         { title: '申请日期', key: 'applyTime' },
-        { title: '预计归还日期', key: 'returnDate' }
+        { title: '预计归还日期', key: 'returnTime' }
       ],
       projectMaterialJoinApproveForm: []
     }
@@ -55,12 +55,12 @@ export default {
   methods: {
     back () {
       this.$router.push({
-        name: 'projectOverdue'
+        name: 'myApproval'
       })
     },
     chexiao () {
       this.$Modal.confirm({
-        title: '确定要撤销吗？',
+        title: '确定要撤销申请吗？',
         onOk: () => {
           let obj = {
             opt: '3',
@@ -69,7 +69,11 @@ export default {
             processType: this.$route.params.data.type
           }
           opt(obj).then((res) => {
-            console.log(res)
+            if (res.data.status === '200') {
+              this.$router.push({
+                name: 'myApproval'
+              })
+            }
             this.$Message.info(res.data.msg)
           })
         }
@@ -81,7 +85,6 @@ export default {
         userId: getUserId(),
         type: '2'
       }).then((res) => {
-        console.log(res.data.data)
         this.tableData = this.projectMaterialJoinApproveForm = res.data.data.materialList
         this.stepArr = res.data.data.list
         this.detailData = res.data.data

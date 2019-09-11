@@ -6,7 +6,7 @@
       <div class="filter" style="display: flex; justify-content: space-between;">
         <div>
           项目：
-          <Select v-model="params.projectId" style="width:200px">
+          <Select v-model="params.projectId" style="width:200px" filterable clearable>
             <Option v-for="(item, index) in projectList" :value="item.id" :label="item.name" :key="index">{{ item.name }}</Option>
           </Select>
         </div>
@@ -17,7 +17,7 @@
       </div>
     </Card>
     <p style="font-weight: bold; font-size: 15px; margin: 15px 0">任务逾期数量:{{this.total}}</p>
-    <tables ref="tables" :total="this.total" v-model="tableData" :columns="columns" @on-urge="urge" :on-change="pageChange" :on-page-size-change="pageSizeChange"></tables>
+    <tables ref="tables" :total="this.total" @on-row-dblclick="onRowClick" v-model="tableData" :columns="columns" @on-urge="urge" :on-change="pageChange" :on-page-size-change="pageSizeChange"></tables>
   </div>
 </template>
 
@@ -72,6 +72,14 @@ export default{
     }
   },
   methods: {
+    onRowClick () {
+      this.$router.push({
+        name: 'taskDetail',
+        query: {
+          taskId: arguments[0].id
+        }
+      })
+    },
     pageChange (page) {
       this.params.page = page
       this.getData()
@@ -114,7 +122,6 @@ export default{
       this.getData()
     },
     urge () {
-      console.log(arguments[0].row)
       taskFunction({
         taskId: arguments[0].row.id,
         userId: getUserId(),

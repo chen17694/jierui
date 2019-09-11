@@ -9,7 +9,7 @@
                 <span class="label">选择项目:</span>
               </Col>
               <Col span="17">
-                <Select v-model="params.projectId" @on-change="projectChange" label-in-value>
+                <Select v-model="params.projectId" @on-change="projectChange" label-in-value filterable clearable>
                   <Option v-for="(item, index) in businessProject" :value="item.id " :key="index">{{item.name}}</Option>
                 </Select>
               </Col>
@@ -21,7 +21,7 @@
                 <span class="label">选择任务:</span>
               </Col>
               <Col span="17">
-                <Select v-model="params.taskId" @on-change="taskChange" label-in-value>
+                <Select v-model="params.taskId" @on-change="taskChange" label-in-value filterable clearable>
                   <Option v-for="(item, index) in taskList" :key="index" :value="item.id">{{item.name}}</Option>
                 </Select>
               </Col>
@@ -71,7 +71,7 @@ export default {
           materialList: [],
           materialId: '',
           surplusNum: 0,
-          applyNum: '',
+          applyNum: 0,
           returnDate: '',
           materialName: '',
           materialTypeName: '',
@@ -113,9 +113,6 @@ export default {
           key: 'mname',
           width: '250px',
           render: (h, params) => {
-            let materialId = this.addRows[params.index].materialId
-            console.log(materialId)
-            console.log(params)
             return h('Select', {
               props: {
                 value: this.addRows[params.index].projectMaterialId
@@ -130,7 +127,6 @@ export default {
                       this.addRows[params.index].materialId = item.materialId
                     }
                   })
-                  console.log(this.addRows)
                 }
               }
             }, params.row.mname.map((item) => {
@@ -156,7 +152,7 @@ export default {
             return h('InputNumber', {
               props: {
                 value: Number(this.addRows[params.index].applyNum),
-                min: 0,
+                min: 1,
                 max: Number(this.addRows[params.index].surplusNum)
               },
               on: {
@@ -204,9 +200,7 @@ export default {
   },
   methods: {
     addSave () {
-      console.log(this.addRows)
       let materialList = []
-      console.log(this.addRows)
       this.addRows.forEach((item) => {
         materialList.push({
           projectMaterialId: item.projectMaterialId,
@@ -227,11 +221,13 @@ export default {
         userId: getUserId(),
         materialList: materialList
       }
-      console.log(obj)
       materialApplication(obj).then((res) => {
+        if (res.data.status === '200') {
+          this.$router.push({
+            name: 'myMaterial'
+          })
+        }
         this.$Message.info(res.data.msg)
-      }).catch((err) => {
-        console.log(err)
       })
     },
     clear () {
@@ -243,13 +239,17 @@ export default {
           materialList: [],
           materialId: '',
           surplusNum: 0,
-          applyNum: '',
+          applyNum: 0,
           returnDate: '',
           materialName: '',
           materialTypeName: '',
           projectMaterialId: ''
         }
       ]
+      materialCategory().then((res) => {
+        this.addRows[this.rowIndex].categoryList = res.data.data
+        this.addInit()
+      })
       this.tableData = [{
         cname: this.addRows[0].categoryList,
         mname: this.addRows[0].materialList
@@ -259,12 +259,9 @@ export default {
       this.params.taskId = ''
     },
     delRow () {
-      console.log(arguments[0])
-      console.log(this.addRows)
       this.addRows.splice(arguments[0].index, 1)
       this.tableData.splice(arguments[0].index, 1)
       this.rowIndex = arguments[0].index - 1
-      console.log(this.addRows)
     },
     addRow () {
       this.rowIndex = arguments[0].index + 1
@@ -274,7 +271,7 @@ export default {
         materialList: [],
         materialId: '',
         surplusNum: 0,
-        applyNum: '',
+        applyNum: 0,
         returnDate: '',
         materialName: '',
         materialTypeName: '',
@@ -322,7 +319,6 @@ export default {
         materialCategoryId: id,
         userId: getUserId()
       }).then((res) => {
-        console.log(res)
         if (res.data.status === '200') {
           this.addRows[index].materialList = res.data.data.businessProjectMaterialBeanList
           this.tableData[index].mname = this.addRows[index].materialList
@@ -333,9 +329,9 @@ export default {
     },
     taskChange () {
       this.params.taskName = arguments[0] ? arguments[0].label : ''
+      this.addInit()
     },
     projectChange () {
-      console.log(arguments)
       this.params.projectName = arguments[0] ? arguments[0].label : ''
       this.taskList = []
       this.params.taskId = ''
@@ -362,9 +358,7 @@ export default {
   mounted () {
     this.getProject()
     materialCategory().then((res) => {
-      console.log(res)
       this.addRows[this.rowIndex].categoryList = res.data.data
-      this.addInit()
     })
   }
 }

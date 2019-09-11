@@ -6,7 +6,7 @@
         <FormItem label="项目" prop="businessProjectId">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.businessProjectId" label-in-value @on-change="businessProjectOnChange">
+              <Select v-model="formItem.businessProjectId" label-in-value @on-change="businessProjectOnChange" filterable clearable>
                 <Option v-for="(item, index) in businessProject" :value="item.id " :key="index">{{item.name}}</Option>
               </Select>
             </Col>
@@ -25,7 +25,7 @@
         <FormItem label="任务类型" prop="type">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.type" label-in-value>
+              <Select v-model="formItem.type" label-in-value clearable>
                 <Option value="1">巡检任务</Option>
                 <Option value="2">优化任务</Option>
                 <Option value="3">宣传任务</Option>
@@ -36,7 +36,7 @@
         <FormItem label="任务负责人" prop="taskHoldersId">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.taskHoldersId" label-in-value @on-change="taskHoldersOnChange">
+              <Select v-model="formItem.taskHoldersId" label-in-value @on-change="taskHoldersOnChange" filterable clearable>
                 <Option v-for="(item, index) in taskHold" :value="item.id " :key="index">{{item.name}}</Option>
               </Select>
             </Col>
@@ -52,7 +52,7 @@
         <FormItem v-if="formItem.type === '2'" label="任务性质" prop="nature">
           <Row>
             <Col span="11">
-              <Select v-model="formItem.nature" label-in-value>
+              <Select v-model="formItem.nature" label-in-value clearable>
                 <Option value="1">单点优化</Option>
                 <Option value="2">线优化</Option>
                 <Option value="3">区域优化</Option>
@@ -83,8 +83,8 @@
         </FormItem>
       </Form>
       <div class="btns">
-        <Button type="primary" @click="this.save">保存</Button>
-        <Button>返回</Button>
+        <Button type="primary" @click="save">保存</Button>
+        <Button @click="back">返回</Button>
       </div>
     </Card>
   </div>
@@ -167,7 +167,6 @@ export default {
           })
           geocoder.getAddress([self.formItem.lng, self.formItem.lat], function (status, result) {
             if (status === 'complete' && result.info === 'OK') {
-              console.log(result)
               if (result && result.regeocode) {
                 self.formItem.location = result.regeocode.formattedAddress
                 self.formItem.provinceName = result.regeocode.addressComponent.province
@@ -197,6 +196,9 @@ export default {
     }
   },
   methods: {
+    back () {
+      this.$router.go(-1)
+    },
     taskHoldersOnChange () {
       this.formItem.taskHoldersName = arguments[0].label
     },
@@ -209,7 +211,6 @@ export default {
         userId: getUserId(),
         officeId: ''
       }).then((res) => {
-        console.log(res)
         this.taskHold = res.data.data.list
       })
     },
@@ -251,6 +252,11 @@ export default {
             'userId': getUserId()
           }).then((res) => {
             this.$Message.info(res.data.msg)
+            if (res.data.status === '200') {
+              this.$router.push({
+                name: 'taskManagementList'
+              })
+            }
           })
         }
       })
@@ -284,7 +290,6 @@ export default {
         userId: getUserId(),
         officeId: ''
       }).then((res) => {
-        console.log(res)
         this.taskHold = res.data.data.list
       })
     }

@@ -22,13 +22,13 @@
         </div>
       </Col>
     </Row>
-    <tables ref="tables" :total="this.total" :on-change="pageChange" :on-page-size-change="pageSizeChange" v-model="tableData" :columns="columns"></tables>
+    <tables ref="tables" @on-row-dblclick="onRowClick" :total="this.total" :on-change="pageChange" :on-page-size-change="pageSizeChange" v-model="tableData" :columns="columns"></tables>
   </div>
 </template>
 
 <script>
 import Tables from '_c/tables'
-import { listCrossing, areaData } from '@/api/data'
+import { listCrossingAndCount, areaData } from '@/api/data'
 export default {
   name: 'roadList',
   components: { Tables },
@@ -55,6 +55,15 @@ export default {
     }
   },
   methods: {
+    onRowClick () {
+      this.$router.push({
+        name: 'roadHistory',
+        query: {
+          crossingId: arguments[0].id,
+          crossingCode: arguments[0].crossingCode
+        }
+      })
+    },
     onAdd () {
       this.$router.push({
         name: 'addRoad'
@@ -67,7 +76,6 @@ export default {
       this.params.provinceName = value[0]
       this.params.cityName = value[1]
       this.params.districtName = value[2]
-      console.log(value)
       this.getData()
     },
     getAreaData () {
@@ -78,21 +86,21 @@ export default {
       })
     },
     handleSearch () {
-      console.log(arguments)
       this.params.alias = arguments[0]
       this.getData()
     },
     pageChange (page) {
-      this.listParams.page = page
+      this.params.page = page
       this.getData()
     },
     pageSizeChange (size) {
-      this.listParams.pageSize = size
+      this.params.pageSize = size
       this.getData()
     },
     getData () {
-      listCrossing(this.params).then((res) => {
-        this.tableData = res.data.data
+      listCrossingAndCount(this.params).then((res) => {
+        this.tableData = res.data.data.list
+        this.total = Number(res.data.data.count)
       })
     }
   },

@@ -82,12 +82,12 @@ export default {
   methods: {
     back () {
       this.$router.push({
-        name: 'projectOverdue'
+        name: 'myApproval'
       })
     },
     chexiao () {
       this.$Modal.confirm({
-        title: '确定要撤销吗？',
+        title: '确定要撤销申请吗？',
         onOk: () => {
           let obj = {
             opt: '3',
@@ -96,7 +96,11 @@ export default {
             processType: this.$route.params.data.type
           }
           opt(obj).then((res) => {
-            console.log(res)
+            if (res.data.status === '200') {
+              this.$router.push({
+                name: 'myApproval'
+              })
+            }
             this.$Message.info(res.data.msg)
           })
         }
@@ -108,7 +112,6 @@ export default {
         userId: getUserId(),
         type: '2'
       }).then((res) => {
-        console.log(res.data.data)
         this.detailData = res.data.data
         this.stepArr = res.data.data.list
       })

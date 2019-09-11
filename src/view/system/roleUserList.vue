@@ -14,11 +14,11 @@
     <tables ref="tables" :total="this.total" v-model="tableData" :on-change="pageChange" :on-page-size-change="pageSizeChange" :columns="columns" @on-delete="onDelete"></tables>
     <Modal
       v-model="allocatePanel"
-      width="600"
+      width="602"
       title="分配用户"
       @on-ok="save"
     >
-      <Select v-model="unit" style="width:200px; margin-bottom: 15px" @on-change="selectUnit">
+      <Select v-model="unit" style="width:200px; margin-bottom: 15px" @on-change="selectUnit" filterable clearable>
         <Option v-for="item in unitList" :value="item.id" :key="item.id">{{ item.name }}</Option>
       </Select>
       <Transfer
@@ -142,7 +142,6 @@ export default{
     },
     handleChange (newTargetKeys) {
       this.targetKeys = newTargetKeys
-      console.log(this.targetKeys)
     },
     allocateRender (item) {
       return item.text

@@ -36,7 +36,7 @@
                 <span class="label">项目:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.projectId" @on-change="projectChange">
+                <Select v-model="params.projectId" @on-change="projectChange" filterable clearable>
                   <Option v-for="(item, index) in businessProject" :value="item.id " :key="index">{{item.name}}</Option>
                 </Select>
               </Col>
@@ -48,7 +48,7 @@
                 <span class="label">任务:</span>
               </Col>
               <Col span="19">
-                <Select v-model="params.taskId">
+                <Select v-model="params.taskId" filterable clearable>
                   <Option v-for="(item, index) in taskList" :key="index" :value="item.id">{{item.name}}</Option>
                 </Select>
               </Col>
@@ -63,7 +63,7 @@
         </Row>
       </Card>
     </div>
-    <tables ref="tables" @on-row-click="onRowClick" :on-change="pageChange" :on-page-size-change="pageSizeChange" :total="this.total" v-model="tableData" :columns="columns" @on-back="onBack" @on-selection-change="onSelectionChange"></tables>
+    <tables ref="tables" @on-row-dblclick="onRowClick" :on-change="pageChange" :on-page-size-change="pageSizeChange" :total="this.total" v-model="tableData" :columns="columns" @on-back="onBack" @on-selection-change="onSelectionChange"></tables>
   </div>
 </template>
 
@@ -95,11 +95,11 @@ export default {
           align: 'center'
         },
         { title: '物资名称', key: 'name' },
-        { title: '物资总数', key: 'amount' },
-        { title: '剩余数量', key: 'surplusAmount' },
-        { title: '出借数量', key: 'lendAmount' },
-        { title: '所属单位', key: 'officeName' },
-        { title: '物资类型', key: 'materialCategoryName' },
+        { title: '项目名称', key: 'projectNane' },
+        { title: '任务名称', key: 'taskName' },
+        { title: '物资数量', key: 'amount' },
+        { title: '归还日期', key: 'completionTime' },
+        { title: '剩余天数', key: 'remainderDays' },
         {
           title: '操作',
           key: 'handle',
@@ -145,7 +145,6 @@ export default {
     },
     getData () {
       listMyMaterial(this.params).then((res) => {
-        console.log(res.data.data)
         if (res.data.status === '200') {
           this.tableData = res.data.data.businessTaskMaterialBeanList
           this.total = Number(res.data.data.count)
@@ -192,7 +191,6 @@ export default {
         cityName: '',
         districtName: ''
       }).then((res) => {
-        console.log(res)
         this.taskList = res.data.data.taskDetailBeans
       })
     },
@@ -230,7 +228,6 @@ export default {
                   returnNum: item.amount
                 })
               })
-              console.log(materialReturnParameterList)
               materialReturn({
                 userId: getUserId(),
                 materialReturnParameterList
