@@ -1,6 +1,6 @@
 <template>
   <!--<component :is="iconType" :type="iconName" :color="iconColor" :size="iconSize"/>-->
-  <img :src=" require('@/assets/images/' + type + '.png')" style="width: 14px; margin-right: 6px; position: relative; top: 2px">
+  <img :src=" require('@/assets/images/' + type + '.png')" style="width: 14px; margin-right: 6px; position: relative; top: 2px" v-if="type">
 </template>
 
 <script>
