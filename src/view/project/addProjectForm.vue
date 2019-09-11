@@ -123,8 +123,8 @@ export default {
         projectManagerId: '',
         projectManagerName: '',
         location: '',
-        lng: this.$route.query.lng,
-        lat: this.$route.query.lat,
+        lng: '',
+        lat: '',
         remarks: '',
         dates: []
       },
@@ -294,6 +294,9 @@ export default {
     }
   },
   mounted () {
+    console.log(this.$route.query.lat)
+    this.formItem.lng = this.$route.query.lng
+    this.formItem.lat = this.$route.query.lat
     this.getFirstPartyCompany()
     this.getProjectManager()
     this.addMarker()

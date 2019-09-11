@@ -352,6 +352,20 @@ export const listTask = (params) => {
     method: 'post'
   })
 }
+export const userProjectWorkingHours = (params) => {
+  return axios.request({
+    url: '/statistics/userProjectWorkingHours',
+    data: params,
+    method: 'post'
+  })
+}
+export const taskCrossingDateCount = (params) => {
+  return axios.request({
+    url: '/statistics/taskCrossingDateCount',
+    data: params,
+    method: 'post'
+  })
+}
 export const listTaskCrossing = (params) => {
   return axios.request({
     url: '/taskCrossingRelation/listTaskCrossing',
@@ -730,6 +744,21 @@ export const taskMaterialDetail = (params) => {
     method: 'post'
   })
 }
+export const taskDateCount = (params) => {
+  return axios.request({
+    url: '/statistics/taskDateCount',
+    data: params,
+    method: 'post'
+  })
+}
+export const projectTaskCount = (params) => {
+  return axios.request({
+    url: '/statistics/projectTaskCount',
+    data: params,
+    method: 'post'
+  })
+}
+
 export const mapCoordinateStatistics = (params) => {
   return axios.request({
     url: '/statistics/mapCoordinateStatistics',

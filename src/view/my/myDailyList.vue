@@ -396,23 +396,10 @@ export default {
       })
     },
     delRow () {
-      this.addRows.splice(arguments[0].index, 1)
-      this.addTableData.splice(arguments[0].index, 1)
-      this.rowIndex = arguments[0].index - 1
-      if (this.addRows.length === 0) {
-        this.addRows = [
-          {
-            taskList: [],
-            projectList: [],
-            projectId: '',
-            taskId: '',
-            workingHours: 1,
-            reportDate: '',
-            workingContent: ''
-          }
-        ]
-        this.rowIndex = 0
-        this.addInit()
+      if (this.addRows.length > 1) {
+        this.addRows.splice(arguments[0].index, 1)
+        this.addTableData.splice(arguments[0].index, 1)
+        this.rowIndex = arguments[0].index - 1
       }
     },
     addRow () {

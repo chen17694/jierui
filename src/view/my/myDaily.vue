@@ -174,6 +174,7 @@ export default {
   components: { Tables },
   data () {
     return {
+      rows: [],
       filter: false,
       edit: false,
       moreList: false,
@@ -361,33 +362,34 @@ export default {
   computed: {
     title () {
       return this.showDate.year + '年' + (this.showDate.month > 9 ? this.showDate.month + '月' : '0' + this.showDate.month + '月')
-    },
-    rows () {
-      const { year, month } = this.showDate
-      const months = (new Date(year, month, 0)).getDate()
-      const result = []
-      let row = []
-      let arrs = [year, month, '01']
-      var weeks = new Date(arrs[0], parseInt(arrs[1] - 1), arrs[2])
-      let week = weeks.getDay()
-      let day = 0
-      for (let i = 1; i <= 42; i += 1) {
-        if (i < week) {
-          this.addRowEmptyValue(row)
-        } else {
-          if (day === months) {
-            this.addRowEmptyValue(row)
-          } else {
-            this.addRowDayValue(row, ++day)
-          }
-        }
-        if (i % 7 === 0) {
-          result.push(row)
-          row = []
-        }
-      }
-      return result
     }
+    // rows () {
+    //   const { year, month } = this.showDate
+    //   const months = (new Date(year, month, 0)).getDate()
+    //   const result = []
+    //   let row = []
+    //   let arrs = [year, month, '01']
+    //   var weeks = new Date(arrs[0], parseInt(arrs[1] - 1), arrs[2])
+    //   let week = weeks.getDay()
+    //   let day = 0
+    //   for (let i = 1; i <= 42; i += 1) {
+    //     if (i < week) {
+    //       this.addRowEmptyValue(row)
+    //     } else {
+    //       if (day === months) {
+    //         this.addRowEmptyValue(row)
+    //       } else {
+    //         this.addRowDayValue(row, ++day)
+    //       }
+    //     }
+    //     if (i % 7 === 0) {
+    //       result.push(row)
+    //       row = []
+    //     }
+    //   }
+    //   console.log(result)
+    //   return result
+    // }
   },
   watch: {
     showDate: {
@@ -420,6 +422,33 @@ export default {
     }
   },
   methods: {
+    setRows () {
+      const { year, month } = this.showDate
+      const months = (new Date(year, month, 0)).getDate()
+      const result = []
+      let row = []
+      let arrs = [year, month, '01']
+      var weeks = new Date(arrs[0], parseInt(arrs[1] - 1), arrs[2])
+      let week = weeks.getDay()
+      let day = 0
+      for (let i = 1; i <= 42; i += 1) {
+        if (i < week) {
+          this.addRowEmptyValue(row)
+        } else {
+          if (day === months) {
+            this.addRowEmptyValue(row)
+          } else {
+            this.addRowDayValue(row, ++day)
+          }
+        }
+        if (i % 7 === 0) {
+          result.push(row)
+          row = []
+        }
+      }
+      console.log(result)
+      this.rows = result
+    },
     toList () {
       this.$router.push({
         name: 'myDailyList'
@@ -521,23 +550,10 @@ export default {
       })
     },
     delRow () {
-      this.addRows.splice(arguments[0].index, 1)
-      this.tableData.splice(arguments[0].index, 1)
-      this.rowIndex = arguments[0].index - 1
-      if (this.addRows.length === 0) {
-        this.addRows = [
-          {
-            taskList: [],
-            projectList: [],
-            projectId: '',
-            taskId: '',
-            workingHours: 1,
-            reportDate: '',
-            workingContent: ''
-          }
-        ]
-        this.rowIndex = 0
-        this.addInit()
+      if (this.addRows.length > 1) {
+        this.addRows.splice(arguments[0].index, 1)
+        this.tableData.splice(arguments[0].index, 1)
+        this.rowIndex = arguments[0].index - 1
       }
     },
     addRow () {
@@ -758,6 +774,8 @@ export default {
       return this.showDate.year >= this.copyMaxDate.year && this.showDate.month >= this.copyMaxDate.month
     },
     getDailyList (year, month) {
+      console.log(year)
+      console.log(month)
       let startDate = (year + '-') + ((month > 10 ? month : '0' + month) + '-01')
       let endDate = (year + '-') + ((month > 10 ? month : '0' + month) + '-') + ('' + (new Date(year, month, 0)).getDate())
       this.dailyList = {}
@@ -795,6 +813,7 @@ export default {
           this.dailyList = {}
         }
         this.timestamp = new Date().getTime()
+        this.setRows()
       })
     }
   },

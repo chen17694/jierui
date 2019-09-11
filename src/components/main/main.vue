@@ -82,7 +82,7 @@ export default {
       return this.$store.state.app.tagRouter
     },
     cacheList () {
-      const list = ['MaterialAdd', 'addProjectForm', 'myTaskRoad', 'myProject', 'myTask', 'xmsxxg']
+      const list = ['myTaskRoad', 'myProject', 'myTask']
       return list
     },
     menuList () {

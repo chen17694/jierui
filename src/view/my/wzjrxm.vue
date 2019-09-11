@@ -184,9 +184,11 @@ export default {
       })
     },
     delRow () {
-      this.addRows.splice(arguments[0].index, 1)
-      this.tableData.splice(arguments[0].index, 1)
-      this.rowIndex = arguments[0].index - 1
+      if (this.addRows.length > 1) {
+        this.addRows.splice(arguments[0].index, 1)
+        this.tableData.splice(arguments[0].index, 1)
+        this.rowIndex = arguments[0].index - 1
+      }
     },
     addRow () {
       this.rowIndex = arguments[0].index + 1

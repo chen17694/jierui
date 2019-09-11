@@ -74,11 +74,11 @@ class HttpRequest {
           request: { responseURL: config.url }
         }
       } else {
-        if (errorInfo.status === 401 || errorInfo.status === 'TOKENREPEATED') {
+        if (errorInfo.status === '401' || errorInfo.status === 'TOKENREPEATED') {
           store.dispatch('handleLogOut').then(() => {
             window.location.href = '#/login'
           })
-        } else if (errorInfo.status === 405) {
+        } else if (errorInfo.status === '405') {
           Spin.hide()
           this.queue = {}
           Modal.confirm({
