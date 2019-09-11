@@ -257,8 +257,9 @@ export default {
             // 我的审批 任务路口审批
             this.$router.push({
               name: 'rwlksq',
-              params: {
-                data: arguments[0]
+              query: {
+                taskId: arguments[0].taskId,
+                type: arguments[0].type
               }
             })
             break
@@ -267,7 +268,8 @@ export default {
             this.$router.push({
               name: 'wzsq',
               params: {
-                data: arguments[0]
+                taskId: arguments[0].taskId,
+                type: arguments[0].type
               }
             })
             break
