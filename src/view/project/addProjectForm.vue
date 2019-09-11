@@ -188,6 +188,8 @@ export default {
       }
     }
   },
+  watch: {
+  },
   methods: {
     back () {
       this.$router.push({

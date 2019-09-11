@@ -58,9 +58,9 @@ export default {
         onOk: () => {
           let obj = {
             opt: '3',
-            taskId: this.$route.params.data.taskId,
+            taskId: this.$route.query.taskId,
             userId: getUserId(),
-            processType: this.$route.params.data.type
+            processType: this.$route.query.type
           }
           opt(obj).then((res) => {
             if (res.data.status === '200') {
@@ -75,7 +75,7 @@ export default {
     },
     getData () {
       detailMaterialApplication({
-        taskId: this.$route.params.data.taskId,
+        taskId: this.$route.query.taskId,
         userId: getUserId(),
         type: '2'
       }).then((res) => {

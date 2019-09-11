@@ -700,6 +700,13 @@ export const sendCodeGeneral = (params) => {
     method: 'post'
   })
 }
+export const sendCode = (params) => {
+  return axios.request({
+    url: '/user/sendCode',
+    data: params,
+    method: 'post'
+  })
+}
 export const resetGeneral = (params) => {
   return axios.request({
     url: '/user/resetGeneral',

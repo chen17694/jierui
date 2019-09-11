@@ -134,17 +134,22 @@ export default {
     },
     lookDetail (info) {
       let type = info.type
-      if (type === 1) { // 审核审批
+      if (type === '1') { // 审核审批
+          this.$router.push({
+            name: 'rwlksq',
+            query: {
+              taskId: info.resourceId
+            }
+          })
+      } else if (type === '2') { // 提醒
 
-      } else if (type === 2) { // 提醒
+      } else if (type === '3') { // 催办
 
-      } else if (type === 3) { // 催办
-
-      } else if (type === 4) { // 推送 消息
+      } else if (type === '4') { // 推送 消息
         // this.$router.push({path: '/infoDetail', query: {id: info.resourceId}})
-      } else if (type === 5) { // 新项目通知
+      } else if (type === '5') { // 新项目通知
         this.$router.push({ path: '/projectDetail', query: { projectId: info.resourceId } })
-      } else if (type === 6) { // 任务拒绝
+      } else if (type === '6') { // 任务拒绝
         // this.$router.push({path: '/taskDetail', query: {taskId: info.resourceId}})
       }
     },

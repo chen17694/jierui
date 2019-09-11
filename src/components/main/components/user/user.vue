@@ -313,7 +313,7 @@ export default {
           this.code = res.data.data
           this.codeStatus = true
           let codeInterval = setInterval(() => {
-            this.codeText = (this.time--) + '秒后从新发送'
+            this.codeText = (this.time--) + '秒后重新发送'
             if (this.time === 0) {
               clearInterval(codeInterval)
               this.time = 90

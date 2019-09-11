@@ -31,7 +31,7 @@
 
 <script>
 import Tables from '_c/tables'
-import { listOverdueMaterial, taskCrossingFunction, listProject, listTask } from '@/api/data'
+import { listOverdueMaterial, overdueRush, listProject, listTask } from '@/api/data'
 import { getUserId } from '@/libs/util'
 export default{
   name: 'unit_table_page',
@@ -146,7 +146,7 @@ export default{
       })
     },
     urge () {
-      taskCrossingFunction({
+      overdueRush({
         taskCrossingId: arguments[0].row.id,
         userId: getUserId(),
         functionType: '1'
