@@ -305,6 +305,7 @@ export default {
     ]),
     sendCode (type) {
       sendCodeGeneral({
+        'userId': getUserId(),
         'value': this.phone,
         'type': type
       }).then((res) => {
