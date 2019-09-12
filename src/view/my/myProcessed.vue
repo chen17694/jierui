@@ -9,13 +9,128 @@
               <span slot="prepend">审核审批名称:</span>
               </Input>
             </div>
-            <Button class="search-btn" type="primary" @click="openFilter"><Icon type="search"/>筛选</Button>
+            <Button class="search-btn" type="primary" @click="openFilter1"><Icon type="search"/>筛选</Button>
           </div>
         </Col>
       </Row>
+      <div class="filterPanel" v-if="filter1===true">
+        <Card :bordered="false">
+          <Row>
+            <Col span="12" style="margin-bottom: 16px">
+              <Row>
+                <Col span="5">
+                  <span class="label">审核审批类型:</span>
+                </Col>
+                <Col span="19">
+                  <Select v-model="params.type1" clearable>
+                    <Option value="1">项目审核</Option>
+                    <Option value="2">任务审核</Option>
+                    <Option value="3">任务路口审核</Option>
+                    <Option value="4">物资申请审批</Option>
+                    <Option value="5">物资归还审批</Option>
+                    <Option value="6">项目属性修改审批</Option>
+                    <Option value="7">项目状态修改审批</Option>
+                    <Option value="8">物资加入项目审批</Option>
+                    <Option value="9">人员加入项目审批</Option>
+                  </Select>
+                </Col>
+              </Row>
+            </Col>
+            <Col span="12" style="margin-bottom: 16px">
+              <Row>
+                <Col span="5">
+                  <span class="label">审批状态:</span>
+                </Col>
+                <Col span="19">
+                  <Select v-model="params.status" clearable>
+                    <Option value="1">审核中</Option>
+                    <Option value="2">已完成</Option>
+                    <Option value="3">已驳回</Option>
+                    <Option value="4">已撤销</Option>
+                  </Select>
+                </Col>
+              </Row>
+            </Col>
+            <Col span="12" style="margin-bottom: 16px">
+              <Row>
+                <Col span="5">
+                  <span class="label">审批人员:</span>
+                </Col>
+                <Col span="19">
+                  <Select v-model="params.approverId"  filterable clearable>
+                    <Option v-for="(item, index) in userList" :value="item.id" :key="index">{{item.name}}</Option>
+                  </Select>
+                </Col>
+              </Row>
+            </Col>
+            <Col span="24">
+              <div class="btns">
+                <Button type="primary" @click="getData">确定</Button>
+                <Button @click="filterReset1">重置</Button>
+              </div>
+            </Col>
+          </Row>
+        </Card>
+      </div>
       <tables :total="this.total" ref="tableData" v-model="tableData" @on-row-dblclick="onRowClick" :columns="columns1" :on-change="pageChange" :on-page-size-change="pageSizeChange"></tables>
     </TabPane>
     <TabPane label="待我审批" name="waiting">
+      <Row type="flex" justify="space-between" style="padding: 10px 0 20px">
+        <Col span="12">
+          <div class="searchInput">
+            <div class="search">
+              <Input search @on-search="handleSearch" placeholder="输入关键字搜索" type="text" enter-button="搜索">
+              <span slot="prepend">审核审批名称:</span>
+              </Input>
+            </div>
+            <Button class="search-btn" type="primary" @click="openFilter2"><Icon type="search"/>筛选</Button>
+          </div>
+        </Col>
+      </Row>
+      <div class="filterPanel" v-if="filter2===true">
+        <Card :bordered="false">
+          <Row>
+            <Col span="12" style="margin-bottom: 16px">
+              <Row>
+                <Col span="5">
+                  <span class="label">审核审批类型:</span>
+                </Col>
+                <Col span="19">
+                  <Select v-model="params.type2" clearable>
+                    <Option value="1">项目审核</Option>
+                    <Option value="2">任务审核</Option>
+                    <Option value="3">任务路口审核</Option>
+                    <Option value="4">物资申请审批</Option>
+                    <Option value="5">物资归还审批</Option>
+                    <Option value="6">项目属性修改审批</Option>
+                    <Option value="7">项目状态修改审批</Option>
+                    <Option value="8">物资加入项目审批</Option>
+                    <Option value="9">人员加入项目审批</Option>
+                  </Select>
+                </Col>
+              </Row>
+            </Col>
+            <Col span="12" style="margin-bottom: 16px">
+              <Row>
+                <Col span="5">
+                  <span class="label">申请人员:</span>
+                </Col>
+                <Col span="19">
+                  <Select v-model="params.applyId"  filterable clearable>
+                    <Option v-for="(item, index) in userList" :value="item.id" :key="index">{{item.name}}</Option>
+                  </Select>
+                </Col>
+              </Row>
+            </Col>
+            <Col span="24">
+              <div class="btns">
+                <Button type="primary" @click="getData">确定</Button>
+                <Button @click="filterReset2">重置</Button>
+              </div>
+            </Col>
+          </Row>
+        </Card>
+      </div>
       <tables :total="this.total" v-model="tableData" @on-row-dblclick="onRowClick" :columns="columns2" :on-change="pageChange" :on-page-size-change="pageSizeChange"></tables>
     </TabPane>
   </Tabs>
@@ -23,7 +138,7 @@
 
 <script>
 import Tables from '_c/tables'
-import { listHistory, listWait } from '@/api/data'
+import { listHistory, listWait, getUserList } from '@/api/data'
 import { getUserId } from '@/libs/util'
 export default {
   name: 'myProcessed',
@@ -34,10 +149,17 @@ export default {
       params: {
         pageSize: 10,
         page: 1,
-        id: getUserId()
+        id: getUserId(),
+        type1: '',
+        type2: '',
+        status: '',
+        approverId: ''
       },
+      filter1: false,
+      filter2: false,
       total: 0,
       tableData: [],
+      userList: [],
       columns1: [
         { title: '审核审批名称', key: 'name' },
         { title: '审核审批类型',
@@ -130,8 +252,11 @@ export default {
     handleSearch () {
 
     },
-    openFilter () {
-
+    openFilter1 () {
+      this.filter1 = !this.filter1
+    },
+    openFilter2 () {
+      this.filter2 = !this.filter2
     },
     pageChange (page) {
       this.params.page = page
@@ -320,16 +445,45 @@ export default {
         }
       }
     },
+    filterReset1 () {
+      this.params.type1 = ''
+      this.params.status = ''
+      this.params.approverId = ''
+    },
+    filterReset2 () {
+      this.params.type2 = ''
+      this.params.applyId = ''
+    },
     getData () {
       if (this.tab === 'myAudit') {
-        listHistory(this.params).then((res) => {
+        listHistory({
+          page: this.params.page,
+          pageSize: this.params.pageSize,
+          id: this.params.id,
+          type: this.params.type1,
+          status: this.params.status,
+          year: '',
+          startTime: '',
+          endTime: '',
+          approverId: this.params.approverId
+        }).then((res) => {
           if (res.data.status === '200') {
             this.tableData = res.data.data.list
             this.total = res.data.data.total
           }
         })
       } else {
-        listWait(this.params).then((res) => {
+        listWait({
+          page: this.params.page,
+          pageSize: this.params.pageSize,
+          id: this.params.id,
+          type: this.params.type2,
+          status: '',
+          year: '',
+          startTime: '',
+          endTime: '',
+          applyId: this.params.applyId
+        }).then((res) => {
           if (res.data.status === '200') {
             this.tableData = res.data.data.list
             this.total = res.data.data.total
@@ -340,6 +494,20 @@ export default {
   },
   mounted () {
     this.getData()
+    getUserList({
+      pageSize: 0,
+      page: 0,
+      name: '',
+      provinceId: '',
+      cityId: '',
+      districtId: '',
+      office: '',
+      role: '',
+      isLoginApp: ''
+    }).then((res) => {
+      console.log(res)
+      this.userList = res.data.data.list
+    })
     window.onresize = event => {
       console.log(123)
       this.$refs.tableData.handleResize()
