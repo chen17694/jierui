@@ -373,6 +373,7 @@ export default {
       this.panelShow = !this.panelShow
     },
     positioning (lng, lat) {
+      this.zoom = 16
       this.center = [lng, lat]
     },
     getProject () {

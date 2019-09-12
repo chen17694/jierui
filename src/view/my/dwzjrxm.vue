@@ -10,7 +10,7 @@
       <ul style="list-style-type: none">
         <li style="margin-bottom: 5px">项目名称：{{detailData.projectName}}</li>
         <li style="margin-bottom: 5px">申请人员：{{detailData.applyName}}</li>
-        <li style="margin-bottom: 5px">归属单位：{{detailData.office}}</li>
+        <li style="margin-bottom: 5px">归属单位：{{detailData.officeName}}</li>
         <li style="margin-bottom: 5px">申请时间：{{detailData.createTime}}</li>
         <li style="margin-bottom: 5px">需求描述及原因：{{detailData.applyReason}}</li>
       </ul>

@@ -1,5 +1,9 @@
 <template>
   <div style="background-color: #001529; position: absolute; width: 100%; height: 100%;left: 0; top: 0; z-index: 900; overflow-x: scroll; padding: 0 15px">
+    <div style="color: rgb(255, 255, 255);position: absolute;right: 15px;top: 15px; z-index: 22" @click="close">
+      <Icon size="26" color="red" type="md-close" />
+      <span>关闭</span>
+    </div>
     <div style=" border-bottom: 5px solid #04304c; margin-bottom: 20px; height: 140px">
       <div style="display: inline-block;line-height: 80px;border-top: 5px solid rgb(4, 48, 76);width: 670px;position: absolute;margin-top: 55px;left: 15px;z-index: 1;">
         <Button type="text" style="font-size: 18px; color: #ffffff" @click="lastMonthSlot">上月</Button>
@@ -527,6 +531,9 @@ export default {
       this.dom6 = echarts.init(this.$refs.dom6, 'tdTheme')
       this.dom6.setOption(option)
       on(window, 'resize', this.resizeP6)
+    },
+    close () {
+      this.$router.back(-1)
     },
     resizeP6 () {
       this.dom6.resize()

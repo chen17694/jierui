@@ -147,9 +147,8 @@ export default{
     },
     urge () {
       overdueRush({
-        taskCrossingId: arguments[0].row.id,
-        userId: getUserId(),
-        functionType: '1'
+        taskMaterialId: arguments[0].row.id,
+        userId: getUserId()
       }).then((res) => {
         this.$Message.info(res.data.msg)
       })

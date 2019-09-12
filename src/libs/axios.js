@@ -60,6 +60,7 @@ class HttpRequest {
     })
     // 响应拦截
     instance.interceptors.response.use(res => {
+      console.log(5566)
       this.destroy(url)
       const { data, status } = res
       return { data, status }
@@ -80,9 +81,11 @@ class HttpRequest {
           if (errorInfo.data.status === 'TOKENREPEATED') {
             Message.info('您的账号已在其它设备登录')
           }
-          store.dispatch('handleLogOut').then(() => {
-            window.location.reload()
-          })
+          setTimeout(function () {
+            store.dispatch('handleLogOut').then(() => {
+              window.location.reload()
+            })
+          }, 3000)
         } else if (errorInfo.status === '405') {
           Spin.hide()
           this.queue = {}
