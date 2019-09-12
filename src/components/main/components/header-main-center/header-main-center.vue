@@ -1,33 +1,28 @@
 <template>
   <div class="header-main-center" >
       <Menu mode="horizontal" @on-select="onSelect">
-        <MenuItem name="1">
-            <!-- <Icon type="ios-archive" /> -->
-            <img :src="wza" style="width: 20px;height: 16px" alt="">
+        <!-- <MenuItem name="1">
+            <img :src="Name === '1' ? wza : wz" alt="">
             我的物资
         </MenuItem>
         <MenuItem name="2">
-            <!-- <Icon type="ios-people" /> -->
-            <img :src="yqxx"  style="width: 18px;height: 18px" alt="">
+            <img :src="Name === '2' ? yqxxa : yqxx" alt="">
             逾期信息
         </MenuItem>
         <MenuItem name="3">
-          <!-- <Icon type="md-stats" /> -->
-          <img :src="tjxx" style="width: 17px;height: 17px" alt="">
+          <img :src="Name === '3' ? tjxxa : tjxx" alt="">
           统计信息
         </MenuItem>
         <MenuItem name="4">
-            <!-- <Icon type="ios-create" /> -->
-            <img :src="wdrb" style="width: 16px;height: 17px" alt="">
+            <img :src="Name === '4' ? wdrba : wdrb" alt="">
             我的日报
         </MenuItem>
         <MenuItem name="5">
-          <!-- <Icon type="md-checkbox-outline" /> -->
-          <img :src="shsp" style="width: 17px;height: 19px" alt="">
+          <img :src="Name === '5' ? shspa : shsp" alt="">
           <Badge :count="Count">
             审核审批
           </Badge>
-        </MenuItem>
+        </MenuItem> -->
     </Menu>
   </div>
 </template>
@@ -35,54 +30,58 @@
 <script>
 import { listWait } from '@/api/data'
 import { getUserId } from '@/libs/util'
-import { setTimeout } from 'timers'
 import wza from '@/assets/images/wza.png'
+import wz from '@/assets/images/wz.png'
 import yqxx from '@/assets/images/yqxx.png'
 import tjxx from '@/assets/images/tjxx.png'
 import wdrb from '@/assets/images/wdrb.png'
 import shsp from '@/assets/images/shsp.png'
+import yqxxa from '@/assets/images/yqxxa.png'
+import tjxxa from '@/assets/images/tjxxa.png'
+import wdrba from '@/assets/images/wdrba.png'
+import shspa from '@/assets/images/shspa.png'
 export default {
   name: 'hearMainCenter',
-  computed: {
-    
-  },
+  computed: {},
   data () {
     return {
+      Name: null,
       Count: 0,
-      wza: wza,
+      wz: wz,
       yqxx: yqxx,
       tjxx: tjxx,
       wdrb: wdrb,
-      shsp: shsp
+      shsp: shsp,
+      wza: wza,
+      yqxxa: yqxxa,
+      tjxxa: tjxxa,
+      wdrba: wdrba,
+      shspa: shspa
     }
   },
-  props: {
-    
-  },
-  created () {
-    // this.getCount()
-  },
+  props: {},
+  created () {},
   methods: {
     onSelect (val) {
+      this.Name = val
       switch (val) {
         case '1':
           this.$router.push('/my/myMaterial')
-          break;
+          break
         case '2':
           this.$router.push('/my/myOverdue/projectOverdue')
-          break;
+          break
         case '3':
           this.$router.push('/statistics/projectStatistics')
-          break;
+          break
         case '4':
           this.$router.push('/DailyReview/dailyList')
-          break;
+          break
         case '5':
           this.$router.push('/my/myProcessed')
-          break;
+          break
         default:
-          break;
-
+          break
       }
     },
     getCount () {
@@ -119,7 +118,8 @@ export default {
       border: none;
   }
   .ivu-menu-item img {
-    // width: 16px;
+    width: 20px;
+    height: 20px;
     margin-right: 8px;
     vertical-align: middle;
   }
