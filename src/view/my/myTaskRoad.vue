@@ -193,7 +193,7 @@ export default {
       try8,
       try9,
       avatar: '#FF5000',
-      onStatus: '1',
+      onStatus: '4',
       isDetail: false,
       detailData: {},
       minClusterSize: 2,

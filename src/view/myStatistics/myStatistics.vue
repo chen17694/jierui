@@ -375,12 +375,15 @@ export default {
   methods: {
     selectDate () {
       console.log(arguments)
-      this.startTime = arguments[0][0]
-      this.endTime = arguments[0][1]
+      this.getTaskParams.startTime = this.startTime = arguments[0][0]
+      this.getTaskParams.endTime = this.endTime = arguments[0][1]
     },
     renderData () {
       this.getMapCoordinateStatistics('1')
+      this.getMapCoordinateStatistics('2')
+      this.getMapCoordinateStatistics('3')
       this.getTask()
+      this.getTaskCrossingDateCount()
       this.getTaskDateCount()
       console.log(213)
       userProjectWorkingHours({
@@ -676,6 +679,7 @@ export default {
           _this.tableData1Total = Number(res.data.data.count)
           _this.oneData = res.data.data.list
           _this.tableData1 = res.data.data.list
+          console.log(this.tableData1)
           // if (func && typeof func === 'function') {
           //   func()
           // }

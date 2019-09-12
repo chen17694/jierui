@@ -86,7 +86,7 @@
 
 <script>
 import { getUnitList, getUserList, addProject } from '@/api/data'
-import { getUserId, getOffice } from '@/libs/util'
+import { getUserId, getOffice, setCache, getCache } from '@/libs/util'
 export default {
   name: 'addProjectForm',
   data () {
@@ -197,6 +197,8 @@ export default {
       })
     },
     reLocation () {
+      let infoItem = JSON.stringify(this.formItem)
+      setCache(infoItem)
       this.$router.push({
         name: 'addProject'
       })
@@ -297,6 +299,9 @@ export default {
   },
   mounted () {
     console.log(this.$route.query.lat)
+    if (getCache()) {
+      this.formItem = JSON.parse(getCache())
+    }
     this.formItem.lng = this.$route.query.lng
     this.formItem.lat = this.$route.query.lat
     this.getFirstPartyCompany()

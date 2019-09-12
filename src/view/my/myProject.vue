@@ -269,7 +269,7 @@ export default {
       p_reject,
       p_revoke,
       avatar: p_start,
-      onStatus: '1',
+      onStatus: '2',
       isDetail: false,
       detailData: {},
       minClusterSize: 2,

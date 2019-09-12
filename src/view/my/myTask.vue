@@ -271,7 +271,7 @@ export default {
       ty9,
       avatar: '#FF5000',
       avatar2: tx1,
-      onStatus: '2',
+      onStatus: '4',
       isDetail: false,
       detailData: {},
       minClusterSize: 2,

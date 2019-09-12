@@ -92,7 +92,7 @@
 
 <script>
 import { listProject, addTask, listProjectUser } from '@/api/data'
-import { getUserId } from '@/libs/util'
+import { getUserId, setCache, getCache } from '@/libs/util'
 export default {
   name: 'addTaskForm',
   data () {
@@ -219,6 +219,8 @@ export default {
       this.formItem.completionTime = arguments[0][1]
     },
     reLocation () {
+      let data = JSON.stringify(this.formItem)
+      setCache(data)
       this.$router.push({
         name: 'addTask'
       })
@@ -263,6 +265,9 @@ export default {
     }
   },
   mounted () {
+    if (getCache()) {
+      this.formItem = JSON.parse(getCache())
+    }
     this.addMarker()
     listProject({
       pageSize: 0,

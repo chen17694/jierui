@@ -10,6 +10,9 @@ export const TOKEN_KEY = 'token'
 export const setToken = (token) => {
   Cookies.set(TOKEN_KEY, token, { expires: cookieExpires })
 }
+export const setCache = (cache) => {
+  Cookies.set('cache', cache, { expires: cookieExpires })
+}
 export const setAutoLogin = (autoLogin) => {
   Cookies.set('autoLogin', autoLogin, { expires: cookieExpires })
 }
@@ -31,6 +34,11 @@ export const setUserInfo = (data) => {
 export const getToken = () => {
   const token = Cookies.get(TOKEN_KEY)
   if (token) return token
+  else return false
+}
+export const getCache = (cache) => {
+  const data = Cookies.get('cache')
+  if (data) return data
   else return false
 }
 export const getAutoLogin = () => {

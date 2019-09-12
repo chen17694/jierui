@@ -55,7 +55,8 @@
               <Input v-model="formItem.position"/>
             </Col>
             <Col span="6">
-              <Button type="primary" style="margin-left: 10px" @click="toMap">重新定位</Button>
+              <Button type="primary" @click="toMap" v-if="formItem.lat && formItem.lng" style="margin-left: 10px">重新定位</Button>
+              <Button type="primary" @click="toMap" v-else>重新定位</Button>
             </Col>
             <Col span="22" style="margin-top: 30px" v-if="formItem.lat && formItem.lng">
               <el-amap ref="map" :center="center" vid="amapDemo" :zoom="zoom" class="amap-demo" :events="events">
@@ -235,7 +236,6 @@ export default {
   },
   mounted () {
     this.getData()
-
     this.addMarker()
   }
 }
