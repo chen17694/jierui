@@ -48,18 +48,18 @@ export default [
           icon: home
         },
         component: () => import('@/view/my/myProject.vue')
-      },
-      {
-        path: '/myStatistics',
-        name: 'myStatistics',
-        meta: {
-          hideInMenu: true,
-          title: '首页',
-          notCache: true,
-          icon: home
-        },
-        component: () => import('@/view/myStatistics/myStatistics.vue')
       }
     ]
+  },
+  {
+    path: '/setPassWord',
+    name: 'setPassWord',
+    meta: {
+      hideInMenu: true,
+      title: '找回密码',
+      notCache: true,
+      icon: home
+    },
+    component: () => import('@/view/my/setPassWord.vue')
   }
 ]

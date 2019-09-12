@@ -99,12 +99,7 @@ export default {
         { title: '任务名称', key: 'taskName' },
         { title: '物资数量', key: 'amount' },
         { title: '归还日期', key: 'completionTime' },
-        { title: '剩余天数', key: 'remainderDays' },
-        {
-          title: '操作',
-          key: 'handle',
-          options: ['back']
-        }
+        { title: '剩余天数', key: 'remainderDays' }
       ],
       businessProject: [],
       taskList: []
@@ -147,6 +142,11 @@ export default {
       listMyMaterial(this.params).then((res) => {
         if (res.data.status === '200') {
           this.tableData = res.data.data.businessTaskMaterialBeanList
+          this.tableData.forEach((item) => {
+            if (item.needReturnStatus === '1') {
+              item._disabled = true
+            }
+          })
           this.total = Number(res.data.data.count)
         }
       })

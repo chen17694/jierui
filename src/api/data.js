@@ -99,9 +99,9 @@ export const projectAttributeModify = (params) => {
     method: 'post'
   })
 }
-export const insertOrUpdateOffice = (params) => {
+export const insertOrUpdateArea = (params) => {
   return axios.request({
-    url: '/area/insertOrUpdateOffice',
+    url: '/area/insertOrUpdateArea',
     data: params,
     method: 'post'
   })
@@ -710,6 +710,13 @@ export const addTaskAnnex = (params) => {
 export const sendCodeGeneral = (params) => {
   return axios.request({
     url: '/user/sendCodeGeneral',
+    data: params,
+    method: 'post'
+  })
+}
+export const resetPassword = (params) => {
+  return axios.request({
+    url: '/user/resetPassword',
     data: params,
     method: 'post'
   })

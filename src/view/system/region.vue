@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import { getRegionList, insertOrUpdateOffice, deleteArea } from '@/api/data'
+import { getRegionList, insertOrUpdateArea, deleteArea } from '@/api/data'
 import { getUserId } from '@/libs/util'
 export default {
   name: 'unit_table_page',
@@ -203,7 +203,7 @@ export default {
       }
       this.$refs['formValidate'].validate((valid) => {
         if (valid) {
-          insertOrUpdateOffice(params).then(res => {
+          insertOrUpdateArea(params).then(res => {
             this.$Message.info(res.data.msg)
             this.getData()
             this.newRegionPanel = false
