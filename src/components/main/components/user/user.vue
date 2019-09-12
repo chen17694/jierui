@@ -349,6 +349,7 @@ export default {
       this.$refs['formValidate2'].validate((valid) => {
         if (valid) {
           resetGeneral({
+            'userId': getUserId(),
             'value': this.phoneForm.phone,
             'type': '2',
             'code': this.phoneForm.code
@@ -365,6 +366,7 @@ export default {
       this.$refs['formValidate'].validate((valid) => {
         if (valid) {
           resetGeneral({
+            'userId': getUserId(),
             'value': this.passWordForm.password,
             'type': '1',
             'code': this.passWordForm.code
