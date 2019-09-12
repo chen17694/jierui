@@ -9,7 +9,7 @@
       <Icon type="ios-arrow-down" style="color: #cccccc"></Icon>
       <DropdownMenu slot="list">
         <DropdownItem name="message">
-          <div style="width: 200px">
+          <div style="width: 300px">
             <ul style="list-style-type: none; line-height: 30px">
               <li>
                 <span style="font-weight: bold">单位：</span>
@@ -82,7 +82,7 @@
         </Form>
       </div>
       <div slot="footer">
-        <Button type="text">取消</Button>
+        <Button type="text" @click="passWord = false">取消</Button>
         <Button type="primary" @click="savePassWord">确定</Button>
       </div>
     </Modal>
@@ -106,7 +106,7 @@
         </Form>
       </div>
       <div slot="footer">
-        <Button type="text">取消</Button>
+        <Button type="text" @click="phoneModal = false">取消</Button>
         <Button type="primary" @click="savePhone">确定</Button>
       </div>
     </Modal>
@@ -130,7 +130,7 @@
         </Form>
       </div>
       <div slot="footer">
-        <Button type="text">取消</Button>
+        <Button type="text" @click="emailModal = false">取消</Button>
         <Button type="primary" @click="saveEmail">确定</Button>
       </div>
     </Modal>
