@@ -1,6 +1,6 @@
 import axios from 'axios'
 import store from '@/store'
-import { Spin, Modal } from 'iview'
+import { Spin, Modal, Message } from 'iview'
 import { getToken } from '@/libs/util'
 const addErrorLog = errorInfo => {
   const { statusText, status, request: { responseURL } } = errorInfo
@@ -64,6 +64,7 @@ class HttpRequest {
       const { data, status } = res
       return { data, status }
     }, error => {
+      console.log(123)
       this.destroy(url)
       let errorInfo = error.response
       if (!errorInfo) {
@@ -74,9 +75,13 @@ class HttpRequest {
           request: { responseURL: config.url }
         }
       } else {
-        if (errorInfo.status === '401' || errorInfo.status === 'TOKENREPEATED') {
+        console.log(errorInfo.status)
+        if (errorInfo.status === 401) {
+          if (errorInfo.data.status === 'TOKENREPEATED') {
+            Message.info('您的账号已在其它设备登录')
+          }
           store.dispatch('handleLogOut').then(() => {
-            window.location.href = '#/login'
+            window.location.reload()
           })
         } else if (errorInfo.status === '405') {
           Spin.hide()

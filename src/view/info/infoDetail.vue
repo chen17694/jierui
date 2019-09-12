@@ -135,12 +135,12 @@ export default {
     lookDetail (info) {
       let type = info.type
       if (type === '1') { // 审核审批
-          this.$router.push({
-            name: 'rwlksq',
-            query: {
-              taskId: info.resourceId
-            }
-          })
+        this.$router.push({
+          name: 'rwlksq',
+          query: {
+            taskId: info.resourceId
+          }
+        })
       } else if (type === '2') { // 提醒
 
       } else if (type === '3') { // 催办

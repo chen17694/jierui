@@ -11,10 +11,13 @@
         <li style="margin-bottom: 5px">项目名称：{{detailData.projectName}}</li>
         <li style="margin-bottom: 5px">甲方公司：{{detailData.partAOffice}}</li>
         <li style="margin-bottom: 5px">甲方负责人：{{detailData.oldPartAName}}</li>
-        <li style="margin-bottom: 5px">起止日期：{{detailData.oldStartTime}} - {{detailData.oldEndTime}}</li>
+        <li style="margin-bottom: 5px">起止日期：{{detailData.oldStartTime.split(' ')[0]}} - {{detailData.oldEndTime.split(' ')[0]}}</li>
         <li style="margin-bottom: 5px">主导单位：{{detailData.officeName}}</li>
         <li style="margin-bottom: 5px">项目经理：{{detailData.oldProjectManagerName}}</li>
-        <li style="margin-bottom: 5px">项目状态：{{detailData.status}}</li>
+        <li style="margin-bottom: 5px" v-if="detailData.status === '1'">项目状态：审核中</li>
+        <li style="margin-bottom: 5px" v-if="detailData.status === '2'">项目状态：已完成</li>
+        <li style="margin-bottom: 5px" v-if="detailData.status === '3'">项目状态：已驳回</li>
+        <li style="margin-bottom: 5px" v-if="detailData.status === '4'">项目状态：已撤销</li>
         <li style="margin-bottom: 5px">项目备注：{{detailData.oldRemark}}</li>
         <!--<li style="margin-bottom: 5px">项目位置：{{detailData.score}}</li>-->
       </ul>

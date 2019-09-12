@@ -35,7 +35,6 @@
 <script>
 import { listWait } from '@/api/data'
 import { getUserId } from '@/libs/util'
-import { setTimeout } from 'timers'
 import wza from '@/assets/images/wza.png'
 import yqxx from '@/assets/images/yqxx.png'
 import tjxx from '@/assets/images/tjxx.png'
@@ -43,9 +42,6 @@ import wdrb from '@/assets/images/wdrb.png'
 import shsp from '@/assets/images/shsp.png'
 export default {
   name: 'hearMainCenter',
-  computed: {
-    
-  },
   data () {
     return {
       Count: 0,
@@ -57,7 +53,7 @@ export default {
     }
   },
   props: {
-    
+
   },
   created () {
     // this.getCount()
@@ -67,22 +63,21 @@ export default {
       switch (val) {
         case '1':
           this.$router.push('/my/myMaterial')
-          break;
+          break
         case '2':
           this.$router.push('/my/myOverdue/projectOverdue')
-          break;
+          break
         case '3':
           this.$router.push('/statistics/projectStatistics')
-          break;
+          break
         case '4':
           this.$router.push('/DailyReview/dailyList')
-          break;
+          break
         case '5':
           this.$router.push('/my/myProcessed')
-          break;
+          break
         default:
-          break;
-
+          break
       }
     },
     getCount () {
