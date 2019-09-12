@@ -98,7 +98,7 @@
         <div class="infoItem">起止日期：{{info.startTime}} 至 {{info.endTime}}</div>
         </Col>
         <Col span="24">
-        <div class="infoItem">项目描述：{{info.content}}</div>
+        <div class="infoItem">描述：{{info.remark}}</div>
         </Col>
       </div>
     </Row>
@@ -135,12 +135,12 @@ export default {
     lookDetail (info) {
       let type = info.type
       if (type === '1') { // 审核审批
-          this.$router.push({
-            name: 'rwlksq',
-            query: {
-              taskId: info.resourceId
-            }
-          })
+        this.$router.push({
+          name: 'rwlksq',
+          query: {
+            taskId: info.resourceId
+          }
+        })
       } else if (type === '2') { // 提醒
 
       } else if (type === '3') { // 催办

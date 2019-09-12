@@ -1,18 +1,21 @@
 <template>
-  <div style="background-color: #001529; position: absolute; width: 100%; height: 100%;left: 0; top: 0; z-index: 900; overflow-x: scroll;">
-    <div style=" border-bottom: 5px solid #04304c; margin-bottom: 20px">
-      <div style=" display: inline-block; line-height: 80px; border-top: 5px solid #04304c;">
-        <Button type="text" style="font-size: 16px; color: #ffffff" @click="lastMonthSlot">上月</Button>
-        <Button type="text" style="font-size: 16px; color: #ffffff" @click="nowMonthSlot">本月</Button>
-        <Button type="text" style="font-size: 16px; color: #ffffff" @click="lastSeasonSlot">上季</Button>
-        <Button type="text" style="font-size: 16px; color: #ffffff" @click="nowSeasonSlot">本季</Button>
-        <Button type="text" style="font-size: 16px; color: #ffffff" @click="lastYearSlot">去年</Button>
-        <Button type="text" style="font-size: 16px; color: #ffffff" @click="nowYearSlot">今年</Button>
+  <div style="background-color: #001529; position: absolute; width: 100%; height: 100%;left: 0; top: 0; z-index: 900; overflow-x: scroll; padding: 0 15px">
+    <div style=" border-bottom: 5px solid #04304c; margin-bottom: 20px; height: 140px">
+      <div style="display: inline-block;line-height: 80px;border-top: 5px solid rgb(4, 48, 76);width: 670px;position: absolute;margin-top: 55px;left: 15px;z-index: 1;">
+        <Button type="text" style="font-size: 18px; color: #ffffff" @click="lastMonthSlot">上月</Button>
+        <Button type="text" style="font-size: 18px; color: #ffffff" @click="nowMonthSlot">本月</Button>
+        <Button type="text" style="font-size: 18px; color: #ffffff" @click="lastSeasonSlot">上季</Button>
+        <Button type="text" style="font-size: 18px; color: #ffffff" @click="nowSeasonSlot">本季</Button>
+        <Button type="text" style="font-size: 18px; color: #ffffff" @click="lastYearSlot">去年</Button>
+        <Button type="text" style="font-size: 18px; color: #ffffff" @click="nowYearSlot">今年</Button>
       </div>
-      <div style="display: inline-block">
+      <div style="display: inline-block;width: 100%;padding: 0 685px;position: absolute;left: 0;text-align: center;height: 140px;">
+        <h1 style="display: block; color: #ffffff; font-size: 36px; margin-bottom: 10px">杰瑞配时管理平台</h1>
         <DatePicker type="daterange" placement="bottom-end" placeholder="请选择日期范围" style="background: none;border: 1px solid #04304c; width: 400px" @on-change="selectDate" ></DatePicker>
       </div>
-      <Button type="primary" @click="search">搜索</Button>
+      <div style="display: inline-block;line-height: 80px;border-top: 5px solid rgb(4, 48, 76);width: 670px;position: absolute;text-align: right;margin-top: 55px;right: 15px;z-index: 1;">
+        <Button type="primary" @click="search" style="width: 140px; height: 45px">搜索</Button>
+      </div>
     </div>
     <div style="display: flex; justify-content: space-between">
       <div style="width: 30%">
@@ -280,6 +283,7 @@ let color3 = ['#85db9f', '#d9585d']
 export default {
   name: 'myStatistics',
   data () {
+    let self = this
     return {
       listRowType: '1',
       taskCrossingListId: '',
@@ -349,6 +353,7 @@ export default {
             polygon.setPath(pathArray)
             map.add(polygon)
           })
+          self.listRowClick('1')
         }
       },
       data1: {},
@@ -370,7 +375,15 @@ export default {
       this.getMapCoordinateStatistics('1')
       this.getTask()
       this.getTaskDateCount()
-      this.handleClick1(this.projectList3Id)
+      console.log(213)
+      userProjectWorkingHours({
+        startTime: this.startTime,
+        endTime: this.endTime,
+        projectId: this.projectList3Id
+      }).then((res) => {
+        console.log(res)
+        this.userWorkingHours = res.data.data
+      })
       taskCountStatisticsByTpye({
         startTime: this.startTime,
         endTime: this.endTime,
@@ -419,20 +432,20 @@ export default {
         isNaN(Math.round((parseFloat(num1) / parseFloat(num2)) * 10000) / 100.0) ? '0%' : Math.round((parseFloat(num1) / parseFloat(num2)) * 10000) / 100.0 + '%'
       )
     },
-    getTaskCountStatisticsByTpye () {
-      let _this = this
-      taskCountStatisticsByTpye({
-        startTime: this.startTime,
-        endTime: this.endTime,
-        userId: getUserId(),
-        crossingCode: ''
-      }).then((res) => {
-        if (res.data.status === '200') {
-          _this.pie6Data = res.data.data
-          this.setPie6()
-        }
-      })
-    },
+    // getTaskCountStatisticsByTpye () {
+    //   let _this = this
+    //   taskCountStatisticsByTpye({
+    //     startTime: this.startTime,
+    //     endTime: this.endTime,
+    //     userId: getUserId(),
+    //     crossingCode: ''
+    //   }).then((res) => {
+    //     if (res.data.status === '200') {
+    //       _this.pie6Data = res.data.data
+    //       this.setPie6()
+    //     }
+    //   })
+    // },
     setPie6 () {
       let option = {
         label: {
@@ -1147,10 +1160,10 @@ export default {
       startTime: this.startTime,
       endTime: this.endTime
     }).then((res) => {
+      console.log(res)
       this.projectList2 = res.data.data.projectList
       this.projectList2Id = res.data.data.projectList[0].id
       this.projectList3Id = res.data.data.projectList[0].id
-      this.handleClick1(this.projectList3Id)
       this.getTaskDateCount()
       userProjectWorkingHours({
         startTime: this.startTime,
@@ -1160,7 +1173,7 @@ export default {
         console.log(res)
         this.userWorkingHours = res.data.data
       })
-      console.log(this.projectList2)
+      console.log(res.data.data.projectList[0].id)
     })
     listTask({
       pageSize: 0,
@@ -1198,9 +1211,8 @@ export default {
       districtName: ''
     }).then((res) => {
       this.taskCrossingList2 = res.data.data.taskCrossingDetailBeanList
-      this.getTaskCountStatisticsByTpye()
+      this.handleClick2(this.taskCrossingList2[0])
     })
-    this.listRowClick('1')
   },
   beforeDestroy () {
     off(window, 'resize', this.resize)
@@ -1390,5 +1402,8 @@ export default {
       background: none;
       border: 1px solid #00284d;
     }
+  }
+  .ivu-btn-text:hover {
+    background-color: rgba(255, 255, 255, 0.2);
   }
 </style>

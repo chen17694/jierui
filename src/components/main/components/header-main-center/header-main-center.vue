@@ -42,7 +42,6 @@ import wdrba from '@/assets/images/wdrba.png'
 import shspa from '@/assets/images/shspa.png'
 export default {
   name: 'hearMainCenter',
-  computed: {},
   data () {
     return {
       Name: null,
@@ -59,8 +58,12 @@ export default {
       shspa: shspa
     }
   },
-  props: {},
-  created () {},
+  props: {
+
+  },
+  created () {
+    // this.getCount()
+  },
   methods: {
     onSelect (val) {
       this.Name = val

@@ -21,8 +21,8 @@
       </div>
       <Card style="width:350px; position: absolute; left: 20px; top: 60px; border: 0 none">
         <div style="display: flex">
-          <!-- <input type="text" v-model="projectName" size="small" class="ivu-input ivu-input-default" style="height: 50px; border: 0 none; border-radius: 0; font-size: 15px; color: #999999"> -->
-          <Input type="text" v-model="projectName" size="small" />
+           <input type="text" v-model="projectName" size="small" class="ivu-input ivu-input-default" style="height: 50px; border: 0 none; border-radius: 0; font-size: 15px; color: #999999">
+          <!--<Input type="text" v-model="projectName" size="small" />-->
           <img src="../../assets/images/search.png" style=" cursor: pointer" @click="searchProject">
         </div>
       </Card>
