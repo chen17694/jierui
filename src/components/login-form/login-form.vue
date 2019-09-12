@@ -33,7 +33,7 @@
     <FormItem style="margin-bottom: 5px;">
       <div style=" display: flex; justify-content: space-between">
         <Checkbox v-model="autoLogin">自动登录</Checkbox>
-        <p style="cursor: pointer">忘记密码</p>
+        <p style="cursor: pointer" @click="setPassWord">忘记密码</p>
       </div>
     </FormItem>
     <FormItem>
@@ -91,6 +91,11 @@ export default {
     this.makeCode(this.identifyCodes, 4)
   },
   methods: {
+    setPassWord () {
+      this.$router.push({
+        name: 'setPassWord'
+      })
+    },
     handleSubmit () {
       if (this.checkCode !== this.identifyCode) {
         this.$Message.info('验证码不正确')

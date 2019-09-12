@@ -9,7 +9,7 @@
           <ul class="list">
             <li v-for="(item, i) in banbenList" :key="i" @click="selectBanben(i)" style="cursor: pointer; margin-right: 10px">
               <div :style="{ backgroundColor:(i ===index ? '#2d8cf0' : '#ffffff'), color:(i ===index ? '#ffffff' : '#000000') ,borderColor:(i ===index ? '#2d8cf0' : '#c3c3c3')}" style=" border-radius: 5px; border: 1px solid #c3c3c3; padding: 10px 15px">
-                <p>版本号：{{item.version}}</p>
+                <p>版本号：{{item.version}}+ '.0'</p>
                 <p>创建时间：{{item.createDate}}</p>
               </div>
             </li>
