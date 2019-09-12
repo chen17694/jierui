@@ -60,13 +60,22 @@
           <div style="display: flex; justify-content: space-between; margin-top: 10px" @click.stop>
             <div>
               <span v-for="(i, index) in item.taskCrossingButtonPermissionBeanList" :key="index" >
-                <Button v-if="i.permissionCode === '1'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">逾期催办</Button>
-                <Button v-if="i.permissionCode === '2'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">提交审核</Button>
-                <Button v-if="i.permissionCode === '3'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">删除任务路口</Button>
+                <span v-if="i.permissionCode === '1'" @click="onEdit(i, item)">
+                  <img src="../../assets/images/t4.png"  title="逾期催办" class="btn" style="margin: 0 3px" >
+                  逾期催办
+                </span>
+                <span v-if="i.permissionCode === '2'" @click="onEdit(i, item)">
+                  <img src="../../assets/images/p7.png"  title="提交审核" class="btn" style="margin: 0 3px" >
+                  提交审核
+                </span>
+                <span v-if="i.permissionCode === '3'" @click="onEdit(i, item)">
+                  <img src="../../assets/images/p8.png"  title="删除任务路口" class="btn" style="margin: 0 3px" >
+                  删除任务路口
+                </span>
               </span>
             </div>
             <div>
-              <button typeof="button" @click="toTaskDetail(item.id, item.type)" style="border: 1px solid #2E8CEB; width: 58px; height: 41px; background-color: #ffffff; border-radius: 3px; color: #2E8CEB; cursor: pointer">详情</button>
+              <button typeof="button" @click="toTaskDetail(item.id, item.type, item.lat, item.lng)" style="border: 1px solid #2E8CEB; width: 58px; height: 41px; background-color: #ffffff; border-radius: 3px; color: #2E8CEB; cursor: pointer">详情</button>
             </div>
           </div>
         </div>
@@ -410,26 +419,32 @@ export default {
         }
       })
     },
-    toTaskDetail (id, type) {
+    toTaskDetail (id, type, lat, lng) {
       if (type === '1') {
         this.$router.push({
           name: 'xjDetail',
           query: {
-            taskCrossingId: id
+            taskCrossingId: id,
+            lat,
+            lng
           }
         })
       } else if (type === '2') {
         this.$router.push({
           name: 'yhDetail',
           query: {
-            taskCrossingId: id
+            taskCrossingId: id,
+            lat,
+            lng
           }
         })
       } else if (type === '3') {
         this.$router.push({
           name: 'xcDetail',
           query: {
-            taskCrossingId: id
+            taskCrossingId: id,
+            lat,
+            lng
           }
         })
       }
@@ -662,5 +677,9 @@ export default {
     color: rgb(153, 153, 153);
     width: 84px;
     display: inline-block;
+  }
+  .btn{
+    position: relative;
+    top: 5px;
   }
 </style>

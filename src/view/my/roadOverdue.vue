@@ -24,7 +24,7 @@
         </div>
       </div>
     </Card>
-    <p style="font-weight: bold; font-size: 15px; margin: 15px 0">任务逾期数量:{{this.total}}</p>
+    <p style="font-weight: bold; font-size: 15px; margin: 15px 0">任务路口逾期数量:{{this.total}}</p>
     <tables ref="tables" :total="this.total" @on-row-dblclick="onRowClick" v-model="tableData" :columns="columns" @on-urge="urge" :on-change="pageChange" :on-page-size-change="pageSizeChange"></tables>
   </div>
 </template>

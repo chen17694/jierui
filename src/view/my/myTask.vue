@@ -73,17 +73,42 @@
                 <div style="display: flex; justify-content: space-between; margin-top: 10px" @click.stop>
                   <div>
                     <span v-for="(i, index) in item.taskButtonPermissionBeans" :key="index" >
-                      <Button v-if="i.permissionCode === '1'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">下达任务</Button>
-                      <Button v-if="i.permissionCode === '2' && item.pauseStatus === '1'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">开始任务</Button>
-                      <Button v-if="i.permissionCode === '2' && item.pauseStatus === '0'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">暂停任务</Button>
-                      <Button v-if="i.permissionCode === '3'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">撤销任务</Button>
-                      <Button v-if="i.permissionCode === '4'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">催办任务</Button>
-                      <Button v-if="i.permissionCode === '5'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">提交审核</Button>
-                      <Button v-if="i.permissionCode === '6'" @click="onEdit(i, item)" size="small" style="margin-right: 5px; margin-bottom: 10px; float: left">删除任务</Button>
+                      <span v-if="i.permissionCode === '1'" @click="onEdit(i, item)">
+                        <img src="../../assets/images/t1.png"  title="下达任务" class="btn" style="margin: 0 3px" >
+                        下达任务
+                      </span>
+                      <span v-if="item.permissionCode === '2' && row.pauseStatus === '1'" @click="onEdit(i, item)">
+                        <img src="../../assets/images/t2.png" style="margin: 0 3px" title="开始任务" class="btn">
+                        开始任务
+                      </span>
+                      <span  v-if="item.permissionCode === '2' && row.pauseStatus === '0'" @click="onEdit(i, item)">
+                        <img src="../../assets/images/t2.png" style="margin: 0 3px" title="暂停任务" class="btn">
+                        暂停任务
+                      </span>
+                      <span v-if="i.permissionCode === '3'" @click="onEdit(i, item)">
+                        <img src="../../assets/images/t3.png" title="撤销任务" class="btn" style="margin: 0 3px">
+                        撤销任务
+                      </span>
+                      <span v-if="i.permissionCode === '4'" @click="onEdit(i, item)">
+                        <img src="../../assets/images/t4.png" title="催办任务" class="btn" style="margin: 0 3px">
+                        催办任务
+                      </span>
+                      <span v-if="i.permissionCode === '5'" @click="onEdit(i, item)">
+                        <img src="../../assets/images/t5.png" title="提交审核" class="btn" style="margin: 0 3px">
+                        提交审核
+                      </span>
+                      <span v-if="i.permissionCode === '6'" @click="onEdit(i, item)">
+                        <img src="../../assets/images/p8.png" title="删除任务" class="btn" style="margin: 0 3px">
+                        删除任务
+                      </span>
+                      <span v-if="i.permissionCode === '99'" @click="onEdit(i, item)">
+                        <img src="../../assets/images/p9.png" title="新增任务路口" class="btn" style="margin: 0 3px">
+                        新增任务路口
+                      </span>
                     </span>
                   </div>
                   <div>
-                    <button typeof="button" @click="toTaskDetail(item.id)" style="border: 1px solid #2E8CEB; width: 58px; height: 41px; background-color: #ffffff; border-radius: 3px; color: #2E8CEB; cursor: pointer">详情</button>
+                    <button typeof="button" @click="toTaskDetail(item.id, item.lat, item.lng)" style="border: 1px solid #2E8CEB; width: 58px; height: 41px; background-color: #ffffff; border-radius: 3px; color: #2E8CEB; cursor: pointer">详情</button>
                   </div>
                 </div>
               </div>
@@ -363,11 +388,13 @@ export default {
     }
   },
   methods: {
-    toTaskDetail (id) {
+    toTaskDetail (id, lat, lng) {
       this.$router.push({
         name: 'taskDetail',
         query: {
-          taskId: id
+          taskId: id,
+          lat,
+          lng
         }
       })
     },
@@ -463,6 +490,10 @@ export default {
               this.getTask()
             })
           }
+        })
+      } else if (params.permissionCode === '99') {
+        this.$router.push({
+          name: 'addTaskRoad'
         })
       } else {
         let str = ''
@@ -851,5 +882,9 @@ export default {
     /deep/ .ivu-collapse-content{
       padding: 0;
     }
+  }
+  .btn{
+    position: relative;
+    top: 5px;
   }
 </style>

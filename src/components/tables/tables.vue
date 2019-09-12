@@ -61,7 +61,7 @@
             <img src="../../assets/images/t3.png" v-if="item.permissionCode === '3'" title="撤销任务" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
             <img src="../../assets/images/t4.png" v-if="item.permissionCode === '4'" title="催办任务" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
             <img src="../../assets/images/t5.png" v-if="item.permissionCode === '5'" title="提交审核" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
-            <img src="../../assets/images/t6.png" v-if="item.permissionCode === '6'" title="删除任务" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
+            <img src="../../assets/images/p8.png" v-if="item.permissionCode === '6'" title="删除任务" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
             <img src="../../assets/images/p9.png" v-if="item.permissionCode === '99'" title="新增任务路口" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
           </div>
         </div>
@@ -71,7 +71,7 @@
           <div v-for="(item, index) in row.taskCrossingButtonPermissionBeanList" :key="index" style="height: 30px; display: flex; align-items: center">
             <img src="../../assets/images/t4.png" v-if="item.permissionCode === '1'" title="逾期催办" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
             <img src="../../assets/images/p7.png" v-if="item.permissionCode === '2'" title="提交审核" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
-            <img src="../../assets/images/t6.png" v-if="item.permissionCode === '3'" title="删除任务路口" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
+            <img src="../../assets/images/p8.png" v-if="item.permissionCode === '3'" title="删除任务路口" class="btn" style="margin: 0 3px" @click="onEdit(item, row)">
           </div>
         </div>
       </template>

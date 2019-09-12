@@ -161,6 +161,7 @@
     <div style="margin-top: 20px;">
       <div style="display: flex; justify-content: space-between">
         <div style="width: 49.5%; border: 1px solid #00284d; height: 300px; position: relative; overflow: hidden; padding: 15px">
+          <p style="color: #ffffff;font-size: 18px; font-weight: bold">项目下人员已支出工作量排名</p>
           <div style="width: 100%; height: 60px; user-select: none;">
             <img src="../../assets/images/left.png" class="btn-con left-btn" @click="handleScroll(240)">
             <div class="scroll-outer" ref="scrollOuter" @DOMMouseScroll="handlescroll" @mousewheel="handlescroll">
@@ -197,6 +198,7 @@
           </div>
         </div>
         <div style="width: 49.5%; border: 1px solid #00284d; height: 300px; position: relative; overflow: hidden; padding: 15px">
+          <p style="color: #ffffff;font-size: 18px; font-weight: bold">单路口执行各类任务排名</p>
           <div style="width: 100%; height: 60px; user-select: none;">
             <img src="../../assets/images/left.png" class="btn-con left-btn" @click="handleScroll2(240)">
             <div class="scroll-outer" ref="scrollOuter2" @DOMMouseScroll="handlescroll2" @mousewheel="handlescroll2">
@@ -372,8 +374,9 @@ export default {
   },
   methods: {
     selectDate () {
-      this.startTime = arguments[0]
-      this.endTime = arguments[1]
+      console.log(arguments)
+      this.startTime = arguments[0][0]
+      this.endTime = arguments[0][1]
     },
     renderData () {
       this.getMapCoordinateStatistics('1')
@@ -533,7 +536,9 @@ export default {
       on(window, 'resize', this.resizeP6)
     },
     close () {
-      this.$router.back(-1)
+      this.$router.push({
+        name: 'home'
+      })
     },
     resizeP6 () {
       this.dom6.resize()
@@ -1331,7 +1336,7 @@ export default {
     position: absolute;
     left: 55px;
     right: 55px;
-    top: 15px;
+    top: 55px;
     bottom: 15px;
     box-shadow: 0px 0 3px 2px rgba(100,100,100,.1) inset;
     height: 60px;
@@ -1366,7 +1371,7 @@ export default {
   }
   .btn-con{
     position: absolute;
-    top: 30px;
+    top: 67px;
     padding-top: 3px;
     z-index: 10;
     width: 30px;

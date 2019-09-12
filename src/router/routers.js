@@ -52,6 +52,16 @@ export default [
     ]
   },
   {
+    path: 'myStatistics',
+    name: 'myStatistics',
+    meta: {
+      title: '我的统计信息',
+      hideInMenu: true,
+      needInBread: false
+    },
+    component: () => import('@/view/myStatistics/myStatistics.vue')
+  },
+  {
     path: '/setPassWord',
     name: 'setPassWord',
     meta: {
