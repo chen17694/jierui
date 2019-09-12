@@ -1,7 +1,7 @@
 <template>
   <div class="header-main-center" >
       <Menu mode="horizontal" @on-select="onSelect">
-        <!-- <MenuItem name="1">
+        <MenuItem name="1">
             <img :src="Name === '1' ? wza : wz" alt="">
             我的物资
         </MenuItem>
@@ -22,7 +22,7 @@
           <Badge :count="Count">
             审核审批
           </Badge>
-        </MenuItem> -->
+        </MenuItem>
     </Menu>
   </div>
 </template>
@@ -94,8 +94,9 @@ export default {
         id: getUserId()
       }
       listWait(obj).then(res => {
-        if (res.status === '200') {
+        if (res.data.status === '200') {
           this.Count = res.data.data.total
+          console.log(this.Count)
         }
       })
     }
