@@ -98,7 +98,7 @@
         <div class="infoItem">起止日期：{{info.startTime}} 至 {{info.endTime}}</div>
         </Col>
         <Col span="24">
-        <div class="infoItem">项目描述：{{info.content}}</div>
+        <div class="infoItem">描述：{{info.remark}}</div>
         </Col>
       </div>
     </Row>
