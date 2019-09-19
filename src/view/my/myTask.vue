@@ -13,19 +13,19 @@
       >
         <el-amap-marker v-for="(marker, index) in markers" :key="index" :extData = "marker.id" vid="chenyiming" :position="marker.position" :content="marker.content" :events="marker.events"></el-amap-marker>
       </el-amap>
-      <Cascader :data="areaData" v-model="areaValue" style="position: absolute; right: 20px; top: 20px; width: 200px;" @on-change="cascaderChange"></Cascader>
-      <div style="color: #666666; display: flex; width:350px; position: absolute; left: 20px; top: 20px; border: 0 none">
+      <Cascader :data="areaData" v-model="areaValue" style="position: absolute; right: 20px; top: 30px; width: 200px;" @on-change="cascaderChange"></Cascader>
+      <div style="color: #666666; display: flex; width:380px; position: absolute; left: 20px; top: 30px; border: 0 none">
         <div style="background-color: #F2F2F2; padding: 10px 20px; line-height: 20px; cursor: pointer" @click="onChangeNav('myProject')">我的项目</div>
         <div style="background-color: #ffffff; padding: 10px 20px; line-height: 20px; cursor: pointer">我的任务</div>
         <div style="background-color: #F2F2F2; padding: 10px 20px; line-height: 20px; cursor: pointer" @click="onChangeNav('myTaskRoad')">我的任务路口</div>
       </div>
-      <Card style="width:350px; position: absolute; left: 20px; top: 60px; border: 0 none">
+      <Card style="width:380px; position: absolute; left: 20px; top: 70px; border: 0 none">
         <div style="display: flex">
-          <input type="text" v-model="taskName" class="ivu-input ivu-input-default" style="height: 50px; border: 0 none; border-radius: 0; font-size: 15px; color: #999999">
-          <img src="../../assets/images/search.png" style=" cursor: pointer" @click="searchProject">
+          <input type="text" v-model="taskName" placeholder="请输入查找的任务名称" class="ivu-input ivu-input-default" style="height: 45px; border: 0 none; border-radius: 0; font-size: 15px; color: #999999">
+          <img src="../../assets/images/search.png" style=" cursor: pointer; height: 45px" @click="searchProject">
         </div>
       </Card>
-      <div style="width:350px; position: absolute; left: 20px; top: 120px; background-color: #ffffff">
+      <div style="opacity:0.8; width:380px; position: absolute; left: 20px; top: 130px; background-color: #ffffff">
         <div v-if="tab === 'tab2'" style="padding: 10px">
           <Form :label-width="82">
             <FormItem label="项目选择：">
@@ -70,18 +70,18 @@
                   <span style="color:#999999;">项目角色：{{item.userTopRoleName}}</span>
                   <span style="color:#BC0000;" v-if="item.isOverdue === '1'">已逾期{{item.overdueDays}}天</span>
                 </div>
-                <div style="display: flex; justify-content: space-between; margin-top: 10px" @click.stop>
+                <div style="display: flex; justify-content: space-between;" @click.stop>
                   <div>
                     <span v-for="(i, index) in item.taskButtonPermissionBeans" :key="index" >
                       <span v-if="i.permissionCode === '1'" @click="onEdit(i, item)">
                         <img src="../../assets/images/t1.png"  title="下达任务" class="btn" style="margin: 0 3px" >
                         下达任务
                       </span>
-                      <span v-if="item.permissionCode === '2' && row.pauseStatus === '1'" @click="onEdit(i, item)">
+                      <span v-if="i.permissionCode === '2' && item.pauseStatus === '1'" @click="onEdit(i, item)">
                         <img src="../../assets/images/t2.png" style="margin: 0 3px" title="开始任务" class="btn">
                         开始任务
                       </span>
-                      <span  v-if="item.permissionCode === '2' && row.pauseStatus === '0'" @click="onEdit(i, item)">
+                      <span  v-if="i.permissionCode === '2' && item.pauseStatus === '0'" @click="onEdit(i, item)">
                         <img src="../../assets/images/t2.png" style="margin: 0 3px" title="暂停任务" class="btn">
                         暂停任务
                       </span>
@@ -137,26 +137,81 @@
                   <p :style="{ 'font-size': '30px', color: ( detailData.progress === '100' ? '#15C41B' : '#FB861B' ) }">{{detailData.progress ? detailData.progress : 0}}%</p>
                   <p>项目进度</p>
                 </div>
-                <div style="line-height: 24px"><span class="label">项目状态：</span><span>{{pStatus}}</span></div>
+                <div style="line-height: 24px"><span class="label">任务状态：</span><span>{{pStatus}}</span></div>
                 <div style="line-height: 24px"><span class="label">项目角色：</span><span>{{detailData.userTopRoleName}}</span></div>
                 <div style="line-height: 24px"><span class="label">逾期天数：</span><span>{{detailData.overdueDays}}</span></div>
-                <div style="line-height: 24px"><span class="label">甲方评分：</span><span>{{detailData.firstPartyScoring}}</span></div>
+                <div style="line-height: 24px">
+                  <span class="label">甲方评分：</span>
+                  <span v-if="detailData.firstPartyScoring === '1'">非常满意</span>
+                  <span v-if="detailData.firstPartyScoring === '2'">满意</span>
+                  <span v-if="detailData.firstPartyScoring === '3'">不满意</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;" @click.stop>
+                  <div>
+                    <span v-for="(i, index) in detailData.taskButtonPermissionBeans" :key="index" >
+                      <span v-if="i.permissionCode === '1'" @click="onEdit(i, detailData)">
+                        <img src="../../assets/images/t1.png"  title="下达任务" class="btn" style="margin: 0 3px" >
+                        下达任务
+                      </span>
+                      <span v-if="i.permissionCode === '2' && detailData.pauseStatus === '1'" @click="onEdit(i, detailData)">
+                        <img src="../../assets/images/t2.png" style="margin: 0 3px" title="开始任务" class="btn">
+                        开始任务
+                      </span>
+                      <span  v-if="i.permissionCode === '2' && detailData.pauseStatus === '0'" @click="onEdit(i, detailData)">
+                        <img src="../../assets/images/t2.png" style="margin: 0 3px" title="暂停任务" class="btn">
+                        暂停任务
+                      </span>
+                      <span v-if="i.permissionCode === '3'" @click="onEdit(i, detailData)">
+                        <img src="../../assets/images/t3.png" title="撤销任务" class="btn" style="margin: 0 3px">
+                        撤销任务
+                      </span>
+                      <span v-if="i.permissionCode === '4'" @click="onEdit(i, detailData)">
+                        <img src="../../assets/images/t4.png" title="催办任务" class="btn" style="margin: 0 3px">
+                        催办任务
+                      </span>
+                      <span v-if="i.permissionCode === '5'" @click="onEdit(i, detailData)">
+                        <img src="../../assets/images/t5.png" title="提交审核" class="btn" style="margin: 0 3px">
+                        提交审核
+                      </span>
+                      <span v-if="i.permissionCode === '6'" @click="onEdit(i, detailData)">
+                        <img src="../../assets/images/p8.png" title="删除任务" class="btn" style="margin: 0 3px">
+                        删除任务
+                      </span>
+                      <span v-if="i.permissionCode === '99'" @click="onEdit(i, detailData)">
+                        <img src="../../assets/images/p9.png" title="新增任务路口" class="btn" style="margin: 0 3px">
+                        新增任务路口
+                      </span>
+                    </span>
+                  </div>
+                  <div>
+                    <button typeof="button" @click="toTaskDetail(detailData.id, detailData.lat, detailData.lng)" style="border: 1px solid #2E8CEB; width: 58px; height: 41px; background-color: #ffffff; border-radius: 3px; color: #2E8CEB; cursor: pointer">详情</button>
+                  </div>
+                </div>
               </div>
               <div style=" padding: 5px 15px; border-bottom: 1px solid rgb(230, 230, 230);">
                 项目基本信息
               </div>
               <div style="padding: 15px; ">
-                <div style="line-height: 24px"><span class="label">项目名称：</span><span>{{detailData.name}}</span></div>
-                <div style="line-height: 24px"><span class="label">甲方单位：</span><span>{{detailData.firstPartyCompanyName}}</span></div>
-                <div style="line-height: 24px"><span class="label">甲方负责人：</span><span>{{detailData.firstPartyUserName}}</span></div>
-                <div style="line-height: 24px"><span class="label">项目位置：</span><span>{{detailData.specificAddress}}</span></div>
+                <div style="line-height: 24px"><span class="label">项目名称：</span><span>{{detailData.businessProjectName}}</span></div>
+                <div style="line-height: 24px"><span class="label">任务名称：</span><span>{{detailData.name}}</span></div>
+                <div style="line-height: 24px">
+                  <span class="label">任务类型：</span>
+                  <span v-if="detailData.type === '1'">调查任务</span>
+                  <span v-if="detailData.type === '2'">优化任务</span>
+                  <span v-if="detailData.type === '3'">宣传任务</span>
+                </div>
+                <div style="line-height: 24px"><span class="label">负责人：</span><span>{{detailData.taskHoldersName}}</span></div>
                 <div style="line-height: 24px"><span class="label">起止日期：</span><span>{{detailData.startTime}} 至 {{detailData.completionTime}}</span></div>
-                <div style="line-height: 24px"><span class="label">主导单位：</span><span>{{detailData.officeName}}</span></div>
-                <div style="line-height: 24px"><span class="label">项目经理：</span><span>{{detailData.projectManagerName}}</span></div>
-                <div style="line-height: 24px"><span class="label">项目备注：</span><span>{{detailData.remarks}}</span></div>
+                <div style="line-height: 24px">
+                  <span class="label">任务性质：</span>
+                  <span v-if="detailData.nature === '1'">单点优化</span>
+                  <span v-if="detailData.nature === '2'">线优化</span>
+                  <span v-if="detailData.nature === '3'">区域优化</span>
+                </div>
+                <div style="line-height: 24px"><span class="label">任务描述：</span><span>{{detailData.remarks}}</span></div>
               </div>
             </Card>
-            <Button type="primary" v-show="isDetail" @click="toList" style="position: absolute; top: 680px; left: 20px;">返回列表</Button>
+            <Button type="primary" v-show="isDetail" @click="toList" style="position: absolute; top: 600px; left: 0px;">返回列表</Button>
           </TabPane>
           <TabPane name="tab2" label="新任务">
             <Card v-if="!isDetail">
@@ -319,6 +374,7 @@ export default {
   },
   watch: {
     'tab': function (val) {
+      this.isDetail = false
       this.markers = []
       this.markerRefs = []
       this.map.clearMarkers()
@@ -366,21 +422,21 @@ export default {
   },
   computed: {
     pStatus () {
-      if (this.detailData.status === '1') {
+      if (this.detailData.taskStatus === '1') {
         return '未领取'
-      } else if (this.detailData.status === '2') {
+      } else if (this.detailData.taskStatus === '2') {
         return '已拒绝'
-      } else if (this.detailData.status === '3') {
+      } else if (this.detailData.taskStatus === '3') {
         return '未开始'
-      } else if (this.detailData.status === '4') {
+      } else if (this.detailData.taskStatus === '4') {
         return '进行中'
-      } else if (this.detailData.status === '5') {
+      } else if (this.detailData.taskStatus === '5') {
         return '审核中'
-      } else if (this.detailData.status === '6') {
+      } else if (this.detailData.taskStatus === '6') {
         return '已完成'
-      } else if (this.detailData.status === '7') {
+      } else if (this.detailData.taskStatus === '7') {
         return '已驳回'
-      } else if (this.detailData.status === '8') {
+      } else if (this.detailData.taskStatus === '8') {
         return '已撤销'
       } else if (this.detailData.status === '9') {
         return '已暂停'
@@ -488,6 +544,7 @@ export default {
               this.map.clearMarkers()
               this.getMapTask()
               this.getTask()
+              this.toList()
             })
           }
         })
@@ -528,6 +585,7 @@ export default {
               this.map.clearMarkers()
               this.getMapTask()
               this.getTask()
+              this.toList()
             })
           }
         })
@@ -541,7 +599,7 @@ export default {
         businessProjectId: '',
         type: '',
         name: this.taskName,
-        taskStatus: this.onStatus,
+        taskStatus: this.onStatus ? this.onStatus : '',
         firstPartyScoring: '',
         provinceName: '',
         cityName: '',

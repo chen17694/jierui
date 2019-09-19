@@ -8,7 +8,7 @@
             <span slot="prepend">项目名称:</span>
             </Input>
           </div>
-          <Button class="search-btn" type="primary" @click="openFilter"><Icon type="search"/>筛选</Button>
+          <Button class="search-btn" icon="ios-funnel-outline" @click="openFilter"><Icon type="search"/>筛选</Button>
         </div>
       </Col>
       <Col span="12">
@@ -130,7 +130,7 @@
 
 <script>
 import { listProject, projectFunction, getUnitList, getUserList, getUserCount } from '@/api/data'
-import { getUserId, getUserInfo, getOffice } from '@/libs/util'
+import { getUserId, getUserInfo, getOffice, setCache } from '@/libs/util'
 import Tables from '_c/tables'
 export default {
   name: 'projectManagement',
@@ -296,6 +296,7 @@ export default {
       this.getData()
     },
     toAdd () {
+      setCache('')
       this.$router.push({
         name: 'addProject'
       })
@@ -344,6 +345,7 @@ export default {
         this.permissionCode = permissionCode
         this.statusModel = true
       } else if (permissionCode === '99') {
+        setCache('')
         this.$router.push({
           name: 'addTask'
         })

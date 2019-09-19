@@ -20,7 +20,7 @@
           @on-ok="selTimeTwo"
         ></DatePicker>
       </div>
-      <Button type="primary" style="margin-left:10px;" class="search-btn" icon="ios-funnel" @click="openFilter"><Icon type="search"/>筛选</Button>
+      <Button style="margin-left:10px;" class="search-btn" icon="ios-funnel-outline" @click="openFilter"><Icon type="search"/>筛选</Button>
     </div>
     <div slot="filterPanel" class="filterPanel" v-if="filterPanel">
       <Card :bordered="false">

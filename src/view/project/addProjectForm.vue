@@ -26,7 +26,7 @@
           <Row>
             <Col span="11">
               <Select v-model="formItem.firstPartyUserId" label-in-value @on-change="firstPartyUserOnChange" filterable clearable>
-                <Option v-for="(item, index) in firstPartyUser" :value="item.id " :key="index">{{item.name}}</Option>
+                <Option v-for="(item, index) in formItem.firstPartyUser" :value="item.id " :key="index">{{item.name}}</Option>
               </Select>
             </Col>
           </Row>
@@ -126,7 +126,8 @@ export default {
         lng: '',
         lat: '',
         remarks: '',
-        dates: []
+        dates: [],
+        firstPartyUser: []
       },
       ruleValidate: {
         name: [
@@ -149,7 +150,6 @@ export default {
         ]
       },
       firstPartyCompany: [],
-      firstPartyUser: [],
       projectManager: [],
       markers: [],
       events: {
@@ -264,7 +264,7 @@ export default {
         'isLoginApp': ''
       }).then((res) => {
         if (res.data.status === '200') {
-          this.firstPartyUser = res.data.data.list
+          this.formItem.firstPartyUser = res.data.data.list
         }
       })
     },
@@ -298,7 +298,7 @@ export default {
     }
   },
   mounted () {
-    console.log(this.$route.query.lat)
+    console.log(getCache())
     if (getCache()) {
       this.formItem = JSON.parse(getCache())
     }

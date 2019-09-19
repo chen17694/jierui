@@ -17,7 +17,7 @@
 
 <script>
 import LoginForm from '_c/login-form'
-import { mapActions } from 'vuex'
+import { mapActions, mapMutations } from 'vuex'
 export default {
   components: {
     LoginForm
@@ -26,6 +26,9 @@ export default {
     ...mapActions([
       'handleLogin'
     ]),
+    ...mapMutations([
+      'closeStatistics'
+    ]),
     handleSubmit ({ userName, password, autoLogin }) {
       this.handleLogin({ userName, password, autoLogin }).then((res) => {
         // this.getUserInfo().then(res => {
@@ -33,6 +36,7 @@ export default {
         //     name: this.$config.homeName
         //   })
         // }))
+        this.closeStatistics(false)
         this.$router.push({
           name: this.$config.homeName
         })

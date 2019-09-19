@@ -78,7 +78,7 @@ export default {
           this.$router.push('/statistics/projectStatistics')
           break
         case '4':
-          this.$router.push('/DailyReview/dailyList')
+          this.$router.push('/my/myDaily')
           break
         case '5':
           this.$router.push('/my/myProcessed')

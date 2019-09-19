@@ -136,21 +136,22 @@ export default {
       let type = info.type
       if (type === '1') { // 审核审批
         this.$router.push({
-          name: 'rwlksq',
-          query: {
-            taskId: info.resourceId
-          }
-        })
+          name: 'myProcessed'
+        })``
       } else if (type === '2') { // 提醒
-
+        this.$router.push({
+          name: 'infoList'
+        })
       } else if (type === '3') { // 催办
-
+        this.$router.push({
+          name: 'infoList'
+        })
       } else if (type === '4') { // 推送 消息
-        // this.$router.push({path: '/infoDetail', query: {id: info.resourceId}})
+        this.$router.push({ name: 'infoDetail', query: { id: info.resourceId } })
       } else if (type === '5') { // 新项目通知
-        this.$router.push({ path: '/projectDetail', query: { projectId: info.resourceId } })
+        this.$router.push({ name: 'projectDetail', query: { projectId: info.resourceId } })
       } else if (type === '6') { // 任务拒绝
-        // this.$router.push({path: '/taskDetail', query: {taskId: info.resourceId}})
+        this.$router.push({ name: 'taskDetail', query: { taskId: info.resourceId } })
       }
     },
     MessageDetail (id) {

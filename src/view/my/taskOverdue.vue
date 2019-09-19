@@ -1,7 +1,7 @@
 <template>
   <div>
     <Input search @on-search="handleSearch" placeholder="输入关键字搜索" type="text" enter-button="搜索" style="width: 300px; float: left"  />
-    <Button type="primary" @click="openFilter" style="margin-left: 10px">筛选</Button>
+    <Button @click="openFilter" icon="ios-funnel-outline" style="margin-left: 10px"><Icon type="search"/>筛选</Button>
     <Card v-show="filter === true" style="margin: 20px 0 10px 0">
       <div class="filter" style="display: flex; justify-content: space-between;">
         <div>

@@ -93,7 +93,7 @@ export default {
       opt(obj).then((res) => {
         if (res.data.status === '200') {
           this.$router.push({
-            name: 'myApproval'
+            name: 'myProcessed'
           })
         }
         this.$Message.info(res.data.msg)
@@ -111,7 +111,7 @@ export default {
     },
     back () {
       this.$router.push({
-        name: 'myApproval'
+        name: 'myProcessed'
       })
     }
   },

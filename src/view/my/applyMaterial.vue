@@ -221,14 +221,31 @@ export default {
         userId: getUserId(),
         materialList: materialList
       }
-      materialApplication(obj).then((res) => {
-        if (res.data.status === '200') {
-          this.$router.push({
-            name: 'myMaterial'
-          })
-        }
-        this.$Message.info(res.data.msg)
+      console.log(obj.materialList)
+      let valid = obj.materialList.every((item) => {
+        return this.checkForm(item)
       })
+      if (valid) {
+        materialApplication(obj).then((res) => {
+          if (res.data.status === '200') {
+            this.$router.push({
+              name: 'myMaterial'
+            })
+          }
+          this.$Message.info(res.data.msg)
+        })
+      } else {
+        this.$Message.info('填写有误，请检查后再次提交')
+      }
+    },
+    checkForm (data) {
+      for (let item in data) {
+        console.log(data[item])
+        if (!data[item]) {
+          return false
+        }
+      }
+      return true
     },
     clear () {
       this.rowIndex = 0

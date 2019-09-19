@@ -9,7 +9,7 @@
               <span slot="prepend">审核审批名称:</span>
               </Input>
             </div>
-            <Button class="search-btn" type="primary" @click="openFilter1"><Icon type="search"/>筛选</Button>
+            <Button class="search-btn" icon="ios-funnel-outline" @click="openFilter1"><Icon type="search"/>筛选</Button>
           </div>
         </Col>
       </Row>
@@ -83,7 +83,7 @@
               <span slot="prepend">审核审批名称:</span>
               </Input>
             </div>
-            <Button class="search-btn" type="primary" @click="openFilter2"><Icon type="search"/>筛选</Button>
+            <Button class="search-btn" icon="ios-funnel-outline" @click="openFilter2"><Icon type="search"/>筛选</Button>
           </div>
         </Col>
       </Row>
@@ -392,7 +392,7 @@ export default {
             // 我的审批 物资申请审批
             this.$router.push({
               name: 'wzsq',
-              params: {
+              query: {
                 taskId: arguments[0].taskId,
                 type: arguments[0].type
               }

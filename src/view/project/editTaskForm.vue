@@ -282,7 +282,7 @@ export default {
       })
       this.formItem.name = this.detailData.name
       this.formItem.type = this.detailData.type
-      this.formItem.dates = [this.detailData.startTime, this.detailData.endTime]
+      this.formItem.dates = [this.detailData.startTime, this.detailData.completionTime]
       this.formItem.nature = this.detailData.nature
       this.formItem.remarks = this.detailData.remarks
       this.formItem.location = this.detailData.provinceName + this.detailData.cityName + this.detailData.districtName + this.detailData.specificAddress

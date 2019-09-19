@@ -394,11 +394,31 @@ export default {
       this.setPie3()
       this.setPie4()
     })
-    this.ListProject((res) => {
-      this.fourSearch.projectId = res.value
-      this.TaskScoringAndWorkloadBean(() => {
-        this.setPie5()
-      })
+    listProject({
+      pageSize: 0,
+      page: 0,
+      userId: getUserId(),
+      projectName: '',
+      firstPartyCompanyId: '',
+      projectManagerId: '',
+      status: '',
+      firstPartyScoring: '',
+      provinceName: '',
+      cityName: '',
+      districtName: '',
+      timeStatus: '',
+      startTime: '',
+      endTime: ''
+    }).then(res => {
+      if (res.data.status === '200') {
+        this.projectList = res.data.data.projectList
+        this.fourSearch.projectId = this.projectList[0] ? this.projectList[0].id : ''
+        this.TaskScoringAndWorkloadBean(() => {
+          this.setPie5()
+        })
+      } else {
+        this.$Message.info(res.data.msg)
+      }
     })
   },
   mounted () {},

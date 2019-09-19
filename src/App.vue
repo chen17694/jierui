@@ -65,4 +65,13 @@ html,body{
 #app {
   .size;
 }
+.amap-logo{
+  display: none !important;//去掉高德地图logo
+}
+.amap-copyright {
+  opacity:0 !important;//去掉高德的版本号
+}
+.ivu-select-dropdown{
+  padding: 0 !important;
+}
 </style>

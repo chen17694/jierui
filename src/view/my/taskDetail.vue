@@ -41,8 +41,8 @@
               <span style="margin-right: 20px" v-if="detailData.type === '2'"><span style="font-weight: bold">任务类型：</span>优化任务</span>
               <span style="margin-right: 20px" v-if="detailData.type === '3'"><span style="font-weight: bold">任务类型：</span>宣传任务</span>
               <span style="margin-right: 20px"><span style="font-weight: bold">任务负责人：</span>{{detailData.taskHoldersName}}</span>
-              <span style="margin-right: 20px" v-if="detailData.taskStatus === '4' || detailData.taskStatus === '5'"><span style="font-weight: bold">起止日期：</span>{{detailData.startTime}} - {{detailData.endTime}}</span>
-              <span style="margin-right: 20px" v-if="detailData.taskStatus !== '4' && detailData.taskStatus !== '5'"><span style="font-weight: bold">起止日期：</span>{{detailData.startTime}} - {{detailData.completionTime}}</span>
+              <span style="margin-right: 20px" v-if="detailData.taskStatus === '6'"><span style="font-weight: bold">起止日期：</span>{{detailData.startTime}} - {{detailData.endTime}}</span>
+              <span style="margin-right: 20px" v-if="detailData.taskStatus !== '6'"><span style="font-weight: bold">起止日期：</span>{{detailData.startTime}} - {{detailData.completionTime}}</span>
             </li>
             <li v-if="detailData.nature === '1'"><span style="font-weight: bold">任务性质：</span>单点优化</li>
             <li v-if="detailData.nature === '2'"><span style="font-weight: bold">任务性质：</span>线优化</li>
@@ -257,6 +257,7 @@ export default {
           }).then((res) => {
             this.$Message.info(res.data.msg)
             this.getData()
+            this.toList()
           })
         }
       })

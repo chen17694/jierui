@@ -28,6 +28,7 @@ const closePage = (state, route) => {
 
 export default {
   state: {
+    statistics: true,
     breadCrumbList: [],
     tagNavList: [],
     homeRoute: {},
@@ -69,6 +70,11 @@ export default {
       route = tag[0] ? tag[0] : null
       if (!route) return
       closePage(state, route)
+    },
+    closeStatistics (state, statistics) {
+      console.log(statistics)
+      state.statistics = !statistics
+      console.log(state)
     },
     addTag (state, { route, type = 'unshift' }) {
       let router = getRouteTitleHandled(route)

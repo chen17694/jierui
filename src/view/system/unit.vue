@@ -24,7 +24,7 @@
             <span slot="prepend">单位名称:</span>
             </Input>
           </div>
-          <Button class="search-btn" type="primary" @click="openFilter"><Icon type="search"/>筛选</Button>
+          <Button class="search-btn" icon="ios-funnel-outline" @click="openFilter"><Icon type="search"/>筛选</Button>
         </div>
       </Col>
       <Col span="12">

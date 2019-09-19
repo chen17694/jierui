@@ -1,14 +1,14 @@
 <template>
   <div>
     <div class="pageHeader">
-      <Button type="primary" @click="openFilter">筛选</Button>
+      <Button @click="openFilter" icon="ios-funnel-outline"><Icon type="search"/>筛选</Button>
       <div class="switchMonth">
         <img src="../../assets/images/leftBtn.png" @click="prevMonth">
         <div>{{title}}</div>
         <img src="../../assets/images/rightBtn.png" @click="nextMonth">
       </div>
       <div>
-        <Button type="primary" @click="toList" style="margin-right: 10px">全部99+</Button>
+        <Button type="primary" @click="toList" style="margin-right: 10px">全部 ({{total > 99 ? '99+' : total}})</Button>
         <Button @click="addInit">新增日报</Button>
       </div>
     </div>
@@ -174,6 +174,7 @@ export default {
   components: { Tables },
   data () {
     return {
+      total: 0,
       rows: [],
       filter: false,
       edit: false,
@@ -425,18 +426,22 @@ export default {
     setRows () {
       const { year, month } = this.showDate
       const months = (new Date(year, month, 0)).getDate()
+      const monthsPrev = (new Date(year, month - 1, 0)).getDate()
       const result = []
       let row = []
       let arrs = [year, month, '01']
       var weeks = new Date(arrs[0], parseInt(arrs[1] - 1), arrs[2])
       let week = weeks.getDay()
       let day = 0
-      for (let i = 1; i <= 42; i += 1) {
+      for (let i = 1, j = 1; i <= 42; i += 1) {
         if (i < week) {
-          this.addRowEmptyValue(row)
+          this.addRowDayValuePrev(row, monthsPrev - (week - (i + 1)))
         } else {
           if (day === months) {
-            this.addRowEmptyValue(row)
+            if (j <= 42 - months) {
+              this.addRowDayValueNext(row, j)
+              j++
+            }
           } else {
             this.addRowDayValue(row, ++day)
           }
@@ -741,6 +746,20 @@ export default {
         value: ''
       })
     },
+    addRowDayValuePrev (row, i) {
+      if (i < 10) {
+        i = '0' + i
+      }
+      let value = { value: i, disabled: true }
+      row.push(value)
+    },
+    addRowDayValueNext (row, i) {
+      if (i < 10) {
+        i = '0' + i
+      }
+      let value = { value: i, disabled: true }
+      row.push(value)
+    },
     addRowDayValue (row, i) {
       if (i < 10) {
         i = '0' + i
@@ -792,6 +811,7 @@ export default {
         userId: getUserId()
       }).then((res) => {
         let obj = {}
+        this.total = Number(res.data.data.total)
         if (res.data.data.list.length > 0) {
           res.data.data.list.reverse().forEach((item) => {
             if (!obj[item.reportDate]) {
@@ -901,22 +921,22 @@ export default {
           height: 130px;
           padding: 7px 20px;
           text-align: right;
-          .e-calendar-monthday-row-day.pointer{
-            cursor: pointer;
-          }
-          .e-calendar-monthday-row-day-value{
-            position: relative;
-            z-index: 1;
-            margin-bottom: 3px;
-            display: block;
-          }
-          .e-calendar-monthday-row-day.active{
-            color: #ffffff;
-          }
-          .e-calendar-monthday-row-day.disabled{
-            opacity: .4;
-            cursor: not-allowed;
-          }
+        }
+        .e-calendar-monthday-row-day.pointer{
+          cursor: pointer;
+        }
+        .e-calendar-monthday-row-day-value{
+          position: relative;
+          z-index: 1;
+          margin-bottom: 3px;
+          display: block;
+        }
+        .e-calendar-monthday-row-day.active{
+          color: #ffffff;
+        }
+        .e-calendar-monthday-row-day.disabled{
+          opacity: .4;
+          cursor: inherit;
         }
       }
     }

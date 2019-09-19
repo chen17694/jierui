@@ -37,7 +37,7 @@
           <Row>
             <Col span="11">
               <Select v-model="formItem.taskHoldersId" label-in-value @on-change="taskHoldersOnChange" filterable clearable>
-                <Option v-for="(item, index) in taskHold" :value="item.id " :key="index">{{item.name}}</Option>
+                <Option v-for="(item, index) in formItem.taskHold" :value="item.id " :key="index">{{item.name}}</Option>
               </Select>
             </Col>
           </Row>
@@ -131,7 +131,8 @@ export default {
         districtName: '',
         specificAddress: '',
         lng: this.$route.params.lng,
-        lat: this.$route.params.lat
+        lat: this.$route.params.lat,
+        taskHold: []
       },
       ruleValidate: {
         name: [
@@ -157,7 +158,6 @@ export default {
         ]
       },
       businessProject: [],
-      taskHold: [],
       markers: [],
       events: {
         init () {
@@ -200,10 +200,10 @@ export default {
       this.$router.go(-1)
     },
     taskHoldersOnChange () {
-      this.formItem.taskHoldersName = arguments[0].label
+      this.formItem.taskHoldersName = arguments[0] ? arguments[0].label : ''
     },
     businessProjectOnChange () {
-      this.formItem.businessProjectName = arguments[0].label
+      this.formItem.businessProjectName = arguments[0] ? arguments[0].label : ''
       listProjectUser({
         pageSize: 0,
         page: 0,
@@ -211,7 +211,7 @@ export default {
         userId: getUserId(),
         officeId: ''
       }).then((res) => {
-        this.taskHold = res.data.data.list
+        this.formItem.taskHold = res.data.data.list
       })
     },
     dateChange () {
@@ -295,7 +295,7 @@ export default {
         userId: getUserId(),
         officeId: ''
       }).then((res) => {
-        this.taskHold = res.data.data.list
+        this.formItem.taskHold = res.data.data.list
       })
     }
   }

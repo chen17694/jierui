@@ -11,22 +11,22 @@
         :events="events"
         :plugin="plugin"
       >
-        <el-amap-marker v-for="(marker, index) in markers" :key="index" :extData = "marker.id" vid="chenyiming" :position="marker.position" :content="marker.content" :events="marker.events"></el-amap-marker>
+        <el-amap-marker v-for="(marker, index) in markers" :key="index" :title="marker.title" :extData = "marker.id" vid="chenyiming" :position="marker.position" :content="marker.content" :events="marker.events"></el-amap-marker>
       </el-amap>
-      <Cascader :data="areaData" v-model="areaValue" style="position: absolute; right: 20px; top: 20px; width: 200px;" @on-change="cascaderChange"></Cascader>
-      <div style="color: #666666; display: flex; width:380px; position: absolute; left: 20px; top: 20px; border: 0 none">
+      <Cascader :data="areaData" v-model="areaValue" style="position: absolute; right: 20px; top: 30px; width: 200px;" @on-change="cascaderChange"></Cascader>
+      <div style="color: #666666; display: flex; width:380px; position: absolute; left: 20px; top: 30px; border: 0 none">
         <div style="background-color: #ffffff; padding: 10px 20px; line-height: 20px; cursor: pointer">我的项目</div>
         <div style="background-color: #F2F2F2; padding: 10px 20px; line-height: 20px; cursor: pointer" @click="onChangeNav('myTask')">我的任务</div>
         <div style="background-color: #F2F2F2; padding: 10px 20px; line-height: 20px; cursor: pointer" @click="onChangeNav('myTaskRoad')">我的任务路口</div>
       </div>
-      <Card style="width:380px; position: absolute; left: 20px; top: 60px; border: 0 none">
+      <Card style="width:380px; position: absolute; left: 20px; top: 70px; border: 0 none">
         <div style="display: flex">
-           <input type="text" v-model="projectName" size="small" class="ivu-input ivu-input-default" style="height: 50px; border: 0 none; border-radius: 0; font-size: 15px; color: #999999">
+           <input type="text" v-model="projectName" placeholder="请输入查找的项目名称" size="small" class="ivu-input ivu-input-default" style="height: 45px; border: 0 none; border-radius: 0; font-size: 15px; color: #999999">
           <!--<Input type="text" v-model="projectName" size="small" />-->
-          <img src="../../assets/images/search.png" style=" cursor: pointer" @click="searchProject">
+          <img src="../../assets/images/search.png" style=" cursor: pointer; height: 45px" @click="searchProject">
         </div>
       </Card>
-      <Card v-if="!isDetail" style="width:380px; position: absolute; left: 20px; top: 120px;">
+      <Card v-if="!isDetail" style="opacity:0.8; width:380px; position: absolute; left: 20px; top: 130px;">
         <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; border-bottom: 1px solid #e6e6e6;">
           <div style="font-size: 16px; font-weight: bold">
             项目数量：{{this.total}}
@@ -57,8 +57,8 @@
             <span style="color:#BC0000;" v-if="item.isOverdue === '1'">已逾期{{item.overdueDays}}天</span>
           </div>
           <div style="display: flex; justify-content: space-between; margin-top: 10px" @click.stop>
-            <div>
-              <span v-for="(i, index) in item.projectButtonPermissionBeans" :key="index" >
+            <div style="display: flex; justify-content: left; flex-wrap: wrap">
+              <span v-for="(i, index) in item.projectButtonPermissionBeans" :key="index">
                 <span  v-if="i.permissionCode === '1'"  @click="onEdit(i, item)">
                   <img src="../../assets/images/p1.png" title="开始项目" class="btn">
                   开始项目
@@ -125,7 +125,7 @@
           <span @click="close" style="cursor: pointer">{{this.panelShow ? '收起' : '展开'}}</span>
         </div>
       </Card>
-      <Card v-if="isDetail" style="width:380px; height: 550px; overflow-y: scroll; position: absolute; left: 20px; top: 120px;">
+      <Card v-if="isDetail" style="opacity:0.8; width:380px; height: 550px; overflow-y: scroll; position: absolute; left: 20px; top: 120px;">
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px;border-bottom: 1px solid rgb(230, 230, 230);">
           <span style="color: #2E8CEB; font-size: 15px; font-weight: bold">{{detailData.name}}</span>
           <img src="../../assets/images/icon1.png" style="width: 22px;">
@@ -139,6 +139,60 @@
           <div style="line-height: 24px"><span class="label">项目角色：</span><span>{{detailData.userTopRoleName}}</span></div>
           <div style="line-height: 24px"><span class="label">逾期天数：</span><span>{{detailData.overdueDays}}</span></div>
           <div style="line-height: 24px"><span class="label">甲方评分：</span><span>{{detailData.firstPartyScoring}}</span></div>
+
+          <div style="display: flex; justify-content: space-between; margin-top: 10px" @click.stop>
+            <div>
+              <span v-for="(i, index) in detailData.projectButtonPermissionBeans" :key="index" >
+                <span  v-if="i.permissionCode === '1'"  @click="onEdit(i, detailData)">
+                  <img src="../../assets/images/p1.png" title="开始项目" class="btn">
+                  开始项目
+                </span>
+                <span  v-if="i.permissionCode === '2' && detailData.pauseStatus === '1'" @click="onEdit(i, detailData)">
+                  <img src="../../assets/images/p1.png" title="开始项目" class="btn">
+                  开始项目
+                </span>
+                <span v-if="i.permissionCode === '2' && detailData.pauseStatus === '0'" @click="onEdit(i, detailData)">
+                  <img src="../../assets/images/p2.png" title="暂停项目" class="btn">
+                  暂停项目
+                </span>
+                <span  v-if="i.permissionCode === '3' && detailData.pauseStatus === '1'" @click="onEdit(i, detailData)">
+                  <img src="../../assets/images/p3.png" title="申请开始项目" class="btn">
+                  申请开始项目
+                </span>
+                <span v-if="i.permissionCode === '3' && detailData.pauseStatus === '0'" @click="onEdit(i, detailData)">
+                  <img src="../../assets/images/p3.png" title="申请暂停项目" class="btn">
+                  申请暂停项目
+                </span>
+                <span v-if="i.permissionCode === '4'" @click="onEdit(i, detailData)">
+                  <img src="../../assets/images/p4.png" title="撤销项目" class="btn">
+                  撤销项目
+                </span>
+                <span v-if="i.permissionCode === '5'" @click="onEdit(i, detailData)">
+                   <img src="../../assets/images/p5.png" title="申请撤销项目" class="btn">
+                  申请撤销项目
+                </span>
+                <span v-if="i.permissionCode === '6'" @click="onEdit(i, detailData)">
+                  <img src="../../assets/images/p6.png" title="逾期催办项目" class="btn">
+                  逾期催办项目
+                </span>
+                <span v-if="i.permissionCode === '7'" @click="onEdit(i, detailData)">
+                  <img src="../../assets/images/p7.png" title="提交审核项目" class="btn">
+                  提交审核项目
+                </span>
+                <span  v-if="i.permissionCode === '8'" @click="onEdit(i, detailData)">
+                  <img src="../../assets/images/p8.png" title="删除项目" class="btn">
+                  删除项目
+                </span>
+                <span v-if="i.permissionCode === '99'" @click="onEdit(i, detailData)">
+                  <img src="../../assets/images/p9.png" title="创建任务" class="btn">
+                  创建任务
+                </span>
+              </span>
+            </div>
+            <div>
+              <button typeof="button" @click="toProjectDetail(detailData.id,detailData.lat,detailData.lng)" style="border: 1px solid #2E8CEB; width: 58px; height: 41px; background-color: #ffffff; border-radius: 3px; color: #2E8CEB; cursor: pointer">详情</button>
+            </div>
+          </div>
         </div>
         <div style=" padding: 5px 15px; border-bottom: 1px solid rgb(230, 230, 230);">
           项目基本信息
@@ -227,12 +281,15 @@
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>
+    <myStatistics v-show="statistics" @statisticsShow="statisticsShow"/>
   </div>
 </template>
 
 <script>
 import { listProject, areaData, listMapProject, selectProjectDetail, projectFunction, listTask, listTaskCrossing } from '@/api/data'
-import { getUserId, getOffice } from '@/libs/util'
+import { getUserId, getOffice, setCache } from '@/libs/util'
+import { mapMutations } from 'vuex'
+import myStatistics from '_c/myStatistics'
 import p_pause from '../../assets/images/p_pause.png'
 import p_noStarted from '../../assets/images/p_noStarted.png'
 import p_start from '../../assets/images/p_start.png'
@@ -244,9 +301,11 @@ import { AMapManager, lazyAMapApiLoaderInstance } from 'vue-amap'
 let amapManager = new AMapManager()
 export default {
   name: 'myProject',
+  components: { myStatistics },
   data () {
     let self = this
     return {
+      statistics: this.$store.state.app.statistics,
       taskListId: '',
       taskRoadPage: 1,
       taskRoadTotal: 0,
@@ -288,10 +347,7 @@ export default {
       map: null,
       plugin: [{
         pName: 'ToolBar',
-        position: 'RB',
-        events: {
-          init (instance) {}
-        }
+        position: 'RB'
       }],
       events: {
         complete () {
@@ -378,6 +434,13 @@ export default {
     }
   },
   methods: {
+    ...mapMutations([
+      'closeStatistics'
+    ]),
+    statisticsShow () {
+      this.closeStatistics(this.statistics)
+      this.statistics = this.$store.state.app.statistics
+    },
     createLocator () {
       // 获取Dropdown
       const contextmenu = this.$refs.contextMenu
@@ -592,6 +655,7 @@ export default {
         this.permissionCode = permissionCode
         this.statusModel = true
       } else if (permissionCode === '99') {
+        setCache('')
         this.$router.push({
           name: 'addTask'
         })
@@ -637,7 +701,13 @@ export default {
           onOk: () => {
             projectFunction(obj).then((res) => {
               this.$Message.info(res.data.msg)
-              this.getData()
+
+              this.markers = []
+              this.markerRefs = []
+              this.map.clearMarkers()
+              this.getMapProject()
+              this.getProject()
+              this.toList()
             })
           }
         })
@@ -845,6 +915,7 @@ export default {
         let projectList = res.data.data.projectList
         let self = this
         projectList.forEach((item) => {
+          console.log(item)
           let status = ''
           if (item.pauseStatus === '1') {
             status = `<div><img src="${p_pause}" style="width: 30px; height: 30px"></div>`
@@ -876,6 +947,7 @@ export default {
           this.markers.push({
             position: [item.lng, item.lat],
             id: item.id,
+            title: item.name,
             content: status,
             events: {
               init (o) {

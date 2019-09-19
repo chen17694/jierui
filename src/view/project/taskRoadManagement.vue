@@ -8,7 +8,7 @@
             <span slot="prepend">路口别名:</span>
             </Input>
           </div>
-          <Button class="search-btn" type="primary" @click="openFilter"><Icon type="search"/>筛选</Button>
+          <Button class="search-btn" icon="ios-funnel-outline" @click="openFilter"><Icon type="search"/>筛选</Button>
         </div>
       </Col>
       <Col span="12">
@@ -169,7 +169,7 @@ export default {
             }
             return h('div', {}, text)
           }
-         },
+        },
         {
           title: '操作',
           slot: 'action3'

@@ -8,7 +8,7 @@
             <span slot="prepend">任务名称:</span>
             </Input>
           </div>
-          <Button class="search-btn" type="primary" @click="openFilter"><Icon type="search"/>筛选</Button>
+          <Button class="search-btn" icon="ios-funnel-outline" @click="openFilter"><Icon type="search"/>筛选</Button>
         </div>
       </Col>
       <Col span="12">
@@ -96,7 +96,7 @@
 
 <script>
 import { listTask, taskFunction, listProject } from '@/api/data'
-import { getUserId } from '@/libs/util'
+import { getUserId, setCache } from '@/libs/util'
 import Tables from '_c/tables'
 export default {
   name: 'projectManagement',
@@ -241,6 +241,7 @@ export default {
       this.getData()
     },
     toAdd () {
+      setCache('')
       this.$router.push({
         name: 'addTask'
       })

@@ -144,7 +144,7 @@
     <Modal
       v-model="materialModel"
       title="物资加入项目申请">
-      <Form ref="formItemMaterial" :model="formItemMaterial" :rules="ruleCustom3" :label-width="130">
+      <Form ref="formItemMaterial" :model="formItemMaterial" :rules="ruleCustom3" :label-width="140">
         <FormItem label="物资归属单位：">
           <Row>
             <Col span="11">
@@ -177,7 +177,7 @@
     <Modal
       v-model="joinModel"
       title="人员加入项目申请">
-      <Form ref="formItemJoin" :model="formItemJoin" :rules="ruleCustom2" :label-width="130">
+      <Form ref="formItemJoin" :model="formItemJoin" :rules="ruleCustom2" :label-width="140">
         <FormItem label="人员归属单位：">
           <Row>
             <Col span="11">
@@ -232,7 +232,7 @@
 
 <script>
 import { listProjectAnnex, selectResponseDissatisfiedTaskCrossingBean, deleteProjectAnnex, taskFunction, selectProjectDetail, listTask, listProjectMaterial, listProjectUser, projectFunction, listProjectUserDistribution, getUnitList, addProjectManager, staffJoin, projectMaterialJoin, uploadImgToAliOss, addProjectAnnex } from '@/api/data'
-import { getUserId, getOffice } from '@/libs/util'
+import { getUserId, getOffice, setCache } from '@/libs/util'
 import Tables from '_c/tables'
 export default {
   name: 'projectDetail',
@@ -628,6 +628,7 @@ export default {
         this.permissionCode = permissionCode
         this.statusModel = true
       } else if (permissionCode === '99') {
+        setCache('')
         this.$router.push({
           name: 'addTask'
         })

@@ -13,19 +13,19 @@
       >
         <el-amap-marker v-for="(marker, index) in markers" :key="index" :extData = "marker.id" vid="chenyiming" :position="marker.position" :content="marker.content" :events="marker.events"></el-amap-marker>
       </el-amap>
-      <Cascader :data="areaData" v-model="areaValue" style="position: absolute; right: 20px; top: 20px; width: 200px;" @on-change="cascaderChange"></Cascader>
-      <div style="color: #666666; display: flex; width:350px; position: absolute; left: 20px; top: 20px; border: 0 none">
+      <Cascader :data="areaData" v-model="areaValue" style="position: absolute; right: 20px; top: 30px; width: 200px;" @on-change="cascaderChange"></Cascader>
+      <div style="color: #666666; display: flex; width:380px; position: absolute; left: 20px; top: 30px; border: 0 none">
         <div style="background-color: #F2F2F2; padding: 10px 20px; line-height: 20px; cursor: pointer" @click="onChangeNav('myProject')">我的项目</div>
         <div style="background-color: #F2F2F2; padding: 10px 20px; line-height: 20px; cursor: pointer" @click="onChangeNav('myTask')">我的任务</div>
         <div style="background-color: #ffffff; padding: 10px 20px; line-height: 20px; cursor: pointer">我的任务路口</div>
       </div>
-      <Card style="width:350px; position: absolute; left: 20px; top: 60px; border: 0 none">
+      <Card style="width:380px; position: absolute; left: 20px; top: 70px; border: 0 none">
         <div style="display: flex">
-          <input type="text" v-model="alias" class="ivu-input ivu-input-default" style="height: 50px; border: 0 none; border-radius: 0; font-size: 15px; color: #999999">
-          <img src="../../assets/images/search.png" style=" cursor: pointer" @click="searchProject">
+          <input type="text" v-model="alias" class="ivu-input ivu-input-default" placeholder="请输入查找的任务路口名称" style="height: 45px; border: 0 none; border-radius: 0; font-size: 15px; color: #999999">
+          <img src="../../assets/images/search.png" style=" cursor: pointer; height: 50px" @click="searchProject">
         </div>
       </Card>
-      <Card v-if="!isDetail" style="width:350px; position: absolute; left: 20px; top: 120px;">
+      <Card v-if="!isDetail" style="width:380px; position: absolute; left: 20px; top: 130px;opacity:0.8;">
         <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; border-bottom: 1px solid #e6e6e6;">
           <div style="font-size: 16px; font-weight: bold">
             任务路口数量：{{this.total}}
@@ -94,7 +94,7 @@
           <span @click="close" style="cursor: pointer">{{this.panelShow ? '收起' : '展开'}}</span>
         </div>
       </Card>
-      <Card v-if="isDetail" style="width:350px; height: 550px; overflow-y: scroll; position: absolute; left: 20px; top: 120px;">
+      <Card v-if="isDetail" style="width:380px; height: 550px; overflow-y: scroll; position: absolute; left: 20px; top: 120px;opacity:0.8;">
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px;border-bottom: 1px solid rgb(230, 230, 230);">
           <span style="color: #2E8CEB; font-size: 15px; font-weight: bold">{{detailData.alias}}</span>
           <img src="../../assets/images/icon1.png" style="width: 22px;">
@@ -106,6 +106,27 @@
           <div style="line-height: 24px"><span class="label">甲方评分：</span><span>{{detailData.firstPartyScoring}}</span></div>
           <div style="position: absolute; bottom: 15px; right: 15px;">
             <button typeof="button" @click="toTaskDetail(detailData.id, detailData.type)" style="border: 1px solid #2E8CEB; width: 58px; height: 41px; background-color: #ffffff; border-radius: 3px; color: #2E8CEB; cursor: pointer">详情</button>
+          </div>
+          <div style="display: flex; justify-content: space-between; margin-top: 10px" @click.stop>
+            <div>
+              <span v-for="(i, index) in detailData.taskCrossingButtonPermissionBeanList" :key="index" >
+                <span v-if="i.permissionCode === '1'" @click="onEdit(i, detailData)">
+                  <img src="../../assets/images/t4.png"  title="逾期催办" class="btn" style="margin: 0 3px" >
+                  逾期催办
+                </span>
+                <span v-if="i.permissionCode === '2'" @click="onEdit(i, detailData)">
+                  <img src="../../assets/images/p7.png"  title="提交审核" class="btn" style="margin: 0 3px" >
+                  提交审核
+                </span>
+                <span v-if="i.permissionCode === '3'" @click="onEdit(i, detailData)">
+                  <img src="../../assets/images/p8.png"  title="删除任务路口" class="btn" style="margin: 0 3px" >
+                  删除任务路口
+                </span>
+              </span>
+            </div>
+            <div>
+              <button typeof="button" @click="toTaskDetail(detailData.id, detailData.type, detailData.lat, detailData.lng)" style="border: 1px solid #2E8CEB; width: 58px; height: 41px; background-color: #ffffff; border-radius: 3px; color: #2E8CEB; cursor: pointer">详情</button>
+            </div>
           </div>
         </div>
         <div style=" padding: 5px 15px; border-bottom: 1px solid rgb(230, 230, 230);">

@@ -163,7 +163,7 @@ export default {
   methods: {
     back () {
       this.$router.push({
-        name: 'myApproval'
+        name: 'myProcessed'
       })
     },
     getMaterialCategory () {
@@ -222,7 +222,7 @@ export default {
           opt(obj).then((res) => {
             if (res.data.status === '200') {
               this.$router.push({
-                name: 'myApproval'
+                name: 'myProcessed'
               })
             }
             this.$Message.info(res.data.msg)

@@ -8,7 +8,7 @@
             <span slot="prepend">消息名称:</span>
             </Input>
           </div>
-          <Button class="search-btn" icon="ios-funnel" type="primary" @click="openFilter"><Icon type="search"/>筛选</Button>
+          <Button class="search-btn" icon="ios-funnel-outline" @click="openFilter"><Icon type="search"/>筛选</Button>
           <div class="showInfo">消息数量：<span class="infonum">{{total}}</span></div>
         </div>
       </Col>
@@ -80,6 +80,7 @@
 import Tables from '_c/tables'
 import { listMessage, delMessage, optMessage } from '@/api/data'
 import { getUserId } from '@/libs/util'
+import { mapMutations } from 'vuex'
 export default {
   name: 'infoList',
   components: { Tables },
@@ -138,8 +139,12 @@ export default {
     }
   },
   methods: {
+    ...mapMutations([
+      'setMessageCount'
+    ]),
     onRowClick () {
       optMessage({ ids: [arguments[0].id], userId: getUserId() }).then((res) => {
+        this.setMessageCount(this.$store.state.user.unreadCount - 1)
         this.$router.push(
           {
             path: 'infoDetail',
@@ -194,6 +199,7 @@ export default {
     OptMessage (ids) {
       optMessage({ ids: ids, userId: getUserId() }).then((res) => {
         this.$Message.info(res.data.msg)
+        this.setMessageCount(this.$store.state.user.unreadCount - ids.length)
         this.getData()
       })
     },

@@ -10,7 +10,7 @@
           <li :class="{active: params.type === '4'}" @click="dateRange('4')">上月</li>
         </ul>
         <DatePicker type="date" @on-change="dataDate"/>
-        <Button type="primary" @click="openFilter" style="margin-left: 20px">筛选</Button>
+        <Button @click="openFilter" icon="ios-funnel-outline" style="margin-left: 20px"><Icon type="search"/>筛选</Button>
       </Col>
       <Col span="12">
         <div style="float: right;">
@@ -25,7 +25,7 @@
             </DropdownMenu>
           </Dropdown>
           <Button @click="addInit">新增日报</Button>
-          <Button type="primary" @click="toDaily" style="margin-left: 10px">日历模式</Button>
+          <Button @click="toDaily" style="margin-left: 10px"><Icon type="md-calendar" /></Button>
         </div>
       </Col>
     </Row>
@@ -116,6 +116,11 @@ export default {
           workingContent: ''
         }
       ],
+      options: {
+        disabledDate (date) {
+          return date && date.valueOf() > Date.now()
+        }
+      },
       addTableData: [],
       addColumns: [
         { title: '项目名称',

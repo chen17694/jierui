@@ -158,9 +158,9 @@
         </Row>
       </div>
     </div>
-    <div style="margin-top: 20px;">
+    <div style="margin-top: 30px; margin-bottom: 30px">
       <div style="display: flex; justify-content: space-between">
-        <div style="width: 49.5%; border: 1px solid #00284d; height: 300px; position: relative; overflow: hidden; padding: 15px">
+        <div style="width: 49.5%; border: 1px solid #00284d; height: 330px; position: relative; overflow: hidden; padding: 15px">
           <p style="color: #ffffff;font-size: 18px; font-weight: bold">项目下人员已支出工作量排名</p>
           <div style="width: 100%; height: 60px; user-select: none;">
             <img src="../../assets/images/left.png" class="btn-con left-btn" @click="handleScroll(240)">
@@ -182,22 +182,22 @@
           </div>
           <div style=" margin-top: 20px; padding: 0 50px; display: flex">
             <div style="width: 50%">
-              <div v-for="(item, index) in userWorkingHours" :key="index" v-if="index<4"  style="color: #ffffff; line-height: 30px; margin-bottom: 10px">
-                <span style="margin-right: 10px">{{index + 1}}</span>
-                <span style="padding: 0 15px; border-left: 1px solid #fff; border-right: 1px solid #fff; margin-right: 10px;">{{item.userName}}</span>
+              <div v-for="(item, index) in userWorkingHours" :key="index" v-if="index<5"  style="color: #ffffff; line-height: 30px; margin-bottom: 10px">
+                <span style="margin-right: 10px;  width: 16px; display: inline-block">{{index + 1}}</span>
+                <span style="padding: 0 15px; border-left: 1px solid #fff; border-right: 1px solid #fff; margin-right: 10px; width: 88px">{{item.userName}}</span>
                 <span style="color: #3aa0ff">工时：{{item.workingHours}}</span>
               </div>
             </div>
             <div style="width: 50%">
               <div v-for="(item, index) in userWorkingHours" :key="index" v-if="index>4" style="color: #ffffff; line-height: 30px; margin-bottom: 10px">
-                <span style="margin-right: 10px">{{index + 1}}</span>
+                <span style="margin-right: 10px; width: 16px; display: inline-block">{{index + 1}}</span>
                 <span style="padding: 0 15px; border-left: 1px solid #fff; border-right: 1px solid #fff; margin-right: 10px;">{{item.userName}}</span>
                 <span style="color: #3aa0ff">工时：{{item.workingHours}}</span>
               </div>
             </div>
           </div>
         </div>
-        <div style="width: 49.5%; border: 1px solid #00284d; height: 300px; position: relative; overflow: hidden; padding: 15px">
+        <div style="width: 49.5%; border: 1px solid #00284d; height: 330px; position: relative; overflow: hidden; padding: 15px">
           <p style="color: #ffffff;font-size: 18px; font-weight: bold">单路口执行各类任务排名</p>
           <div style="width: 100%; height: 60px; user-select: none;">
             <img src="../../assets/images/left.png" class="btn-con left-btn" @click="handleScroll2(240)">
@@ -222,9 +222,8 @@
               <Col span="10" style="width:210px; height: 210px;">
                 <div ref="dom6" class="charts chart-pie" style="height: 210px; position:relative;"></div>
               </Col>
-              <Col span="12" style="position: relative;top: 30px;left: 100px;">
-                <ul
-                  style=" height: 30vh; display: flex; flex-direction: column; justify-content: center;text-align:left;">
+              <Col span="12" style="position: relative;top: -30px;left: 100px;">
+                <ul style=" height: 30vh; display: flex; flex-direction: column; justify-content: center;text-align:left;">
                   <li style="display: flex; align-items: center; justify-content: flex-start;margin-bottom:20px; color: #ffffff">
                     <div class="dian" style="background-color: #4dcb73"></div>
                     <div class="status">宣传任务</div>
@@ -260,10 +259,9 @@
 </template>
 
 <script>
-import { AMapManager } from 'vue-amap'
+import { AMapManager, lazyAMapApiLoaderInstance } from 'vue-amap'
 import echarts from 'echarts'
 import tdTheme from './theme.json'
-import { on, off } from '@/libs/tools'
 import { getLastMonthStartDate, getLastMonthEndDate, getMonthStartDate, getMonthEndDate, getQuarterStartDate, getQuarterEndDate, getLastQuarterStartDate, getLastQuarterEndDate, getCurrentYear, getLastYear } from '@/libs/mdate.js'
 import {
   mapCoordinateStatistics,
@@ -505,12 +503,17 @@ export default {
             },
             data: [
               {
-                value: this.pie6Data.publicityTypeCount,
+                // value: this.pie6Data.publicityTypeCount,
+                value: 10,
                 name: '宣传任务'
               },
-              { value: this.pie6Data.patrolTypeCount, name: '巡检任务' },
               {
-                value: this.pie6Data.optimizingTypeCount,
+                value: 40,
+                // value: this.pie6Data.patrolTypeCount,
+                name: '巡检任务' },
+              {
+                value: 50,
+                // value: this.pie6Data.optimizingTypeCount,
                 name: '优化任务'
               }
             ],
@@ -536,15 +539,9 @@ export default {
       }
       this.dom6 = echarts.init(this.$refs.dom6, 'tdTheme')
       this.dom6.setOption(option)
-      on(window, 'resize', this.resizeP6)
     },
     close () {
-      this.$router.push({
-        name: 'home'
-      })
-    },
-    resizeP6 () {
-      this.dom6.resize()
+      this.$emit('statisticsShow')
     },
     handleClick1 (item) {
       this.projectList3Id = item.id
@@ -829,9 +826,6 @@ export default {
         }
       })
     },
-    resize () {
-      this.dom.resize()
-    },
     setPie1 () {
       let option = {
         tooltip: {
@@ -877,7 +871,6 @@ export default {
       console.log(this.pieData1)
       this.dom1 = echarts.init(this.$refs.dom1, 'tdTheme')
       this.dom1.setOption(option)
-      on(window, 'resize', this.resize)
     },
     setPie2 () {
       let option = {
@@ -924,7 +917,6 @@ export default {
       }
       this.dom2 = echarts.init(this.$refs.dom2, 'tdTheme')
       this.dom2.setOption(option)
-      on(window, 'resize', this.resize)
     },
     setPie3 () {
       let option = {
@@ -971,7 +963,6 @@ export default {
       }
       this.dom3 = echarts.init(this.$refs.dom3, 'tdTheme')
       this.dom3.setOption(option)
-      on(window, 'resize', this.resize)
     },
     setLine1 () {
       let option = {
@@ -994,7 +985,7 @@ export default {
               show: true,
               // x轴线样式
               lineStyle: {
-                color: '#17273B',
+                color: '#ffffff',
                 width: 1,
                 type: 'solid'
               }
@@ -1031,7 +1022,7 @@ export default {
             splitLine: {
               show: true,
               lineStyle: {
-                color: '#17273B',
+                color: '#ffffff',
                 width: 1,
                 type: 'dashd'
               }
@@ -1040,7 +1031,6 @@ export default {
         ],
         series: [
           {
-            name: '呼入量',
             type: 'line',
             yAxisIndex: 0,
             symbolSize: 12,
@@ -1052,7 +1042,6 @@ export default {
             data: this.yData1
           },
           {
-            name: '呼出量',
             type: 'line',
             yAxisIndex: 0,
             symbolSize: 12,
@@ -1067,7 +1056,6 @@ export default {
       }
       this.dom5 = echarts.init(this.$refs.dom5, 'tdTheme')
       this.dom5.setOption(option)
-      on(window, 'resize', this.resize)
     },
     setBar1 () {
       let option = {
@@ -1078,7 +1066,7 @@ export default {
               show: true,
               // x轴线样式
               lineStyle: {
-                color: '#17273B',
+                color: '#ffffff',
                 width: 1,
                 type: 'solid'
               }
@@ -1115,7 +1103,7 @@ export default {
             splitLine: {
               show: true,
               lineStyle: {
-                color: '#17273B',
+                color: '#ffffff',
                 width: 1,
                 type: 'dashd'
               }
@@ -1152,86 +1140,85 @@ export default {
       }
       this.dom4 = echarts.init(this.$refs.dom4, 'tdTheme')
       this.dom4.setOption(option)
-      on(window, 'resize', this.resize)
     }
   },
   mounted () {
-    this.getMapCoordinateStatistics('1')
-    this.getMapCoordinateStatistics('2')
-    this.getMapCoordinateStatistics('3')
-    this.getTask()
-    listProject({
-      pageSize: 0,
-      page: 0,
-      userId: getUserId(),
-      projectName: '',
-      firstPartyCompanyId: '',
-      projectManagerId: '',
-      status: '',
-      firstPartyScoring: '',
-      provinceName: '',
-      cityName: '',
-      districtName: '',
-      timeStatus: '',
-      startTime: this.startTime,
-      endTime: this.endTime
-    }).then((res) => {
-      console.log(res)
-      this.projectList2 = res.data.data.projectList
-      this.projectList2Id = res.data.data.projectList[0].id
-      this.projectList3Id = res.data.data.projectList[0].id
-      this.getTaskDateCount()
-      userProjectWorkingHours({
+    lazyAMapApiLoaderInstance.load().then(() => {
+      this.getMapCoordinateStatistics('1')
+      this.getMapCoordinateStatistics('2')
+      this.getMapCoordinateStatistics('3')
+      this.getTask()
+      listProject({
+        pageSize: 10,
+        page: 0,
+        userId: getUserId(),
+        projectName: '',
+        firstPartyCompanyId: '',
+        projectManagerId: '',
+        status: '',
+        firstPartyScoring: '',
+        provinceName: '',
+        cityName: '',
+        districtName: '',
+        timeStatus: '',
         startTime: this.startTime,
-        endTime: this.endTime,
-        projectId: res.data.data.projectList[0].id
+        endTime: this.endTime
       }).then((res) => {
         console.log(res)
-        this.userWorkingHours = res.data.data
+        this.projectList2 = res.data.data.projectList
+        this.projectList2Id = res.data.data.projectList[0] ? res.data.data.projectList[0].id : ''
+        this.projectList3Id = res.data.data.projectList[0] ? res.data.data.projectList[0].id : ''
+        this.getTaskDateCount()
+        userProjectWorkingHours({
+          startTime: this.startTime,
+          endTime: this.endTime,
+          projectId: res.data.data.projectList[0] ? res.data.data.projectList[0].id : ''
+        }).then((res) => {
+          console.log(res)
+          this.userWorkingHours = res.data.data
+        })
       })
-      console.log(res.data.data.projectList[0].id)
+      listTask({
+        pageSize: 0,
+        page: 0,
+        businessProjectId: '',
+        type: '',
+        name: '',
+        taskStatus: '',
+        firstPartyScoring: '',
+        userId: getUserId(),
+        timeStatus: '',
+        startTime: this.startTime,
+        endTime: this.endTime,
+        provinceName: '',
+        cityName: '',
+        districtName: ''
+      }).then((res) => {
+        this.taskList = res.data.data.taskDetailBeans
+        this.taskListId = res.data.data.taskDetailBeans[0] ? res.data.data.taskDetailBeans[0].id : ''
+        this.getTaskCrossingDateCount()
+      })
+      listTaskCrossing({
+        pageSize: 0,
+        page: 0,
+        projectId: '',
+        taskId: '',
+        userId: getUserId(),
+        alias: '',
+        taskCrossingStatus: '',
+        timeStatus: '',
+        startTime: this.startTime,
+        endTime: this.endTime,
+        provinceName: '',
+        cityName: '',
+        districtName: ''
+      }).then((res) => {
+        this.taskCrossingList2 = res.data.data.taskCrossingDetailBeanList
+        if (this.taskCrossingList2[0]) {
+          this.handleClick2(this.taskCrossingList2[0])
+        }
+      })
     })
-    listTask({
-      pageSize: 0,
-      page: 0,
-      businessProjectId: '',
-      type: '',
-      name: '',
-      taskStatus: '',
-      firstPartyScoring: '',
-      userId: getUserId(),
-      timeStatus: '',
-      startTime: this.startTime,
-      endTime: this.endTime,
-      provinceName: '',
-      cityName: '',
-      districtName: ''
-    }).then((res) => {
-      this.taskList = res.data.data.taskDetailBeans
-      this.taskListId = res.data.data.taskDetailBeans[0].id
-      this.getTaskCrossingDateCount()
-    })
-    listTaskCrossing({
-      pageSize: 0,
-      page: 0,
-      projectId: '',
-      taskId: '',
-      userId: getUserId(),
-      alias: '',
-      taskCrossingStatus: '',
-      timeStatus: '',
-      startTime: this.startTime,
-      endTime: this.endTime,
-      provinceName: '',
-      cityName: '',
-      districtName: ''
-    }).then((res) => {
-      this.taskCrossingList2 = res.data.data.taskCrossingDetailBeanList
-      this.handleClick2(this.taskCrossingList2[0])
-    })
-  },
-  beforeDestroy () {
-    off(window, 'resize', this.resize)
   }
 }
 </script>
@@ -1342,7 +1329,6 @@ export default {
     right: 55px;
     top: 55px;
     bottom: 15px;
-    box-shadow: 0px 0 3px 2px rgba(100,100,100,.1) inset;
     height: 60px;
     overflow: hidden;
     .scroll-body{
@@ -1360,8 +1346,7 @@ export default {
         line-height: 58px;
         margin: 0;
         padding: 0 10px;
-        min-width: 188px;
-        /*width: 185px;*/
+        min-width: 185px;
         margin-right: 10px;
         color: #ffffff !important;
         border: 1px solid #04304c !important;

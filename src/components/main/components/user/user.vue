@@ -1,6 +1,7 @@
 <template>
   <div class="user-avatar-dropdown" style="display: flex">
-    <Badge :dot="!!messageUnreadCount" style="display: flex; align-items: center;">
+    {{messageUnreadCount}}
+    <Badge :dot="messageUnreadCount > 0" style="display: flex; align-items: center;">
       <img src="../../../../assets/images/message.png" style="width: 17px; margin-right: 46px" @click="message">
     </Badge>
     <Dropdown :transfer="true" placement="bottom-end">
@@ -8,9 +9,13 @@
       <span style="margin: 0 10px; color: #cccccc">{{userInfo.name}}</span>
       <Icon type="ios-arrow-down" style="color: #cccccc"></Icon>
       <DropdownMenu slot="list">
-        <DropdownItem name="message">
+        <DropdownItem name="message" style="padding: 10px;">
           <div style="width: 300px">
-            <ul style="list-style-type: none; line-height: 30px">
+            <div style="margin-bottom: 10px">
+              <Avatar :src="photo"/>
+              <span style="margin: 0 10px; color: #cccccc">{{userInfo.name}}</span>
+            </div>
+            <ul style="list-style-type: none; line-height: 30px; border-bottom: 1px solid #e6e6e6; margin-bottom: 10px">
               <li>
                 <span style="font-weight: bold">单位：</span>
                 <span>{{userInfo.office}}</span>

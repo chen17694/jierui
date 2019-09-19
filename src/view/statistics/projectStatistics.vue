@@ -348,7 +348,7 @@ export default {
       columns: [
         {
           type: 'index',
-          width: 60,
+          width: 70,
           title: '序号'
         },
         { title: '项目名称', key: 'name' },
@@ -381,10 +381,36 @@ export default {
     this.oneSearch.userId = getUserId()
     this.twoSearch.userId = getUserId()
     this.threeSearch.userId = getUserId()
-    this.ListProject(res => {
-      this.oneSearch.projectId = res.value // 设置默认项目ID
-      this.threeSearch.projectId = res.value // 设置默认项目ID
-      this.threeInterface()
+
+    listProject({
+      pageSize: 0,
+      page: 0,
+      userId: getUserId(),
+      projectName: '',
+      firstPartyCompanyId: '',
+      projectManagerId: '',
+      status: '',
+      firstPartyScoring: '',
+      provinceName: '',
+      cityName: '',
+      districtName: '',
+      timeStatus: '',
+      startTime: '',
+      endTime: ''
+    }).then(res => {
+      if (res.data.status === '200') {
+        this.projectList = res.data.data.projectList.map(item => {
+          return {
+            value: item.id,
+            label: item.name
+          }
+        })
+        this.oneSearch.projectId = res.value // 设置默认项目ID
+        this.threeSearch.projectId = res.value // 设置默认项目ID
+        this.threeInterface(this.projectList[0])
+      } else {
+        this.$Message.info(res.data.msg)
+      }
     })
   },
   mounted () {
