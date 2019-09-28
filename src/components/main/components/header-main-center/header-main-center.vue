@@ -8,6 +8,26 @@
         <MenuItem name="2">
             <img :src="Name === '2' ? yqxxa : yqxx" alt="">
             逾期信息
+            <div class="list-container">
+                <div class="list-view">
+                <div class="view-box">
+                  <h5>5</h5>
+                  <p>项目逾期</p>
+                </div>
+                <div class="view-box">
+                  <h5>5</h5>
+                  <p>任务逾期</p>
+                </div>
+                <div class="view-box">
+                  <h5>5</h5>
+                  <p>任务路口逾期</p>
+                </div>
+                <div class="view-box">
+                  <h5>5</h5>
+                  <p>物资归还逾期</p>
+                </div>
+              </div>
+            </div>
         </MenuItem>
         <MenuItem name="3">
           <img :src="Name === '3' ? tjxxa : tjxx" alt="">
@@ -122,6 +142,59 @@ export default {
   .ivu-menu-light.ivu-menu-horizontal .ivu-menu-item:hover,
   .ivu-menu-light.ivu-menu-horizontal .ivu-menu-submenu:hover{
       border: none;
+  }
+  .ivu-menu-item{
+    position: relative;
+    &:nth-child(2){
+      &:hover{
+        .list-container{
+          display: block;
+        }
+      }
+    }
+    .list-container{
+      display: none;
+      .list-view{
+        line-height: 20px;
+        width: 440px;
+        position: absolute;
+        top: 58px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #fff;
+        border-radius: 3px;
+        color: #333;
+        box-shadow: 0px 0px 3px #c5c5c5;
+        padding: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        &::before{
+          content: '';
+          position: absolute;
+          top: -21px;
+          left: 50%;
+          transform: translateX(-50%);
+          border-top: 10px transparent dashed;
+          border-left: 10px transparent dashed;
+          border-bottom: 10px #eaeaea solid;
+          border-right: 10px transparent dashed;
+        }
+        .view-box{
+          text-align: center;
+          padding: 5px 0px;
+          flex: 1;
+          &:hover{
+            background-color: #eee;
+          }
+          h5{
+            font-size: 18px;
+            margin-bottom: 2px;
+            color: #fb5d20;
+          }
+        }
+      }
+    }
   }
   .ivu-menu-item img {
     width: 20px;

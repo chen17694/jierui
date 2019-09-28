@@ -78,15 +78,15 @@ class HttpRequest {
       } else {
         console.log(errorInfo)
         if (errorInfo.status === 401) {
-          // source.cancel()
-          // if (errorInfo.data.status === 'TOKENREPEATED') {
-          //   Message.info('您的账号已在其它设备登录')
-          // }
-          // setTimeout(function () {
-          //   store.dispatch('handleLogOut').then(() => {
-          //     window.location.reload()
-          //   })
-          // }, 3000)
+          source.cancel()
+          if (errorInfo.data.status === 'TOKENREPEATED') {
+            Message.info('您的账号已在其它设备登录')
+          }
+          setTimeout(function () {
+            store.dispatch('handleLogOut').then(() => {
+              window.location.reload()
+            })
+          }, 3000)
           store.dispatch('handleLogOut').then(() => {
             window.location.reload()
           })
