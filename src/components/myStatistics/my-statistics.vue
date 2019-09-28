@@ -1,256 +1,297 @@
 <template>
   <div style="background-color: #001529; position: absolute; width: 100%; height: 100%;left: 0; top: 0; z-index: 900; overflow-x: scroll; padding: 0 15px">
-    <div style="color: rgb(255, 255, 255);position: absolute;right: 15px;top: 15px; z-index: 22" @click="close">
-      <Icon size="26" color="red" type="md-close" />
-      <span>关闭</span>
+    <div style="color: rgb(255, 255, 255);position: absolute;right: 15px;top: 15px; z-index: 22; display: flex" @click="close">
+      <Icon size="36" color="red" type="md-close" />
+      <span style="font-size: 16px; line-height: 36px">关闭</span>
     </div>
-    <div style=" border-bottom: 5px solid #04304c; margin-bottom: 20px; height: 140px">
-      <div style="display: inline-block;line-height: 80px;border-top: 5px solid rgb(4, 48, 76);width: 670px;position: absolute;margin-top: 55px;left: 15px;z-index: 1;">
-        <Button type="text" style="font-size: 18px; color: #ffffff" @click="lastMonthSlot">上月</Button>
-        <Button type="text" style="font-size: 18px; color: #ffffff" @click="nowMonthSlot">本月</Button>
-        <Button type="text" style="font-size: 18px; color: #ffffff" @click="lastSeasonSlot">上季</Button>
-        <Button type="text" style="font-size: 18px; color: #ffffff" @click="nowSeasonSlot">本季</Button>
-        <Button type="text" style="font-size: 18px; color: #ffffff" @click="lastYearSlot">去年</Button>
-        <Button type="text" style="font-size: 18px; color: #ffffff" @click="nowYearSlot">今年</Button>
+    <div style=" border-bottom: 5px solid #04304c; margin: 20px 0; height: 140px">
+      <div style="display: inline-block;line-height: 80px;border-top: 5px solid rgb(4, 48, 76);width: 630px;position: absolute;margin-top: 55px;left: 15px;z-index: 1;">
+        <Button type="text" style="font-size: 16px; color: #ffffff" @click="lastMonthSlot">上月</Button>
+        <Button type="text" style="font-size: 16px; color: #ffffff" @click="nowMonthSlot">本月</Button>
+        <Button type="text" style="font-size: 16px; color: #ffffff" @click="lastSeasonSlot">上季</Button>
+        <Button type="text" style="font-size: 16px; color: #ffffff" @click="nowSeasonSlot">本季</Button>
+        <Button type="text" style="font-size: 16px; color: #ffffff" @click="lastYearSlot">去年</Button>
+        <Button type="text" style="font-size: 16px; color: #ffffff" @click="nowYearSlot">今年</Button>
       </div>
-      <div style="display: inline-block;width: 100%;padding: 0 685px;position: absolute;left: 0;text-align: center;height: 140px;">
+      <div style="display: inline-block;width: 100%;padding: 0 660px;position: absolute;left: 0;text-align: center;height: 140px;">
         <h1 style="display: block; color: #ffffff; font-size: 36px; margin-bottom: 10px">杰瑞配时管理平台</h1>
-        <DatePicker type="daterange" placement="bottom-end" placeholder="请选择日期范围" style="background: none;border: 1px solid #04304c; width: 400px" @on-change="selectDate" ></DatePicker>
+        <!--<DatePicker type="daterange" placement="bottom-end" placeholder="请选择日期范围" style="background: none;border: 1px solid #04304c; width: 400px" @on-change="selectDate" ></DatePicker>-->
+        <DatePicker
+          v-model="startTime"
+          :open="openStart"
+          @on-change="selectDateStart"
+          type="date">
+          <div @click="openStartDate" style="border: 1px solid rgb(58, 160, 255);padding: 10px;border-radius: 5px;color: #ffffff; font-size: 16px; width: 250px; text-align: left; line-height: 20px">
+            <Icon type="ios-calendar-outline" style="margin-right: 10px" color="#ffffff"></Icon>
+            <span v-if="startTime === ''">请选择开始日期</span>
+            <span>{{startTime}}</span>
+          </div>
+        </DatePicker>
+        <span style="margin: 0 10px; font-size: 16px; color: #ffffff">至</span>
+        <DatePicker
+          v-model="endTime"
+          placeholder="请选择结束日期"
+          :open="openEnd"
+          @on-change="selectDateEnd"
+          type="date">
+          <div @click="openEndDate" style="border: 1px solid rgb(58, 160, 255);padding: 10px;border-radius: 5px;color: #ffffff; font-size: 16px; width: 250px; text-align: left; line-height: 20px">
+            <Icon type="ios-calendar-outline" style="margin-right: 10px" color="#ffffff"></Icon>
+            <span v-if="endTime === ''">请选择结束日期</span>
+            <span>{{endTime}}</span>
+          </div>
+        </DatePicker>
       </div>
-      <div style="display: inline-block;line-height: 80px;border-top: 5px solid rgb(4, 48, 76);width: 670px;position: absolute;text-align: right;margin-top: 55px;right: 15px;z-index: 1;">
-        <Button type="primary" @click="search" style="width: 140px; height: 45px">搜索</Button>
+      <div style="display: inline-block; line-height: 80px;border-top: 5px solid rgb(4, 48, 76);width: 630px;position: absolute;text-align: right;margin-top: 55px;right: 15px;z-index: 1;">
+        <Button type="primary" @click="search" style="width: 140px; height: 45px; font-size: 16px">搜索</Button>
       </div>
     </div>
     <div style="display: flex; justify-content: space-between">
-      <div style="width: 30%">
-        <div @click="listRowClick('1')" >
-          <Row class="listRow" :style="{'background': (listRowType==='1'? '#04304c':'none') }" style="border: 1px solid #00284d; margin-bottom: 15px" type="flex" align="middle" justify="space-around">
-            <Col span="12" style="height: 210px; padding: 20px 0">
-              <p style="font-size: 18px; color: #ffffff; font-weight: bold;">项目统计</p>
-              <p style="margin: 20px 0; color: #33ccff; font-size: 18px; font-weight: bold">总数: {{data1.total ? data1.total :''}}</p>
-              <ul style="list-style-type: none">
-                <li style="margin-bottom: 25px; color: #ffffff; display: flex;align-items: center;">
-                  <span style="width: 5px; height: 5px; display: inline-block; background-color: #75dbdb; border-radius: 50%; margin-right: 8px"></span><span style="border-right: 1px solid #ffffff; padding-right: 8px; margin-right: 8px">进行中的数量</span>{{data1.ongoingCount ? data1.ongoingCount : ''}}
-                </li>
-                <li style="color: #ffffff; display: flex;align-items: center;">
-                  <span style="width: 5px; height: 5px; display: inline-block; background-color: #d85457; border-radius: 50%; margin-right: 8px"></span><span style="border-right: 1px solid #ffffff; padding-right: 8px; margin-right: 8px">逾期的数量</span>{{data1.overdueCount ? data1.overdueCount : ''}}
-                </li>
-              </ul>
-            </Col>
-            <Col span="12" style="width:210px; height: 210px;">
-              <div ref="dom1" style="height: 210px;" class="charts chart-pie"></div>
-            </Col>
-          </Row>
+      <div style="width: 60%; display: flex; justify-content: space-between">
+        <div style="width: 32%">
+          <div @click="listRowClick('1')" >
+            <Row class="listRow" :style="{'background': (listRowType==='1'? '#04304c':'none') }" style="border: 1px solid #00284d; margin-bottom: 15px" type="flex" align="middle" justify="space-around">
+              <Col span="12" style="height: 210px; padding: 20px 10px">
+                <p style="font-size: 16px; color: #ffffff; font-weight: bold;">项目统计</p>
+                <div style="padding-left: 5px">
+                  <p style="margin: 20px 0; color: #33ccff; font-size: 16px; font-weight: bold">总数: {{data1.total ? data1.total : 0}}</p>
+                  <ul style="list-style-type: none">
+                    <li style="margin-bottom: 25px; color: #ffffff; display: flex;align-items: center;">
+                      <span style="width: 5px; height: 5px; display: inline-block; background-color: #75dbdb; border-radius: 50%; margin-right: 8px"></span><span style="border-right: 1px solid #ffffff; padding-right: 6px; margin-right: 6px">进行中的数量</span>{{data1.ongoingCount ? data1.ongoingCount : ''}}
+                    </li>
+                    <li style="color: #ffffff; display: flex;align-items: center;">
+                      <span style="width: 5px; height: 5px; display: inline-block; background-color: #d85457; border-radius: 50%; margin-right: 8px"></span><span style="border-right: 1px solid #ffffff; padding-right: 6px; margin-right: 6px">逾期的数量</span>{{data1.overdueCount ? data1.overdueCount : ''}}
+                    </li>
+                  </ul>
+                </div>
+              </Col>
+              <Col span="12" style="width: 50%; height: 210px;">
+                <div ref="dom1" style="height: 210px;" class="charts chart-pie"></div>
+              </Col>
+            </Row>
+          </div>
+          <div @click="listRowClick('2')" >
+            <Row class="listRow" :style="{'background': (listRowType==='2'? '#04304c':'none') }" style="border: 1px solid #00284d; margin-bottom: 15px" type="flex" align="middle" justify="space-around">
+              <Col span="12" style="height: 210px; padding: 20px 10px">
+                <p style="font-size: 16px; color: #ffffff; font-weight: bold;">任务统计</p>
+                <div style="padding-left: 5px">
+                  <p style="margin: 20px 0; color: #33ccff; font-size: 16px; font-weight: bold">总数: {{data2.total ? data2.total : 0}}</p>
+                  <ul style="list-style-type: none">
+                    <li style="margin-bottom: 25px; color: #ffffff; display: flex;align-items: center;">
+                      <span style="width: 5px; height: 5px; display: inline-block; background-color: #75dbdb; border-radius: 50%; margin-right: 8px"></span><span style="border-right: 1px solid #ffffff; padding-right: 6px; margin-right: 6px">进行中的数量</span>{{data2.ongoingCount ? data2.ongoingCount : ''}}
+                    </li>
+                    <li style="color: #ffffff; display: flex;align-items: center;">
+                      <span style="width: 5px; height: 5px; display: inline-block; background-color: #d85457; border-radius: 50%; margin-right: 8px"></span><span style="border-right: 1px solid #ffffff; padding-right: 6px; margin-right: 6px">逾期的数量</span>{{data2.overdueCount ? data2.overdueCount : ''}}
+                    </li>
+                  </ul>
+                </div>
+              </Col>
+              <Col span="12" style="height: 210px;">
+                <div ref="dom2" style="height: 210px;" class="charts chart-pie"></div>
+              </Col>
+            </Row>
+          </div>
+          <div @click="listRowClick('3')" >
+            <Row class="listRow" :style="{'background': (listRowType==='3'? '#04304c':'none') }" style="border: 1px solid #00284d;" type="flex" align="middle" justify="space-around">
+              <Col span="12" style="height: 210px; padding: 20px 10px">
+                <p style="font-size: 16px; color: #ffffff; font-weight: bold;">任务路口统计</p>
+                <div style="padding-left: 5px">
+                  <p style="margin: 20px 0; color: #33ccff; font-size: 16px; font-weight: bold">总数: {{data3.total ? data3.total : 0}}</p>
+                  <ul style="list-style-type: none">
+                    <li style="margin-bottom: 25px; color: #ffffff; display: flex;align-items: center;">
+                      <span style="width: 5px; height: 5px; display: inline-block; background-color: #75dbdb; border-radius: 50%; margin-right: 8px"></span><span style="border-right: 1px solid #ffffff; padding-right: 6px; margin-right: 6px">进行中的数量</span>{{data3.ongoingCount ? data3.ongoingCount : ''}}
+                    </li>
+                    <li style="color: #ffffff; display: flex;align-items: center;">
+                      <span style="width: 5px; height: 5px; display: inline-block; background-color: #d85457; border-radius: 50%; margin-right: 8px"></span><span style="border-right: 1px solid #ffffff; padding-right: 6px; margin-right: 6px">逾期的数量</span>{{data3.overdueCount ? data3.overdueCount : ''}}
+                    </li>
+                  </ul>
+                </div>
+              </Col>
+              <Col span="12" style="height: 210px;">
+                <div ref="dom3" style="height: 210px;" class="charts chart-pie"></div>
+              </Col>
+            </Row>
+          </div>
         </div>
-        <div @click="listRowClick('2')" >
-          <Row class="listRow" :style="{'background': (listRowType==='2'? '#04304c':'none') }" style="border: 1px solid #00284d; margin-bottom: 15px" type="flex" align="middle" justify="space-around">
-            <Col span="12" style="height: 210px; padding: 20px 0">
-              <p style="font-size: 18px; color: #ffffff; font-weight: bold;">任务统计</p>
-              <p style="margin: 20px 0; color: #33ccff; font-size: 18px; font-weight: bold">总数: {{data2.total ? data2.total :''}}</p>
-              <ul style="list-style-type: none">
-                <li style="margin-bottom: 25px; color: #ffffff; display: flex;align-items: center;">
-                  <span style="width: 5px; height: 5px; display: inline-block; background-color: #75dbdb; border-radius: 50%; margin-right: 8px"></span><span style="border-right: 1px solid #ffffff; padding-right: 8px; margin-right: 8px">进行中的数量</span>{{data2.ongoingCount ? data2.ongoingCount : ''}}
-                </li>
-                <li style="color: #ffffff; display: flex;align-items: center;">
-                  <span style="width: 5px; height: 5px; display: inline-block; background-color: #d85457; border-radius: 50%; margin-right: 8px"></span><span style="border-right: 1px solid #ffffff; padding-right: 8px; margin-right: 8px">逾期的数量</span>{{data2.overdueCount ? data2.overdueCount : ''}}
-                </li>
-              </ul>
-            </Col>
-            <Col span="12" style="width:210px; height: 210px;">
-              <div ref="dom2" style="height: 210px;" class="charts chart-pie"></div>
-            </Col>
-          </Row>
-        </div>
-        <div @click="listRowClick('3')" >
-          <Row class="listRow" :style="{'background': (listRowType==='3'? '#04304c':'none') }" style="border: 1px solid #00284d;" type="flex" align="middle" justify="space-around">
-            <Col span="12" style="height: 210px; padding: 20px 0">
-              <p style="font-size: 18px; color: #ffffff; font-weight: bold;">任务路口统计</p>
-              <p style="margin: 20px 0; color: #33ccff; font-size: 18px; font-weight: bold">总数: {{data3.total ? data3.total :''}}</p>
-              <ul style="list-style-type: none">
-                <li style="margin-bottom: 25px; color: #ffffff; display: flex;align-items: center;">
-                  <span style="width: 5px; height: 5px; display: inline-block; background-color: #75dbdb; border-radius: 50%; margin-right: 8px"></span><span style="border-right: 1px solid #ffffff; padding-right: 8px; margin-right: 8px">进行中的数量</span>{{data3.ongoingCount ? data3.ongoingCount : ''}}
-                </li>
-                <li style="color: #ffffff; display: flex;align-items: center;">
-                  <span style="width: 5px; height: 5px; display: inline-block; background-color: #d85457; border-radius: 50%; margin-right: 8px"></span><span style="border-right: 1px solid #ffffff; padding-right: 8px; margin-right: 8px">逾期的数量</span>{{data3.overdueCount ? data3.overdueCount : ''}}
-                </li>
-              </ul>
-            </Col>
-            <Col span="12" style="width:210px; height: 210px;">
-              <div ref="dom3" style="height: 210px;" class="charts chart-pie"></div>
-            </Col>
-          </Row>
+        <div style="border: 1px solid #00284d; width: 66%; position: relative">
+          <p v-if="listRowType === '1'" style="position: absolute; z-index: 1; top: 15px; left: 15px; font-size: 16px; font-weight: bold; color: #ffffff;">项目总数：{{data1.total ? data1.total : 0}}</p>
+          <p v-if="listRowType === '2'" style="position: absolute; z-index: 1; top: 15px; left: 15px; font-size: 16px; font-weight: bold; color: #ffffff;">任务总数：{{data2.total ? data2.total : 0}}</p>
+          <p v-if="listRowType === '3'" style="position: absolute; z-index: 1; top: 15px; left: 15px; font-size: 16px; font-weight: bold; color: #ffffff;">任务路口总数：{{data3.total ? data3.total : 0}}</p>
+          <el-amap
+            :amap-manager="amapManager"
+            :center="center"
+            :zoom="zoom"
+            vid="amapDemo"
+            :events="events"
+            :zoomEnable="false"
+            :dragEnable="false"
+            class="amap-demo"
+          >
+            <el-amap-marker v-for="(marker, index) in markers" :key="index" :extData = "marker.id" vid="chenyiming" :position="marker.position" :content="marker.content" :events="marker.events"></el-amap-marker>
+          </el-amap>
         </div>
       </div>
-      <div style="border: 1px solid #00284d; width: 69%">
-        <el-amap
-          :amap-manager="amapManager"
-          :center="center"
-          :zoom="zoom"
-          vid="amapDemo"
-          :events="events"
-          :zoomEnable="false"
-          :dragEnable="false"
-          class="amap-demo"
-        >
-          <el-amap-marker v-for="(marker, index) in markers" :key="index" :extData = "marker.id" vid="chenyiming" :position="marker.position" :content="marker.content" :events="marker.events"></el-amap-marker>
-        </el-amap>
-      </div>
-    </div>
-    <div style="margin-top: 20px; border: 1px solid #00284d;">
-      <p slot="title" style="padding: 15px; color: #ffffff;font-size: 18px; font-weight: bold; border-bottom: 1px solid #00284d;">项目下任务数量</p>
-      <ul class="mlist">
-        <li v-for="(item, key) in tableData1" :key="key">
-          <div class="table-left" style="color: #ffffff"><span class="index">{{key + 1}}</span> | {{item.name}}</div>
-          <div class="table-right" style="color: #ffffff">
-            | <span class="progress" >
+      <div style="width: 39%; border: 1px solid #00284d;">
+        <p slot="title" style="padding: 10px; color: #ffffff;font-size: 16px; font-weight: bold; border-bottom: 1px solid #00284d;">项目下任务数量</p>
+        <ul class="mlist" style="padding: 57px 0">
+          <li v-for="(item, key) in tableData1" :key="key">
+            <div class="table-left" style="color: #ffffff; display: flex; align-items: center">
+              <span class="index">{{key + 1}}</span>
+              <span style="margin-right: 25px; display: inline-block; height: 24px; background-color: #fff; width: 1px"></span>
+              <span :title="item.name" style="word-break:keep-all; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width: 150px; display: inline-block">{{item.name}}</span>
+            </div>
+            <div class="table-right" style="color: #ffffff">
+              | <span class="progress" >
               <span class="showNum" :style="{width: (320/(320/item.taskCount)) + 'px'}"></span>
             </span>
-            | &nbsp;任务数量：<span class="num">{{item.taskCount}}</span>
-          </div>
-        </li>
-      </ul>
-      <div class="page" style="padding: 15px; color: #ffffff; border-top: 1px solid #00284d;">
-        <div>共 <span style="font-weight: bold">{{tableData1Total}}</span> 条</div>
-        <Page
-          :total="tableData1Total"
-          show-sizer
-          show-elevator
-          @on-change="pageChange"
-          @on-page-size-change="pageSizeChange" />
-      </div>
-    </div>
-    <div style="margin-top: 20px; border: 1px solid #00284d;">
-      <p slot="title" style="padding: 15px; color: #ffffff;font-size: 18px; font-weight: bold; border-bottom: 1px solid #00284d;">任务与任务路口完成情况</p>
-      <div style="padding: 15px; color: #ffffff; border-bottom: 1px solid #00284d;">
-        <Row>
-          <Col span="12">
-            <Row type="flex" align="middle">
-              <Col span="2">
-                <span class="label">选择项目:</span>
-              </Col>
-              <Col span="19">
-                <Select v-model="projectList2Id" placeholder="请选择项目" filterable clearable style="width: 300px" @on-change="getTaskDateCount">
-                  <Option v-for="(item, key) in projectList2" :key="key" :value="item.id">{{item.name}}</Option>
-                </Select>
-              </Col>
-            </Row>
-          </Col>
-          <Col span="24">
-            <div ref="dom4" style="height: 300px;"></div>
-          </Col>
-        </Row>
-        <Row>
-          <Col span="12">
-            <Row type="flex" align="middle">
-              <Col span="2">
-                <span class="label">选择任务:</span>
-              </Col>
-              <Col span="19">
-                <Select v-model="taskListId" placeholder="请选择任务" filterable clearable style="width: 300px" @on-change="getTaskCrossingDateCount">
-                  <Option v-for="(item, key) in taskList" :key="key" :value="item.id">{{item.name}}</Option>
-                </Select>
-              </Col>
-            </Row>
-          </Col>
-          <Col span="24">
-            <div ref="dom5" style="height: 300px;"></div>
-          </Col>
-        </Row>
-      </div>
-    </div>
-    <div style="margin-top: 30px; margin-bottom: 30px">
-      <div style="display: flex; justify-content: space-between">
-        <div style="width: 49.5%; border: 1px solid #00284d; height: 330px; position: relative; overflow: hidden; padding: 15px">
-          <p style="color: #ffffff;font-size: 18px; font-weight: bold">项目下人员已支出工作量排名</p>
-          <div style="width: 100%; height: 60px; user-select: none;">
-            <img src="../../assets/images/left.png" class="btn-con left-btn" @click="handleScroll(240)">
-            <div class="scroll-outer" ref="scrollOuter" @DOMMouseScroll="handlescroll" @mousewheel="handlescroll">
-              <div ref="scrollBody" class="scroll-body" :style="{left: tagBodyLeft + 'px'}">
-                <transition-group name="taglist-moving-animation">
-                  <Tag
-                    type="dot"
-                    v-for="(item, index) in projectList2"
-                    :style="{'background': item.id === projectList3Id ? '#04304c !important' : 'none !important'}"
-                    :key="`tag-nav-${index}`"
-                    :name="item.name"
-                    @click.native="handleClick1(item)"
-                  >{{item.name}}</Tag>
-                </transition-group>
-              </div>
+              | &nbsp;任务数量：<span class="num">{{item.taskCount}}</span>
             </div>
-            <img src="../../assets/images/right.png" class="btn-con right-btn" @click="handleScroll(-240)">
-          </div>
-          <div style=" margin-top: 20px; padding: 0 50px; display: flex">
-            <div style="width: 50%">
-              <div v-for="(item, index) in userWorkingHours" :key="index" v-if="index<5"  style="color: #ffffff; line-height: 30px; margin-bottom: 10px">
-                <span style="margin-right: 10px;  width: 16px; display: inline-block">{{index + 1}}</span>
-                <span style="padding: 0 15px; border-left: 1px solid #fff; border-right: 1px solid #fff; margin-right: 10px; width: 88px">{{item.userName}}</span>
-                <span style="color: #3aa0ff">工时：{{item.workingHours}}</span>
-              </div>
-            </div>
-            <div style="width: 50%">
-              <div v-for="(item, index) in userWorkingHours" :key="index" v-if="index>4" style="color: #ffffff; line-height: 30px; margin-bottom: 10px">
-                <span style="margin-right: 10px; width: 16px; display: inline-block">{{index + 1}}</span>
-                <span style="padding: 0 15px; border-left: 1px solid #fff; border-right: 1px solid #fff; margin-right: 10px;">{{item.userName}}</span>
-                <span style="color: #3aa0ff">工时：{{item.workingHours}}</span>
-              </div>
-            </div>
-          </div>
+          </li>
+        </ul>
+        <div class="page" style="padding: 15px; color: #ffffff; border-top: 1px solid #00284d; line-height: 53px">
+          <div>共 <span style="font-weight: bold; font-size: 16px">{{tableData1Total}}</span> 条</div>
+          <Page
+            :total="tableData1Total"
+            show-sizer
+            show-elevator
+            @on-change="pageChange"
+            @on-page-size-change="pageSizeChange" />
         </div>
-        <div style="width: 49.5%; border: 1px solid #00284d; height: 330px; position: relative; overflow: hidden; padding: 15px">
-          <p style="color: #ffffff;font-size: 18px; font-weight: bold">单路口执行各类任务排名</p>
-          <div style="width: 100%; height: 60px; user-select: none;">
-            <img src="../../assets/images/left.png" class="btn-con left-btn" @click="handleScroll2(240)">
-            <div class="scroll-outer" ref="scrollOuter2" @DOMMouseScroll="handlescroll2" @mousewheel="handlescroll2">
-              <div ref="scrollBody2" class="scroll-body" :style="{left: tagBodyLeft2 + 'px'}">
-                <transition-group name="taglist-moving-animation">
-                  <Tag
-                    type="dot"
-                    v-for="(item, index) in taskCrossingList2"
-                    :style="{'background': item.crossingCode === taskCrossingListId ? '#04304c !important' : 'none !important'}"
-                    :key="`tag-nav-${index}`"
-                    :name="item.alias"
-                    @click.native="handleClick2(item)"
-                  >{{item.alias}}</Tag>
-                </transition-group>
+      </div>
+    </div>
+    <div style="margin-top: 20px;  margin-bottom: 30px; display: flex; justify-content: space-between">
+      <div style="width: 60%; border: 1px solid #00284d;">
+        <p slot="title" style="padding: 15px; color: #ffffff;font-size: 18px; font-weight: bold; border-bottom: 1px solid #00284d;">任务与任务路口完成情况</p>
+        <div style="padding: 15px; color: #ffffff; border-bottom: 1px solid #00284d;">
+          <Row>
+            <Col span="12">
+              <Row type="flex" align="middle">
+                <Col span="3">
+                  <span class="label">选择项目:</span>
+                </Col>
+                <Col span="19">
+                  <Select v-model="projectList2Id" placeholder="请选择项目" filterable clearable style="width: 300px" @on-change="getTaskDateCount">
+                    <Option v-for="(item, key) in projectList2" :key="key" :value="item.id">{{item.name}}</Option>
+                  </Select>
+                </Col>
+              </Row>
+            </Col>
+            <Col span="24">
+              <div ref="dom4" style="height: 300px;"></div>
+            </Col>
+          </Row>
+          <Row>
+            <Col span="12">
+              <Row type="flex" align="middle">
+                <Col span="3">
+                  <span class="label">选择任务:</span>
+                </Col>
+                <Col span="19">
+                  <Select v-model="taskListId" placeholder="请选择任务" filterable clearable style="width: 300px" @on-change="getTaskCrossingDateCount">
+                    <Option v-for="(item, key) in taskList" :key="key" :value="item.id">{{item.name}}</Option>
+                  </Select>
+                </Col>
+              </Row>
+            </Col>
+            <Col span="24">
+              <div ref="dom5" style="height: 300px;"></div>
+            </Col>
+          </Row>
+        </div>
+      </div>
+      <div style="width: 39%;">
+        <div style="display: flex; justify-content: space-between">
+          <div style="width: 49.5%; border: 1px solid #00284d; height: 330px; position: relative; overflow: hidden; padding: 15px">
+            <p style="color: #ffffff;font-size: 18px; font-weight: bold">项目下人员已支出工作量排名</p>
+            <div style="width: 100%; height: 60px; user-select: none;">
+              <img src="../../assets/images/left.png" class="btn-con left-btn" @click="handleScroll(240)">
+              <div class="scroll-outer" ref="scrollOuter" @DOMMouseScroll="handlescroll" @mousewheel="handlescroll">
+                <div ref="scrollBody" class="scroll-body" :style="{left: tagBodyLeft + 'px'}">
+                  <transition-group name="taglist-moving-animation">
+                    <Tag
+                      type="dot"
+                      v-for="(item, index) in projectList2"
+                      :style="{'background': item.id === projectList3Id ? '#04304c !important' : 'none !important'}"
+                      :key="`tag-nav-${index}`"
+                      :name="item.name"
+                      @click.native="handleClick1(item)"
+                    >{{item.name}}</Tag>
+                  </transition-group>
+                </div>
+              </div>
+              <img src="../../assets/images/right.png" class="btn-con right-btn" @click="handleScroll(-240)">
+            </div>
+            <div style=" margin-top: 20px; padding: 0 50px; display: flex">
+              <div style="width: 50%">
+                <div v-for="(item, index) in userWorkingHours" :key="index" v-if="index<5"  style="color: #ffffff; line-height: 30px; margin-bottom: 10px">
+                  <span style="margin-right: 10px;  width: 16px; display: inline-block">{{index + 1}}</span>
+                  <span style="padding: 0 15px; border-left: 1px solid #fff; border-right: 1px solid #fff; margin-right: 10px; width: 88px">{{item.userName}}</span>
+                  <span style="color: #3aa0ff">工时：{{item.workingHours}}</span>
+                </div>
+              </div>
+              <div style="width: 50%">
+                <div v-for="(item, index) in userWorkingHours" :key="index" v-if="index>4" style="color: #ffffff; line-height: 30px; margin-bottom: 10px">
+                  <span style="margin-right: 10px; width: 16px; display: inline-block">{{index + 1}}</span>
+                  <span style="padding: 0 15px; border-left: 1px solid #fff; border-right: 1px solid #fff; margin-right: 10px;">{{item.userName}}</span>
+                  <span style="color: #3aa0ff">工时：{{item.workingHours}}</span>
+                </div>
               </div>
             </div>
-            <img src="../../assets/images/right.png" class="btn-con right-btn" @click="handleScroll2(-240)">
           </div>
-          <div style="margin-top: 20px">
-            <Row>
-              <Col span="10" style="width:210px; height: 210px;">
-                <div ref="dom6" class="charts chart-pie" style="height: 210px; position:relative;"></div>
-              </Col>
-              <Col span="12" style="position: relative;top: -30px;left: 100px;">
-                <ul style=" height: 30vh; display: flex; flex-direction: column; justify-content: center;text-align:left;">
-                  <li style="display: flex; align-items: center; justify-content: flex-start;margin-bottom:20px; color: #ffffff">
-                    <div class="dian" style="background-color: #4dcb73"></div>
-                    <div class="status">宣传任务</div>
-                    <div
-                      class="proportion"
-                    >{{pie6Data.publicityTypeCount == '0' ? '0%' : Percentage(pie6Data.publicityTypeCount, pie6Data.taskCount)}}</div>
-                    <div class="value">执行任务数量：&nbsp;&nbsp;&nbsp;&nbsp;{{pie6Data.publicityTypeCount}}</div>
-                  </li>
-                  <li style="display: flex; align-items: center; justify-content: flex-start;margin-bottom:20px; color: #ffffff">
-                    <div class="dian" style="background-color: #3aa0ff"></div>
-                    <div class="status">巡检任务</div>
-                    <div
-                      class="proportion"
-                    >{{pie6Data.patrolTypeCount == '0' ? '0%' : Percentage(pie6Data.patrolTypeCount, pie6Data.taskCount)}}</div>
-                    <div class="value">执行任务数量：&nbsp;&nbsp;&nbsp;&nbsp;{{pie6Data.patrolTypeCount}}</div>
-                  </li>
-                  <li style="display: flex; align-items: center; justify-content: flex-start;margin-bottom:20px;  color: #ffffff">
-                    <div class="dian" style="background-color: #37cbcb"></div>
-                    <div class="status">优化任务</div>
-                    <div
-                      class="proportion"
-                    >{{pie6Data.optimizingTypeCount == '0' ? '0%' : Percentage(pie6Data.optimizingTypeCount, pie6Data.taskCount)}}</div>
-                    <div class="value">执行任务数量：&nbsp;&nbsp;&nbsp;&nbsp;{{pie6Data.optimizingTypeCount}}</div>
-                  </li>
-                </ul>
-              </Col>
-            </Row>
+          <div style="width: 49.5%; border: 1px solid #00284d; height: 330px; position: relative; overflow: hidden; padding: 15px">
+            <p style="color: #ffffff;font-size: 18px; font-weight: bold">单路口执行各类任务排名</p>
+            <div style="width: 100%; height: 60px; user-select: none;">
+              <img src="../../assets/images/left.png" class="btn-con left-btn" @click="handleScroll2(240)">
+              <div class="scroll-outer" ref="scrollOuter2" @DOMMouseScroll="handlescroll2" @mousewheel="handlescroll2">
+                <div ref="scrollBody2" class="scroll-body" :style="{left: tagBodyLeft2 + 'px'}">
+                  <transition-group name="taglist-moving-animation">
+                    <Tag
+                      type="dot"
+                      v-for="(item, index) in taskCrossingList2"
+                      :style="{'background': item.crossingCode === taskCrossingListId ? '#04304c !important' : 'none !important'}"
+                      :key="`tag-nav-${index}`"
+                      :name="item.alias"
+                      @click.native="handleClick2(item)"
+                    >{{item.alias}}</Tag>
+                  </transition-group>
+                </div>
+              </div>
+              <img src="../../assets/images/right.png" class="btn-con right-btn" @click="handleScroll2(-240)">
+            </div>
+            <div style="margin-top: 20px">
+              <Row>
+                <Col span="10" style="width:210px; height: 210px;">
+                  <div ref="dom6" class="charts chart-pie" style="height: 210px; position:relative;"></div>
+                </Col>
+                <Col span="12" style="position: relative;top: -30px;left: 100px;">
+                  <ul style=" height: 30vh; display: flex; flex-direction: column; justify-content: center;text-align:left;">
+                    <li style="display: flex; align-items: center; justify-content: flex-start;margin-bottom:20px; color: #ffffff">
+                      <div class="dian" style="background-color: #4dcb73"></div>
+                      <div class="status">宣传任务</div>
+                      <div
+                        class="proportion"
+                      >{{pie6Data.publicityTypeCount == '0' ? '0%' : Percentage(pie6Data.publicityTypeCount, pie6Data.taskCount)}}</div>
+                      <div class="value">执行任务数量：&nbsp;&nbsp;&nbsp;&nbsp;{{pie6Data.publicityTypeCount}}</div>
+                    </li>
+                    <li style="display: flex; align-items: center; justify-content: flex-start;margin-bottom:20px; color: #ffffff">
+                      <div class="dian" style="background-color: #3aa0ff"></div>
+                      <div class="status">巡检任务</div>
+                      <div
+                        class="proportion"
+                      >{{pie6Data.patrolTypeCount == '0' ? '0%' : Percentage(pie6Data.patrolTypeCount, pie6Data.taskCount)}}</div>
+                      <div class="value">执行任务数量：&nbsp;&nbsp;&nbsp;&nbsp;{{pie6Data.patrolTypeCount}}</div>
+                    </li>
+                    <li style="display: flex; align-items: center; justify-content: flex-start;margin-bottom:20px;  color: #ffffff">
+                      <div class="dian" style="background-color: #37cbcb"></div>
+                      <div class="status">优化任务</div>
+                      <div
+                        class="proportion"
+                      >{{pie6Data.optimizingTypeCount == '0' ? '0%' : Percentage(pie6Data.optimizingTypeCount, pie6Data.taskCount)}}</div>
+                      <div class="value">执行任务数量：&nbsp;&nbsp;&nbsp;&nbsp;{{pie6Data.optimizingTypeCount}}</div>
+                    </li>
+                  </ul>
+                </Col>
+              </Row>
+            </div>
           </div>
         </div>
       </div>
@@ -327,7 +368,7 @@ export default {
       taskCrossingList: [],
       zoom: 4,
       amapManager: amapManager,
-      center: [103, 36],
+      center: [104, 40],
       events: {
         init () {
           let map = amapManager.getMap()
@@ -335,6 +376,8 @@ export default {
             extensions: 'all',
             subdistrict: 0
           }).search('中国', function (status, result) {
+            console.log(status)
+            console.log(result)
             // 外多边形坐标数组和内多边形坐标数组
             let outer = [
               new AMap.LngLat(-360, 90, true),
@@ -342,11 +385,21 @@ export default {
               new AMap.LngLat(360, -90, true),
               new AMap.LngLat(360, 90, true)
             ]
+            let outer2 = [
+              new AMap.LngLat(360, 90, true),
+              new AMap.LngLat(360, -90, true),
+              new AMap.LngLat(360, -90, true),
+              new AMap.LngLat(360, 90, true)
+            ]
             let holes = result.districtList[0].boundaries
             let pathArray = [
               outer
             ]
+            let pathArray2 = [
+              outer2
+            ]
             pathArray.push.apply(pathArray, holes)
+            pathArray2.push.apply(pathArray2, holes)
             let polygon = new AMap.Polygon({
               pathL: pathArray,
               strokeColor: '#001529',
@@ -354,8 +407,17 @@ export default {
               fillColor: '#001529',
               fillOpacity: 1
             })
+            let polygon2 = new AMap.Polygon({
+              pathL: pathArray2,
+              strokeColor: '#073d5c',
+              strokeWeight: 1,
+              fillColor: '#073d5c',
+              fillOpacity: 1
+            })
             polygon.setPath(pathArray)
+            polygon2.setPath(pathArray2)
             map.add(polygon)
+            map.add(polygon2)
           })
           self.listRowClick('1')
         }
@@ -367,10 +429,18 @@ export default {
       userWorkingHours: [],
       pie6Data: {},
       startTime: this.startTime,
-      endTime: this.endTime
+      endTime: this.endTime,
+      openStart: false,
+      openEnd: false
     }
   },
   methods: {
+    openStartDate () {
+      this.openStart = !this.openStart
+    },
+    openEndDate () {
+      this.openEnd = !this.openEnd
+    },
     selectDate () {
       console.log(arguments)
       this.getTaskParams.startTime = this.startTime = arguments[0][0]
@@ -646,6 +716,7 @@ export default {
         endTime: this.endTime,
         projectId: this.projectList2Id
       }).then((res) => {
+        console.log(res)
         let data = res.data.data
         let a = []
         let b = []
@@ -657,6 +728,8 @@ export default {
         })
         this.seriesDatas = [a, b]
         this.projectMonth = c
+        console.log(this.seriesDatas)
+        console.log(this.projectMonth)
         this.setBar1()
       })
     },
@@ -966,12 +1039,6 @@ export default {
     },
     setLine1 () {
       let option = {
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'cross'
-          }
-        },
         grid: {
           top: '50px',
           left: '50px',
@@ -1024,7 +1091,7 @@ export default {
               lineStyle: {
                 color: '#ffffff',
                 width: 1,
-                type: 'dashd'
+                type: 'dotted'
               }
             }
           }
@@ -1140,6 +1207,16 @@ export default {
       }
       this.dom4 = echarts.init(this.$refs.dom4, 'tdTheme')
       this.dom4.setOption(option)
+    },
+    selectDateStart () {
+      console.log(arguments)
+      this.startTime = arguments[0]
+      this.openStart = false
+    },
+    selectDateEnd () {
+      console.log(arguments)
+      this.endTime = arguments[0]
+      this.openEnd = false
     }
   },
   mounted () {
@@ -1241,7 +1318,7 @@ export default {
       justify-content: space-between;
       align-items: center;
       margin-bottom: 10px;
-      padding: 10px;
+      padding: 4px 10px;
     }
     .table-left{
       .index{
@@ -1250,17 +1327,20 @@ export default {
         padding-left: 15px;
       }
     }
+    .table-left{
+      width: 40%;
+    }
     .table-right{
       display: flex;
       flex-direction: row;
       align-items: center;
       text-align: left;
-      width: 32%;
+      width: 60%;
       .progress {
         position: relative;
         height: 20px;
         display: inline-block;
-        width: 320px;
+        width: 270px;
         margin: 0 10px;
         .showNum{
           position: absolute;

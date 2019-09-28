@@ -76,6 +76,7 @@ class HttpRequest {
           request: { responseURL: config.url }
         }
       } else {
+        console.log(errorInfo)
         if (errorInfo.status === 401) {
           // source.cancel()
           // if (errorInfo.data.status === 'TOKENREPEATED') {
@@ -89,7 +90,7 @@ class HttpRequest {
           store.dispatch('handleLogOut').then(() => {
             window.location.reload()
           })
-        } else if (errorInfo.status === '405') {
+        } else if (errorInfo.status === 405) {
           Spin.hide()
           this.queue = {}
           Modal.confirm({

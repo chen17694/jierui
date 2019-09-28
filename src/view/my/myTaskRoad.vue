@@ -22,7 +22,7 @@
       <Card style="width:380px; position: absolute; left: 20px; top: 70px; border: 0 none">
         <div style="display: flex">
           <input type="text" v-model="alias" class="ivu-input ivu-input-default" placeholder="请输入查找的任务路口名称" style="height: 45px; border: 0 none; border-radius: 0; font-size: 15px; color: #999999">
-          <img src="../../assets/images/search.png" style=" cursor: pointer; height: 50px" @click="searchProject">
+          <img src="../../assets/images/search.png" style=" cursor: pointer; height: 45px" @click="searchProject">
         </div>
       </Card>
       <Card v-if="!isDetail" style="width:380px; position: absolute; left: 20px; top: 130px;opacity:0.8;">
@@ -31,7 +31,8 @@
             任务路口数量：{{this.total}}
           </div>
           <Select v-model="onStatus" style="width:100px" @on-change="statusChange" clearable>
-            <span :style="{ backgroundColor: avatar }" style="width: 15px; height: 15px; display: inline-block; border-radius: 50%; vertical-align: middle;" slot="prefix"></span>
+            <!--<span :style="{ backgroundColor: avatar }" style="width: 15px; height: 15px; display: inline-block; border-radius: 50%; vertical-align: middle;" slot="prefix"></span>-->
+            <Avatar :src="avatar" slot="prefix" size="small" />
             <Option value="1" >未领取</Option>
             <Option value="2" >已拒绝</Option>
             <Option value="3" >未开始</Option>
@@ -178,6 +179,15 @@ import try6 from '../../assets/images/try6.png'
 import try7 from '../../assets/images/try7.png'
 import try8 from '../../assets/images/try8.png'
 import try9 from '../../assets/images/try9.png'
+import p_pause from '../../assets/images/p_pause.png'
+import p_noStarted from '../../assets/images/p_noStarted.png'
+import p_start from '../../assets/images/p_start.png'
+import p_review from '../../assets/images/p_review.png'
+import p_completed from '../../assets/images/p_completed.png'
+import p_reject from '../../assets/images/p_reject.png'
+import p_revoke from '../../assets/images/p_revoke.png'
+import p_unreceived from '../../assets/images/p_unreceived.png'
+import p_rejected from '../../assets/images/p_rejected.png'
 import { AMapManager, lazyAMapApiLoaderInstance } from 'vue-amap'
 let amapManager = new AMapManager()
 export default {
@@ -186,6 +196,15 @@ export default {
     let self = this
     return {
       alias: '',
+      p_pause,
+      p_noStarted,
+      p_start,
+      p_review,
+      p_completed,
+      p_reject,
+      p_revoke,
+      p_unreceived,
+      p_rejected,
       trx1,
       trx2,
       trx3,
@@ -213,7 +232,7 @@ export default {
       try7,
       try8,
       try9,
-      avatar: '#FF5000',
+      avatar: p_start,
       onStatus: '4',
       isDetail: false,
       detailData: {},
@@ -265,31 +284,31 @@ export default {
           this.onStatus = ''
           break
         case '1':
-          this.avatar = '#FF5000'
+          this.avatar = p_unreceived
           break
         case '2':
-          this.avatar = '#E33C00'
+          this.avatar = p_rejected
           break
         case '3':
-          this.avatar = '#2E8CEB'
+          this.avatar = p_noStarted
           break
         case '4':
-          this.avatar = '#41BE68'
+          this.avatar = p_start
           break
         case '5':
-          this.avatar = '#F79800'
+          this.avatar = p_review
           break
         case '6':
-          this.avatar = '#50DAE6'
+          this.avatar = p_completed
           break
         case '7':
-          this.avatar = '#DC6CBC'
+          this.avatar = p_reject
           break
         case '8':
-          this.avatar = '#CCCCCC'
+          this.avatar = p_revoke
           break
         case '9':
-          this.avatar = '#FFC44D'
+          this.avatar = p_pause
           break
       }
     }

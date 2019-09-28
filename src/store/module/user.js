@@ -165,7 +165,8 @@ export default {
         id: getUserId(),
         name: '',
         type: '',
-        status: '0'
+        status: '0',
+        noLoading: '1'
       }).then(res => {
         const data = res.data.data.total
         commit('setMessageCount', data)

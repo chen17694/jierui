@@ -149,7 +149,12 @@ export default {
       } else if (type === '4') { // 推送 消息
         this.$router.push({ name: 'infoDetail', query: { id: info.resourceId } })
       } else if (type === '5') { // 新项目通知
-        this.$router.push({ name: 'projectDetail', query: { projectId: info.resourceId } })
+        if (this.info.title.indexOf('项目') !== -1) {
+          this.$router.push({ name: 'projectDetail', query: { projectId: info.resourceId } })
+        }
+        if (this.info.title.indexOf('任务') !== -1) {
+          this.$router.push({ name: 'taskDetail', query: { taskId: info.resourceId } })
+        }
       } else if (type === '6') { // 任务拒绝
         this.$router.push({ name: 'taskDetail', query: { taskId: info.resourceId } })
       }

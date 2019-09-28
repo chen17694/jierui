@@ -24,7 +24,12 @@
         <li style="margin-bottom: 5px">主导单位：{{detailData.officeName}}</li>
         <li style="margin-bottom: 5px">项目经理：{{detailData.projectManagerName}}</li>
         <li style="margin-bottom: 5px">项目备注：{{detailData.remarks}}</li>
-        <li style="margin-bottom: 5px">项目位置：{{detailData.address}}</li>
+        <li style="margin-bottom: 20px">项目位置：{{detailData.address}}</li>
+        <li>
+          <el-amap ref="map" :center="center" vid="amapDemo" :zoom="zoom" class="amap-demo">
+            <el-amap-marker v-for="(marker, index) in markers" :position="marker.position" :key="index" :vid="index"/>
+          </el-amap>
+        </li>
       </ul>
     </Card>
     <div class="btns" style="margin-top: 30px">
@@ -60,6 +65,9 @@ export default {
   components: { Tables },
   data () {
     return {
+      center: [116.397448, 39.908708],
+      zoom: 14,
+      markers: [],
       editParams: {
         comment: '',
         opt: '1'
@@ -78,6 +86,12 @@ export default {
     },
     shenpi () {
       this.editPanel = true
+    },
+    addMarker () {
+      let marker = {
+        position: [this.detailData.lng, this.detailData.lat]
+      }
+      this.markers.push(marker)
     },
     save () {
       let obj = {
@@ -103,6 +117,8 @@ export default {
         type: '1'
       }).then((res) => {
         this.detailData = res.data.data
+        this.addMarker()
+        this.center = [this.detailData.lng, this.detailData.lat]
         this.stepArr = res.data.data.list
       })
     }
@@ -122,5 +138,9 @@ export default {
     .ivu-btn{
       width: 80px;
     }
+  }
+  .amap-demo{
+    width: 700px;
+    height: 300px;
   }
 </style>

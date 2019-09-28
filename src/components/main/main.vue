@@ -184,6 +184,7 @@ export default {
     }
     // 获取未读消息条数
     this.getUnreadMessageCount()
+    setInterval(this.getUnreadMessageCount, 5000)
   }
 }
 </script>

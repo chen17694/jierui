@@ -91,7 +91,8 @@ export default {
       let obj = {
         page: 1,
         pageSize: 5000,
-        id: getUserId()
+        id: getUserId(),
+        noLoading: '1'
       }
       listWait(obj).then(res => {
         if (res.data.status === '200') {
@@ -103,6 +104,7 @@ export default {
   },
   mounted () {
     this.getCount()
+    setInterval(this.getCount, 5000)
   }
 }
 </script>

@@ -1,6 +1,5 @@
 <template>
   <div class="user-avatar-dropdown" style="display: flex">
-    {{messageUnreadCount}}
     <Badge :dot="messageUnreadCount > 0" style="display: flex; align-items: center;">
       <img src="../../../../assets/images/message.png" style="width: 17px; margin-right: 46px" @click="message">
     </Badge>

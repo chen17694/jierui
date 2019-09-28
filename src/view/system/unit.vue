@@ -85,7 +85,7 @@
       @on-cancel="closeEdit"
       width="600"
       :title="editType === 0 ? '新增单位' : '编辑单位'">
-      <Form ref="editParams" :model="editParams" :rules="ruleValidate" :label-width="120">
+      <Form ref="editParams" :model="editParams" :rules="ruleValidate" :label-width="140">
         <FormItem label="单位名称" prop="name">
           <Input v-model="editParams.name" placeholder="请输入单位名称"/>
         </FormItem>

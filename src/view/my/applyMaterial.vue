@@ -81,7 +81,7 @@ export default {
       columns: [
         { title: '物资类型',
           key: 'cname',
-          width: '250px',
+          width: '350px',
           render: (h, params) => {
             return h('Select', {
               props: {
@@ -111,7 +111,7 @@ export default {
         },
         { title: '物资名称',
           key: 'mname',
-          width: '250px',
+          width: '750px',
           render: (h, params) => {
             return h('Select', {
               props: {
@@ -165,7 +165,6 @@ export default {
         },
         { title: '归还日期',
           key: 'returnDate',
-          width: '200px',
           render: (h, params) => {
             return h('DatePicker', {
               props: {

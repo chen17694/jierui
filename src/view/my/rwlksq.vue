@@ -25,7 +25,12 @@
         <li style="margin-bottom: 5px">路口别名：{{detailData.alias}}</li>
         <li style="margin-bottom: 5px">任务负责人：{{detailData.taskHoldersName}}</li>
         <li style="margin-bottom: 5px">起止日期：{{detailData.startTime}} - {{detailData.endTime}}</li>
-        <li style="margin-bottom: 5px">路口位置：{{detailData.address}}</li>
+        <li style="margin-bottom: 20px">路口位置：{{detailData.address}}</li>
+        <li>
+          <el-amap ref="map" :center="center" vid="amapDemo" :zoom="zoom" class="amap-demo">
+            <el-amap-marker v-for="(marker, index) in markers" :position="marker.position" :key="index" :vid="index"/>
+          </el-amap>
+        </li>
       </ul>
     </Card>
     <div class="btns" style="margin-top: 30px">
@@ -44,6 +49,9 @@ export default {
   components: { Tables },
   data () {
     return {
+      center: [116.397448, 39.908708],
+      zoom: 14,
+      markers: [],
       editParams: {
         comment: '',
         opt: '1',
@@ -82,6 +90,12 @@ export default {
         }
       })
     },
+    addMarker () {
+      let marker = {
+        position: [this.detailData.lng, this.detailData.lat]
+      }
+      this.markers.push(marker)
+    },
     getData () {
       detailTaskCrossingApproval({
         taskId: this.$route.query.taskId,
@@ -89,6 +103,8 @@ export default {
         type: '2'
       }).then((res) => {
         this.detailData = res.data.data
+        this.addMarker()
+        this.center = [this.detailData.lng, this.detailData.lat]
         this.stepArr = res.data.data.list
       })
     }
@@ -108,5 +124,9 @@ export default {
     .ivu-btn{
       width: 80px;
     }
+  }
+  .amap-demo{
+    width: 700px;
+    height: 300px;
   }
 </style>

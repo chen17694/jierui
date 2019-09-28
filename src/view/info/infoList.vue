@@ -204,6 +204,9 @@ export default {
       })
     },
     DelMessage (ids) {
+      // let a = [0,0,0,1, 1,0,0,0, 0,1,1,1, 1,1,1,0]
+      // 0000,1010,0010,0011,1000,1001,1110,1101,0110,0111
+      // 0001,1100,1011,0101,0100,1111
       delMessage({ ids: ids, userId: getUserId() }).then((res) => {
         this.$Message.info(res.data.msg)
         this.getData()
@@ -234,8 +237,6 @@ export default {
           this.$refs.tableMaterial.clearAll()
           this.ids = []
         }
-      } else {
-        this.$Message.info('暂无可操作数据！')
       }
     }
   },
