@@ -6,37 +6,35 @@
     </div>
     <div style=" border-bottom: 5px solid #04304c; margin: 20px 0; height: 140px">
       <div style="display: inline-block;line-height: 80px;border-top: 5px solid rgb(4, 48, 76);width: 630px;position: absolute;margin-top: 55px;left: 15px;z-index: 1;">
-        <Button type="text" style="font-size: 16px; color: #ffffff" @click="lastMonthSlot">上月</Button>
-        <Button type="text" style="font-size: 16px; color: #ffffff" @click="nowMonthSlot">本月</Button>
-        <Button type="text" style="font-size: 16px; color: #ffffff" @click="lastSeasonSlot">上季</Button>
-        <Button type="text" style="font-size: 16px; color: #ffffff" @click="nowSeasonSlot">本季</Button>
-        <Button type="text" style="font-size: 16px; color: #ffffff" @click="lastYearSlot">去年</Button>
-        <Button type="text" style="font-size: 16px; color: #ffffff" @click="nowYearSlot">今年</Button>
+        <Button type="text" style="font-size: 16px; color: #ffffff" :style="{'color': (dateSelect==='1'? '#33CCFF':'#ffffff') }"  @click="lastMonthSlot">上月</Button>
+        <Button type="text" style="font-size: 16px; color: #ffffff" :style="{'color': (dateSelect==='2'? '#33CCFF':'#ffffff') }" @click="nowMonthSlot">本月</Button>
+        <Button type="text" style="font-size: 16px; color: #ffffff" :style="{'color': (dateSelect==='3'? '#33CCFF':'#ffffff') }" @click="lastSeasonSlot">上季</Button>
+        <Button type="text" style="font-size: 16px; color: #ffffff" :style="{'color': (dateSelect==='4'? '#33CCFF':'#ffffff') }" @click="nowSeasonSlot">本季</Button>
+        <Button type="text" style="font-size: 16px; color: #ffffff" :style="{'color': (dateSelect==='5'? '#33CCFF':'#ffffff') }" @click="lastYearSlot">去年</Button>
+        <Button type="text" style="font-size: 16px; color: #ffffff" :style="{'color': (dateSelect==='6'? '#33CCFF':'#ffffff') }" @click="nowYearSlot">今年</Button>
       </div>
       <div style="display: inline-block;width: 100%;padding: 0 660px;position: absolute;left: 0;text-align: center;height: 140px;">
         <h1 style="display: block; color: #ffffff; font-size: 36px; margin-bottom: 10px">杰瑞配时管理平台</h1>
         <!--<DatePicker type="daterange" placement="bottom-end" placeholder="请选择日期范围" style="background: none;border: 1px solid #04304c; width: 400px" @on-change="selectDate" ></DatePicker>-->
         <DatePicker
-          v-model="startTime"
           :open="openStart"
           @on-change="selectDateStart"
           type="date">
           <div @click="openStartDate" style="border: 1px solid rgb(58, 160, 255);padding: 10px;border-radius: 5px;color: #ffffff; font-size: 16px; width: 250px; text-align: left; line-height: 20px">
             <Icon type="ios-calendar-outline" style="margin-right: 10px" color="#ffffff"></Icon>
-            <span v-if="startTime === ''">请选择开始日期</span>
+            <span v-if="!startTime">请选择开始日期</span>
             <span>{{startTime}}</span>
           </div>
         </DatePicker>
         <span style="margin: 0 10px; font-size: 16px; color: #ffffff">至</span>
         <DatePicker
-          v-model="endTime"
           placeholder="请选择结束日期"
           :open="openEnd"
           @on-change="selectDateEnd"
           type="date">
           <div @click="openEndDate" style="border: 1px solid rgb(58, 160, 255);padding: 10px;border-radius: 5px;color: #ffffff; font-size: 16px; width: 250px; text-align: left; line-height: 20px">
             <Icon type="ios-calendar-outline" style="margin-right: 10px" color="#ffffff"></Icon>
-            <span v-if="endTime === ''">请选择结束日期</span>
+            <span v-if="!endTime">请选择结束日期</span>
             <span>{{endTime}}</span>
           </div>
         </DatePicker>
@@ -65,7 +63,8 @@
                 </div>
               </Col>
               <Col span="12" style="width: 50%; height: 210px;">
-                <div ref="dom1" style="height: 210px;" class="charts chart-pie"></div>
+                <div ref="dom1" style="height: 165px;" class="charts chart-pie"></div>
+                <p style="color: #ffffff; position: absolute;bottom: 15px;left: 35%;">{{dom1Str}}</p>
               </Col>
             </Row>
           </div>
@@ -86,7 +85,8 @@
                 </div>
               </Col>
               <Col span="12" style="height: 210px;">
-                <div ref="dom2" style="height: 210px;" class="charts chart-pie"></div>
+                <div ref="dom2" style="height: 165px;" class="charts chart-pie"></div>
+                <p style="color: #ffffff; position: absolute;bottom: 15px;left: 35%;">{{dom2Str}}</p>
               </Col>
             </Row>
           </div>
@@ -107,12 +107,13 @@
                 </div>
               </Col>
               <Col span="12" style="height: 210px;">
-                <div ref="dom3" style="height: 210px;" class="charts chart-pie"></div>
+                <div ref="dom3" style="height: 165px;" class="charts chart-pie"></div>
+                <p style="color: #ffffff; position: absolute;bottom: 15px;left: 35%;">{{dom3Str}}</p>
               </Col>
             </Row>
           </div>
         </div>
-        <div style="border: 1px solid #00284d; width: 66%; position: relative">
+        <div style="border: 1px solid #00284d; width: 66%; position: relative" v-show="mapReady">
           <p v-if="listRowType === '1'" style="position: absolute; z-index: 1; top: 15px; left: 15px; font-size: 16px; font-weight: bold; color: #ffffff;">项目总数：{{data1.total ? data1.total : 0}}</p>
           <p v-if="listRowType === '2'" style="position: absolute; z-index: 1; top: 15px; left: 15px; font-size: 16px; font-weight: bold; color: #ffffff;">任务总数：{{data2.total ? data2.total : 0}}</p>
           <p v-if="listRowType === '3'" style="position: absolute; z-index: 1; top: 15px; left: 15px; font-size: 16px; font-weight: bold; color: #ffffff;">任务路口总数：{{data3.total ? data3.total : 0}}</p>
@@ -160,37 +161,27 @@
     </div>
     <div style="margin-top: 20px;  margin-bottom: 30px; display: flex; justify-content: space-between">
       <div style="width: 60%; border: 1px solid #00284d;">
-        <p slot="title" style="padding: 15px; color: #ffffff;font-size: 18px; font-weight: bold; border-bottom: 1px solid #00284d;">任务与任务路口完成情况</p>
-        <div style="padding: 15px; color: #ffffff; border-bottom: 1px solid #00284d;">
+        <div style="display: flex; justify-content: space-between; padding: 15px 15px 0 15px;">
+          <p style="color: #ffffff;font-size: 18px; font-weight: bold;">任务与任务路口完成情况</p>
+          <div>
+            <span class="label" style="margin-right: 5px; color: #ffffff">选择项目:</span>
+            <Select v-model="projectList2Id" placeholder="请选择项目" filterable clearable style="width: 300px" @on-change="getTaskDateCount">
+              <Option v-for="(item, key) in projectList2" :key="key" :value="item.id">{{item.name}}</Option>
+            </Select>
+          </div>
+        </div>
+        <div style="padding:0 15px 15px 15px; color: #ffffff; border-bottom: 1px solid #00284d;">
           <Row>
-            <Col span="12">
-              <Row type="flex" align="middle">
-                <Col span="3">
-                  <span class="label">选择项目:</span>
-                </Col>
-                <Col span="19">
-                  <Select v-model="projectList2Id" placeholder="请选择项目" filterable clearable style="width: 300px" @on-change="getTaskDateCount">
-                    <Option v-for="(item, key) in projectList2" :key="key" :value="item.id">{{item.name}}</Option>
-                  </Select>
-                </Col>
-              </Row>
-            </Col>
             <Col span="24">
               <div ref="dom4" style="height: 300px;"></div>
             </Col>
           </Row>
           <Row>
-            <Col span="12">
-              <Row type="flex" align="middle">
-                <Col span="3">
-                  <span class="label">选择任务:</span>
-                </Col>
-                <Col span="19">
-                  <Select v-model="taskListId" placeholder="请选择任务" filterable clearable style="width: 300px" @on-change="getTaskCrossingDateCount">
-                    <Option v-for="(item, key) in taskList" :key="key" :value="item.id">{{item.name}}</Option>
-                  </Select>
-                </Col>
-              </Row>
+            <Col span="24" style="text-align: right">
+              <span class="label" style="margin-right: 5px;">选择任务:</span>
+              <Select v-model="taskListId" placeholder="请选择任务" filterable clearable style="width: 300px" @on-change="getTaskCrossingDateCount">
+                <Option v-for="(item, key) in taskList" :key="key" :value="item.id">{{item.name}}</Option>
+              </Select>
             </Col>
             <Col span="24">
               <div ref="dom5" style="height: 300px;"></div>
@@ -200,31 +191,24 @@
       </div>
       <div style="width: 39%;">
         <div style="display: flex; justify-content: space-between">
-          <div style="width: 49.5%; border: 1px solid #00284d; height: 330px; position: relative; overflow: hidden; padding: 15px">
+          <div style="width: 49.5%; border: 1px solid #00284d; position: relative; overflow: hidden; padding: 15px">
             <p style="color: #ffffff;font-size: 18px; font-weight: bold">项目下人员已支出工作量排名</p>
             <div style="width: 100%; height: 60px; user-select: none;">
-              <img src="../../assets/images/left.png" class="btn-con left-btn" @click="handleScroll(240)">
-              <div class="scroll-outer" ref="scrollOuter" @DOMMouseScroll="handlescroll" @mousewheel="handlescroll">
-                <div ref="scrollBody" class="scroll-body" :style="{left: tagBodyLeft + 'px'}">
-                  <transition-group name="taglist-moving-animation">
-                    <Tag
-                      type="dot"
-                      v-for="(item, index) in projectList2"
-                      :style="{'background': item.id === projectList3Id ? '#04304c !important' : 'none !important'}"
-                      :key="`tag-nav-${index}`"
-                      :name="item.name"
-                      @click.native="handleClick1(item)"
-                    >{{item.name}}</Tag>
-                  </transition-group>
+              <div class="scroll-outer" style="overflow-y: scroll;" ref="scrollOuter">
+                <div ref="scrollBody" class="scroll-body" :style="{top: tagBodyLeft + 'px'}">
+                  <div v-for="(item, index) in projectList2" :key="index" @click="handleClick1(item)" style="padding: 5px 0" :style="{'color': item.id === projectList3Id ? '#ffffff' : '#999999'}">
+                    <Icon type="md-arrow-dropright" color="#33ccff" v-if="item.id === projectList3Id" />
+                    <span v-else style="width: 15px; display: inline-block"></span>
+                    {{item.name}}
+                  </div>
                 </div>
               </div>
-              <img src="../../assets/images/right.png" class="btn-con right-btn" @click="handleScroll(-240)">
             </div>
-            <div style=" margin-top: 20px; padding: 0 50px; display: flex">
-              <div style="width: 50%">
-                <div v-for="(item, index) in userWorkingHours" :key="index" v-if="index<5"  style="color: #ffffff; line-height: 30px; margin-bottom: 10px">
+            <div style=" margin-top: 50px">
+              <div style="width: 100%">
+                <div v-for="(item, index) in userWorkingHours" :key="index" v-if="index<5"  style="width:100% ;color: #ffffff; line-height: 30px; margin-bottom: 10px">
                   <span style="margin-right: 10px;  width: 16px; display: inline-block">{{index + 1}}</span>
-                  <span style="padding: 0 15px; border-left: 1px solid #fff; border-right: 1px solid #fff; margin-right: 10px; width: 88px">{{item.userName}}</span>
+                  <span style="padding: 0 15px; border-left: 1px solid #fff; border-right: 1px solid #fff; margin-right: 10px; width: 228px; display: inline-block">{{item.userName}}</span>
                   <span style="color: #3aa0ff">工时：{{item.workingHours}}</span>
                 </div>
               </div>
@@ -237,33 +221,26 @@
               </div>
             </div>
           </div>
-          <div style="width: 49.5%; border: 1px solid #00284d; height: 330px; position: relative; overflow: hidden; padding: 15px">
+          <div style="width: 49.5%; border: 1px solid #00284d; position: relative; overflow: hidden; padding: 15px">
             <p style="color: #ffffff;font-size: 18px; font-weight: bold">单路口执行各类任务排名</p>
             <div style="width: 100%; height: 60px; user-select: none;">
-              <img src="../../assets/images/left.png" class="btn-con left-btn" @click="handleScroll2(240)">
-              <div class="scroll-outer" ref="scrollOuter2" @DOMMouseScroll="handlescroll2" @mousewheel="handlescroll2">
-                <div ref="scrollBody2" class="scroll-body" :style="{left: tagBodyLeft2 + 'px'}">
-                  <transition-group name="taglist-moving-animation">
-                    <Tag
-                      type="dot"
-                      v-for="(item, index) in taskCrossingList2"
-                      :style="{'background': item.crossingCode === taskCrossingListId ? '#04304c !important' : 'none !important'}"
-                      :key="`tag-nav-${index}`"
-                      :name="item.alias"
-                      @click.native="handleClick2(item)"
-                    >{{item.alias}}</Tag>
-                  </transition-group>
+              <div class="scroll-outer" style="overflow-y: scroll;" ref="scrollOuter2" >
+                <div ref="scrollBody2" class="scroll-body" :style="{top: tagBodyLeft2 + 'px'}">
+                  <div v-for="(item, index) in taskCrossingList2" :key="index" @click="handleClick2(item)" style="padding: 5px 0" :style="{'color': item.crossingCode === taskCrossingListId ? '#ffffff' : '#999999'}">
+                    <Icon type="md-arrow-dropright" color="#33ccff" v-if="item.crossingCode === taskCrossingListId" />
+                    <span v-else style="width: 15px; display: inline-block"></span>
+                    {{item.alias}}
+                  </div>
                 </div>
               </div>
-              <img src="../../assets/images/right.png" class="btn-con right-btn" @click="handleScroll2(-240)">
             </div>
-            <div style="margin-top: 20px">
+            <div style="margin-top: 30px">
               <Row>
-                <Col span="10" style="width:210px; height: 210px;">
-                  <div ref="dom6" class="charts chart-pie" style="height: 210px; position:relative;"></div>
+                <Col span="24">
+                  <div ref="dom6" class="charts chart-pie" style="height: 250px; position:relative;"></div>
                 </Col>
-                <Col span="12" style="position: relative;top: -30px;left: 100px;">
-                  <ul style=" height: 30vh; display: flex; flex-direction: column; justify-content: center;text-align:left;">
+                <Col span="24">
+                  <ul style=" display: flex; flex-direction: column; justify-content: center;text-align:left;">
                     <li style="display: flex; align-items: center; justify-content: flex-start;margin-bottom:20px; color: #ffffff">
                       <div class="dian" style="background-color: #4dcb73"></div>
                       <div class="status">宣传任务</div>
@@ -330,6 +307,10 @@ export default {
   data () {
     let self = this
     return {
+      dom1Str: '逾期占比',
+      dom2Str: '逾期占比',
+      dom3Str: '逾期占比',
+      mapReady: false,
       listRowType: '1',
       taskCrossingListId: '',
       taskCrossingList2: [],
@@ -418,6 +399,7 @@ export default {
             polygon2.setPath(pathArray2)
             map.add(polygon)
             map.add(polygon2)
+            self.mapReady = true
           })
           self.listRowClick('1')
         }
@@ -431,7 +413,8 @@ export default {
       startTime: this.startTime,
       endTime: this.endTime,
       openStart: false,
-      openEnd: false
+      openEnd: false,
+      dateSelect: '6'
     }
   },
   methods: {
@@ -475,31 +458,37 @@ export default {
       })
     },
     lastMonthSlot () {
+      this.dateSelect = '1'
       this.getTaskParams.startTime = this.startTime = getLastMonthStartDate()
       this.getTaskParams.endTime = this.endTime = getLastMonthEndDate()
       this.renderData()
     },
     nowMonthSlot () {
+      this.dateSelect = '2'
       this.getTaskParams.startTime = this.startTime = getMonthStartDate()
       this.getTaskParams.endTime = this.endTime = getMonthEndDate()
       this.renderData()
     },
     lastSeasonSlot () {
+      this.dateSelect = '3'
       this.getTaskParams.startTime = this.startTime = getLastQuarterStartDate()
       this.getTaskParams.endTime = this.endTime = getLastQuarterEndDate()
       this.renderData()
     },
     nowSeasonSlot () {
+      this.dateSelect = '4'
       this.getTaskParams.startTime = this.startTime = getQuarterStartDate()
       this.getTaskParams.endTime = this.endTime = getQuarterEndDate()
       this.renderData()
     },
     lastYearSlot () {
+      this.dateSelect = '5'
       this.getTaskParams.startTime = this.startTime = getLastYear().startTime
       this.getTaskParams.endTime = this.endTime = getLastYear().endTime
       this.renderData()
     },
     nowYearSlot () {
+      this.dateSelect = '6'
       this.getTaskParams.startTime = this.startTime = getCurrentYear().startTime
       this.getTaskParams.endTime = this.endTime = getCurrentYear().endTime
       this.renderData()
@@ -545,11 +534,10 @@ export default {
           {
             // 环形图中间添加文字
             type: 'text', // 通过不同top值可以设置上下显示
-            left: '21%',
-            top: '44%',
+            left: '38%',
+            top: '42%',
             style: {
-              text:
-              '任务总数量' + '\n' + '\n' + this.pie6Data.taskCount || 0,
+              text: '任务总数量' + '\n' + '\n' + this.pie6Data.taskCount || 0,
               textAlign: 'center',
               fill: '#ffffff', // 文字的颜色
               fontSize: 16,
@@ -565,7 +553,7 @@ export default {
           {
             type: 'pie',
             radius: ['45%', '70%'],
-            center: ['40%', '50%'],
+            center: ['50%', '50%'],
             label: {
               normal: {
                 show: false
@@ -573,17 +561,14 @@ export default {
             },
             data: [
               {
-                // value: this.pie6Data.publicityTypeCount,
-                value: 10,
+                value: this.pie6Data.publicityTypeCount,
                 name: '宣传任务'
               },
               {
-                value: 40,
-                // value: this.pie6Data.patrolTypeCount,
+                value: this.pie6Data.patrolTypeCount,
                 name: '巡检任务' },
               {
-                value: 50,
-                // value: this.pie6Data.optimizingTypeCount,
+                value: this.pie6Data.optimizingTypeCount,
                 name: '优化任务'
               }
             ],
@@ -652,11 +637,12 @@ export default {
       if (type === 'DOMMouseScroll' || type === 'mousewheel') {
         delta = (e.wheelDelta) ? e.wheelDelta : -(e.detail || 0) * 40
       }
-      this.handleScroll(delta)
+      this.handleScroll2(delta)
     },
     handleScroll (offset) {
-      const outerWidth = this.$refs.scrollOuter.offsetWidth
-      const bodyWidth = this.$refs.scrollBody.offsetWidth
+      console.log(offset)
+      const outerWidth = this.$refs.scrollOuter.offsetHeight
+      const bodyWidth = this.$refs.scrollBody.offsetHeight
       if (offset > 0) {
         this.tagBodyLeft = Math.min(0, this.tagBodyLeft + offset)
       } else {
@@ -672,8 +658,9 @@ export default {
       }
     },
     handleScroll2 (offset) {
-      const outerWidth = this.$refs.scrollOuter2.offsetWidth
-      const bodyWidth = this.$refs.scrollBody2.offsetWidth
+      console.log(offset)
+      const outerWidth = this.$refs.scrollOuter2.offsetHeight
+      const bodyWidth = this.$refs.scrollBody2.offsetHeight
       if (offset > 0) {
         this.tagBodyLeft2 = Math.min(0, this.tagBodyLeft2 + offset)
       } else {
@@ -914,7 +901,7 @@ export default {
               normal: {
                 show: false,
                 position: 'center',
-                formatter: '{b} \n \n {d}%'
+                formatter: '{d}%'
               },
               emphasis: {
                 show: true,
@@ -944,6 +931,36 @@ export default {
       console.log(this.pieData1)
       this.dom1 = echarts.init(this.$refs.dom1, 'tdTheme')
       this.dom1.setOption(option)
+      this.dom1.dispatchAction({
+        type: 'highlight',
+        seriesIndex: 0,
+        dataIndex: 1
+      })
+      let _this = this
+      this.dom1.on('mouseover', function (e) {
+        console.log(_this)
+        console.log(e)
+        _this.dom1.dispatchAction({
+          type: 'downplay',
+          seriesIndex: 0,
+          dataIndex: 1
+        })
+        console.log(e.dataIndex)
+        _this.dom1Str = e.name
+        _this.dom1.dispatchAction({
+          type: 'highlight',
+          seriesIndex: 0,
+          dataIndex: e.dataIndex
+        })
+      })
+      this.dom1.on('mouseout', function (e) {
+        console.log(123123)
+        _this.dom1.dispatchAction({
+          type: 'highlight',
+          seriesIndex: 0,
+          dataIndex: 1
+        })
+      })
     },
     setPie2 () {
       let option = {
@@ -961,7 +978,7 @@ export default {
               normal: {
                 show: false,
                 position: 'center',
-                formatter: '{b} \n \n {d}%'
+                formatter: '{d}%'
               },
               emphasis: {
                 show: true,
@@ -990,6 +1007,35 @@ export default {
       }
       this.dom2 = echarts.init(this.$refs.dom2, 'tdTheme')
       this.dom2.setOption(option)
+      this.dom2.dispatchAction({
+        type: 'highlight',
+        seriesIndex: 0,
+        dataIndex: 1
+      })
+      let _this = this
+      this.dom2.on('mouseover', function (e) {
+        console.log(_this)
+        console.log(e)
+        _this.dom2.dispatchAction({
+          type: 'downplay',
+          seriesIndex: 0,
+          dataIndex: 1
+        })
+        _this.dom2Str = e.name
+        _this.dom2.dispatchAction({
+          type: 'highlight',
+          seriesIndex: 0,
+          dataIndex: e.dataIndex
+        })
+      })
+      this.dom2.on('mouseout', function (e) {
+        console.log(123123)
+        _this.dom2.dispatchAction({
+          type: 'highlight',
+          seriesIndex: 0,
+          dataIndex: 1
+        })
+      })
     },
     setPie3 () {
       let option = {
@@ -1007,7 +1053,7 @@ export default {
               normal: {
                 show: false,
                 position: 'center',
-                formatter: '{b} \n \n {d}%'
+                formatter: '{d}%'
               },
               emphasis: {
                 show: true,
@@ -1036,6 +1082,36 @@ export default {
       }
       this.dom3 = echarts.init(this.$refs.dom3, 'tdTheme')
       this.dom3.setOption(option)
+      this.dom3.dispatchAction({
+        type: 'highlight',
+        seriesIndex: 0,
+        dataIndex: 1
+      })
+      let _this = this
+      this.dom3.on('mouseover', function (e) {
+        console.log(_this)
+        console.log(e)
+        _this.dom3.dispatchAction({
+          type: 'downplay',
+          seriesIndex: 0,
+          dataIndex: 1
+        })
+        _this.dom3Str = e.name
+        console.log(e.dataIndex)
+        _this.dom3.dispatchAction({
+          type: 'highlight',
+          seriesIndex: 0,
+          dataIndex: e.dataIndex
+        })
+      })
+      this.dom3.on('mouseout', function (e) {
+        console.log(123123)
+        _this.dom3.dispatchAction({
+          type: 'highlight',
+          seriesIndex: 0,
+          dataIndex: 1
+        })
+      })
     },
     setLine1 () {
       let option = {
@@ -1405,14 +1481,14 @@ export default {
   }
   .scroll-outer{
     position: absolute;
-    left: 55px;
-    right: 55px;
+    left: 10px;
+    right: 10px;
     top: 55px;
     bottom: 15px;
-    height: 60px;
+    height: 90px;
     overflow: hidden;
+    background: #04304c;
     .scroll-body{
-      height: 100%;
       display: inline-block;
       position: absolute;
       overflow: visible;
@@ -1438,6 +1514,9 @@ export default {
         }
       }
     }
+  }
+  .scroll-outer::-webkit-scrollbar {
+    display: none;
   }
   .btn-con{
     position: absolute;
