@@ -20,9 +20,14 @@
         <dd v-if="detailData.status === '8'">任务路口状态：已撤销</dd>
         <dd v-if="detailData.status === '9'">任务路口状态：已暂停</dd>
         <dd>逾期天数：{{detailData.overdueDays}}</dd>
-        <dd v-if="detailData.firstPartyScoring === '1'">甲方评分：非常满意</dd>
-        <dd v-if="detailData.firstPartyScoring === '2'">甲方评分：满意</dd>
-        <dd v-if="detailData.firstPartyScoring === '3'">甲方评分：不满意</dd>
+        <dd>甲方评分：
+          <span v-if="detailData.firstPartyScoring === '1'">非常满意</span>
+          <span v-if="detailData.firstPartyScoring === '2'">满意</span>
+          <span v-if="detailData.firstPartyScoring === '3'">不满意</span>
+          <span v-else>- -</span>
+        </dd>
+        <!-- <dd v-if="detailData.firstPartyScoring === '2'">甲方评分：满意</dd>
+        <dd v-if="detailData.firstPartyScoring === '3'">甲方评分：不满意</dd> -->
         <dd v-if="detailData.firstPartyScoring === '3'" style="display: block;margin-top: 20px;color: red;">
           不满意原因：{{detailData.dissatisfiedReason}}
         </dd>
