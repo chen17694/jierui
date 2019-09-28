@@ -10,20 +10,20 @@
             逾期信息
             <div class="list-container">
                 <div class="list-view">
-                <div class="view-box">
-                  <h5>5</h5>
+                <div class="view-box" @click.stop="tapRouteLink('projectOverdue')">
+                  <h5>{{ProjectTotal}}</h5>
                   <p>项目逾期</p>
                 </div>
-                <div class="view-box">
-                  <h5>5</h5>
+                <div class="view-box" @click.stop="tapRouteLink('taskOverdue')">
+                  <h5>{{TaskTotal}}</h5>
                   <p>任务逾期</p>
                 </div>
-                <div class="view-box">
-                  <h5>5</h5>
+                <div class="view-box" @click.stop="tapRouteLink('roadOverdue')">
+                  <h5>{{TaskCrossingTotal}}</h5>
                   <p>任务路口逾期</p>
                 </div>
-                <div class="view-box">
-                  <h5>5</h5>
+                <div class="view-box" @click.stop="tapRouteLink('returnOverdue')">
+                  <h5>{{MaterialTotal}}</h5>
                   <p>物资归还逾期</p>
                 </div>
               </div>
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { listWait } from '@/api/data'
+import { listWait, listOverdueProject, listOverdueTask, listOverdueTaskCrossing, listOverdueMaterial } from '@/api/data'
 import { getUserId } from '@/libs/util'
 import wza from '@/assets/images/wza.png'
 import wz from '@/assets/images/wz.png'
@@ -75,7 +75,20 @@ export default {
       yqxxa: yqxxa,
       tjxxa: tjxxa,
       wdrba: wdrba,
-      shspa: shspa
+      shspa: shspa,
+      params: {
+        pageSize: 10,
+        page: 1,
+        name: '',
+        userId: getUserId(),
+        status: '',
+        projectId: '',
+        taskId: ''
+      },
+      ProjectTotal: '0',
+      TaskTotal: '0',
+      TaskCrossingTotal: '0',
+      MaterialTotal: '0'
     }
   },
   props: {
@@ -85,6 +98,9 @@ export default {
     // this.getCount()
   },
   methods: {
+    tapRouteLink (link) {
+      this.$router.push(link)
+    },
     onSelect (val) {
       this.Name = val
       switch (val) {
@@ -117,7 +133,26 @@ export default {
       listWait(obj).then(res => {
         if (res.data.status === '200') {
           this.Count = res.data.data.total
-          console.log(this.Count)
+        }
+      })
+      listOverdueProject(this.params).then((res) => {
+        if (res.data.status === '200') {
+          this.ProjectTotal = res.data.data.num
+        }
+      })
+      listOverdueTask(this.params).then((res) => {
+        if (res.data.status === '200') {
+          this.TaskTotal = res.data.data.num
+        }
+      })
+      listOverdueTaskCrossing(this.params).then((res) => {
+        if (res.data.status === '200') {
+          this.TaskCrossingTotal = res.data.data.num
+        }
+      })
+      listOverdueMaterial(this.params).then((res) => {
+        if (res.data.status === '200') {
+          this.MaterialTotal = res.data.data.num
         }
       })
     }

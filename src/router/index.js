@@ -17,7 +17,6 @@ const LOGIN_PAGE_NAME = 'login'
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
   const token = getToken()
-  console.log('setPassWord')
   if (to.name === 'setPassWord') {
     next()
   } else {
@@ -38,12 +37,9 @@ router.beforeEach((to, from, next) => {
       if (store.state.app.hasGetRouter) {
         next()
       } else {
-        console.log(getUserId())
         store.dispatch('getRouters', getUserId()).then(routers => {
-          console.log(routers)
           // commonRoutes需要追加到路由解析最后的404，把原先的routers.js中的404删掉即可
           router.addRoutes(routers)
-          console.log(router)
           next({ ...to })
         })
       }
