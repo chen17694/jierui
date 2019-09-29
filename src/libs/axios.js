@@ -87,9 +87,9 @@ class HttpRequest {
               window.location.reload()
             })
           }, 3000)
-          store.dispatch('handleLogOut').then(() => {
-            window.location.reload()
-          })
+          // store.dispatch('handleLogOut').then(() => {
+          //   window.location.reload()
+          // })
         } else if (errorInfo.status === 405) {
           Spin.hide()
           this.queue = {}

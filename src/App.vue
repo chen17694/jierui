@@ -74,4 +74,7 @@ html,body{
 .ivu-select-dropdown{
   padding: 0 !important;
 }
+.ivu-btn-text{
+  border: 1px solid #dcdee2 !important;
+}
 </style>
