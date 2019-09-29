@@ -1,10 +1,10 @@
 <template>
-  <div style="background-color: #001529; position: absolute; width: 100%; height: 100%;left: 0; top: 0; z-index: 900; overflow-x: scroll; padding: 0 15px">
+  <div style="background-color: #001529; position: absolute; width: 100%; height: 100%;left: 0; top: 0; z-index: 900; overflow:hidden; padding: 0 15px;">
     <div style="color: rgb(255, 255, 255);position: absolute;right: 15px;top: 15px; z-index: 22; display: flex" @click="close">
       <Icon size="36" color="red" type="md-close" />
       <span style="font-size: 16px; line-height: 36px">关闭</span>
     </div>
-    <div style=" border-bottom: 5px solid #04304c; margin: 20px 0; height: 140px">
+    <div style=" padding: 10px 0; height: 15%;">
       <div style="display: inline-block;line-height: 80px;border-top: 5px solid rgb(4, 48, 76);width: 630px;position: absolute;margin-top: 55px;left: 15px;z-index: 1;">
         <Button type="text" style="font-size: 16px; color: #ffffff" :style="{'color': (dateSelect==='1'? '#33CCFF':'#ffffff') }"  @click="lastMonthSlot">上月</Button>
         <Button type="text" style="font-size: 16px; color: #ffffff" :style="{'color': (dateSelect==='2'? '#33CCFF':'#ffffff') }" @click="nowMonthSlot">本月</Button>
@@ -13,8 +13,8 @@
         <Button type="text" style="font-size: 16px; color: #ffffff" :style="{'color': (dateSelect==='5'? '#33CCFF':'#ffffff') }" @click="lastYearSlot">去年</Button>
         <Button type="text" style="font-size: 16px; color: #ffffff" :style="{'color': (dateSelect==='6'? '#33CCFF':'#ffffff') }" @click="nowYearSlot">今年</Button>
       </div>
-      <div style="display: inline-block;width: 100%;padding: 0 660px;position: absolute;left: 0;text-align: center;height: 140px;">
-        <h1 style="display: block; color: #ffffff; font-size: 36px; margin-bottom: 10px">杰瑞配时管理平台</h1>
+      <div style="display: inline-block;width: 100%;padding: 0;position: absolute;left: 0;text-align: center;height: 140px;">
+        <h1 style="display: block; color: #ffffff; font-size: 36px; margin-bottom: 20px">杰瑞配时管理平台</h1>
         <!--<DatePicker type="daterange" placement="bottom-end" placeholder="请选择日期范围" style="background: none;border: 1px solid #04304c; width: 400px" @on-change="selectDate" ></DatePicker>-->
         <DatePicker
           :open="openStart"
@@ -40,20 +40,20 @@
         </DatePicker>
       </div>
       <div style="display: inline-block; line-height: 80px;border-top: 5px solid rgb(4, 48, 76);width: 630px;position: absolute;text-align: right;margin-top: 55px;right: 15px;z-index: 1;">
-        <Button type="primary" @click="search" style="width: 140px; height: 45px; font-size: 16px">搜索</Button>
+        <Button type="primary"  @click="search" style="">搜索</Button>
       </div>
     </div>
-    <div style="display: flex; justify-content: space-between">
+    <div style="display: flex; justify-content: space-between;height:40%">
       <div style="width: 60%; display: flex; justify-content: space-between">
-        <div style="width: 32%">
-          <div @click="listRowClick('1')" >
+        <div style="width: 38%">
+          <div style="height:33.3333333%" @click="listRowClick('1')" >
             <Row class="listRow" :style="{'background': (listRowType==='1'? '#04304c':'none') }" style="border: 1px solid #00284d; margin-bottom: 15px" type="flex" align="middle" justify="space-around">
-              <Col span="12" style="height: 210px; padding: 20px 10px">
-                <p style="font-size: 16px; color: #ffffff; font-weight: bold;">项目统计</p>
+              <Col span="12" style="height: 100%; padding: 10px">
+                <p style="font-size: 14px; color: #ffffff; font-weight: bold;">项目统计</p>
                 <div style="padding-left: 5px">
-                  <p style="margin: 20px 0; color: #33ccff; font-size: 16px; font-weight: bold">总数: {{data1.total ? data1.total : 0}}</p>
+                  <p style="margin: 6px 0; color: #33ccff; font-size: 14px; font-weight: bold">总数: {{data1.total ? data1.total : 0}}</p>
                   <ul style="list-style-type: none">
-                    <li style="margin-bottom: 25px; color: #ffffff; display: flex;align-items: center;">
+                    <li style="margin-bottom: 6px; color: #ffffff; display: flex;align-items: center;">
                       <span style="width: 5px; height: 5px; display: inline-block; background-color: #75dbdb; border-radius: 50%; margin-right: 8px"></span><span style="border-right: 1px solid #ffffff; padding-right: 6px; margin-right: 6px">进行中的数量</span>{{data1.ongoingCount ? data1.ongoingCount : ''}}
                     </li>
                     <li style="color: #ffffff; display: flex;align-items: center;">
@@ -62,20 +62,20 @@
                   </ul>
                 </div>
               </Col>
-              <Col span="12" style="width: 50%; height: 210px;">
-                <div ref="dom1" style="height: 165px;" class="charts chart-pie"></div>
-                <p style="color: #ffffff; position: absolute;bottom: 15px;left: 35%;">{{dom1Str}}</p>
+              <Col span="12" style="width: 50%; height: 100%;">
+                <div ref="dom1" style="height: 100%;" class="charts chart-pie"></div>
+                <p style="color: #ffffff; position: absolute;bottom: 0px;right: 4%;">{{dom1Str}}</p>
               </Col>
             </Row>
           </div>
-          <div @click="listRowClick('2')" >
+          <div  style="height:33.3333333%" @click="listRowClick('2')" >
             <Row class="listRow" :style="{'background': (listRowType==='2'? '#04304c':'none') }" style="border: 1px solid #00284d; margin-bottom: 15px" type="flex" align="middle" justify="space-around">
-              <Col span="12" style="height: 210px; padding: 20px 10px">
-                <p style="font-size: 16px; color: #ffffff; font-weight: bold;">任务统计</p>
+              <Col span="12" style="height: 100%; padding: 10px">
+                <p style="font-size: 14px; color: #ffffff; font-weight: bold;">任务统计</p>
                 <div style="padding-left: 5px">
-                  <p style="margin: 20px 0; color: #33ccff; font-size: 16px; font-weight: bold">总数: {{data2.total ? data2.total : 0}}</p>
+                  <p style="margin: 6px 0; color: #33ccff; font-size: 14px; font-weight: bold">总数: {{data2.total ? data2.total : 0}}</p>
                   <ul style="list-style-type: none">
-                    <li style="margin-bottom: 25px; color: #ffffff; display: flex;align-items: center;">
+                    <li style="margin-bottom: 6px; color: #ffffff; display: flex;align-items: center;">
                       <span style="width: 5px; height: 5px; display: inline-block; background-color: #75dbdb; border-radius: 50%; margin-right: 8px"></span><span style="border-right: 1px solid #ffffff; padding-right: 6px; margin-right: 6px">进行中的数量</span>{{data2.ongoingCount ? data2.ongoingCount : ''}}
                     </li>
                     <li style="color: #ffffff; display: flex;align-items: center;">
@@ -84,20 +84,20 @@
                   </ul>
                 </div>
               </Col>
-              <Col span="12" style="height: 210px;">
-                <div ref="dom2" style="height: 165px;" class="charts chart-pie"></div>
-                <p style="color: #ffffff; position: absolute;bottom: 15px;left: 35%;">{{dom2Str}}</p>
+              <Col span="12" style="height: 100%;">
+                <div ref="dom2" style="height: 100%;" class="charts chart-pie"></div>
+                <p style="color: #ffffff; position: absolute;bottom: 0px;right: 4%;">{{dom2Str}}</p>
               </Col>
             </Row>
           </div>
-          <div @click="listRowClick('3')" >
+          <div  style="height:33.3333333%" @click="listRowClick('3')" >
             <Row class="listRow" :style="{'background': (listRowType==='3'? '#04304c':'none') }" style="border: 1px solid #00284d;" type="flex" align="middle" justify="space-around">
-              <Col span="12" style="height: 210px; padding: 20px 10px">
-                <p style="font-size: 16px; color: #ffffff; font-weight: bold;">任务路口统计</p>
+              <Col span="12" style="height: 100%; padding: 10px">
+                <p style="font-size: 14px; color: #ffffff; font-weight: bold;">任务路口统计</p>
                 <div style="padding-left: 5px">
-                  <p style="margin: 20px 0; color: #33ccff; font-size: 16px; font-weight: bold">总数: {{data3.total ? data3.total : 0}}</p>
+                  <p style="margin: 6px 0; color: #33ccff; font-size: 14px; font-weight: bold">总数: {{data3.total ? data3.total : 0}}</p>
                   <ul style="list-style-type: none">
-                    <li style="margin-bottom: 25px; color: #ffffff; display: flex;align-items: center;">
+                    <li style="margin-bottom: 6px; color: #ffffff; display: flex;align-items: center;">
                       <span style="width: 5px; height: 5px; display: inline-block; background-color: #75dbdb; border-radius: 50%; margin-right: 8px"></span><span style="border-right: 1px solid #ffffff; padding-right: 6px; margin-right: 6px">进行中的数量</span>{{data3.ongoingCount ? data3.ongoingCount : ''}}
                     </li>
                     <li style="color: #ffffff; display: flex;align-items: center;">
@@ -106,14 +106,14 @@
                   </ul>
                 </div>
               </Col>
-              <Col span="12" style="height: 210px;">
-                <div ref="dom3" style="height: 165px;" class="charts chart-pie"></div>
-                <p style="color: #ffffff; position: absolute;bottom: 15px;left: 35%;">{{dom3Str}}</p>
+              <Col span="12" style="height: 100%;">
+                <div ref="dom3" style="height: 100%;" class="charts chart-pie"></div>
+                <p style="color: #ffffff; position: absolute;bottom: 0px;right: 4%;">{{dom3Str}}</p>
               </Col>
             </Row>
           </div>
         </div>
-        <div style="border: 1px solid #00284d; width: 66%; position: relative" v-show="mapReady">
+        <div style="border: 1px solid #00284d; width: 60%; position: relative;height:100%;height: 100%;overflow:hidden;" v-show="mapReady">
           <p v-if="listRowType === '1'" style="position: absolute; z-index: 1; top: 15px; left: 15px; font-size: 16px; font-weight: bold; color: #ffffff;">项目总数：{{data1.total ? data1.total : 0}}</p>
           <p v-if="listRowType === '2'" style="position: absolute; z-index: 1; top: 15px; left: 15px; font-size: 16px; font-weight: bold; color: #ffffff;">任务总数：{{data2.total ? data2.total : 0}}</p>
           <p v-if="listRowType === '3'" style="position: absolute; z-index: 1; top: 15px; left: 15px; font-size: 16px; font-weight: bold; color: #ffffff;">任务路口总数：{{data3.total ? data3.total : 0}}</p>
@@ -133,7 +133,7 @@
       </div>
       <div style="width: 39%; border: 1px solid #00284d;">
         <p slot="title" style="padding: 10px; color: #ffffff;font-size: 16px; font-weight: bold; border-bottom: 1px solid #00284d;">项目下任务数量</p>
-        <ul class="mlist" style="padding: 57px 0">
+        <ul class="mlist" style="padding:2px;">
           <li v-for="(item, key) in tableData1" :key="key">
             <div class="table-left" style="color: #ffffff; display: flex; align-items: center">
               <span class="index">{{key + 1}}</span>
@@ -148,7 +148,7 @@
             </div>
           </li>
         </ul>
-        <div class="page" style="padding: 15px; color: #ffffff; border-top: 1px solid #00284d; line-height: 53px">
+        <div class="page" style="padding: 2px 15px; color: #ffffff; border-top: 1px solid #00284d;">
           <div>共 <span style="font-weight: bold; font-size: 16px">{{tableData1Total}}</span> 条</div>
           <Page
             :total="tableData1Total"
@@ -159,8 +159,8 @@
         </div>
       </div>
     </div>
-    <div style="margin-top: 20px;  margin-bottom: 30px; display: flex; justify-content: space-between">
-      <div style="width: 60%; border: 1px solid #00284d;">
+    <div style="heigth:45%; overflow:hidden;margin-top: 20px; margin-bottom: 30px; display: flex; justify-content: space-between">
+      <div style="width: 60%;height:calc(45vh - 30px); border: 1px solid #00284d;">
         <div style="display: flex; justify-content: space-between; padding: 15px 15px 0 15px;">
           <p style="color: #ffffff;font-size: 18px; font-weight: bold;">任务与任务路口完成情况</p>
           <div>
@@ -170,13 +170,13 @@
             </Select>
           </div>
         </div>
-        <div style="padding:0 15px 15px 15px; color: #ffffff; border-bottom: 1px solid #00284d;">
-          <Row>
+        <div style="height:calc(45vh - 57px); padding:0 15px 15px 15px; color: #ffffff; border-bottom: 1px solid #00284d;">
+          <Row style="height: 50%;">
             <Col span="24">
-              <div ref="dom4" style="height: 300px;"></div>
+              <div ref="dom4" style="height: 100%;min-height:200px;"></div>
             </Col>
           </Row>
-          <Row>
+          <Row style="height: 50%;">
             <Col span="24" style="text-align: right">
               <span class="label" style="margin-right: 5px;">选择任务:</span>
               <Select v-model="taskListId" placeholder="请选择任务" filterable clearable style="width: 300px" @on-change="getTaskCrossingDateCount">
@@ -184,19 +184,19 @@
               </Select>
             </Col>
             <Col span="24">
-              <div ref="dom5" style="height: 300px;"></div>
+              <div ref="dom5" style="height:calc(100% - 32px);min-height:158px;"></div>
             </Col>
           </Row>
         </div>
       </div>
-      <div style="width: 39%;">
-        <div style="display: flex; justify-content: space-between">
-          <div style="width: 49.5%; border: 1px solid #00284d; position: relative; overflow: hidden; padding: 15px">
+      <div style="width: 39%; height:calc(45vh - 30px); overflow: hidden">
+        <div style=" height: 100%;display: flex; justify-content: space-between">
+          <div style="height: 100%; width: 48.6%; border: 1px solid #00284d; position: relative; overflow: hidden; padding: 10px 10px">
             <p style="color: #ffffff;font-size: 18px; font-weight: bold">项目下人员已支出工作量排名</p>
             <div style="width: 100%; height: 60px; user-select: none;">
               <div class="scroll-outer" style="overflow-y: scroll;" ref="scrollOuter">
                 <div ref="scrollBody" class="scroll-body" :style="{top: tagBodyLeft + 'px'}">
-                  <div v-for="(item, index) in projectList2" :key="index" @click="handleClick1(item)" style="padding: 5px 0" :style="{'color': item.id === projectList3Id ? '#ffffff' : '#999999'}">
+                  <div v-for="(item, index) in projectList2" :key="index" @click="handleClick1(item)" style="padding: 1px 0" :style="{'color': item.id === projectList3Id ? '#ffffff' : '#999999'}">
                     <Icon type="md-arrow-dropright" color="#33ccff" v-if="item.id === projectList3Id" />
                     <span v-else style="width: 15px; display: inline-block"></span>
                     {{item.name}}
@@ -204,9 +204,9 @@
                 </div>
               </div>
             </div>
-            <div style=" margin-top: 50px">
-              <div style="width: 100%">
-                <div v-for="(item, index) in userWorkingHours" :key="index" v-if="index<5"  style="width:100% ;color: #ffffff; line-height: 30px; margin-bottom: 10px">
+            <div style=" height:calc(100% - 110px); overflow:auto; margin-top: 50px">
+              <div style="width: 100%;height:100%">
+                <div v-for="(item, index) in userWorkingHours" :key="index" v-if="index<5"  style="width:100% ;color: #ffffff; line-height: 28px; margin-bottom: 2px">
                   <span style="margin-right: 10px;  width: 16px; display: inline-block">{{index + 1}}</span>
                   <span style="padding: 0 15px; border-left: 1px solid #fff; border-right: 1px solid #fff; margin-right: 10px; width: 228px; display: inline-block">{{item.userName}}</span>
                   <span style="color: #3aa0ff">工时：{{item.workingHours}}</span>
@@ -221,7 +221,7 @@
               </div>
             </div>
           </div>
-          <div style="width: 49.5%; border: 1px solid #00284d; position: relative; overflow: hidden; padding: 15px">
+          <div style="height: 100%; width: 48.6%; border: 1px solid #00284d; position: relative; overflow: hidden; padding: 15px">
             <p style="color: #ffffff;font-size: 18px; font-weight: bold">单路口执行各类任务排名</p>
             <div style="width: 100%; height: 60px; user-select: none;">
               <div class="scroll-outer" style="overflow-y: scroll;" ref="scrollOuter2" >
@@ -237,7 +237,7 @@
             <div style="margin-top: 30px">
               <Row>
                 <Col span="24">
-                  <div ref="dom6" class="charts chart-pie" style="height: 250px; position:relative;"></div>
+                  <div ref="dom6" class="charts chart-pie" style="height: 200px; position:relative;"></div>
                 </Col>
                 <Col span="24">
                   <ul style=" display: flex; flex-direction: column; justify-content: center;text-align:left;">
@@ -347,7 +347,7 @@ export default {
       taskList: [],
       taskListId: '',
       taskCrossingList: [],
-      zoom: 4,
+      zoom: 3.5,
       amapManager: amapManager,
       center: [104, 40],
       events: {
@@ -895,7 +895,7 @@ export default {
         series: [
           {
             type: 'pie',
-            radius: ['42%', '70%'],
+            radius: ['40%', '70%'],
             avoidLabelOverlap: false,
             label: {
               normal: {
@@ -1116,10 +1116,10 @@ export default {
     setLine1 () {
       let option = {
         grid: {
-          top: '50px',
+          top: '10px',
           left: '50px',
           right: '15px',
-          bottom: '50px'
+          bottom: '20px'
         },
         xAxis: [
           {
@@ -1254,10 +1254,10 @@ export default {
           }
         ],
         grid: {
-          top: '50px',
+          top: '20px',
           left: '50px',
           right: '15px',
-          bottom: '50px'
+          bottom: '30px'
         },
         series: [
           {
@@ -1378,9 +1378,11 @@ export default {
 
 <style scoped lang="less">
   .amap-demo {
-    height: 630px;
+    height: 36vh;
+    width: 100%;
   }
   .listRow{
+    height: 100%;
     cursor: pointer;
   }
   .listRow:hover{
@@ -1393,7 +1395,7 @@ export default {
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 10px;
+      margin-bottom: 2px;
       padding: 4px 10px;
     }
     .table-left{
@@ -1438,6 +1440,7 @@ export default {
     justify-content: space-between;
     padding-left: 15px;
     color: #ffffff;
+    align-items: center;
     font-size: 14px;
   }
   .ivu-page{
