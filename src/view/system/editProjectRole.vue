@@ -1,7 +1,7 @@
 <template>
   <div>
     <Card>
-      <p class="pageHead">新增系统角色</p>
+      <p class="pageHead">编辑项目角色</p>
       <Form ref="formItem" :model="formItem" :label-width="150" :rules="ruleValidate" >
         <FormItem label="用户名" prop="userName">
           <Row>
