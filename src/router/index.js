@@ -16,6 +16,7 @@ const LOGIN_PAGE_NAME = 'login'
 
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
+  console.log(123)
   const token = getToken()
   if (to.name === 'setPassWord') {
     next()

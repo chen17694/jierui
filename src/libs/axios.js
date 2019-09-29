@@ -2,8 +2,8 @@ import axios from 'axios'
 import store from '@/store'
 import { Spin, Modal } from 'iview'
 import { getToken } from '@/libs/util'
-// const CancelToken = axios.CancelToken
-// const source = CancelToken.source()
+const CancelToken = axios.CancelToken
+const source = CancelToken.source()
 const addErrorLog = errorInfo => {
   const { statusText, status, request: { responseURL } } = errorInfo
   let info = {
